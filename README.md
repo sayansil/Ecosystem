@@ -3,9 +3,11 @@
 
 ## Theoretical Assumptions
 
-- The **birth** days and **death** days of all organisms in a species is same. Say beginning of January every year.  
+- The **birth** days and **death** days of all organisms in a species is the same day every year.  
 
 - The **fitness** of an organism (unique *Chromosome*) in a species is defined by a **finite** and **exhaustive** set of values or parameters (called *Genes*)
+
+- There will be a **new generation** of organisms every year without fail, unless there are no suitable organisms to breed.
 
 - Organisms of same species may **crossbreed** with their parent or offspring to contribute to the genepool.
 
