@@ -172,8 +172,6 @@ The organisms from past **generations** are removed to raise the **average fitne
 
 The process consisting of steps **Adaptation** to **Selection** repeats itself forever, unless the species becomes extinct after a **Selection** wipes off all organisms of the speceies.
 
----
-
 # Time-Dependency of traits
 
 ## Age
