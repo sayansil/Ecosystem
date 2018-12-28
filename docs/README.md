@@ -17,10 +17,22 @@
 
 ## 1. Chromosomes
 
-**Structural  syntax :**
+**Structural  syntax :** 
 
-|0   |1   |1   |1   |0   |0   |1   |... |1   |0   |  
-|----|----|----|----|----|----|----|----|----|----|  
+<table>
+  <tr>
+    <th>0</th>
+    <th>1</th>
+    <th>1</th>
+    <th>1</th>
+    <th>0</th>
+    <th>0</th>
+    <th>1</th>
+    <th>...</th>
+    <th>1</th>
+    <th>0</th>
+  </tr>
+</table>
 
 Set of finite values which exhaustively define all hereditary traits (or *possible traits*) in an organism, which does not change during their lifetime.
 The smallest unit of a **chromosome** is called a ***gene***.
@@ -130,15 +142,21 @@ Set of finite values which exhaustively define all dynamic traits (or *possible 
 
 ## 4. Generation
 
-|5  |
-|---|
+<table>
+  <tr>
+    <th>5</th>
+  </tr>
+</table>
 
 Denotes the generation to which the organism was born. Organisms belonging to the same **generation** are termed ***siblings***. Organisms born to the same parent are ***direct siblings***.
 
 ## 5. Fitness
 
-|0.52  |
-|------|
+<table>
+  <tr>
+    <th>0.52</th>
+  </tr>
+</table>
 
 A measure of survivality of the organism with respect to their species. A value of **0** denotes ***inevitable extinction***, and a value of **1** denotes an ***ideal organism*** in the proposed ecosystem.
 
