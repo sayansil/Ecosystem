@@ -17,7 +17,7 @@
 
 ## 1. Chromosomes
 
-1**Type :** ***ordered list of bits***
+**Type :** ***ordered list of bits***
 
 **Structural  syntax :**
 
