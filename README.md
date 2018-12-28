@@ -179,6 +179,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Age
 
 **Relation :**
+
 ![Age dependency](https://i.ibb.co/FY1nXKy/age.png)
 
 ***where,***
@@ -190,6 +191,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Death probability
 
 **Relation :**
+
 ![Death dependency](https://i.ibb.co/8788Hff/death.png)
 
 ***where,***
@@ -202,6 +204,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Height
 
 **Relation :**
+
 ![Height dependency](https://i.ibb.co/y645rDx/height.png)
 
 ***where,***
@@ -214,6 +217,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Weight
 
 **Relation :**
+
 ![Weight dependency](https://i.ibb.co/J71x0H8/weight.png)
 
 ***where,***
@@ -226,6 +230,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Maximum vitality
 
 **Relation :**
+
 ![Maximum Vitality dependency](https://i.ibb.co/cxwh3zr/vitality.png)
 
 ***where,***
@@ -238,6 +243,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Maximum stamina
 
 **Relation :**
+
 ![Maximum stamina dependency](https://i.ibb.co/5sxJvBG/stamina.png)
 
 ***where,***
@@ -250,6 +256,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Maximum speed
 
 **Relation :**
+
 ![Maximum speed dependency](https://i.ibb.co/XWMPvyd/speed.png)
 
 ***where,***
@@ -262,6 +269,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ## Maximum appetite
 
 **Relation :**
+
 ![Maximum appetite dependency](https://i.ibb.co/ZX3HYym/appetite.png)
 
 ***where,***
