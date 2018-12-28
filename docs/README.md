@@ -17,7 +17,9 @@
 
 ## 1. Chromosomes
 
-**Structural  syntax :** 
+1**Type :** ***ordered list of bits***
+
+**Structural  syntax :**
 
 <table>
   <tr>
@@ -40,41 +42,45 @@ The **final bit** in chromosome shall represent the ***gender*** of the organism
 
 ## 2. Non - hereditary Traits
 
+**Type :** ***unordered list of float***
+
 **Structural syntax :**
 
 <table>
-<tr>
-<td>
-
-|15  |
-|----|
-
-</td>
-<td>
-
-|110 |
-|----|
-
-</td>
-<td>
-
-|73  |
-|----|
-
-</td>
-<td>
-
-|... |
-|----|
-
-</td>
-<td>
-
-|1000  |
-|-----|
-
-</td>
-</tr>
+  <tr>
+    <th>
+    <table>
+    <tr>
+    <th>15
+    </th>
+    </tr>
+    </table>
+    </th>
+    <th>
+    <table>
+    <tr>
+    <th>1.1
+    </th>
+    </tr>
+    </table>
+    </th>
+    <th>
+    <table>
+    <tr>
+    <th>73
+    </th>
+    </tr>
+    </table>
+    </th>
+    <th>...</th>
+    <th><table>
+    <tr>
+    <th>1000
+    </th>
+    </tr>
+    </table>
+    </th>
+  </tr>
 </table>
 
 Set of finite values which exhaustively define all non-hereditary traits (or *possible traits*) in an organism, which are learned and updated ***gradually*** throughout their lifetime as a **function of time**.
@@ -91,41 +97,45 @@ Set of finite values which exhaustively define all non-hereditary traits (or *po
 
 ## 3. Dynamic traits
 
+**Type :** ***unordered list of float***
+
 **Structural syntax :**
 
 <table>
-<tr>
-<td>
-
-|45  |
-|----|
-
-</td>
-<td>
-
-|81  |
-|----|
-
-</td>
-<td>
-
-|27  |
-|----|
-
-</td>
-<td>
-
-|... |
-|----|
-
-</td>
-<td>
-
-|100  |
-|-----|
-
-</td>
-</tr>
+  <tr>
+    <th>
+    <table>
+    <tr>
+    <th>45
+    </th>
+    </tr>
+    </table>
+    </th>
+    <th>
+    <table>
+    <tr>
+    <th>81
+    </th>
+    </tr>
+    </table>
+    </th>
+    <th>
+    <table>
+    <tr>
+    <th>27
+    </th>
+    </tr>
+    </table>
+    </th>
+    <th>...</th>
+    <th><table>
+    <tr>
+    <th>100
+    </th>
+    </tr>
+    </table>
+    </th>
+  </tr>
 </table>
 
 Set of finite values which exhaustively define all dynamic traits (or *possible traits*) in an organism, which changes ***rapidly*** as an effect of interaction with their surroundings as a **function of time**.
@@ -142,21 +152,13 @@ Set of finite values which exhaustively define all dynamic traits (or *possible 
 
 ## 4. Generation
 
-<table>
-  <tr>
-    <th>5</th>
-  </tr>
-</table>
+**Type :** ***Integer***
 
 Denotes the generation to which the organism was born. Organisms belonging to the same **generation** are termed ***siblings***. Organisms born to the same parent are ***direct siblings***.
 
 ## 5. Fitness
 
-<table>
-  <tr>
-    <th>0.52</th>
-  </tr>
-</table>
+**Type :** ***Float***
 
 A measure of survivality of the organism with respect to their species. A value of **0** denotes ***inevitable extinction***, and a value of **1** denotes an ***ideal organism*** in the proposed ecosystem.
 
