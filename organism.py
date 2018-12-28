@@ -33,13 +33,15 @@ class herbivore:
         self.max_appetite_at_age = self.get_base_appetite()
         self.height = self.get_base_height()
         self.weight = self.get_base_weight()
-        self.fitness = self.evaluate_fitness()
 
         # Changes dynamically every moment
         self.vitality = self.max_vitality_at_age
         self.stamina = self.max_stamina_at_age
         self.speed = self.max_speed_at_age
         self.appetite = self.max_appetite_at_age
+
+        # Overall survivality of organism
+        self.fitness = self.evaluate_fitness()
 
     def get_base_vitality(self):
         # TODO

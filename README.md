@@ -171,3 +171,102 @@ The organisms from past **generations** are removed to raise the **average fitne
 ## Repeat
 
 The process consisting of steps **Adaptation** to **Selection** repeats itself forever, unless the species becomes extinct after a **Selection** wipes off all organisms of the speceies.
+
+---
+
+# Time-Dependency of traits
+
+## Age
+
+**Relation :**
+![Age dependency](https://i.ibb.co/FY1nXKy/age.png)
+
+***where,***
+
+**t** = time
+
+![Age dependency](https://i.ibb.co/TrC2Q8t/herbivore-age.png)
+
+## Death probability
+
+**Relation :**
+![Death dependency](https://i.ibb.co/8788Hff/death.png)
+
+***where,***
+
+**t** = time
+**a, b** = constants
+
+![Death dependency](https://i.ibb.co/QQrVkQy/herbivore-death-prob.png)
+
+## Height
+
+**Relation :**
+![Height dependency](https://i.ibb.co/y645rDx/height.png)
+
+***where,***
+
+**t** = time
+**a, b, c** = constants
+
+![Height dependency](https://i.ibb.co/ZKcDZPK/herbivore-height.png)
+
+## Weight
+
+**Relation :**
+![Weight dependency](https://i.ibb.co/J71x0H8/weight.png)
+
+***where,***
+
+**t** = time
+**a, b, c, d** = constants
+
+![Weight dependency](https://i.ibb.co/wzRCPGy/herbivore-weight.png)
+
+## Maximum vitality
+
+**Relation :**
+![Maximum Vitality dependency](https://i.ibb.co/cxwh3zr/vitality.png)
+
+***where,***
+
+**t** = time
+**a, b, c, d** = constants
+
+![Maximum Vitality dependency](https://i.ibb.co/QvYjVQj/herbivore-max-vit.png)
+
+## Maximum stamina
+
+**Relation :**
+![Maximum stamina dependency](https://i.ibb.co/5sxJvBG/stamina.png)
+
+***where,***
+
+**t** = time
+**a, b, c, d** = constants
+
+![Maximum stamina dependency](https://i.ibb.co/PcsN2rT/herbivore-max-sta.png)
+
+## Maximum speed
+
+**Relation :**
+![Maximum speed dependency](https://i.ibb.co/XWMPvyd/speed.png)
+
+***where,***
+
+**t** = time
+**a, b, c, d** = constants
+
+![Maximum speed dependency](https://i.ibb.co/VjwMffP/herbivore-max-speed.png)
+
+## Maximum appetite
+
+**Relation :**
+![Maximum appetite dependency](https://i.ibb.co/ZX3HYym/appetite.png)
+
+***where,***
+
+**t** = time
+**a, b, c** = constants
+
+![Maximum appetite dependency](https://i.ibb.co/FWsCmb2/herbivore-max-app.png)
