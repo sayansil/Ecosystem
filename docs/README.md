@@ -17,7 +17,7 @@
 
 ## 1. Chromosomes
 
-**Type :** ***ordered list of bits***
+**Type :** ***ordered list of Bits***
 
 **Structural  syntax :**
 
@@ -42,7 +42,7 @@ The **final bit** in chromosome shall represent the ***gender*** of the organism
 
 ## 2. Non - hereditary Traits
 
-**Type :** ***unordered list of float***
+**Type :** ***unordered list of Float***
 
 **Structural syntax :**
 
@@ -97,7 +97,7 @@ Set of finite values which exhaustively define all non-hereditary traits (or *po
 
 ## 3. Dynamic traits
 
-**Type :** ***unordered list of float***
+**Type :** ***unordered list of Float***
 
 **Structural syntax :**
 
