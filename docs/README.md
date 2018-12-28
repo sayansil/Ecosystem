@@ -215,6 +215,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ***where,***
 
 **t** = time
+
 **a, b** = constants
 
 ![Death dependency](https://i.ibb.co/QQrVkQy/herbivore-death-prob.png)
@@ -228,6 +229,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ***where,***
 
 **t** = time
+
 **a, b, c** = constants
 
 ![Height dependency](https://i.ibb.co/ZKcDZPK/herbivore-height.png)
@@ -241,6 +243,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ***where,***
 
 **t** = time
+
 **a, b, c, d** = constants
 
 ![Weight dependency](https://i.ibb.co/wzRCPGy/herbivore-weight.png)
@@ -254,6 +257,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ***where,***
 
 **t** = time
+
 **a, b, c, d** = constants
 
 ![Maximum Vitality dependency](https://i.ibb.co/QvYjVQj/herbivore-max-vit.png)
@@ -267,6 +271,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ***where,***
 
 **t** = time
+
 **a, b, c, d** = constants
 
 ![Maximum stamina dependency](https://i.ibb.co/PcsN2rT/herbivore-max-sta.png)
@@ -280,6 +285,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ***where,***
 
 **t** = time
+
 **a, b, c, d** = constants
 
 ![Maximum speed dependency](https://i.ibb.co/VjwMffP/herbivore-max-speed.png)
@@ -293,6 +299,7 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ***where,***
 
 **t** = time
+
 **a, b, c** = constants
 
 ![Maximum appetite dependency](https://i.ibb.co/FWsCmb2/herbivore-max-app.png)
