@@ -17,6 +17,8 @@
 
 ## 1. Chromosomes
 
+**Structural  syntax :**
+
 |0   |1   |1   |1   |0   |0   |1   |... |1   |0   |  
 |----|----|----|----|----|----|----|----|----|----|  
 
@@ -26,26 +28,112 @@ The **final bit** in chromosome shall represent the ***gender*** of the organism
 
 ## 2. Non - hereditary Traits
 
-|0   |0   |1   |0   |1   |0   |1   |... |1   |1   |
-|----|----|----|----|----|----|----|----|----|----|
+**Structural syntax :**
 
-Set of finite values which exhaustively define all non-hereditary traits (or *possible traits*) in an organism, which are learned and updated throughout their lifetime.
+<table>
+<tr>
+<td>
 
-## 3. Generation
+|15  |
+|----|
+
+</td>
+<td>
+
+|110 |
+|----|
+
+</td>
+<td>
+
+|73  |
+|----|
+
+</td>
+<td>
+
+|... |
+|----|
+
+</td>
+<td>
+
+|1000  |
+|-----|
+
+</td>
+</tr>
+</table>
+
+Set of finite values which exhaustively define all non-hereditary traits (or *possible traits*) in an organism, which are learned and updated ***gradually*** throughout their lifetime as a **function of time**.
+
+**Example traits :**
+
+|Trait        |Value|
+|-------------|-----|
+|age          |15   |
+|height       |1.1  |
+|weight       |73   |
+|...          |...  |
+|max appetite |1000 |
+
+## 3. Dynamic traits
+
+**Structural syntax :**
+
+<table>
+<tr>
+<td>
+
+|45  |
+|----|
+
+</td>
+<td>
+
+|81  |
+|----|
+
+</td>
+<td>
+
+|27  |
+|----|
+
+</td>
+<td>
+
+|... |
+|----|
+
+</td>
+<td>
+
+|100  |
+|-----|
+
+</td>
+</tr>
+</table>
+
+Set of finite values which exhaustively define all dynamic traits (or *possible traits*) in an organism, which changes ***rapidly*** as an effect of interaction with their surroundings as a **function of time**.
+
+**Example traits :**
+
+|Trait      |Value |
+|-----------|------|
+|speed      |45    |
+|vitality   |81    |
+|stamina    |27    |
+|...        |...   |
+|appetite   |100   |
+
+## 4. Generation
 
 |5  |
 |---|
 
 Denotes the generation to which the organism was born. Organisms belonging to the same **generation** are termed ***siblings***. Organisms born to the same parent are ***direct siblings***.
-
-## 4. Age
-
-|2  |
-|---|
-
-Number of years since birth.
-
-```AGE = recent GENERATION - individual GENERATION```
 
 ## 5. Fitness
 
