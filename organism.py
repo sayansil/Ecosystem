@@ -4,6 +4,70 @@ class herbivore:
         self, 
         chromosome, 
         generation):
+        # Chromosome structure of a species
+        self.chromosome_structure = {
+            'bv':{
+                'start':0,
+                'length':10
+            },
+            'vm':{
+                'start':10,
+                'length':8
+            },
+            'bs':{
+                'start':18,
+                'length':10
+            },
+            'sm':{
+                'start':28,
+                'length':8
+            },
+            'mh':{
+                'start':36,
+                'length':10
+            },
+            'mw':{
+                'start':46,
+                'length':10
+            },
+            'bh':{
+                'start':56,
+                'length':10
+            },
+            'bw':{
+                'start':66,
+                'length':10
+            },
+            'hm':{
+                'start':76,
+                'length':8
+            },
+            'wm':{
+                'start':84,
+                'length':8
+            },
+            'bp':{
+                'start':92,
+                'length':10
+            },
+            'pm':{
+                'start':102,
+                'length':8
+            },
+            'ba':{
+                'start':110,
+                'length':10
+            },
+            'im':{
+                'start':120,
+                'length':10
+            },
+            'gn':{
+                'start':130,
+                'length':1
+            }
+        }
+
         # Fixed for the species
         self.max_age = 30
         self.chromosome_number = 256
@@ -43,64 +107,112 @@ class herbivore:
         # Overall survivality of organism
         self.fitness = self.evaluate_fitness()
 
+    def getValueFromChromosome(self, start, length):
+        return int(self.chromosome[start:start+length], 2)
+
     def get_base_vitality(self):
         # TODO
-        return 123
+        bv = self.getValueFromChromosome(
+            self.chromosome_structure['bv']['start'],
+            self.chromosome_structure['bv']['length'])
+        return bv
 
     def get_base_stamina(self):
         # TODO
-        return 123
+        bs = self.getValueFromChromosome(
+            self.chromosome_structure['bs']['start'],
+            self.chromosome_structure['bs']['length'])
+        return bs
         
     def get_vitality_multiplier(self):
         # TODO
-        return 123
+        vm = self.getValueFromChromosome(
+            self.chromosome_structure['vm']['start'],
+            self.chromosome_structure['vm']['length'])
+        return vm
 
     def get_stamina_multiplier(self):
         # TODO
-        return 123
+        sm = self.getValueFromChromosome(
+            self.chromosome_structure['sm']['start'],
+            self.chromosome_structure['sm']['length'])
+        return sm
 
     def get_max_height(self):
         # TODO
-        return 123
+        mh = self.getValueFromChromosome(
+            self.chromosome_structure['mh']['start'],
+            self.chromosome_structure['mh']['length'])
+        return mh
 
     def get_base_height(self):
         # TODO
-        return 123
+        bh = self.getValueFromChromosome(
+            self.chromosome_structure['bh']['start'],
+            self.chromosome_structure['bh']['length'])
+        return bh
 
     def get_height_multiplier(self):
         # TODO
-        return 123
+        hm = self.getValueFromChromosome(
+            self.chromosome_structure['hm']['start'],
+            self.chromosome_structure['hm']['length'])
+        return hm
 
     def get_max_weight(self):
         # TODO
-        return 123
+        mw = self.getValueFromChromosome(
+            self.chromosome_structure['mw']['start'],
+            self.chromosome_structure['mw']['length'])
+        return mw
 
     def get_base_weight(self):
         # TODO
-        return 123
+        bw = self.getValueFromChromosome(
+            self.chromosome_structure['bw']['start'],
+            self.chromosome_structure['bw']['length'])
+        return bw
 
     def get_weight_multiplier(self):
         # TODO
-        return 123
+        wm = self.getValueFromChromosome(
+            self.chromosome_structure['wm']['start'],
+            self.chromosome_structure['wm']['length'])
+        return wm
 
     def get_immunity(self):
         # TODO
-        return 123
+        im = self.getValueFromChromosome(
+            self.chromosome_structure['im']['start'],
+            self.chromosome_structure['im']['length'])
+        return im
 
     def get_base_speed(self):
         # TODO
-        return 123
+        bp = self.getValueFromChromosome(
+            self.chromosome_structure['bp']['start'],
+            self.chromosome_structure['bp']['length'])
+        return bp
 
     def get_speed_multiplier(self):
         # TODO
-        return 123
+        pm = self.getValueFromChromosome(
+            self.chromosome_structure['pm']['start'],
+            self.chromosome_structure['pm']['length'])
+        return pm
 
     def get_base_appetite(self):
         # TODO
-        return 123
+        ba = self.getValueFromChromosome(
+            self.chromosome_structure['ba']['start'],
+            self.chromosome_structure['ba']['length'])
+        return ba
         
     def get_gender(self):
-        return self.chromosome[self.chromosome_number - 1]
+        gn =self.getValueFromChromosome(
+            self.chromosome_structure['gn']['start'],
+            self.chromosome_structure['gn']['length'])
+        return gn
 
     def evaluate_fitness(self):
         # TODO
