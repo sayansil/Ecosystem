@@ -1,103 +1,48 @@
 import numpy as np
-class herbivore:
+import json
+
+class Animal:
     def __init__(
-        self, 
-        chromosome, 
+        self,
+        kind,
+        chromosome,
+        chromosome_structure,
         generation):
         # Chromosome structure of a species
-        self.chromosome_structure = {
-            'bv':{
-                'start':0,
-                'length':10
-            },
-            'vm':{
-                'start':10,
-                'length':8
-            },
-            'bs':{
-                'start':18,
-                'length':10
-            },
-            'sm':{
-                'start':28,
-                'length':8
-            },
-            'mh':{
-                'start':36,
-                'length':10
-            },
-            'mw':{
-                'start':46,
-                'length':10
-            },
-            'bh':{
-                'start':56,
-                'length':10
-            },
-            'bw':{
-                'start':66,
-                'length':10
-            },
-            'hm':{
-                'start':76,
-                'length':8
-            },
-            'wm':{
-                'start':84,
-                'length':8
-            },
-            'bp':{
-                'start':92,
-                'length':10
-            },
-            'pm':{
-                'start':102,
-                'length':8
-            },
-            'ba':{
-                'start':110,
-                'length':10
-            },
-            'im':{
-                'start':120,
-                'length':10
-            },
-            'gn':{
-                'start':130,
-                'length':1
-            }
-        }
+        self.chromosome_structure = chromosome_structure
 
         # Fixed for the species
-        self.max_age = 30
-        self.chromosome_number = 256
-        self.age_on_death = 5
-        self.fitness_on_death = 100
-        self.age_fitness_on_death_ratio = 9
-        self.height_on_vitality = 0.1
-        self.weight_on_vitality = 0.25
-        self.height_on_stamina = -0.05
-        self.weight_on_stamina = -0.25
-        self.height_on_speed = -0.05
-        self.weight_on_speed = -0.
-        self.vitality_on_appetite = -0.3
-        self.stamina_on_appetite = -0.3
-        self.vitality_on_speed = 0.0
-        self.stamina_on_speed = 0.5
-        self.theoretical_maximum_base_vitality = 10000
-        self.theoretical_maximum_vitality_multiplier = 1
-        self.theoretical_maximum_base_stamina = 10000
-        self.theoretical_maximum_stamina_multiplier = 1
-        self.theoretical_maximum_height = 5
-        self.theoretical_maximum_weight = 400
-        self.theoretical_maximum_base_height = self.theoretical_maximum_height * 0.1
-        self.theoretical_maximum_base_weight = self.theoretical_maximum_weight * 0.05
-        self.theoretical_maximum_height_multiplier = 1
-        self.theoretical_maximum_weight_multiplier = 1
-        self.theoretical_maximum_speed = 150
-        self.theoretical_maximum_base_speed = self.theoretical_maximum_speed * 0.1
-        self.theoretical_maximum_speed_multiplier = 1
-        self.theoretical_maximum_base_appetite = self.theoretical_maximum_weight * 25
+        with open('species/' + kind + '.json') as json_file:
+            data = json.load(json_file)
+            self.max_age                                    = data['species_max_age']
+            self.chromosome_number                          = data['species_chromosome_number']
+            self.age_on_death                               = data['species_age_on_death']
+            self.fitness_on_death                           = data['species_fitness_on_death']
+            self.age_fitness_on_death_ratio                 = data['species_age_fitness_on_death_ratio']
+            self.height_on_vitality                         = data['species_height_on_vitality']
+            self.weight_on_vitality                         = data['species_weight_on_vitality']
+            self.height_on_stamina                          = data['species_height_on_stamina']
+            self.weight_on_stamina                          = data['species_weight_on_stamina']
+            self.height_on_speed                            = data['species_height_on_speed']
+            self.weight_on_speed                            = data['species_weight_on_speed']
+            self.vitality_on_appetite                       = data['species_vitality_on_appetite']
+            self.stamina_on_appetite                        = data['species_stamina_on_appetite']
+            self.vitality_on_speed                          = data['species_vitality_on_speed']
+            self.stamina_on_speed                           = data['species_stamina_on_speed']
+            self.theoretical_maximum_base_vitality          = data['species_theoretical_maximum_base_vitality']
+            self.theoretical_maximum_vitality_multiplier    = data['species_theoretical_maximum_vitality_multiplier']
+            self.theoretical_maximum_base_stamina           = data['species_theoretical_maximum_base_stamina']
+            self.theoretical_maximum_stamina_multiplier     = data['species_theoretical_maximum_stamina_multiplier']
+            self.theoretical_maximum_height                 = data['species_theoretical_maximum_height']
+            self.theoretical_maximum_weight                 = data['species_theoretical_maximum_weight']
+            self.theoretical_maximum_base_height            = data['species_theoretical_maximum_base_height']
+            self.theoretical_maximum_base_weight            = data['species_theoretical_maximum_base_weight']
+            self.theoretical_maximum_height_multiplier      = data['species_theoretical_maximum_height_multiplier']
+            self.theoretical_maximum_weight_multiplier      = data['species_theoretical_maximum_weight_multiplier']
+            self.theoretical_maximum_speed                  = data['species_theoretical_maximum_speed']
+            self.theoretical_maximum_base_speed             = data['species_theoretical_maximum_base_speed']
+            self.theoretical_maximum_speed_multiplier       = data['species_theoretical_maximum_speed_multiplier']
+            self.theoretical_maximum_base_appetite          = data['species_theoretical_maximum_base_appetite']
 
         # Fixed for the organism throughout their lifetime
         self.chromosome = chromosome
@@ -139,7 +84,7 @@ class herbivore:
         bs = self.theoretical_maximum_base_stamina * (
             bs, np.power(2, self.chromosome_structure['bs']['length']))
         return bs
-        
+
     def get_vitality_multiplier(self):
         vm = self.getValueFromChromosome(
             self.chromosome_structure['vm']['start'],
@@ -234,7 +179,7 @@ class herbivore:
         ba = self.theoretical_maximum_base_appetite * (
             ba, np.power(2, self.chromosome_structure['ba']['length']))
         return ba
-        
+
     def get_gender(self):
         gn =self.getValueFromChromosome(
             self.chromosome_structure['gn']['start'],
@@ -246,7 +191,10 @@ class herbivore:
         return 123
 
     def increment_age(self):
+        # Increment Age
         self.age = self.age + 1
+
+        # Change height and weight independently
         self.height = np.minimum(np.maximum(
             0.5 * (1 + self.get_height_multiplier()) * np.log(self.age + 1) - np.power(self.age / self.max_age, 2) + self.get_base_height(),
             self.get_base_height()),
@@ -255,67 +203,67 @@ class herbivore:
             self.get_weight_multiplier() * self.max_age * np.log(self.age + 1) - (0.5/self.max_age) * np.power(self.age, 2*(self.get_weight_multiplier() + 0.75)) + self.get_base_weight(),
             self.get_base_weight()),
             self.get_max_weight())
+
+        # Change stats independently
         self.max_vitality_at_age = self.get_base_vitality() * (
             self.get_vitality_multiplier() * 0.5 * np.power(self.max_age, 0.5) *
-            np.power(np.e, -np.power(self.age - self.max_age*0.5, 2)/(self.max_age * self.get_base_vitality)) + 1)
+            np.power(np.e, -np.power(self.age - self.max_age*0.5, 2)/(self.max_age * self.get_base_vitality())) + 1)
         self.max_stamina_at_age = self.get_base_stamina() * (
             self.get_stamina_multiplier() * 0.5 * np.power(self.max_age, 0.5) *
-            np.power(np.e, -np.power(self.age - self.max_age*0.5, 2)/(self.max_age * self.get_base_stamina)) + 1)
-        self.max_vitality_at_age = self.max_vitality_at_age * (1 + 
-            self.height_on_vitality * self.height/self.get_max_height() + 
-            self.weight_on_vitality * self.weight/self.get_max_weight())
-        self.max_stamina_at_age = self.max_stamina_at_age * (1 + 
-            self.height_on_stamina * self.height/self.get_max_height() + 
-            self.weight_on_stamina * self.weight/self.get_max_weight())
+            np.power(np.e, -np.power(self.age - self.max_age*0.5, 2)/(self.max_age * self.get_base_stamina())) + 1)
         self.max_speed_at_age = self.get_speed_multiplier() * 100 * np.power(
-            np.e, (-1/(self.get_speed_multiplier() * np.power(self.max_age, 1.5))) * np.power(self.age - self.max_age/2.5, 2)) + self.get_base_speed()
+            np.e, (-1 / (self.get_speed_multiplier()*np.power(self.max_age, 1.5))) *
+            np.power(self.age - self.max_age / 2.5, 2)) + self.get_base_speed()
+        self.max_appetite_at_age = self.get_base_appetite() + self.get_base_appetite() * np.power(np.e,
+            (-0.5 / np.power(self.max_age, 1.25))*np.power(self.age - self.max_age / 3, 2))
+
+        # Final stats considering dependencies
+        self.max_vitality_at_age = self.max_vitality_at_age * (1 +
+            self.height_on_vitality * self.height/self.get_max_height() +
+            self.weight_on_vitality * self.weight/self.get_max_weight())
+        self.max_stamina_at_age = self.max_stamina_at_age * (1 +
+            self.height_on_stamina * self.height/self.get_max_height() +
+            self.weight_on_stamina * self.weight/self.get_max_weight())
         self.max_speed_at_age = self.max_speed_at_age * (1 +
-            self.height_on_speed * self.height/self.get_max_height() + 
+            self.height_on_speed * self.height/self.get_max_height() +
             self.weight_on_speed * self.weight/self.get_max_weight())
-        self.max_appetite_at_age = self.get_base_appetite() + self.get_base_appetite() * np.power(np.e, 
-            (-0.5/np.power(self.max_age, 1.25)) * np.power(self.age - self.max_age/3, 2))
 
-    def increment_vitality(self):
-        self.vitality = np.minimum(self.vitality + 1, self.max_vitality_at_age)
-        self.appetite = self.appetite * (1 + 
+    def increment_vitality_by(self, units=1):
+        self.vitality = np.minimum(self.vitality + units, self.max_vitality_at_age)
+        self.appetite = self.appetite * (1 +
             self.vitality_on_appetite * self.vitality/self.max_vitality_at_age)
-        self.speed = self.speed * (1 + 
+        self.speed = self.speed * (1 +
             self.vitality_on_speed * self.vitality/self.max_vitality_at_age)
 
-    def decrement_vitality(self):
-        self.vitality = np.maximum(self.vitality - 1, 0)
-        self.appetite = self.appetite * (1 + 
+    def decrement_vitality_by(self, units=1):
+        self.vitality = np.maximum(self.vitality - units, 0)
+        self.appetite = self.appetite * (1 +
             self.vitality_on_appetite * self.vitality/self.max_vitality_at_age)
-        self.speed = self.speed * (1 + 
+        self.speed = self.speed * (1 +
             self.vitality_on_speed * self.vitality/self.max_vitality_at_age)
 
-    def increment_stamina(self):
-        self.stamina = np.minimum(self.stamina + 1, self.max_stamina_at_age)
+    def increment_stamina_by(self, units=1):
+        self.stamina = np.minimum(self.stamina + units, self.max_stamina_at_age)
         self.appetite = self.appetite * (1 +
             self.stamina_on_appetite * self.stamina/self.max_stamina_at_age)
         self.speed = self.speed * (1 +
             self.stamina_on_speed * self.stamina/self.max_stamina_at_age)
 
-    def decrement_stamina(self):
-        self.stamina = np.maximum(self.stamina - 1, 0)
+    def decrement_stamina_by(self, units=1):
+        self.stamina = np.maximum(self.stamina - units, 0)
         self.appetite = self.appetite * (1 +
             self.stamina_on_appetite * self.stamina/self.max_stamina_at_age)
         self.speed = self.speed * (1 +
             self.stamina_on_speed * self.stamina/self.max_stamina_at_age)
 
-    def feed(self, food):
-        # TODO
-        pass
-    
-
-    def will_die_of_age(self):
+    def die_of_age_factor(self):
         return np.minimum(1, np.power(np.e, self.age_on_death*(self.age/self.max_age - 1)))
 
-    def will_die_of_fitness(self):
+    def die_of_fitness_factor(self):
         return np.minimum(1, np.power(np.e, -1 * self.fitness_on_death * self.fitness))
 
-    def will_die(self):
-        self.age_fitness_on_death_ratio = self.age_fitness_on_death_ratio * (2 - self.will_die_of_age())
+    def death_factor(self):
+        self.age_fitness_on_death_ratio = self.age_fitness_on_death_ratio * (2 - self.die_of_age_factor())
         return np.average(
-            [self.will_die_of_age(), self.will_die_of_fitness()],
+            [self.die_of_age_factor(), self.die_of_fitness_factor()],
             weights=[self.age_fitness_on_death_ratio, 1])
