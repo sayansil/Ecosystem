@@ -267,3 +267,65 @@ class Animal:
         return np.average(
             [self.die_of_age_factor(), self.die_of_fitness_factor()],
             weights=[self.age_fitness_on_death_ratio, 1])
+
+    def get_stats(self):
+        return {
+            'age' : self.age,
+            'max_vitality_at_age' : self.max_vitality_at_age,
+            'max_stamina_at_age' : self.max_stamina_at_age,
+            'max_speed_at_age' : self.max_speed_at_age,
+            'max_appetite_at_age' : self.max_appetite_at_age,
+            'height' : self.height,
+            'weight' : self.weight,
+            'vitality' : self.vitality,
+            'stamina' : self.stamina,
+            'speed' : self.speed,
+            'appetite' : self.appetite,
+            'fitness' : self.fitness
+        }
+
+    def get_all_stats(self):
+        return {
+            'chromosome_number' : self.chromosome_number,
+            'age_on_death' : self.age_on_death,
+            'fitness_on_death' : self.fitness_on_death,
+            'age_fitness_on_death_ratio' : self.age_fitness_on_death_ratio,
+            'height_on_vitality' : self.height_on_vitality,
+            'weight_on_vitality' : self.weight_on_vitality,
+            'height_on_stamina' : self.height_on_stamina,
+            'weight_on_stamina' : self.weight_on_stamina,
+            'height_on_speed' : self.height_on_speed,
+            'weight_on_speed' : self.weight_on_speed,
+            'vitality_on_appetite' : self.vitality_on_appetite,
+            'stamina_on_appetite' : self.stamina_on_appetite,
+            'vitality_on_speed' : self.vitality_on_speed,
+            'stamina_on_speed' : self.stamina_on_speed,
+            'theoretical_maximum_base_vitality' : self.theoretical_maximum_base_vitality,
+            'theoretical_maximum_vitality_multiplier' : self.theoretical_maximum_vitality_multiplier,
+            'theoretical_maximum_base_stamina' : self.theoretical_maximum_base_stamina,
+            'theoretical_maximum_stamina_multiplier' : self.theoretical_maximum_stamina_multiplier,
+            'theoretical_maximum_height' : self.theoretical_maximum_height,
+            'theoretical_maximum_weight' : self.theoretical_maximum_weight,
+            'theoretical_maximum_base_height' : self.theoretical_maximum_base_height,
+            'theoretical_maximum_base_weight' : self.theoretical_maximum_base_weight,
+            'theoretical_maximum_height_multiplier' : self.theoretical_maximum_height_multiplier,
+            'theoretical_maximum_weight_multiplier' : self.theoretical_maximum_weight_multiplier,
+            'theoretical_maximum_speed' : self.theoretical_maximum_speed,
+            'theoretical_maximum_base_speed' : self.theoretical_maximum_base_speed,
+            'theoretical_maximum_speed_multiplier' : self.theoretical_maximum_speed_multiplier,
+            'theoretical_maximum_base_appetite': self.theoretical_maximum_base_appetite,
+            'chromosome' : self.chromosome,
+            'generation' : self.generation,
+            'age' : self.age,
+            'max_vitality_at_age' : self.max_vitality_at_age,
+            'max_stamina_at_age' : self.max_stamina_at_age,
+            'max_speed_at_age' : self.max_speed_at_age,
+            'max_appetite_at_age' : self.max_appetite_at_age,
+            'height' : self.height,
+            'weight' : self.weight,
+            'vitality' : self.vitality,
+            'stamina' : self.stamina,
+            'speed' : self.speed,
+            'appetite' : self.appetite,
+            'fitness' : self.fitness
+        }
