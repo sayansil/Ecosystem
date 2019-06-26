@@ -1,13 +1,18 @@
 import numpy as np
 import json
+from helper import to_decimal, pretty_dict
 
 class Animal:
     def __init__(
         self,
+        name,
         kind,
         chromosome,
         chromosome_structure,
         generation):
+        # Name of the organism
+        self.name = name
+
         # Chromosome structure of a species
         self.chromosome_structure = chromosome_structure
 
@@ -47,6 +52,7 @@ class Animal:
         # Fixed for the organism throughout their lifetime
         self.chromosome = chromosome
         self.generation = generation
+        self.immunity = self.get_immunity()
 
         # Changes slowly - once every year (during mating season)
         self.age = 0
@@ -67,14 +73,14 @@ class Animal:
         self.fitness = self.evaluate_fitness()
 
     def getValueFromChromosome(self, start, length):
-        return int(self.chromosome[start:start+length], 2)
+        return self.chromosome[start:start+length]
 
     def get_base_vitality(self):
         bv = self.getValueFromChromosome(
             self.chromosome_structure['bv']['start'],
             self.chromosome_structure['bv']['length'])
         bv = self.theoretical_maximum_base_vitality * (
-            bv, np.power(2, self.chromosome_structure['bv']['length']))
+            to_decimal(bv) / np.power(2, self.chromosome_structure['bv']['length']))
         return bv
 
     def get_base_stamina(self):
@@ -82,7 +88,7 @@ class Animal:
             self.chromosome_structure['bs']['start'],
             self.chromosome_structure['bs']['length'])
         bs = self.theoretical_maximum_base_stamina * (
-            bs, np.power(2, self.chromosome_structure['bs']['length']))
+            to_decimal(bs) / np.power(2, self.chromosome_structure['bs']['length']))
         return bs
 
     def get_vitality_multiplier(self):
@@ -90,7 +96,7 @@ class Animal:
             self.chromosome_structure['vm']['start'],
             self.chromosome_structure['vm']['length'])
         vm = self.theoretical_maximum_vitality_multiplier * (
-            vm, np.power(2, self.chromosome_structure['vm']['length']))
+            to_decimal(vm) / np.power(2, self.chromosome_structure['vm']['length']))
         return vm
 
     def get_stamina_multiplier(self):
@@ -98,7 +104,7 @@ class Animal:
             self.chromosome_structure['sm']['start'],
             self.chromosome_structure['sm']['length'])
         sm = self.theoretical_maximum_stamina_multiplier * (
-            sm, np.power(2, self.chromosome_structure['sm']['length']))
+            to_decimal(sm) / np.power(2, self.chromosome_structure['sm']['length']))
         return sm
 
     def get_max_height(self):
@@ -106,7 +112,7 @@ class Animal:
             self.chromosome_structure['mh']['start'],
             self.chromosome_structure['mh']['length'])
         mh = self.theoretical_maximum_height * (
-            mh, np.power(2, self.chromosome_structure['mh']['length']))
+            to_decimal(mh) / np.power(2, self.chromosome_structure['mh']['length']))
         return mh
 
     def get_base_height(self):
@@ -114,7 +120,7 @@ class Animal:
             self.chromosome_structure['bh']['start'],
             self.chromosome_structure['bh']['length'])
         bh = self.theoretical_maximum_base_height * (
-            bh, np.power(2, self.chromosome_structure['bh']['length']))
+            to_decimal(bh) / np.power(2, self.chromosome_structure['bh']['length']))
         return bh
 
     def get_height_multiplier(self):
@@ -122,7 +128,7 @@ class Animal:
             self.chromosome_structure['hm']['start'],
             self.chromosome_structure['hm']['length'])
         hm = self.theoretical_maximum_height_multiplier * (
-            hm, np.power(2, self.chromosome_structure['hm']['length']))
+            to_decimal(hm) / np.power(2, self.chromosome_structure['hm']['length']))
         return hm
 
     def get_max_weight(self):
@@ -130,7 +136,7 @@ class Animal:
             self.chromosome_structure['mw']['start'],
             self.chromosome_structure['mw']['length'])
         mw = self.theoretical_maximum_weight * (
-            mw, np.power(2, self.chromosome_structure['mw']['length']))
+            to_decimal(mw) / np.power(2, self.chromosome_structure['mw']['length']))
         return mw
 
     def get_base_weight(self):
@@ -138,7 +144,7 @@ class Animal:
             self.chromosome_structure['bw']['start'],
             self.chromosome_structure['bw']['length'])
         bw = self.theoretical_maximum_base_weight * (
-            bw, np.power(2, self.chromosome_structure['bw']['length']))
+            to_decimal(bw) / np.power(2, self.chromosome_structure['bw']['length']))
         return bw
 
     def get_weight_multiplier(self):
@@ -146,14 +152,14 @@ class Animal:
             self.chromosome_structure['wm']['start'],
             self.chromosome_structure['wm']['length'])
         wm = self.theoretical_maximum_weight_multiplier * (
-            wm, np.power(2, self.chromosome_structure['wm']['length']))
+            to_decimal(wm) / np.power(2, self.chromosome_structure['wm']['length']))
         return wm
 
     def get_immunity(self):
-        # TODO
         im = self.getValueFromChromosome(
             self.chromosome_structure['im']['start'],
             self.chromosome_structure['im']['length'])
+        im = to_decimal(im) / np.power(2, self.chromosome_structure['im']['length'])
         return im
 
     def get_base_speed(self):
@@ -161,7 +167,7 @@ class Animal:
             self.chromosome_structure['bp']['start'],
             self.chromosome_structure['bp']['length'])
         bp = self.theoretical_maximum_base_speed * (
-            bp, np.power(2, self.chromosome_structure['bp']['length']))
+            to_decimal(bp) / np.power(2, self.chromosome_structure['bp']['length']))
         return bp
 
     def get_speed_multiplier(self):
@@ -169,7 +175,7 @@ class Animal:
             self.chromosome_structure['pm']['start'],
             self.chromosome_structure['pm']['length'])
         pm = self.theoretical_maximum_speed_multiplier * (
-            pm, np.power(2, self.chromosome_structure['pm']['length']))
+            to_decimal(pm) / np.power(2, self.chromosome_structure['pm']['length']))
         return pm
 
     def get_base_appetite(self):
@@ -177,7 +183,7 @@ class Animal:
             self.chromosome_structure['ba']['start'],
             self.chromosome_structure['ba']['length'])
         ba = self.theoretical_maximum_base_appetite * (
-            ba, np.power(2, self.chromosome_structure['ba']['length']))
+            to_decimal(ba) / np.power(2, self.chromosome_structure['ba']['length']))
         return ba
 
     def get_gender(self):
@@ -187,8 +193,8 @@ class Animal:
         return gn
 
     def evaluate_fitness(self):
-        # TODO
-        return 123
+        fitness = self.immunity * (0.01*self.max_vitality_at_age + 0.01*self.max_stamina_at_age + self.max_speed_at_age) / 3
+        return fitness
 
     def increment_age(self):
         # Increment Age
@@ -226,7 +232,9 @@ class Animal:
             self.weight_on_stamina * self.weight/self.get_max_weight())
         self.max_speed_at_age = self.max_speed_at_age * (1 +
             self.height_on_speed * self.height/self.get_max_height() +
-            self.weight_on_speed * self.weight/self.get_max_weight())
+            self.weight_on_speed * self.weight / self.get_max_weight())
+
+        self.fitness = self.evaluate_fitness()
 
     def increment_vitality_by(self, units=1):
         self.vitality = np.minimum(self.vitality + units, self.max_vitality_at_age)
@@ -270,6 +278,7 @@ class Animal:
 
     def get_stats(self):
         return {
+            'name' : self.name,
             'age' : self.age,
             'max_vitality_at_age' : self.max_vitality_at_age,
             'max_stamina_at_age' : self.max_stamina_at_age,
@@ -284,8 +293,13 @@ class Animal:
             'fitness' : self.fitness
         }
 
+    def print_stats(self):
+        stats = self.get_stats()
+        pretty_dict(stats)
+
     def get_all_stats(self):
         return {
+            'name' : self.name,
             'chromosome_number' : self.chromosome_number,
             'age_on_death' : self.age_on_death,
             'fitness_on_death' : self.fitness_on_death,
@@ -315,7 +329,8 @@ class Animal:
             'theoretical_maximum_speed_multiplier' : self.theoretical_maximum_speed_multiplier,
             'theoretical_maximum_base_appetite': self.theoretical_maximum_base_appetite,
             'chromosome' : self.chromosome,
-            'generation' : self.generation,
+            'generation': self.generation,
+            'immunity' : self.immunity,
             'age' : self.age,
             'max_vitality_at_age' : self.max_vitality_at_age,
             'max_stamina_at_age' : self.max_stamina_at_age,
@@ -329,3 +344,7 @@ class Animal:
             'appetite' : self.appetite,
             'fitness' : self.fitness
         }
+
+    def print_all_stats(self):
+        stats = self.get_all_stats()
+        pretty_dict(stats)
