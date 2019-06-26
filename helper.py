@@ -2,6 +2,9 @@ import random
 import json
 import string
 
+map_width = 100
+map_height = 100
+
 def to_binary(n):
     return "{0:b}".format(n)
 
@@ -19,3 +22,6 @@ def pretty_dict(d):
 
 def random_name():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+
+def random_location():
+    return random.randint(0, map_width), random.randint(0, map_height)

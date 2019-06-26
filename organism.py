@@ -1,15 +1,16 @@
 import numpy as np
 import json
-from helper import to_decimal, pretty_dict
+from helper import to_decimal, pretty_dict, random_name, random_location
 
 class Animal:
     def __init__(
         self,
-        name,
         kind,
         chromosome,
         chromosome_structure,
-        generation):
+        generation,
+        X, Y,
+        name):
         # Name of the organism
         self.name = name
 
@@ -34,6 +35,7 @@ class Animal:
             self.stamina_on_appetite                        = data['species_stamina_on_appetite']
             self.vitality_on_speed                          = data['species_vitality_on_speed']
             self.stamina_on_speed                           = data['species_stamina_on_speed']
+            self.sleep_restore_factor                       = data['species_sleep_restore_factor']
             self.theoretical_maximum_base_vitality          = data['species_theoretical_maximum_base_vitality']
             self.theoretical_maximum_vitality_multiplier    = data['species_theoretical_maximum_vitality_multiplier']
             self.theoretical_maximum_base_stamina           = data['species_theoretical_maximum_base_stamina']
@@ -68,9 +70,19 @@ class Animal:
         self.stamina = self.max_stamina_at_age
         self.speed = self.max_speed_at_age
         self.appetite = self.max_appetite_at_age
+        self.X = X
+        self.Y = Y
+        self.asleep = False
 
         # Overall survivality of organism
         self.fitness = self.evaluate_fitness()
+
+
+        if not self.name:
+            self.name = kind + '-' + random_name()
+
+        if not self.X or not self.Y:
+            self.X, self.Y = random_location()
 
     def getValueFromChromosome(self, start, length):
         return self.chromosome[start:start+length]
@@ -262,7 +274,13 @@ class Animal:
         self.appetite = self.appetite * (1 +
             self.stamina_on_appetite * self.stamina/self.max_stamina_at_age)
         self.speed = self.speed * (1 +
-            self.stamina_on_speed * self.stamina/self.max_stamina_at_age)
+            self.stamina_on_speed * self.stamina / self.max_stamina_at_age)
+
+    def sleep(self, duration):
+        self.stamina = np.maximum(self.max_stamina_at_age, self.stamina + self.sleep_restore_factor*duration)
+
+    def eat(self, nutrition):
+        self.appetite = np.maximum(0, self.appetite - nutrition)
 
     def die_of_age_factor(self):
         return np.minimum(1, np.power(np.e, self.age_on_death*(self.age/self.max_age - 1)))
@@ -342,7 +360,10 @@ class Animal:
             'stamina' : self.stamina,
             'speed' : self.speed,
             'appetite' : self.appetite,
-            'fitness' : self.fitness
+            'fitness': self.fitness,
+            'X': self.X,
+            'Y': self.Y,
+            'asleep': self.asleep
         }
 
     def print_all_stats(self):

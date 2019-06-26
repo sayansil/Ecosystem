@@ -14,6 +14,7 @@
     "species_stamina_on_appetite": -0.3,
     "species_vitality_on_speed": 0.0,
     "species_stamina_on_speed": 0.5,
+    "species_sleep_restore_factor": 30,
     "species_theoretical_maximum_base_vitality": 10000,
     "species_theoretical_maximum_vitality_multiplier": 1,
     "species_theoretical_maximum_base_stamina": 10000,
