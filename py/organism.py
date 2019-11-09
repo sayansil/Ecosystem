@@ -77,7 +77,6 @@ class Animal:
         # Overall survivality of organism
         self.fitness = self.evaluate_fitness()
 
-
         if not self.name:
             self.name = kind + '-' + random_name()
 
@@ -205,7 +204,7 @@ class Animal:
         return gn
 
     def evaluate_fitness(self):
-        fitness = self.immunity * (0.01*self.max_vitality_at_age + 0.01*self.max_stamina_at_age + self.max_speed_at_age) / 3
+        fitness = self.immunity * (0.01*self.max_vitality_at_age + 0.01*self.max_stamina_at_age + self.max_speed_at_age) / (3 * np.power(self.age, 1/32))
         return fitness
 
     def increment_age(self):
@@ -363,7 +362,8 @@ class Animal:
             'fitness': self.fitness,
             'X': self.X,
             'Y': self.Y,
-            'asleep': self.asleep
+            'asleep': self.asleep,
+            'death_probability': self.death_factor()
         }
 
     def print_all_stats(self):
