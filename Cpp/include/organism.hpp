@@ -3,12 +3,18 @@
 
 #include <string>
 #include <map>
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <helper.hpp>
+#include <math.h>
+
+using chromosome_map_type = std::map<std::string, std::map<std::string, unsigned int>>;
 
 class Animal
 {
 private:
     std::string name;
-    std::map<std::string, std::map<std::string, unsigned int>> chromosome_structure;
+    chromosome_map_type chromosome_structure;
 
     // Fixed for a species
 
@@ -48,6 +54,7 @@ private:
     std::string chromosome;
     unsigned int generation;
     double immunity;
+    unsigned int gender;    // 0 - male, 1 - female
 
     // Changes slowly - once every year (during mating season)
 
@@ -72,6 +79,36 @@ private:
     double fitness;
 
 public:
+    Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name, const unsigned int& X, const unsigned int& Y);
+    Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name);
+    double get_base_vitality();
+    double get_base_stamina();
+    double get_vitality_multiplier();
+    double get_stamina_multiplier();
+    double get_max_height();
+    double get_base_height();
+    double get_height_multiplier();
+    double get_max_weight();
+    double get_base_weight();
+    double get_weight_multiplier();
+    double get_immunity();
+    double get_base_speed();
+    double get_speed_multiplier();
+    double get_base_appetite();
+    unsigned int get_gender();
+    void evaluate_fitness();
+    void increment_age();
+    void increment_vitality_by(const double&);
+    void decrement_vitality_by(const double&);
+    void increment_stamina_by(const double&);
+    void decrement_stamina_by(const double&);
+    void sleep(const double&);
+    void eat(const double&);
+    double die_of_age_factor();
+    double die_of_fitness_factor();
+    double death_factor();
+
+    std::map<std::string, std::string> get_stats();
 };
 
 

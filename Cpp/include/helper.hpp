@@ -4,17 +4,19 @@
 #include <string>
 #include <utility>
 #include <random>
+#include <vector>
 
 namespace helper
 {
-    int map_width = 100;
-    int map_height = 100;
-    std::string to_binary(const unsigned int&);
-    unsigned int to_decimal(const std::string&);
-    std::string random_binary(const int&);
-    std::string random_name(const int&);
-    std::pair<unsigned int, unsigned int> random_location();
-    std::string get_value_from_chromosome(const std::string&, const int&, const int&);
+    extern unsigned int map_height;
+    extern unsigned int map_width;
+    extern std::string to_binary(const unsigned int&);
+    extern unsigned int to_decimal(const std::string&);
+    extern std::string random_binary(const unsigned int&);
+    extern std::string random_name(const int&);
+    extern std::pair<unsigned int, unsigned int> random_location();
+    extern double get_value_from_chromosome(const std::string&, const unsigned int&, const unsigned int&, const double& offset);
+    extern double weighted_average(const std::vector<double>& values, const std::vector<double>& weights);
 };
 
 #endif // HELPER_HPP
