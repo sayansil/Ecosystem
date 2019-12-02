@@ -60,9 +60,9 @@ namespace helper
         return {dis_width(rng), dis_height(rng)};
     }
 
-    double get_value_from_chromosome(const std::string& chromosome, const unsigned int& start, const unsigned int& length, const double& offset)
+    double get_value_from_chromosome(const std::string& chromosome, const unsigned int& start, const unsigned int& length, const double& multiplier)
     {
-        return to_decimal(chromosome.substr(start, length)) / static_cast<double>(1 << length) + offset;
+        return (to_decimal(chromosome.substr(start, length)) / static_cast<double>(1 << length)) * multiplier;
     }
 
     double weighted_average(const std::vector<double>& values, const std::vector<double>& weights)

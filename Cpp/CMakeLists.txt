@@ -18,8 +18,10 @@ set(ECOSYSTEM_SOURCES
     )
 
 function(build_ecosystem)
+    find_package(ArrayFire)
     add_executable(ecosystem ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp ${ECOSYSTEM_SOURCES} ${ECOSYSTEM_HEADERS})
     target_include_directories(ecosystem PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(ecosystem ArrayFire::afcpu)
 endfunction()
 
 function(test_arrayfire)
@@ -28,7 +30,7 @@ function(test_arrayfire)
 
     function(add_code name)
         add_executable(af_${name} ${SOURCE_DIR}/${name}.cpp)
-        target_link_libraries(af_${name} ArrayFire::afcuda)
+        target_link_libraries(af_${name} ArrayFire::afcpu)
     endfunction()
     add_code(test1)
 endfunction()
@@ -47,5 +49,5 @@ endfunction()
 
 
 build_ecosystem()
-#test_arrayfire()
+test_arrayfire()
 #random_test()

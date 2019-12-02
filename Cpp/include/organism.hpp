@@ -8,6 +8,7 @@
 #include <helper.hpp>
 #include <math.h>
 #include <climits>
+#include <iostream>
 
 using chromosome_map_type = std::map<std::string, std::map<std::string, unsigned int>>;
 
