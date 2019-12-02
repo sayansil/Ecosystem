@@ -68,6 +68,7 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const chr
     std::tie(this->X, this->Y) = helper::random_location();
     this->asleep = false;
 
+    increment_age();
     evaluate_fitness();
 }
 
@@ -201,8 +202,8 @@ unsigned int Animal::get_gender()
 void Animal::evaluate_fitness()
 {
     fitness = immunity * ( 0.01 * max_vitality_at_age +
-                           0.01 * max_stamina_at_age +
-                           max_speed_at_age) / (3 * pow(age, 1.0 / 32));
+                       0.01 * max_stamina_at_age +
+                       max_speed_at_age) / (3 * pow(age, 1.0 / 32));
 }
 
 void Animal::increment_vitality_by(const double &units)
