@@ -296,22 +296,22 @@ double Animal::death_factor()
     return helper::weighted_average({die_of_age_factor(), die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 
-std::map<std::string, std::string> Animal::get_stats()
+std::map<std::string, stat_type> Animal::get_stats()
 {
-    std::map<std::string, std::string> stats;
+    std::map<std::string, stat_type> stats;
     stats["name"] = name;
-    stats["age"] = std::to_string(age);
-    stats["max_vitality_at_age"] = std::to_string(max_vitality_at_age);
-    stats["max_stamina_at_age"] = std::to_string(max_stamina_at_age);
-    stats["max_speed_at_age"] = std::to_string(max_speed_at_age);
-    stats["max_appetite_at_age"] = std::to_string(max_appetite_at_age);
-    stats["height"] = std::to_string(height);
-    stats["weight"] = std::to_string(weight);
-    stats["death_factor"] = std::to_string(death_factor());
-//    stats["vitality"] = std::to_string(vitality);
-//    stats["stamina"] = std::to_string(stamina);
-//    stats["speed"] = std::to_string(speed);
-//    stats["appetite"] = std::to_string(appetite);
-    stats["fitness"] = std::to_string(fitness);
+    stats["age"] = age;
+//    stats["max_vitality_at_age"] = max_vitality_at_age;
+//    stats["max_stamina_at_age"] = max_stamina_at_age;
+//    stats["max_speed_at_age"] = max_speed_at_age;
+//    stats["max_appetite_at_age"] = max_appetite_at_age;
+    stats["height"] = height;
+    stats["weight"] = weight;
+    stats["death_factor"] = death_factor();
+//    stats["vitality"] = vitality;
+//    stats["stamina"] = stamina;
+//    stats["speed"] = speed;
+//    stats["appetite"] = appetite;
+    stats["fitness"] = fitness;
     return stats;
 }

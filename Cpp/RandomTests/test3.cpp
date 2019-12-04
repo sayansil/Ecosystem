@@ -1,16 +1,34 @@
-#include <herbivore.hpp>
+#include <variant>
 #include <iostream>
-#include <helper.hpp>
+#include <map>
+
+struct Visitor
+{
+    void operator()(int& in)
+    {
+        std::cout << "Integer\n";
+    }
+    void operator()(std::string& in)
+    {
+        std::cout << "String\n";
+    }
+    void operator()(double& in)
+    {
+        std::cout << "Double\n";
+    }
+};
 
 int main()
 {
-    Deer::initialize();
-    Deer obj(Deer::generate_random_chromosome(), 1, "Ayon");
-    for(int i = 0; i < 10; i++)
+    std::map<std::string, std::variant<std::string, int, double>> x;
+    x["a"] = 12;
+    x["b"] = "12";
+    x["c"] = 123.345;
+    for(auto it = x.begin(); it != x.end(); it++)
     {
-        auto stats = obj.get_stats();
-        for(const auto& [j, k] : stats)
-            std::cout << j << ", " << k << '\n';
-        obj.increment_age();
+        std::cout << it->first << ' ';
+        std::visit(Visitor{}, it->second);
+        std::cout << it->second.index() << '\n';
     }
+    std::cout << (int)std::get<double>(x["c"]) << '\n';
 }

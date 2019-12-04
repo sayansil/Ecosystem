@@ -9,7 +9,9 @@
 #include <math.h>
 #include <climits>
 #include <iostream>
+#include <variant>
 
+using stat_type = std::variant<unsigned int, double, std::string, bool>;
 using chromosome_map_type = std::map<std::string, std::map<std::string, unsigned int>>;
 
 class Animal
@@ -110,7 +112,7 @@ public:
     double die_of_fitness_factor();
     double death_factor();
 
-    std::map<std::string, std::string> get_stats();
+    std::map<std::string, stat_type> get_stats();
 };
 
 
