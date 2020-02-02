@@ -1,7 +1,7 @@
 #ifndef HERBIVORE_HPP
 #define HERBIVORE_HPP
 
-#include <organism.hpp>
+#include <animal.hpp>
 #include <string>
 #include <helper.hpp>
 

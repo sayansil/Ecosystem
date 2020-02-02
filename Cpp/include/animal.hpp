@@ -1,5 +1,5 @@
-#ifndef ORGANISM_HPP
-#define ORGANISM_HPP
+#ifndef ANIMAL_HPP
+#define ANIMAL_HPP
 
 #include <string>
 #include <map>
@@ -116,4 +116,4 @@ public:
 };
 
 
-#endif // ORGANISM_HPP
+#endif // ANIMAL_HPP

@@ -1,4 +1,4 @@
-#include <organism.hpp>
+#include <animal.hpp>
 
 Animal::Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name)
 {
@@ -70,6 +70,8 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const chr
 
     increment_age();
     evaluate_fitness();
+
+    // todo: Insert row in table
 }
 
 Animal::Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name, const unsigned int& X, const unsigned int& Y)
@@ -268,6 +270,8 @@ void Animal::increment_age()
                                            height_on_speed * height / get_max_height() +
                                            weight_on_speed * weight / get_max_weight());
     evaluate_fitness();
+
+    // TODO: update a row in table
 }
 
 void Animal::sleep(const double &duration)
