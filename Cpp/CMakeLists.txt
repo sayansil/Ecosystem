@@ -10,6 +10,7 @@ set(ECOSYSTEM_HEADERS
     include/animal.hpp
     include/herbivore.hpp
     include/god.hpp
+    include/DatabaseManager.hpp
     )
 
 set(ECOSYSTEM_SOURCES
@@ -17,6 +18,7 @@ set(ECOSYSTEM_SOURCES
     src/animal.cpp
     src/herbivore.cpp
     src/god.cpp
+    src/DatabaseManager.cpp
     )
 
 function(setup_ecosystem)
@@ -54,8 +56,8 @@ function(random_test)
         target_link_libraries(rt_${name} PRIVATE sqlite3)
     endfunction()
     add_code(test1)
-    add_code(test2)
-    add_code(test3)
+#    add_code(test2)
+#    add_code(test3)
 endfunction()
 
 
