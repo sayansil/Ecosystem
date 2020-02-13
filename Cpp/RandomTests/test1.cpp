@@ -1,58 +1,102 @@
+#include <DatabaseManager.hpp>
+#include <iostream>
 #include <vector>
-#include <sqlite3.h>
-#include <animal.hpp>
+#include <helper.hpp>
 
-int insertRows(const std::vector<std::vector<stat_type>>& rows)
+void insert()
 {
+    DatabaseManager obj;
+    std::vector<std::vector<stat_type>> rows;
+    rows.push_back(std::vector<stat_type>({
+                std::string("Lion123"),
+                std::string("lion"),
+                std::string("01010101010101010101010010101000"),
+                (unsigned int)50,
+                14.5,
+                (unsigned int)0,
+                (unsigned int)15,
+                67.4,
+                34.7,
+                23.9
+    }));
+    rows.push_back(std::vector<stat_type>({
+                std::string("Lion321"),
+                std::string("lion"),
+                std::string("010101010101010"),
+                (unsigned int)5,
+                1.145,
+                (unsigned int)1,
+                (unsigned int)145,
+                674.1,
+                3.47,
+                2.39
+    }));
+    rows.push_back(std::vector<stat_type>({
+                std::string("Deer123"),
+                std::string("deer"),
+                std::string("01010101010101010101010010101000100000000110111"),
+                (unsigned int)50,
+                14.5,
+                (unsigned int)0,
+                (unsigned int)15,
+                607.4,
+                134.7,
+                213.93
+    }));
+    obj.insertRows(rows);
+}
+
+void update()
+{
+    DatabaseManager obj;
+    std::vector<std::vector<stat_type>> rows;
+    rows.push_back(std::vector<stat_type>({
+                std::string("Lion123"),
+                std::string("lion"),
+                std::string("01010101010101010101010010101000"),
+                (unsigned int)6,
+                14.5,
+                (unsigned int)0,
+                (unsigned int)15,
+                67.4,
+                34.7,
+                23.9
+    }));
+    rows.push_back(std::vector<stat_type>({
+                std::string("Deer123"),
+                std::string("deer"),
+                std::string("01010101010101010101010010101000100000000110111"),
+                (unsigned int)600,
+                14.5,
+                (unsigned int)0,
+                (unsigned int)15,
+                607.4,
+                134.7,
+                213.93
+    }));
+    obj.updateRows(rows);
+}
+
+void read()
+{
+    DatabaseManager obj;
+    std::vector<std::vector<stat_type>> rows = obj.readRows({"Lion123", "Lion321"});
     for(const auto& row : rows)
     {
-        std::string values = "";
-        for(const auto& value : row)
-        {
-            if(value.index() == 0)
-            {
-                values += std::to_string(std::get<unsigned int>(value)) + ",";
-            }
-            if(value.index() == 1)
-            {
-                values += std::to_string(std::get<double>(value)) + ",";
-            }
-            if(value.index() == 2)
-            {
-                values += "\'" + std::get<std::string>(value) + "\',";
-            }
-            if(value.index() == 3)
-            {
-                bool tmp = std::get<bool>(value);
-                if(tmp)
-                    values += "\'true\',";
-                else
-                    values += "\'false\',";
-            }
-        }
-        values = values.substr(0, values.length() - 1);
-        std::string sql_command = "INSERT INTO ECOSYSTEM_MASTER (NAME,KIND,CHROMOSOME,GENERATION,IMMUNITY,GENDER,AGE,HEIGHT,WEIGHT,FITNESS) "\
-                                  "VALUES (" + values + ");";
-        std::cout << sql_command << '\n';
+        for(const auto& item : row)
+            helper::display_stat(item);
+        std::cout << '\n';
     }
-    return 0;
+}
+
+void del()
+{
+    DatabaseManager obj;
+    obj.deleteRows({"Lion321"});
 }
 
 int main()
 {
-    std::vector<stat_type> arr;
-
-    arr.push_back(stat_type(std::string("lion123")));
-    arr.push_back(stat_type(std::string("lion")));
-    arr.push_back(stat_type((unsigned int)10101));
-    arr.push_back(stat_type((unsigned int)2));
-    arr.push_back(stat_type(4.5));
-    arr.push_back(stat_type((unsigned int)15));
-    arr.push_back(stat_type(5.6));
-    arr.push_back(stat_type(6.6));
-    arr.push_back(stat_type(7.6));
-
-    std::vector<std::vector<stat_type>> arr1;
-    arr1.push_back(arr);
-    insertRows(arr1);
+    DatabaseManager obj;
+    obj.clearDatabase();
 }

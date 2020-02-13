@@ -75,6 +75,17 @@ namespace helper
         }
         return num / den;
     }
+    void display_stat(const stat_type& var)
+    {
+        if(var.index() == 0)
+            std::cout << "uint: " << std::get<unsigned int>(var) << ' ';
+        if(var.index() == 1)
+            std::cout << "double: " << std::get<double>(var) << ' ';
+        if(var.index() == 2)
+            std::cout << "string: " << std::get<std::string>(var) << ' ';
+        if(var.index() == 3)
+            std::cout << "bool: " << std::get<bool>(var) << ' ';
+    }
 };
 
 

@@ -14,7 +14,7 @@ struct RowType
     double FITNESS;
 };
 
-std::vector<RowType> gRows;
+static std::vector<RowType> gRows;
 
 static int callback(void *data, int argc, char **argv, char **colName)
 {
@@ -141,7 +141,13 @@ void DatabaseManager::updateRows(const std::vector<std::vector<stat_type>>& rows
         values += "WEIGHT = " + std::to_string(std::get<double>(row[8])) + ",";
         values += "FITNESS = " + std::to_string(std::get<double>(row[9]));
         std::string sql_command = "UPDATE ECOSYSTEM_MASTER SET " + values + \
-                                  "WHERE NAME = \'" + std::get<std::string>(row[0]) + "\';";
+                                  " WHERE NAME = \'" + std::get<std::string>(row[0]) + "\';";
         sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
     }
+}
+
+void DatabaseManager::clearDatabase()
+{
+    std::string sql_command = "DELETE FROM ECOSYSTEM_MASTER;";
+    sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
 }

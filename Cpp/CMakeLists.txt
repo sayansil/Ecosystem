@@ -11,6 +11,7 @@ set(ECOSYSTEM_HEADERS
     include/herbivore.hpp
     include/god.hpp
     include/DatabaseManager.hpp
+    include/EcosystemTypes.hpp
     )
 
 set(ECOSYSTEM_SOURCES
@@ -50,7 +51,7 @@ endfunction()
 function(random_test)
     set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/RandomTests)
     function(add_code name)
-        add_executable(rt_${name} ${SOURCE_DIR}/${name}.cpp)
+        add_executable(rt_${name} ${SOURCE_DIR}/${name}.cpp ${ECOSYSTEM_SOURCES} ${ECOSYSTEM_HEADERS})
         target_include_directories(rt_${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
         target_link_directories(rt_${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(rt_${name} PRIVATE sqlite3)
@@ -64,4 +65,4 @@ endfunction()
 setup_ecosystem()
 build_ecosystem()
 #test_arrayfire()
-#random_test()
+random_test()

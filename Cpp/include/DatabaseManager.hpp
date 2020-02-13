@@ -16,6 +16,7 @@ struct DatabaseManager
     void deleteRows(const std::vector<std::string>&);
     std::vector<std::vector<stat_type>> readRows(const std::vector<std::string>&);
     void updateRows(const std::vector<std::vector<stat_type>>&);
+    void clearDatabase();
     ~DatabaseManager();
 
     sqlite3 *db;

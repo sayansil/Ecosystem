@@ -10,9 +10,7 @@
 #include <climits>
 #include <iostream>
 #include <variant>
-
-using stat_type = std::variant<unsigned int, double, std::string, bool>;
-using chromosome_map_type = std::map<std::string, std::map<std::string, unsigned int>>;
+#include <EcosystemTypes.hpp>
 
 class Animal
 {
