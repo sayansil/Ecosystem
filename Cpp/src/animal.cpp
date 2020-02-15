@@ -3,6 +3,7 @@
 Animal::Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name)
 {
     this->name = name;
+    this->kind = kind;
     if(this->name == "")
     {
         this->name = kind + "-" + helper::random_name(16);

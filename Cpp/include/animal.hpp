@@ -14,8 +14,9 @@
 
 class Animal
 {
-private:
+public:
     std::string name;
+    std::string kind;
     chromosome_map_type chromosome_structure;
 
     // Fixed for a species
@@ -67,6 +68,7 @@ private:
     double max_appetite_at_age;
     double height;
     double weight;
+    double vision_radius; // Todo
 
     // Changes dynamically every moment
 
@@ -78,9 +80,9 @@ private:
     unsigned int Y;
     bool asleep;
 
-    double fitness;
+    double fitness; // fitness = static * dynamic
 
-public:
+    Animal() = default;
     Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name, const unsigned int& X, const unsigned int& Y);
     Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name);
     double get_base_vitality();

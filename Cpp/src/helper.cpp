@@ -86,6 +86,27 @@ namespace helper
         if(var.index() == 3)
             std::cout << "bool: " << std::get<bool>(var) << ' ';
     }
+    std::string get_random_mixture(const std::string& str1, const std::string &str2)
+    {
+        std::string str3;
+        std::mt19937_64 rng;
+        rng.seed(std::random_device()());
+        std::uniform_int_distribution<int> dis(0, 1);
+        int i;
+        for(i = 0; i < std::min(str1.length(), str2.length()); i++)
+        {
+            const int x = dis(rng);
+            if(x == 0)
+                str3 += str1[i];
+            else if(x == 1)
+                str3 += str2[i];
+        }
+        if(str3.length() < str1.length())
+            str3 += str1.substr(i);
+        else if(str3.length() < str2.length())
+            str3 += str2.substr(i);
+        return str3;
+    }
 };
 
 
