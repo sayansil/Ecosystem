@@ -21,6 +21,7 @@ namespace helper
     extern double weighted_average(const std::vector<double>& values, const std::vector<double>& weights);
     extern std::string get_random_mixture(const std::string&, const std::string&);
     extern void display_stat(const stat_type&);
+    extern int weighted_prob(const double&);
 };
 
 #endif // HELPER_HPP

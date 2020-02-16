@@ -3,5 +3,11 @@
 
 int main()
 {
-    std::cout << helper::get_random_mixture("ABC", "1234") << '\n';
+    const double mutationChance = 0.5;
+    std::string child_chromosome = "1010101010101010";
+    std::cout << child_chromosome << '\n';
+    for(auto& bit : child_chromosome)
+        if(helper::weighted_prob(mutationChance))
+            bit = (bit == '1')?'0':'1';
+    std::cout << child_chromosome << '\n';
 }

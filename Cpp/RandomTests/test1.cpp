@@ -80,12 +80,28 @@ void update()
 void read()
 {
     DatabaseManager obj;
-    std::vector<std::vector<stat_type>> rows = obj.readRows({"Lion123", "Lion321"});
+    std::vector<std::vector<stat_type>> rows = obj.readRows("NAME", {"Lion123", "Lion321"});
     for(const auto& row : rows)
     {
         for(const auto& item : row)
             helper::display_stat(item);
         std::cout << '\n';
+    }
+}
+
+void groupByKind()
+{
+    DatabaseManager obj;
+    auto rowMap = obj.groupByKind();
+    for(const auto& [kind, rows] : rowMap)
+    {
+        std::cout << "KIND: " << kind << ":\n";
+        for(const auto& row : rows)
+        {
+            for(const auto& item : row)
+                helper::display_stat(item);
+            std::cout << "\n";
+        }
     }
 }
 
@@ -99,4 +115,6 @@ int main()
 {
     DatabaseManager obj;
     obj.clearDatabase();
+    insert();
+    groupByKind();
 }

@@ -6,6 +6,9 @@
 #include <vector>
 #include <iostream>
 #include <unordered_map>
+#include <execution>
+#include <algorithm>
+#include <utility>
 
 class God
 {
@@ -16,10 +19,11 @@ public:
     ~God();
 private:
     void produceAnimal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name, const unsigned int& X, const unsigned int& Y);
-    void mate(const std::string&, const std::string&);
+    void mate(const std::string&, const std::string&, const double&);
     void happyNewYear();
     DatabaseManager db;
     std::unordered_map<std::string, Animal> animals;
+    const int maxMateTrials = 100;
 };
 
 #endif // GOD_HPP

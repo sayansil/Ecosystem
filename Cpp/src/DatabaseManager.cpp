@@ -15,8 +15,9 @@ struct RowType
 };
 
 static std::vector<RowType> gRows;
+static std::vector<std::string> items;
 
-static int callback(void *data, int argc, char **argv, char **colName)
+static int callback_read(void *data, int argc, char **argv, char **colName)
 {
     RowType gRow;
     gRow.NAME = argv[0];
@@ -30,6 +31,13 @@ static int callback(void *data, int argc, char **argv, char **colName)
     gRow.WEIGHT = std::stod(argv[8]);
     gRow.FITNESS = std::stod(argv[9]);
     gRows.push_back(gRow);
+    return 0;
+}
+
+static int callback_group(void *data, int argc, char **argv, char **colName)
+{
+    std::string item = argv[0];
+    items.push_back(item);
     return 0;
 }
 
@@ -96,7 +104,7 @@ void DatabaseManager::deleteRows(const std::vector<std::string>& names)
     sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
 }
 
-std::vector<std::vector<stat_type>> DatabaseManager::readRows(const std::vector<std::string>& names)
+std::vector<std::vector<stat_type>> DatabaseManager::readRows(const std::string& colName, const std::vector<std::string>& names)
 {
     gRows.clear(); gRows.shrink_to_fit();
     std::string values = "";
@@ -104,9 +112,9 @@ std::vector<std::vector<stat_type>> DatabaseManager::readRows(const std::vector<
         values += "\'" + name + "\',";
     values = values.substr(0, values.length() - 1);
     std::string sql_command = "SELECT * FROM ECOSYSTEM_MASTER "\
-                              "WHERE NAME IN (" + values + ");";
+                              "WHERE " + colName +  " IN (" + values + ");";
 
-    sqlite3_exec(db, sql_command.c_str(), callback, 0, nullptr);
+    sqlite3_exec(db, sql_command.c_str(), callback_read, 0, nullptr);
     std::vector<std::vector<stat_type>> rows;
     for(const auto& gRow : gRows)
     {
@@ -150,4 +158,18 @@ void DatabaseManager::clearDatabase()
 {
     std::string sql_command = "DELETE FROM ECOSYSTEM_MASTER;";
     sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
+}
+
+std::unordered_map<std::string, std::vector<std::vector<stat_type>>> DatabaseManager::groupByKind()
+{
+    items.clear(); items.shrink_to_fit();
+    std::string sql_command = "SELECT DISTINCT KIND FROM ECOSYSTEM_MASTER;";
+    sqlite3_exec(db, sql_command.c_str(), callback_group, 0, nullptr);
+    std::unordered_map<std::string, std::vector<std::vector<stat_type>>> rowMap;
+    for(const auto& item : items)
+    {
+        auto rows = readRows("KIND", {item});
+        rowMap[item] = rows;
+    }
+    return rowMap;
 }

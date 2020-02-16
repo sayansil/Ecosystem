@@ -107,6 +107,20 @@ namespace helper
             str3 += str2.substr(i);
         return str3;
     }
+
+    // returns 1 for the given probability
+    // eg. p = 1.0 always returns 1
+
+    int weighted_prob(const double& p)
+    {
+        std::mt19937_64 rng; rng.seed(std::random_device()());
+        std::uniform_real_distribution<double> dis(0.0, 1.0);
+        const double x = dis(rng);
+        if(x <= p)
+            return 1;
+        else
+            return 0;
+    }
 };
 
 
