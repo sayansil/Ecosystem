@@ -21,6 +21,10 @@ public:
 
     // Fixed for a species
 
+    double mutation_probability;
+    double conceiving_probability;
+    unsigned int mating_age_start;
+    unsigned int mating_age_end;
     unsigned int max_age;
     unsigned int chromosome_number;
     double age_on_death;
@@ -80,11 +84,11 @@ public:
     unsigned int Y;
     bool asleep;
 
-    double fitness; // fitness = static * dynamic
+    double static_fitness;
+    double dynamic_fitness;
 
     Animal() = default;
-    Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name, const unsigned int& X, const unsigned int& Y);
-    Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name);
+    Animal(const std::string& kind, const std::string& chromosome = "", const unsigned int& generation = 1, const std::string& name = "", const std::pair<unsigned int, unsigned int>& XY = helper::random_location());
     double get_base_vitality();
     double get_base_stamina();
     double get_vitality_multiplier();
@@ -100,7 +104,8 @@ public:
     double get_speed_multiplier();
     double get_base_appetite();
     unsigned int get_gender();
-    void evaluate_fitness();
+    void evaluate_static_fitness();
+    void evaluate_dynamic_fitness();
     void increment_age();
     void increment_vitality_by(const double&);
     void decrement_vitality_by(const double&);
@@ -111,6 +116,7 @@ public:
     double die_of_age_factor();
     double die_of_fitness_factor();
     double death_factor();
+    double get_fitness() const;
 
     std::map<std::string, stat_type> get_stats();
 };

@@ -1,20 +1,26 @@
 #include <animal.hpp>
 
-Animal::Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name)
+Animal::Animal(const std::string& kind, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY)
 {
-    this->name = name;
     this->kind = kind;
-    if(this->name == "")
+
+    if(name.length() == 0)
     {
         this->name = kind + "-" + helper::random_name(16);
     }
-    this->chromosome_structure = chromosome_structure;
+    else
+        this->name = name;
 
     const std::string filepath = "../../data/json/" + kind + ".json";
 
     std::ifstream in(filepath);
 
     nlohmann::json json_file; in >> json_file;
+    this->chromosome_structure = chromosome_map_type(json_file["chromosome_structure"]);
+    this->mating_age_start = json_file["mating_age"]["start"];
+    this->mutation_probability = json_file["mutation_probability"];
+    this->conceiving_probability = json_file["conceiving_probability"];
+    this->mating_age_end = json_file["mating_age"]["end"];
     this->max_age = json_file["species_max_age"];
     this->chromosome_number = json_file["species_chromosome_number"];
     this->age_on_death = json_file["species_age_on_death"];
@@ -48,7 +54,20 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const chr
 
     in.close();
 
-    this->chromosome = chromosome;
+    if(chromosome.length() == 0)
+    {
+        unsigned int chromosome_length = 0;
+
+        // Do not disturb this loop...
+
+        for(auto i = chromosome_structure.begin(); i != chromosome_structure.end(); i++)
+            chromosome_length += i->second["length"];
+        this->chromosome = helper::random_binary(chromosome_length);
+    }
+    else
+    {
+        this->chromosome = chromosome;
+    }
     this->immunity = get_immunity();
     this->generation = generation;
     this->gender = get_gender();
@@ -70,16 +89,8 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const chr
     this->asleep = false;
 
     increment_age();
-    evaluate_fitness();
-
-    // todo: Insert row in table
-}
-
-Animal::Animal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name, const unsigned int& X, const unsigned int& Y)
-{
-    Animal(kind, chromosome, chromosome_structure, generation, name);
-    this->X = X;
-    this->Y = Y;
+    evaluate_static_fitness();
+    evaluate_dynamic_fitness();
 }
 
 double Animal::get_base_vitality()
@@ -202,11 +213,16 @@ unsigned int Animal::get_gender()
                       2.0));
 }
 
-void Animal::evaluate_fitness()
+void Animal::evaluate_static_fitness()
 {
-    fitness = immunity * ( 0.01 * max_vitality_at_age +
+    static_fitness = immunity * ( 0.01 * max_vitality_at_age +
                        0.01 * max_stamina_at_age +
                        max_speed_at_age) / (3 * pow(age, 1.0 / 32));
+}
+
+void Animal::evaluate_dynamic_fitness()
+{
+    dynamic_fitness = 1;
 }
 
 void Animal::increment_vitality_by(const double &units)
@@ -270,9 +286,7 @@ void Animal::increment_age()
     max_speed_at_age = max_speed_at_age * (1 +
                                            height_on_speed * height / get_max_height() +
                                            weight_on_speed * weight / get_max_weight());
-    evaluate_fitness();
-
-    // TODO: update a row in table
+    evaluate_static_fitness();
 }
 
 void Animal::sleep(const double &duration)
@@ -292,13 +306,18 @@ double Animal::die_of_age_factor()
 
 double Animal::die_of_fitness_factor()
 {
-    return std::min(1.0, exp(-fitness_on_death * fitness));
+    return std::min(1.0, exp(-fitness_on_death * get_fitness()));
 }
 
 double Animal::death_factor()
 {
     age_fitness_on_death_ratio = age_fitness_on_death_ratio * (2 - die_of_age_factor());
     return helper::weighted_average({die_of_age_factor(), die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
+}
+
+double Animal::get_fitness()const
+{
+    return static_fitness * dynamic_fitness;
 }
 
 std::map<std::string, stat_type> Animal::get_stats()
@@ -317,6 +336,6 @@ std::map<std::string, stat_type> Animal::get_stats()
 //    stats["stamina"] = stamina;
 //    stats["speed"] = speed;
 //    stats["appetite"] = appetite;
-    stats["fitness"] = fitness;
+    stats["fitness"] = get_fitness();
     return stats;
 }

@@ -1,47 +1,30 @@
-#include <filesystem>
-#include <iostream>
-#include <string>
-#include <utility>
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
+#include <god.hpp>
 
 int main()
 {
-    std::filesystem::path p = std::filesystem::current_path();
-    auto logger = spdlog::stdout_color_mt("logger");
-    logger->set_pattern("%^[%n] %l: %v%$");
-    logger->info("Searching for ecosystem config.json in "+p.string());
-    bool config_dir_found = false, config_file_found = false;
-    auto func = [&](){
-        if( std::filesystem::exists(p / std::filesystem::path("config")))
-        {
-            logger->info("config directory found");
-            config_dir_found = true;
-            if(std::filesystem::exists(p / "config/config.json"))
-            {
-                logger->info("config.json found in " + p.string() + "/config");
-                config_file_found = true;
-            }
-            else
-            {
-                logger->warn("config.json not found in " + p.string() + "/config");
-            }
-        }
-    };
-    func();
-    if(!config_file_found)
+    God allah;
+    for(int i = 0; i < 500; i++)
     {
-        if(!config_dir_found)
-            logger->warn("config directory not found in " + p.string());
-        p = p.parent_path();
-        logger->info("looking in " + p.string());
-        func();
-        if(!config_dir_found)
-        {
-            logger->warn("config directory not found in " + p.string());
-            logger->critical("No config.json found. Exiting");
-        }
-        else if(!config_file_found)
-            logger->critical("No config.json found. Exiting");
+        allah.spawnAnimal(Animal("deer"));
     }
+    // 50 deers spawned
+
+    std::cout << "Initially: " << allah.animals.size() << '\n';
+
+    for(int i = 0; i < 100; i++)
+    {
+        allah.happyNewYear();
+        std::cout << "Year: " << i + 1 << '\n';
+    }
+
+    // fast forwarded to 30 years
+
+    std::cout << "Finally:\n";
+
+    auto sorted_animals = allah.animalSort([](const Animal& x, const Animal& y){
+        return std::less<unsigned int>()(x.age, y.age);
+    });
+
+    std::cout << "After sorting:\n";
+    std::cout << sorted_animals[0].age << ' ' << sorted_animals[sorted_animals.size() - 1].age << '\n';
 }

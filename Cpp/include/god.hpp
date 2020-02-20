@@ -13,16 +13,41 @@
 class God
 {
 public:
+
+    std::unordered_map<std::string, Animal> animals;
+
     God();
-    void spawnAnimal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name);
+    void spawnAnimal(const Animal&);
     void killAnimal(const std::string&);
     ~God();
-private:
-    void produceAnimal(const std::string& kind, const std::string& chromosome, const chromosome_map_type& chromosome_structure, const unsigned int& generation, const std::string& name, const unsigned int& X, const unsigned int& Y);
-    void mate(const std::string&, const std::string&, const double&);
     void happyNewYear();
+    void catastrophe();
+
+    template <typename Comp>
+    std::vector<Animal> animalSort(Comp comp)
+    {
+        std::vector<Animal> animal_vec;
+        for(const auto& i : animals)
+            animal_vec.push_back(i.second);
+        animal_vec.shrink_to_fit();
+        std::sort(animal_vec.begin(), animal_vec.end(), comp);
+        return animal_vec;
+    }
+
+    template <typename Comp>
+    std::unordered_map<std::string, std::vector<Animal>> animalSortByKind(Comp comp)
+    {
+        std::unordered_map<std::string, std::vector<Animal>> animal_map;
+        for(const auto& i : animals)
+            animal_map[i.second.kind].push_back(i.second);
+        for(const auto& i : animal_map)
+            std::sort(i.second.begin(), i.second.end(), comp);
+        return animal_map;
+    }
+
+private:
+    void mate(const std::string&, const std::string&);
     DatabaseManager db;
-    std::unordered_map<std::string, Animal> animals;
     const int maxMateTrials = 100;
 };
 

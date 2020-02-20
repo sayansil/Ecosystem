@@ -8,7 +8,6 @@ set(ECOSYSTEM_HEADERS
     include/nlohmann/json.hpp
     include/helper.hpp
     include/animal.hpp
-    include/herbivore.hpp
     include/god.hpp
     include/DatabaseManager.hpp
     include/EcosystemTypes.hpp
@@ -17,7 +16,6 @@ set(ECOSYSTEM_HEADERS
 set(ECOSYSTEM_SOURCES
     src/helper.cpp
     src/animal.cpp
-    src/herbivore.cpp
     src/god.cpp
     src/DatabaseManager.cpp
     )
@@ -56,8 +54,8 @@ function(random_test)
         target_link_directories(rt_${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(rt_${name} PRIVATE sqlite3)
     endfunction()
-    add_code(test1)
-#    add_code(test2)
+#    add_code(test1)
+    add_code(test2)
 #    add_code(test3)
 endfunction()
 
