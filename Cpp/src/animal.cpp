@@ -23,8 +23,9 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
     this->mating_age_start  = json_file["mating_age"]["start"];
     this->mating_age_end    = json_file["mating_age"]["end"];
     this->max_age           = json_file["species_max_age"];
+    this->offsprings_factor = json_file["offsprings_factor"];
 
-    this->mutation_probability      = json_file["mutation_probability"];
+    this->mutation_probability = json_file["mutation_probability"];
     this->conceiving_probability    = json_file["conceiving_probability"];
 
     this->age_on_death                  = json_file["species_age_on_death"];

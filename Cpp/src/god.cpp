@@ -84,6 +84,11 @@ double killerFunction(const double &x, const double &s)
     return 1 - (1 / (1 + exp(-(10 * x - s) / pow(s, 0.5))));
 }
 
+int creatorFunction(const double &x, const double &s)
+{
+    return floor(1 - 1 / (s * (x - 1)));
+}
+
 void God::happyNewYear()
 {
 
@@ -185,13 +190,20 @@ void God::happyNewYear()
 
         while (males.size() > 0 && females.size() > 0)
         {
-            std::uniform_int_distribution<int> dis(0, std::min(females.size(), males.size()) - 1);
-            index_parent1 = dis(rng);
-            index_parent2 = dis(rng);
+            std::uniform_int_distribution<int> dis_parent(0, std::min(females.size(), males.size()) - 1);
+            index_parent1 = dis_parent(rng);
+            index_parent2 = dis_parent(rng);
             const auto& parent1 = males[index_parent1];
             const auto& parent2 = females[index_parent2];
-            if (mate(parent1.name, parent2.name)) {
-                newborns++;
+
+            std::uniform_real_distribution<double> dis_children(0.0, 1.0);
+            int n_children = creatorFunction(dis_children(rng), parent1.offsprings_factor);
+            while(n_children--)
+            {
+                if (mate(parent1.name, parent2.name))
+                {
+                    newborns++;
+                }
             }
 
             males.erase(males.begin() + index_parent1);
@@ -219,7 +231,10 @@ void God::happyNewYear()
 
     std::cout << "Slaughtered = " << dead << '\n';
     std::cout << "Newborns : " << newborns << '\n';
-    std::cout << "Current population : " << animals.size() << '\n';
+    std::cout << "Current population : " << stat_fetcher::getPopulation(animals) << '\n';
+    unsigned int M, F;
+    std::tie(M, F) = stat_fetcher::getMatablePopulation(animals);
+    std::cout << "Matable M: " << M << " F: " << F << '\n';
 }
 
 std::vector<Animal> God::animalSort(bool (*comp)(const Animal &, const Animal &))

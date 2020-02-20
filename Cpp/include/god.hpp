@@ -10,6 +10,7 @@
 
 #include <database_manager.hpp>
 #include <animal.hpp>
+#include <stat_fetcher.hpp>
 
 class God
 {

@@ -19,7 +19,7 @@ int main()
 
     // fast forwarded to 30 years
 
-    std::cout << "Finally:\n";
+    std::cout << "\n\nFinally:\n";
 
     auto sorted_animals = allah.animalSort([](const Animal& x, const Animal& y){
         return std::less<unsigned int>()(x.age, y.age);

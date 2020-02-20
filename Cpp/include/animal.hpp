@@ -34,6 +34,7 @@ public:
     unsigned int mating_age_end;
     unsigned int max_age;
     double mutation_probability;
+    double offsprings_factor;
 
     // Attributes related to death
     double age_on_death;
