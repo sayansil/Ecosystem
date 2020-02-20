@@ -53,7 +53,7 @@ private:
      *         Unavailable to users         *
     *****************************************/
 
-    void mate(const std::string&, const std::string&);
+    bool mate(const std::string&, const std::string&);
 };
 
 #endif // GOD_HPP

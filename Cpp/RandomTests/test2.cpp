@@ -13,7 +13,7 @@ int main()
 
     for(int i = 0; i < 100; i++)
     {
-        std::cout << "Year: " << i + 1 << '\n';
+        std::cout << "\nYear: " << i + 1 << '\n';
         allah.happyNewYear();
     }
 

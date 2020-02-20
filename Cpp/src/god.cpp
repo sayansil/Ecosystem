@@ -51,7 +51,7 @@ void God::killAnimals(const std::vector<std::string> &names)
         animals.erase(lamb_to_slaughter);
 }
 
-void God::mate(const std::string &name1, const std::string &name2)
+bool God::mate(const std::string &name1, const std::string &name2)
 {
     // Animal objects of 2 parents
     const auto& parent1 = animals[name1];
@@ -74,7 +74,17 @@ void God::mate(const std::string &name1, const std::string &name2)
                        "",
                        {(parent1.X + parent2.X) / 2,
                        (parent1.Y + parent2.Y) / 2}));
+        return true;
     }
+
+    return false;
+}
+
+double killerFunction(const double &x, const double &s)
+{
+    // return std::exp(-x / (s / 10.0))
+    // return pow(x / s, 1 / 1.75)
+    return 1 - (1 / (1 + exp(-(10 * x - s) / pow(s, 0.5))));
 }
 
 void God::happyNewYear()
@@ -106,9 +116,12 @@ void God::happyNewYear()
 
     // Mark the animals in animal_vec for death
 
-    std::for_each(std::execution::par, animals_vec.begin(), animals_vec.end(), [&animals_vec](std::pair<Animal, double>& x){
-        x.second = helper::weighted_prob(std::exp(-x.first.get_fitness() / (animals_vec.size() / 10.0)));
-        //x.second = helper::weighted_prob(pow(x.first.get_fitness() / animals_vec.size(), 1 / 1.75));
+    int tmp_i = 0;
+    std::for_each(std::execution::par, animals_vec.begin(), animals_vec.end(), [&tmp_i, &animals_vec](std::pair<Animal, double> &x) {
+        x.second = helper::weighted_prob(
+            // killerFunction(x.first.get_fitness(), animals_vec.size())
+            killerFunction(tmp_i++, animals_vec.size())
+        );
     });
 
     // Remove the above marked animals from the f****** universe
@@ -168,13 +181,14 @@ void God::happyNewYear()
             index_parent2 = dis(rng);
             const auto& parent1 = males[index_parent1];
             const auto& parent2 = females[index_parent2];
-            mate(parent1.name, parent2.name);
+            if (mate(parent1.name, parent2.name)) {
+                newborns++;
+            }
 
             males.erase(males.begin() + index_parent1);
             females.erase(females.begin() + index_parent2);
             males.shrink_to_fit();
             females.shrink_to_fit();
-            newborns++;
         }
     }
 
