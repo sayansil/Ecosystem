@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 
-#include <DatabaseManager.hpp>
+#include <database_manager.hpp>
 #include <animal.hpp>
 
 class God

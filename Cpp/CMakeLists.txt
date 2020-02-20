@@ -9,7 +9,7 @@ set(ECOSYSTEM_HEADERS
     include/helper.hpp
     include/animal.hpp
     include/god.hpp
-    include/DatabaseManager.hpp
+    include/database_manager.hpp
     include/EcosystemTypes.hpp
     )
 
@@ -17,7 +17,7 @@ set(ECOSYSTEM_SOURCES
     src/helper.cpp
     src/animal.cpp
     src/god.cpp
-    src/DatabaseManager.cpp
+    src/database_manager.cpp
     )
 
 function(setup_ecosystem)
