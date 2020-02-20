@@ -80,21 +80,28 @@ void God::happyNewYear()
 {
     std::vector<std::pair<Animal, double>> animals_vec;
 
-    for(const auto& animal : animals)
+    for(auto& animal : animals)
     {
+        animal.second.generate_death_factor();
         animals_vec.push_back({animal.second, 0.0});
     }
 
-    // sorted by fitness
+    // sorted by death factor
 
     std::sort(std::execution::par, animals_vec.begin(), animals_vec.end(), [](const std::pair<Animal, double>& x, const std::pair<Animal, double>& y){
-        return x.first.get_fitness() < y.first.get_fitness();
+        return x.first.death_factor > y.first.death_factor;
     });
+
+    std::cout << "Ages after sorting: ";
+    for(const auto& i : animals_vec)
+        std::cout << i.first.age << ' ';
+    std::cout << '\n';
 
     // marked for death
 
     std::for_each(std::execution::par, animals_vec.begin(), animals_vec.end(), [&animals_vec](std::pair<Animal, double>& x){
         x.second = helper::weighted_prob(std::exp(-x.first.get_fitness() / (animals_vec.size() / 10.0)));
+        //x.second = helper::weighted_prob(pow(x.first.get_fitness() / animals_vec.size(), 1 / 1.75));
     });
 
     // Remove these animals from the f****** universe

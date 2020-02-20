@@ -65,6 +65,7 @@ public:
 
     // Changes slowly - once every year (during mating season)
 
+    double death_factor;
     unsigned int age;
     double max_vitality_at_age;
     double max_stamina_at_age;
@@ -113,9 +114,9 @@ public:
     void decrement_stamina_by(const double&);
     void sleep(const double&);
     void eat(const double&);
-    double die_of_age_factor();
-    double die_of_fitness_factor();
-    double death_factor();
+    double get_die_of_age_factor();
+    double get_die_of_fitness_factor();
+    void generate_death_factor();
     double get_fitness() const;
 
     std::map<std::string, stat_type> get_stats();

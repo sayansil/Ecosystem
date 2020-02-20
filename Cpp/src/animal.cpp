@@ -299,20 +299,20 @@ void Animal::eat(const double &nutrition)
     appetite = std::max(0.0, appetite - nutrition);
 }
 
-double Animal::die_of_age_factor()
+double Animal::get_die_of_age_factor()
 {
     return std::min(1.0, exp(age_on_death * (static_cast<double>(age) / max_age - 1)));
 }
 
-double Animal::die_of_fitness_factor()
+double Animal::get_die_of_fitness_factor()
 {
     return std::min(1.0, exp(-fitness_on_death * get_fitness()));
 }
 
-double Animal::death_factor()
+void Animal::generate_death_factor()
 {
-    age_fitness_on_death_ratio = age_fitness_on_death_ratio * (2 - die_of_age_factor());
-    return helper::weighted_average({die_of_age_factor(), die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
+    age_fitness_on_death_ratio = age_fitness_on_death_ratio * (2 - get_die_of_age_factor());
+    death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 
 double Animal::get_fitness()const
@@ -331,7 +331,7 @@ std::map<std::string, stat_type> Animal::get_stats()
 //    stats["max_appetite_at_age"] = max_appetite_at_age;
     stats["height"] = height;
     stats["weight"] = weight;
-    stats["death_factor"] = death_factor();
+    stats["death_factor"] = death_factor;
 //    stats["vitality"] = vitality;
 //    stats["stamina"] = stamina;
 //    stats["speed"] = speed;
