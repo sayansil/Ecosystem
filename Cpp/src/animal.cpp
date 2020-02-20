@@ -16,41 +16,51 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
     std::ifstream in(filepath);
 
     nlohmann::json json_file; in >> json_file;
-    this->chromosome_structure = chromosome_map_type(json_file["chromosome_structure"]);
-    this->mating_age_start = json_file["mating_age"]["start"];
-    this->mutation_probability = json_file["mutation_probability"];
-    this->conceiving_probability = json_file["conceiving_probability"];
-    this->mating_age_end = json_file["mating_age"]["end"];
-    this->max_age = json_file["species_max_age"];
-    this->chromosome_number = json_file["species_chromosome_number"];
-    this->age_on_death = json_file["species_age_on_death"];
-    this->fitness_on_death = json_file["species_fitness_on_death"];
-    this->age_fitness_on_death_ratio = json_file["species_age_fitness_on_death_ratio"];
-    this->height_on_vitality = json_file["species_height_on_vitality"];
-    this->weight_on_vitality = json_file["species_weight_on_vitality"];
-    this->height_on_stamina = json_file["species_height_on_stamina"];
-    this->weight_on_stamina = json_file["species_weight_on_stamina"];
-    this->height_on_speed = json_file["species_height_on_speed"];
-    this->weight_on_speed = json_file["species_weight_on_speed"];
-    this->vitality_on_appetite = json_file["species_vitality_on_appetite"];
-    this->stamina_on_appetite = json_file["species_stamina_on_appetite"];
-    this->vitality_on_speed = json_file["species_vitality_on_speed"];
-    this->stamina_on_speed = json_file["species_stamina_on_speed"];
-    this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
-    this->theoretical_maximum_base_vitality = json_file["species_theoretical_maximum_base_vitality"];
-    this->theoretical_maximum_vitality_multiplier = json_file["species_theoretical_maximum_vitality_multiplier"];
-    this->theoretical_maximum_base_stamina = json_file["species_theoretical_maximum_base_stamina"];
-    this->theoretical_maximum_stamina_multiplier = json_file["species_theoretical_maximum_stamina_multiplier"];
-    this->theoretical_maximum_height = json_file["species_theoretical_maximum_height"];
-    this->theoretical_maximum_weight = json_file["species_theoretical_maximum_weight"];
-    this->theoretical_maximum_base_height = json_file["species_theoretical_maximum_base_height"];
-    this->theoretical_maximum_base_weight = json_file["species_theoretical_maximum_base_weight"];
-    this->theoretical_maximum_height_multiplier = json_file["species_theoretical_maximum_height_multiplier"];
-    this->theoretical_maximum_weight_multiplier = json_file["species_theoretical_maximum_weight_multiplier"];
-    this->theoretical_maximum_speed = json_file["species_theoretical_maximum_speed"];
-    this->theoretical_maximum_base_speed = json_file["species_theoretical_maximum_base_speed"];
-    this->theoretical_maximum_speed_multiplier = json_file["species_theoretical_maximum_speed_multiplier"];
+
+    this->chromosome_structure  = chromosome_map_type(json_file["chromosome_structure"]);
+    this->chromosome_number     = json_file["species_chromosome_number"];
+
+    this->mating_age_start  = json_file["mating_age"]["start"];
+    this->mating_age_end    = json_file["mating_age"]["end"];
+    this->max_age           = json_file["species_max_age"];
+
+    this->mutation_probability      = json_file["mutation_probability"];
+    this->conceiving_probability    = json_file["conceiving_probability"];
+
+    this->age_on_death                  = json_file["species_age_on_death"];
+    this->fitness_on_death              = json_file["species_fitness_on_death"];
+    this->age_fitness_on_death_ratio    = json_file["species_age_fitness_on_death_ratio"];
+
+    this->height_on_speed       = json_file["species_height_on_speed"];
+    this->height_on_stamina     = json_file["species_height_on_stamina"];
+    this->height_on_vitality    = json_file["species_height_on_vitality"];
+    this->weight_on_speed       = json_file["species_weight_on_speed"];
+    this->weight_on_stamina     = json_file["species_weight_on_stamina"];
+    this->weight_on_vitality    = json_file["species_weight_on_vitality"];
+
+    this->vitality_on_appetite  = json_file["species_vitality_on_appetite"];
+    this->vitality_on_speed     = json_file["species_vitality_on_speed"];
+    this->stamina_on_appetite   = json_file["species_stamina_on_appetite"];
+    this->stamina_on_speed      = json_file["species_stamina_on_speed"];
+
     this->theoretical_maximum_base_appetite = json_file["species_theoretical_maximum_base_appetite"];
+    this->theoretical_maximum_base_height   = json_file["species_theoretical_maximum_base_height"];
+    this->theoretical_maximum_base_speed    = json_file["species_theoretical_maximum_base_speed"];
+    this->theoretical_maximum_base_stamina  = json_file["species_theoretical_maximum_base_stamina"];
+    this->theoretical_maximum_base_vitality = json_file["species_theoretical_maximum_base_vitality"];
+    this->theoretical_maximum_base_weight   = json_file["species_theoretical_maximum_base_weight"];
+
+    this->theoretical_maximum_height_multiplier     = json_file["species_theoretical_maximum_height_multiplier"];
+    this->theoretical_maximum_speed_multiplier      = json_file["species_theoretical_maximum_speed_multiplier"];
+    this->theoretical_maximum_stamina_multiplier    = json_file["species_theoretical_maximum_stamina_multiplier"];
+    this->theoretical_maximum_vitality_multiplier   = json_file["species_theoretical_maximum_vitality_multiplier"];
+    this->theoretical_maximum_weight_multiplier     = json_file["species_theoretical_maximum_weight_multiplier"];
+
+    this->theoretical_maximum_height    = json_file["species_theoretical_maximum_height"];
+    this->theoretical_maximum_speed     = json_file["species_theoretical_maximum_speed"];
+    this->theoretical_maximum_weight    = json_file["species_theoretical_maximum_weight"];
+
+    this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
 
     in.close();
 
@@ -61,34 +71,40 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
         // Do not disturb this loop...
 
         for(auto i = chromosome_structure.begin(); i != chromosome_structure.end(); i++)
+        {
             chromosome_length += i->second["length"];
+        }
         this->chromosome = helper::random_binary(chromosome_length);
     }
     else
     {
         this->chromosome = chromosome;
     }
-    this->immunity = get_immunity();
-    this->generation = generation;
-    this->gender = get_gender();
+
+    this->immunity      = get_immunity();
+    this->generation    = generation;
+    this->gender        = get_gender();
 
     this->age = 0;
-    this->max_vitality_at_age = get_base_vitality();
-    this->max_stamina_at_age = get_base_stamina();
-    this->max_speed_at_age = get_base_speed();
-    this->max_appetite_at_age = get_base_appetite();
+
+    this->max_vitality_at_age   = get_base_vitality();
+    this->max_stamina_at_age    = get_base_stamina();
+    this->max_speed_at_age      = get_base_speed();
+    this->max_appetite_at_age   = get_base_appetite();
+
     this->height = get_base_height();
     this->weight = get_base_weight();
 
-    this->vitality = this->max_vitality_at_age;
-    this->stamina = this->max_stamina_at_age;
-    this->appetite = this->max_appetite_at_age;
-    this->speed = this->max_speed_at_age;
+    this->vitality  = this->max_vitality_at_age;
+    this->stamina   = this->max_stamina_at_age;
+    this->appetite  = this->max_appetite_at_age;
+    this->speed     = this->max_speed_at_age;
 
     std::tie(this->X, this->Y) = helper::random_location();
     this->asleep = false;
 
     increment_age();
+
     evaluate_static_fitness();
     evaluate_dynamic_fitness();
 }
@@ -225,6 +241,11 @@ void Animal::evaluate_dynamic_fitness()
     dynamic_fitness = 1;
 }
 
+double Animal::get_fitness() const
+{
+    return static_fitness * dynamic_fitness;
+}
+
 void Animal::increment_vitality_by(const double &units)
 {
     vitality = std::min(vitality + units, max_vitality_at_age);
@@ -315,27 +336,22 @@ void Animal::generate_death_factor()
     death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 
-double Animal::get_fitness()const
-{
-    return static_fitness * dynamic_fitness;
-}
-
 std::map<std::string, stat_type> Animal::get_stats()
 {
     std::map<std::string, stat_type> stats;
     stats["name"] = name;
     stats["age"] = age;
-//    stats["max_vitality_at_age"] = max_vitality_at_age;
-//    stats["max_stamina_at_age"] = max_stamina_at_age;
-//    stats["max_speed_at_age"] = max_speed_at_age;
-//    stats["max_appetite_at_age"] = max_appetite_at_age;
+    // stats["max_vitality_at_age"] = max_vitality_at_age;
+    // stats["max_stamina_at_age"] = max_stamina_at_age;
+    // stats["max_speed_at_age"] = max_speed_at_age;
+    // stats["max_appetite_at_age"] = max_appetite_at_age;
     stats["height"] = height;
     stats["weight"] = weight;
     stats["death_factor"] = death_factor;
-//    stats["vitality"] = vitality;
-//    stats["stamina"] = stamina;
-//    stats["speed"] = speed;
-//    stats["appetite"] = appetite;
+    // stats["vitality"] = vitality;
+    // stats["stamina"] = stamina;
+    // stats["speed"] = speed;
+    // stats["appetite"] = appetite;
     stats["fitness"] = get_fitness();
     return stats;
 }

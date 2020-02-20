@@ -1,54 +1,59 @@
 #ifndef GOD_HPP
 #define GOD_HPP
 
-#include <DatabaseManager.hpp>
-#include <animal.hpp>
-#include <vector>
+#include <algorithm>
+#include <execution>
 #include <iostream>
 #include <unordered_map>
-#include <execution>
-#include <algorithm>
 #include <utility>
+#include <vector>
+
+#include <DatabaseManager.hpp>
+#include <animal.hpp>
 
 class God
 {
 public:
 
+    /***********************
+     *  Public attributes  *
+    ************************/
+
     std::unordered_map<std::string, Animal> animals;
 
+    /******************************
+     *  Constructor / Destructor  *
+    *******************************/
+
     God();
-    void spawnAnimal(const Animal&);
-    void killAnimal(const std::string&);
     ~God();
-    void happyNewYear();
+
+    /**************************************
+     *         Available to users         *
+    ***************************************/
+
     void catastrophe();
+    void happyNewYear();
+    void killAnimals(const std::vector<std::string> &);
+    void spawnAnimal(const Animal&);
 
-    template <typename Comp>
-    std::vector<Animal> animalSort(Comp comp)
-    {
-        std::vector<Animal> animal_vec;
-        for(const auto& i : animals)
-            animal_vec.push_back(i.second);
-        animal_vec.shrink_to_fit();
-        std::sort(animal_vec.begin(), animal_vec.end(), comp);
-        return animal_vec;
-    }
-
-    template <typename Comp>
-    std::unordered_map<std::string, std::vector<Animal>> animalSortByKind(Comp comp)
-    {
-        std::unordered_map<std::string, std::vector<Animal>> animal_map;
-        for(const auto& i : animals)
-            animal_map[i.second.kind].push_back(i.second);
-        for(const auto& i : animal_map)
-            std::sort(i.second.begin(), i.second.end(), comp);
-        return animal_map;
-    }
+    std::vector<Animal> animalSort(bool (*comp)(const Animal &, const Animal &));
+    std::unordered_map<std::string, std::vector<Animal>> animalSortByKind(bool (*comp)(const Animal &, const Animal &));
 
 private:
-    void mate(const std::string&, const std::string&);
+
+    /************************
+     *  Private attributes  *
+    *************************/
+
     DatabaseManager db;
     const int maxMateTrials = 100;
+
+    /****************************************
+     *         Unavailable to users         *
+    *****************************************/
+
+    void mate(const std::string&, const std::string&);
 };
 
 #endif // GOD_HPP

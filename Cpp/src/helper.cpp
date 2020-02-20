@@ -2,8 +2,9 @@
 
 namespace helper
 {
-    unsigned int map_height = 100;
-    unsigned int map_width = 100;
+    unsigned int map_height = 1000;
+    unsigned int map_width = 1000;
+
     std::string to_binary(const unsigned int& x)
     {
         auto num = x; std::string str = "";

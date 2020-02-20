@@ -2,3 +2,4 @@ build-Cpp-Desktop-Release/
 python/*
 __pycache__/*
 *.pyc
+.vscode/*

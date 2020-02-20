@@ -31,6 +31,7 @@ static int callback_read(void *data, int argc, char **argv, char **colName)
     gRow.WEIGHT = std::stod(argv[8]);
     gRow.FITNESS = std::stod(argv[9]);
     gRows.push_back(gRow);
+
     return 0;
 }
 
@@ -38,13 +39,8 @@ static int callback_group(void *data, int argc, char **argv, char **colName)
 {
     std::string item = argv[0];
     items.push_back(item);
-    return 0;
-}
 
-DatabaseManager::DatabaseManager()
-{
-    db_path = "../../data/ecosystem_master.db";
-    sqlite3_open(db_path.c_str(), &db);
+    return 0;
 }
 
 DatabaseManager::DatabaseManager(const std::filesystem::path& path)

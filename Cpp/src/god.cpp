@@ -1,5 +1,8 @@
 #include <god.hpp>
 
+#define MALE 0
+#define FEMALE 1
+
 God::God()
 {
     db = DatabaseManager();
@@ -7,7 +10,6 @@ God::God()
 
 God::~God()
 {
-
 }
 
 void God::catastrophe()
@@ -18,6 +20,7 @@ void God::catastrophe()
 
 void God::spawnAnimal(const Animal& current_animal)
 {
+    // Add to memory
     animals[current_animal.name] = current_animal;
 
     std::vector<std::vector<stat_type>> tmp;
@@ -33,23 +36,36 @@ void God::spawnAnimal(const Animal& current_animal)
             stat_type(current_animal.weight),
             stat_type(current_animal.static_fitness)
     });
+
+    // Add to database
     db.insertRows(tmp);
 }
 
-void God::killAnimal(const std::string &name)
+void God::killAnimals(const std::vector<std::string> &names)
 {
-    animals.erase(name);
+    // Remove from database
+    db.deleteRows(names);
+
+    // Remove from memory
+    for (const auto &lamb_to_slaughter : names)
+        animals.erase(lamb_to_slaughter);
 }
 
 void God::mate(const std::string &name1, const std::string &name2)
 {
+    // Animal objects of 2 parents
     const auto& parent1 = animals[name1];
     const auto& parent2 = animals[name2];
+
+    // Generate chromosomes of the child
     auto child_chromosome = helper::get_random_mixture(parent1.chromosome, parent2.chromosome);
+
+    // Mutate chromosomes
     for(auto& bit : child_chromosome)
         if(helper::weighted_prob(parent1.mutation_probability))
             bit = (bit == '1')?'0':'1';
 
+    // Spawn child (if probable)
     if(helper::weighted_prob(parent1.conceiving_probability))
     {
         spawnAnimal(Animal(parent1.kind,
@@ -61,23 +77,9 @@ void God::mate(const std::string &name1, const std::string &name2)
     }
 }
 
-static bool checkPairsExisting(const std::vector<std::vector<stat_type>>& test_subjects)
-{
-    bool flag1 = false, flag2 = false;
-    for(const auto& i : test_subjects)
-    {
-        if(std::get<unsigned int>(i[5]) == 0)
-            flag1 = true;
-        else
-            flag2 = true;
-        if(flag1 && flag2)
-            return true;
-    }
-    return false;
-}
-
 void God::happyNewYear()
 {
+    // Vector for [ (Animal, death_factor) ]
     std::vector<std::pair<Animal, double>> animals_vec;
 
     for(auto& animal : animals)
@@ -86,47 +88,50 @@ void God::happyNewYear()
         animals_vec.push_back({animal.second, 0.0});
     }
 
-    // sorted by death factor
+    // Sort animal_vec by death factor
 
-    std::sort(std::execution::par, animals_vec.begin(), animals_vec.end(), [](const std::pair<Animal, double>& x, const std::pair<Animal, double>& y){
-        return x.first.death_factor > y.first.death_factor;
+    std::sort(std::execution::par,
+        animals_vec.begin(),
+        animals_vec.end(),
+        [](const std::pair<Animal, double>& x, const std::pair<Animal, double>& y){
+            return x.first.death_factor > y.first.death_factor;
     });
 
-    std::cout << "Ages after sorting: ";
-    for(const auto& i : animals_vec)
-        std::cout << i.first.age << ' ';
-    std::cout << '\n';
+    // std::cout << "Ages after sorting: ";
+    // for(const auto& i : animals_vec)
+    // {
+    //     std::cout << i.first.age << ' ';
+    // }
+    // std::cout << '\n';
 
-    // marked for death
+    // Mark the animals in animal_vec for death
 
     std::for_each(std::execution::par, animals_vec.begin(), animals_vec.end(), [&animals_vec](std::pair<Animal, double>& x){
         x.second = helper::weighted_prob(std::exp(-x.first.get_fitness() / (animals_vec.size() / 10.0)));
         //x.second = helper::weighted_prob(pow(x.first.get_fitness() / animals_vec.size(), 1 / 1.75));
     });
 
-    // Remove these animals from the f****** universe
+    // Remove the above marked animals from the f****** universe
 
     std::vector<std::string> animals_to_be_slaughtered;
 
-    for(const auto& animal_pair : animals_vec)
+    for(const auto& animal_tuple : animals_vec)
     {
-        if(animal_pair.second == 1)
+        if(animal_tuple.second == 1)
         {
             // Being dragged to the slaughterhouse
-
-            animals_to_be_slaughtered.push_back(animal_pair.first.name);
+            animals_to_be_slaughtered.push_back(animal_tuple.first.name);
         }
     }
 
     animals_vec.clear(); animals_vec.shrink_to_fit();
 
-    db.deleteRows(animals_to_be_slaughtered);
-    for(const auto& lamb_to_slaughter : animals_to_be_slaughtered)
-        animals.erase(lamb_to_slaughter);
+    killAnimals(animals_to_be_slaughtered);
 
     std::cout << "Animals slaughtered = " << animals_to_be_slaughtered.size() << '\n';
 
-    // yearly mating season
+    // Yearly mating season begins
+
     int newborns = 0;
 
     std::unordered_map<std::string, std::vector<Animal>> animalsByKind;
@@ -134,12 +139,12 @@ void God::happyNewYear()
         animalsByKind[animal.second.kind].push_back(animal.second);
 
     int index_parent1, index_parent2;
-    for(auto& animal_pair : animalsByKind)
+    for(auto& animal_tuple : animalsByKind)
     {
-        auto& animal_list = animal_pair.second;
+        auto& animal_list = animal_tuple.second;
         std::vector<Animal> males, females;
         for(const auto& animal : animal_list)
-            if(animal.gender == 0)
+            if(animal.gender == MALE)
             {
                 if(animal.age >= animal.mating_age_start && animal.age <= animal.mating_age_end)
                 {
@@ -176,12 +181,35 @@ void God::happyNewYear()
     std::cout << "Newborns : " << newborns << '\n';
     std::cout << "Current population : " << animals.size() << '\n';
 
-    // yearly age incrementing todo: parallel v sequential performance test
+    // Yearly age incrementing todo: parallel v sequential performance test
 
     std::for_each(std::execution::par, animals.begin(), animals.end(), [](auto& x){
         x.second.increment_age();
     });
+}
 
-//    for(auto& i : animals)
-//        i.second.increment_age();
+std::vector<Animal> God::animalSort(bool (*comp)(const Animal &, const Animal &))
+{
+    std::vector<Animal> animal_vec;
+    for (auto &i : animals)
+    {
+        animal_vec.push_back(i.second);
+    }
+    animal_vec.shrink_to_fit();
+    std::sort(animal_vec.begin(), animal_vec.end(), comp);
+    return animal_vec;
+}
+
+std::unordered_map<std::string, std::vector<Animal>> God::animalSortByKind(bool (*comp)(const Animal &, const Animal &))
+{
+    std::unordered_map<std::string, std::vector<Animal>> animal_map;
+    for (const auto &i : animals)
+    {
+        animal_map[i.second.kind].push_back(i.second);
+    }
+    for (auto &i : animal_map)
+    {
+        std::sort(i.second.begin(), i.second.end(), comp);
+    }
+    return animal_map;
 }

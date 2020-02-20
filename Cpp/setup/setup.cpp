@@ -1,14 +1,7 @@
-/*
- * ("ABC", "ABC", "ABC", 0, 1.1, 0, 0, 1.1, 1.1, 1.1)
- * ("PQR", "PQR", "ABC", 0, 1.1, 0, 0, 1.1, 1.1, 1.1)
- * conn.execute('INSERT INTO ECOSYSTEM_MASTER ("ABC", "ABC", "ABC");')
-*/
-
-
 #include <filesystem>
+#include <iostream>
 #include <sqlite3.h>
 #include <string>
-#include <iostream>
 
 const std::filesystem::path master_table_path = "../../data/ecosystem_master.db";
 

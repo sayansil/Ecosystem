@@ -13,8 +13,8 @@ int main()
 
     for(int i = 0; i < 100; i++)
     {
-        allah.happyNewYear();
         std::cout << "Year: " << i + 1 << '\n';
+        allah.happyNewYear();
     }
 
     // fast forwarded to 30 years
