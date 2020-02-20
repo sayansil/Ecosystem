@@ -13,6 +13,9 @@
 #include <helper.hpp>
 #include <nlohmann/json.hpp>
 
+#define MALE 0
+#define FEMALE 1
+
 class Animal
 {
 public:

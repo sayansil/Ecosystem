@@ -1,8 +1,5 @@
 #include <god.hpp>
 
-#define MALE 0
-#define FEMALE 1
-
 God::God()
 {
     db = DatabaseManager();
@@ -89,8 +86,16 @@ double killerFunction(const double &x, const double &s)
 
 void God::happyNewYear()
 {
+
+    /************************************
+     *       Annual Killing Begins      *
+     ************************************/
+
+    int dead = 0;
+
     // Vector for [ (Animal, death_factor) ]
-    std::vector<std::pair<Animal, double>> animals_vec;
+    std::vector<std::pair<Animal, double>>
+        animals_vec;
 
     for(auto& animal : animals)
     {
@@ -137,13 +142,17 @@ void God::happyNewYear()
         }
     }
 
-    animals_vec.clear(); animals_vec.shrink_to_fit();
-
+    dead = animals_to_be_slaughtered.size();
     killAnimals(animals_to_be_slaughtered);
 
-    std::cout << "Animals slaughtered = " << animals_to_be_slaughtered.size() << '\n';
+    animals_vec.clear(); animals_vec.shrink_to_fit();
+    animals_to_be_slaughtered.clear(); animals_to_be_slaughtered.shrink_to_fit();
 
-    // Yearly mating season begins
+
+
+    /***********************************
+     *       Annual Mating Begins      *
+     ***********************************/
 
     int newborns = 0;
 
@@ -174,7 +183,7 @@ void God::happyNewYear()
 
         std::mt19937_64 rng; rng.seed(std::random_device()());
 
-        while(males.size() > 0 && females.size() > 0)
+        while (males.size() > 0 && females.size() > 0)
         {
             std::uniform_int_distribution<int> dis(0, std::min(females.size(), males.size()) - 1);
             index_parent1 = dis(rng);
@@ -192,14 +201,25 @@ void God::happyNewYear()
         }
     }
 
-    std::cout << "Newborns : " << newborns << '\n';
-    std::cout << "Current population : " << animals.size() << '\n';
 
-    // Yearly age incrementing todo: parallel v sequential performance test
+    /************************************
+     *       Annual Ageing Begins      *
+     ************************************/
+
+    // todo: parallel v sequential performance test
 
     std::for_each(std::execution::par, animals.begin(), animals.end(), [](auto& x){
         x.second.increment_age();
     });
+
+
+    /*********************************
+     *       Logging (Optional)      *
+     *********************************/
+
+    std::cout << "Slaughtered = " << dead << '\n';
+    std::cout << "Newborns : " << newborns << '\n';
+    std::cout << "Current population : " << animals.size() << '\n';
 }
 
 std::vector<Animal> God::animalSort(bool (*comp)(const Animal &, const Animal &))

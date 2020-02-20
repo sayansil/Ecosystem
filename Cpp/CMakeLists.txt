@@ -7,6 +7,7 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -march=native -lm -ltbb")
 set(ECOSYSTEM_HEADERS
     include/nlohmann/json.hpp
     include/helper.hpp
+    include/stat_fetcher.hpp
     include/animal.hpp
     include/god.hpp
     include/database_manager.hpp
@@ -15,6 +16,7 @@ set(ECOSYSTEM_HEADERS
 
 set(ECOSYSTEM_SOURCES
     src/helper.cpp
+    src/stat_fetcher.cpp
     src/animal.cpp
     src/god.cpp
     src/database_manager.cpp
