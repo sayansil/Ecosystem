@@ -15,13 +15,42 @@ void God::catastrophe()
     animals.clear();
 }
 
-void God::spawnAnimal(const Animal& current_animal)
+bool isNormalChild(const Animal &animal)
 {
-    // Add to memory
-    animals[current_animal.name] = current_animal;
+    if (animal.height == 0 || animal.height != animal.height ||
+        animal.weight == 0 || animal.weight != animal.weight ||
+        animal.immunity == 0 || animal.immunity != animal.immunity ||
+        animal.max_appetite_at_age == 0 || animal.max_appetite_at_age != animal.max_appetite_at_age ||
+        animal.max_speed_at_age == 0 || animal.max_speed_at_age != animal.max_speed_at_age ||
+        animal.max_stamina_at_age == 0 || animal.max_stamina_at_age != animal.max_stamina_at_age ||
+        animal.max_vitality_at_age == 0 || animal.max_vitality_at_age != animal.max_vitality_at_age ||
+        animal.get_base_appetite() == 0 || animal.get_base_appetite() != animal.get_base_appetite() ||
+        animal.get_base_height() == 0 || animal.get_base_height() != animal.get_base_height() ||
+        animal.get_base_speed() == 0 || animal.get_base_speed() != animal.get_base_speed() ||
+        animal.get_base_stamina() == 0 || animal.get_base_stamina() != animal.get_base_stamina() ||
+        animal.get_base_vitality() == 0 || animal.get_base_vitality() != animal.get_base_vitality() ||
+        animal.get_base_weight() == 0 || animal.get_base_weight() != animal.get_base_weight() ||
+        animal.get_max_height() == 0 || animal.get_max_height() != animal.get_max_height() ||
+        animal.get_max_weight() == 0 || animal.get_max_weight() != animal.get_max_weight() ||
+        animal.get_height_multiplier() != animal.get_height_multiplier() ||
+        animal.get_speed_multiplier() != animal.get_speed_multiplier() ||
+        animal.get_stamina_multiplier() != animal.get_stamina_multiplier() ||
+        animal.get_vitality_multiplier() != animal.get_vitality_multiplier() ||
+        animal.get_weight_multiplier() != animal.get_weight_multiplier())
+        return false;
 
-    std::vector<std::vector<stat_type>> tmp;
-    tmp.emplace_back(std::vector<stat_type>{
+    return true;
+}
+
+bool God::spawnAnimal(const Animal& current_animal)
+{
+    if (isNormalChild(current_animal))
+    {
+        // Add to memory
+        animals[current_animal.name] = current_animal;
+
+        std::vector<std::vector<stat_type>> tmp;
+        tmp.emplace_back(std::vector<stat_type>{
             stat_type(current_animal.name),
             stat_type(current_animal.kind),
             stat_type(current_animal.chromosome),
@@ -31,11 +60,15 @@ void God::spawnAnimal(const Animal& current_animal)
             stat_type(current_animal.age),
             stat_type(current_animal.height),
             stat_type(current_animal.weight),
-            stat_type(current_animal.static_fitness)
-    });
+            stat_type(current_animal.static_fitness)});
 
-    // Add to database
-    db.insertRows(tmp);
+        // Add to database
+        db.insertRows(tmp);
+
+        return true;
+    }
+
+    return false;
 }
 
 void God::killAnimals(const std::vector<std::string> &names)
@@ -65,13 +98,12 @@ bool God::mate(const std::string &name1, const std::string &name2)
     // Spawn child (if probable)
     if(helper::weighted_prob(parent1.conceiving_probability))
     {
-        spawnAnimal(Animal(parent1.kind,
-                       child_chromosome,
-                       std::max(parent1.generation, parent2.generation) + 1,
-                       "",
-                       {(parent1.X + parent2.X) / 2,
-                       (parent1.Y + parent2.Y) / 2}));
-        return true;
+        return spawnAnimal(Animal(parent1.kind,
+                                child_chromosome,
+                                std::max(parent1.generation, parent2.generation) + 1,
+                                "",
+                                {(parent1.X + parent2.X) / 2,
+                                (parent1.Y + parent2.Y) / 2}));
     }
 
     return false;
@@ -116,13 +148,6 @@ void God::happyNewYear()
         [](const std::pair<Animal, double>& x, const std::pair<Animal, double>& y){
             return x.first.death_factor > y.first.death_factor;
     });
-
-    // std::cout << "Ages after sorting: ";
-    // for(const auto& i : animals_vec)
-    // {
-    //     std::cout << i.first.age << ' ';
-    // }
-    // std::cout << '\n';
 
     // Mark the animals in animal_vec for death
 
@@ -223,18 +248,6 @@ void God::happyNewYear()
     std::for_each(std::execution::par, animals.begin(), animals.end(), [](auto& x){
         x.second.increment_age();
     });
-
-
-    /*********************************
-     *       Logging (Optional)      *
-     *********************************/
-
-    // std::cout << "Slaughtered = " << dead << '\n';
-    // std::cout << "Newborns : " << newborns << '\n';
-    // std::cout << "Current population : " << stat_fetcher::getPopulation(animals) << '\n';
-    // unsigned int M, F;
-    // std::tie(M, F) = stat_fetcher::getMatablePopulation(animals);
-    // std::cout << "Matable M: " << M << " F: " << F << '\n';
 }
 
 std::vector<Animal> God::animalSort(bool (*comp)(const Animal &, const Animal &))

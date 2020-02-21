@@ -289,16 +289,9 @@ void Animal::increment_age()
                       get_max_weight());
 
     // change stats independently
-    double tmp = max_vitality_at_age;
+
     max_vitality_at_age = get_base_vitality() * ( get_vitality_multiplier() * 0.5 * pow(max_age, 0.5) *
                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_vitality())) + 1);
-    if (max_vitality_at_age != max_vitality_at_age)
-        std::cout << tmp << get_base_vitality() << ',' << get_vitality_multiplier() << max_age << '\n';
-    // else
-    // {
-    //     std::cout << max_vitality_at_age << '\n';
-    // }
-
     max_stamina_at_age = get_base_stamina() * ( get_stamina_multiplier() * 0.5 * pow(max_age, 0.5) *
                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_stamina())) + 1);
     max_speed_at_age = get_speed_multiplier() * 100 * exp((-1 / (get_speed_multiplier() * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + get_base_speed();

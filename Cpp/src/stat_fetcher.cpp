@@ -105,4 +105,40 @@ namespace stat_fetcher
 
         return kindDistribution;
     }
+
+    double getStatAverage(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
+    {
+        double average = 0.0, n = 0.0, value=0.0;
+        stat_type raw_value;
+
+        // avg(n+1) = (n / (n + 1)) * avg(n) + (1 / (n + 1)) * kn
+
+        for (const auto &animal: animals)
+        {
+            raw_value = animal.second.get_stat(attribute);
+            if (raw_value.index() == 0)
+                value = std::get<unsigned int>(raw_value);
+            else if (raw_value.index() == 1)
+                value = std::get<double>(raw_value);
+            else
+                break;
+
+            average = (n / (n + 1)) * average + (value / (n + 1));
+            n++;
+        }
+
+        return average;
+    }
+
+    std::vector<stat_type> getOneStat(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
+    {
+        std::vector<stat_type> attributeList;
+
+        for (const auto &animal : animals)
+        {
+            attributeList.push_back(animal.second.get_stat(attribute));
+        }
+
+        return attributeList;
+    }
 };

@@ -36,7 +36,7 @@ public:
     void catastrophe();
     void happyNewYear();
     void killAnimals(const std::vector<std::string> &);
-    void spawnAnimal(const Animal&);
+    bool spawnAnimal(const Animal&);
 
     std::vector<Animal> animalSort(bool (*comp)(const Animal &, const Animal &));
     std::unordered_map<std::string, std::vector<Animal>> animalSortByKind(bool (*comp)(const Animal &, const Animal &));
