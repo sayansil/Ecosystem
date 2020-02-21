@@ -86,4 +86,23 @@ namespace stat_fetcher
 
         return {low, high};
     }
+
+    std::unordered_map<std::string, unsigned int> getKindDistribution(const ANIMAL_MAP_TYPE &animals)
+    {
+        std::unordered_map<std::string, unsigned int> kindDistribution;
+
+        for (const auto &animal: animals)
+        {
+            if(kindDistribution.find(animal.second.kind) == kindDistribution.end())
+            {
+                kindDistribution[animal.second.kind] = 1;
+            }
+            else
+            {
+                kindDistribution[animal.second.kind]++;
+            }
+        }
+
+        return kindDistribution;
+    }
 };
