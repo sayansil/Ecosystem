@@ -229,12 +229,12 @@ void God::happyNewYear()
      *       Logging (Optional)      *
      *********************************/
 
-    std::cout << "Slaughtered = " << dead << '\n';
-    std::cout << "Newborns : " << newborns << '\n';
-    std::cout << "Current population : " << stat_fetcher::getPopulation(animals) << '\n';
-    unsigned int M, F;
-    std::tie(M, F) = stat_fetcher::getMatablePopulation(animals);
-    std::cout << "Matable M: " << M << " F: " << F << '\n';
+    // std::cout << "Slaughtered = " << dead << '\n';
+    // std::cout << "Newborns : " << newborns << '\n';
+    // std::cout << "Current population : " << stat_fetcher::getPopulation(animals) << '\n';
+    // unsigned int M, F;
+    // std::tie(M, F) = stat_fetcher::getMatablePopulation(animals);
+    // std::cout << "Matable M: " << M << " F: " << F << '\n';
 }
 
 std::vector<Animal> God::animalSort(bool (*comp)(const Animal &, const Animal &))

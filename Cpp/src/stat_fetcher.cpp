@@ -57,4 +57,33 @@ namespace stat_fetcher
 
         return {M, F};
     }
+
+    std::pair<stat_type, stat_type> getStatGap(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
+    {
+        stat_type low=0.0, high=0.0, current_attribute;
+        bool uninitialized = true;
+        for (const auto &animal : animals)
+        {
+            current_attribute = animal.second.get_stat(attribute);
+            if (uninitialized)
+            {
+                low = current_attribute;
+                high = current_attribute;
+                uninitialized = false;
+            }
+            else
+            {
+                if (low > current_attribute)
+                {
+                    low = current_attribute;
+                }
+                if (high < current_attribute)
+                {
+                    high = current_attribute;
+                }
+            }
+        }
+
+        return {low, high};
+    }
 };

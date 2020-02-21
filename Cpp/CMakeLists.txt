@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -march=native -lm -ltbb")
 
 set(ECOSYSTEM_HEADERS
     include/nlohmann/json.hpp
+    include/prakhar1989/ProgressBar.hpp
     include/helper.hpp
     include/stat_fetcher.hpp
     include/animal.hpp

@@ -337,22 +337,244 @@ void Animal::generate_death_factor()
     death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 
-std::map<std::string, stat_type> Animal::get_stats()
+stat_type Animal::get_stat(const std::string &attribute) const
 {
-    std::map<std::string, stat_type> stats;
-    stats["name"] = name;
-    stats["age"] = age;
-    // stats["max_vitality_at_age"] = max_vitality_at_age;
-    // stats["max_stamina_at_age"] = max_stamina_at_age;
-    // stats["max_speed_at_age"] = max_speed_at_age;
-    // stats["max_appetite_at_age"] = max_appetite_at_age;
-    stats["height"] = height;
-    stats["weight"] = weight;
-    stats["death_factor"] = death_factor;
-    // stats["vitality"] = vitality;
-    // stats["stamina"] = stamina;
-    // stats["speed"] = speed;
-    // stats["appetite"] = appetite;
-    stats["fitness"] = get_fitness();
-    return stats;
+    if (attribute == "kind")
+    {
+        return kind;
+    }
+    if (attribute == "chromosome_number")
+    {
+        return chromosome_number;
+    }
+    if (attribute == "conceiving_probability")
+    {
+        return conceiving_probability;
+    }
+    if (attribute == "mating_age_start")
+    {
+        return mating_age_start;
+    }
+    if (attribute == "mating_age_end")
+    {
+        return mating_age_end;
+    }
+    if (attribute == "max_age")
+    {
+        return max_age;
+    }
+    if (attribute == "mutation_probability")
+    {
+        return mutation_probability;
+    }
+    if (attribute == "offsprings_factor")
+    {
+        return offsprings_factor;
+    }
+    if (attribute == "age_on_death")
+    {
+        return age_on_death;
+    }
+    if (attribute == "fitness_on_death")
+    {
+        return fitness_on_death;
+    }
+    if (attribute == "age_fitness_on_death_ratio")
+    {
+        return age_fitness_on_death_ratio;
+    }
+    if (attribute == "height_on_speed")
+    {
+        return height_on_speed;
+    }
+    if (attribute == "height_on_stamina")
+    {
+        return height_on_stamina;
+    }
+    if (attribute == "height_on_vitality")
+    {
+        return height_on_vitality;
+    }
+    if (attribute == "weight_on_speed")
+    {
+        return weight_on_speed;
+    }
+    if (attribute == "weight_on_stamina")
+    {
+        return weight_on_stamina;
+    }
+    if (attribute == "weight_on_vitality")
+    {
+        return weight_on_vitality;
+    }
+    if (attribute == "vitality_on_appetite")
+    {
+        return vitality_on_appetite;
+    }
+    if (attribute == "vitality_on_speed")
+    {
+        return vitality_on_speed;
+    }
+    if (attribute == "stamina_on_appetite")
+    {
+        return stamina_on_appetite;
+    }
+    if (attribute == "stamina_on_speed")
+    {
+        return stamina_on_speed;
+    }
+    if (attribute == "theoretical_maximum_base_appetite")
+    {
+        return theoretical_maximum_base_appetite;
+    }
+    if (attribute == "theoretical_maximum_base_height")
+    {
+        return theoretical_maximum_base_height;
+    }
+    if (attribute == "theoretical_maximum_base_speed")
+    {
+        return theoretical_maximum_base_speed;
+    }
+    if (attribute == "theoretical_maximum_base_stamina")
+    {
+        return theoretical_maximum_base_stamina;
+    }
+    if (attribute == "theoretical_maximum_base_vitality")
+    {
+        return theoretical_maximum_base_vitality;
+    }
+    if (attribute == "theoretical_maximum_base_weight")
+    {
+        return theoretical_maximum_base_weight;
+    }
+    if (attribute == "theoretical_maximum_height")
+    {
+        return theoretical_maximum_height;
+    }
+    if (attribute == "theoretical_maximum_speed")
+    {
+        return theoretical_maximum_speed;
+    }
+    if (attribute == "theoretical_maximum_weight")
+    {
+        return theoretical_maximum_weight;
+    }
+    if (attribute == "theoretical_maximum_height_multiplier")
+    {
+        return theoretical_maximum_height_multiplier;
+    }
+    if (attribute == "theoretical_maximum_speed_multiplier")
+    {
+        return theoretical_maximum_speed_multiplier;
+    }
+    if (attribute == "theoretical_maximum_stamina_multiplier")
+    {
+        return theoretical_maximum_stamina_multiplier;
+    }
+    if (attribute == "theoretical_maximum_vitality_multiplier")
+    {
+        return theoretical_maximum_vitality_multiplier;
+    }
+    if (attribute == "theoretical_maximum_weight_multiplier")
+    {
+        return theoretical_maximum_weight_multiplier;
+    }
+    if (attribute == "sleep_restore_factor")
+    {
+        return sleep_restore_factor;
+    }
+    if (attribute == "chromosome")
+    {
+        return chromosome;
+    }
+    if (attribute == "gender")
+    {
+        return gender;
+    }
+    if (attribute == "generation")
+    {
+        return generation;
+    }
+    if (attribute == "immunity")
+    {
+        return immunity;
+    }
+    if (attribute == "name")
+    {
+        return name;
+    }
+    if (attribute == "age")
+    {
+        return age;
+    }
+    if (attribute == "height")
+    {
+        return height;
+    }
+    if (attribute == "weight")
+    {
+        return weight;
+    }
+    if (attribute == "max_appetite_at_age")
+    {
+        return max_appetite_at_age;
+    }
+    if (attribute == "max_speed_at_age")
+    {
+        return max_speed_at_age;
+    }
+    if (attribute == "max_stamina_at_age")
+    {
+        return max_stamina_at_age;
+    }
+    if (attribute == "max_vitality_at_age")
+    {
+        return max_vitality_at_age;
+    }
+    if (attribute == "static_fitness")
+    {
+        return static_fitness;
+    }
+    if (attribute == "death_factor")
+    {
+        return death_factor;
+    }
+    if (attribute == "vision_radius")
+    {
+        return vision_radius;
+    }
+    if (attribute == "appetite")
+    {
+        return appetite;
+    }
+    if (attribute == "speed")
+    {
+        return speed;
+    }
+    if (attribute == "stamina")
+    {
+        return stamina;
+    }
+    if (attribute == "vitality")
+    {
+        return vitality;
+    }
+    if (attribute == "X")
+    {
+        return X;
+    }
+    if (attribute == "Y")
+    {
+        return Y;
+    }
+    if (attribute == "dynamic_fitness")
+    {
+        return dynamic_fitness;
+    }
+    if (attribute == "asleep")
+    {
+        return asleep;
+    }
+
+    return "null";
 }
