@@ -1,8 +1,4 @@
 
-### [ECOSYSTEM SIMULATOR](https://sayansil.github.io/Ecosystem/)
-
----
-
 # Overview
 
 An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control ***directly controllable*** environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.
