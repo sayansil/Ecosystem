@@ -156,30 +156,30 @@ public:
     ******************/
 
     // Get base stats
-    double get_base_appetite();
-    double get_base_height();
-    double get_base_speed();
-    double get_base_stamina();
-    double get_base_vitality();
-    double get_base_weight();
+    double get_base_appetite() const;
+    double get_base_height() const;
+    double get_base_speed() const;
+    double get_base_stamina() const;
+    double get_base_vitality() const;
+    double get_base_weight() const;
 
     // Get multipliers
-    double get_height_multiplier();
-    double get_speed_multiplier();
-    double get_stamina_multiplier();
-    double get_vitality_multiplier();
-    double get_weight_multiplier();
+    double get_height_multiplier() const;
+    double get_speed_multiplier() const;
+    double get_stamina_multiplier() const;
+    double get_vitality_multiplier() const;
+    double get_weight_multiplier() const;
 
     // Get max stats
-    double get_max_height();
-    double get_max_weight();
+    double get_max_height() const;
+    double get_max_weight() const;
 
     // Get miscellaneous stats
-    double get_die_of_age_factor();
-    double get_die_of_fitness_factor();
+    double get_die_of_age_factor() const;
+    double get_die_of_fitness_factor() const;
     double get_fitness() const;
-    double get_immunity();
-    unsigned int get_gender();
+    double get_immunity() const;
+    unsigned int get_gender() const;
 
     /********************
      *  Update methods  *

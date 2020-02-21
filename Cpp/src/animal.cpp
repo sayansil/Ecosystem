@@ -110,123 +110,123 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
     evaluate_dynamic_fitness();
 }
 
-double Animal::get_base_vitality()
+double Animal::get_base_vitality() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["bv"]["start"],
-                      this->chromosome_structure["bv"]["length"],
+                      this->chromosome_structure.at("bv").at("start"),
+                      this->chromosome_structure.at("bv").at("length"),
                       theoretical_maximum_base_vitality);
 }
 
-double Animal::get_base_stamina()
+double Animal::get_base_stamina() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["bs"]["start"],
-                      this->chromosome_structure["bs"]["length"],
+                      this->chromosome_structure.at("bs").at("start"),
+                      this->chromosome_structure.at("bs").at("length"),
                       theoretical_maximum_base_stamina);
 }
 
-double Animal::get_base_speed()
+double Animal::get_base_speed() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["bp"]["start"],
-                      this->chromosome_structure["bp"]["length"],
+                      this->chromosome_structure.at("bp").at("start"),
+                      this->chromosome_structure.at("bp").at("length"),
                       theoretical_maximum_base_speed);
 }
 
-double Animal::get_base_appetite()
+double Animal::get_base_appetite() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["ba"]["start"],
-                      this->chromosome_structure["ba"]["length"],
+                      this->chromosome_structure.at("ba").at("start"),
+                      this->chromosome_structure.at("ba").at("length"),
                       theoretical_maximum_base_appetite);
 }
 
-double Animal::get_vitality_multiplier()
+double Animal::get_vitality_multiplier() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["vm"]["start"],
-                      this->chromosome_structure["vm"]["length"],
+                      this->chromosome_structure.at("vm").at("start"),
+                      this->chromosome_structure.at("vm").at("length"),
                       theoretical_maximum_vitality_multiplier);
 }
 
-double Animal::get_stamina_multiplier()
+double Animal::get_stamina_multiplier() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["sm"]["start"],
-                      this->chromosome_structure["sm"]["length"],
+                      this->chromosome_structure.at("sm").at("start"),
+                      this->chromosome_structure.at("sm").at("length"),
                       theoretical_maximum_stamina_multiplier);
 }
 
-double Animal::get_speed_multiplier()
+double Animal::get_speed_multiplier() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["pm"]["start"],
-                      this->chromosome_structure["pm"]["length"],
+                      this->chromosome_structure.at("pm").at("start"),
+                      this->chromosome_structure.at("pm").at("length"),
                       theoretical_maximum_speed_multiplier);
 }
 
-double Animal::get_max_height()
+double Animal::get_max_height() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["mh"]["start"],
-                      this->chromosome_structure["mh"]["length"],
+                      this->chromosome_structure.at("mh").at("start"),
+                      this->chromosome_structure.at("mh").at("length"),
                       theoretical_maximum_height);
 }
 
-double Animal::get_base_height()
+double Animal::get_base_height() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["bh"]["start"],
-                      this->chromosome_structure["bh"]["length"],
+                      this->chromosome_structure.at("bh").at("start"),
+                      this->chromosome_structure.at("bh").at("length"),
                       theoretical_maximum_base_height);
 }
 
-double Animal::get_height_multiplier()
+double Animal::get_height_multiplier() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["hm"]["start"],
-                      this->chromosome_structure["hm"]["length"],
+                      this->chromosome_structure.at("hm").at("start"),
+                      this->chromosome_structure.at("hm").at("length"),
                       theoretical_maximum_height_multiplier);
 }
 
-double Animal::get_max_weight()
+double Animal::get_max_weight() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["mw"]["start"],
-                      this->chromosome_structure["mw"]["length"],
+                      this->chromosome_structure.at("mw").at("start"),
+                      this->chromosome_structure.at("mw").at("length"),
                       theoretical_maximum_weight);
 }
 
-double Animal::get_base_weight()
+double Animal::get_base_weight() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["bw"]["start"],
-                      this->chromosome_structure["bw"]["length"],
+                      this->chromosome_structure.at("bw").at("start"),
+                      this->chromosome_structure.at("bw").at("length"),
                       theoretical_maximum_base_weight);
 }
 
-double Animal::get_weight_multiplier()
+double Animal::get_weight_multiplier() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["wm"]["start"],
-                      this->chromosome_structure["wm"]["length"],
+                      this->chromosome_structure.at("wm").at("start"),
+                      this->chromosome_structure.at("wm").at("length"),
                       theoretical_maximum_weight_multiplier);
 }
 
-double Animal::get_immunity()
+double Animal::get_immunity() const
 {
     return helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["im"]["start"],
-                      this->chromosome_structure["im"]["length"],
+                      this->chromosome_structure.at("im").at("start"),
+                      this->chromosome_structure.at("im").at("length"),
                       1.0);
 }
 
-unsigned int Animal::get_gender()
+unsigned int Animal::get_gender() const
 {
     return static_cast<unsigned int>(helper::get_value_from_chromosome(chromosome,
-                      this->chromosome_structure["bv"]["start"],
-                      this->chromosome_structure["bv"]["length"],
+                      this->chromosome_structure.at("bv").at("start"),
+                      this->chromosome_structure.at("bv").at("length"),
                       2.0));
 }
 
@@ -289,9 +289,16 @@ void Animal::increment_age()
                       get_max_weight());
 
     // change stats independently
-
+    double tmp = max_vitality_at_age;
     max_vitality_at_age = get_base_vitality() * ( get_vitality_multiplier() * 0.5 * pow(max_age, 0.5) *
                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_vitality())) + 1);
+    if (max_vitality_at_age != max_vitality_at_age)
+        std::cout << tmp << get_base_vitality() << ',' << get_vitality_multiplier() << max_age << '\n';
+    // else
+    // {
+    //     std::cout << max_vitality_at_age << '\n';
+    // }
+
     max_stamina_at_age = get_base_stamina() * ( get_stamina_multiplier() * 0.5 * pow(max_age, 0.5) *
                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_stamina())) + 1);
     max_speed_at_age = get_speed_multiplier() * 100 * exp((-1 / (get_speed_multiplier() * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + get_base_speed();
@@ -321,12 +328,12 @@ void Animal::eat(const double &nutrition)
     appetite = std::max(0.0, appetite - nutrition);
 }
 
-double Animal::get_die_of_age_factor()
+double Animal::get_die_of_age_factor() const
 {
     return std::min(1.0, exp(age_on_death * (static_cast<double>(age) / max_age - 1)));
 }
 
-double Animal::get_die_of_fitness_factor()
+double Animal::get_die_of_fitness_factor() const
 {
     return std::min(1.0, exp(-fitness_on_death * get_fitness()));
 }
