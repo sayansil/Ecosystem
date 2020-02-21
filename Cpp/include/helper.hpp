@@ -21,7 +21,7 @@ namespace helper
      *  Helper methods *
     ********************/
 
-    extern void display_stat(const stat_type &);
+    extern void display_stat(const STAT_TYPE &);
     extern std::string get_random_mixture(const std::string &, const std::string &);
     extern double get_value_from_chromosome(const std::string &, const unsigned int &, const unsigned int &, const double &offset);
     extern std::string random_binary(const unsigned int &);

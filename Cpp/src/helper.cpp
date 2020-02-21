@@ -76,7 +76,8 @@ namespace helper
         }
         return num / den;
     }
-    void display_stat(const stat_type& var)
+
+    void display_stat(const STAT_TYPE& var)
     {
         if(var.index() == 0)
             std::cout << "uint: " << std::get<unsigned int>(var) << ' ';
@@ -87,6 +88,7 @@ namespace helper
         if(var.index() == 3)
             std::cout << "bool: " << std::get<bool>(var) << ' ';
     }
+
     std::string get_random_mixture(const std::string& str1, const std::string &str2)
     {
         std::string str3;
@@ -111,7 +113,6 @@ namespace helper
 
     // returns 1 for the given probability
     // eg. p = 1.0 always returns 1
-
     int weighted_prob(const double& p)
     {
         std::mt19937_64 rng; rng.seed(std::random_device()());

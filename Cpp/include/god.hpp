@@ -12,6 +12,8 @@
 #include <animal.hpp>
 #include <stat_fetcher.hpp>
 
+using ANIMAL_MAP_TYPE = std::unordered_map<std::string, Animal>;
+
 class God
 {
 public:
@@ -20,7 +22,7 @@ public:
      *  Public attributes  *
     ************************/
 
-    std::unordered_map<std::string, Animal> animals;
+    ANIMAL_MAP_TYPE animals;
 
     /******************************
      *  Constructor / Destructor  *

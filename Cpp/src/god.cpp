@@ -49,18 +49,18 @@ bool God::spawnAnimal(const Animal& current_animal)
         // Add to memory
         animals[current_animal.name] = current_animal;
 
-        std::vector<std::vector<stat_type>> tmp;
-        tmp.emplace_back(std::vector<stat_type>{
-            stat_type(current_animal.name),
-            stat_type(current_animal.kind),
-            stat_type(current_animal.chromosome),
-            stat_type(current_animal.generation),
-            stat_type(current_animal.immunity),
-            stat_type(current_animal.gender),
-            stat_type(current_animal.age),
-            stat_type(current_animal.height),
-            stat_type(current_animal.weight),
-            stat_type(current_animal.static_fitness)});
+        std::vector<std::vector<STAT_TYPE>> tmp;
+        tmp.emplace_back(std::vector<STAT_TYPE>{
+            STAT_TYPE(current_animal.name),
+            STAT_TYPE(current_animal.kind),
+            STAT_TYPE(current_animal.chromosome),
+            STAT_TYPE(current_animal.generation),
+            STAT_TYPE(current_animal.immunity),
+            STAT_TYPE(current_animal.gender),
+            STAT_TYPE(current_animal.age),
+            STAT_TYPE(current_animal.height),
+            STAT_TYPE(current_animal.weight),
+            STAT_TYPE(current_animal.static_fitness)});
 
         // Add to database
         db.insertRows(tmp);

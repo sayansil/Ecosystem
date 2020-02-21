@@ -58,9 +58,9 @@ namespace stat_fetcher
         return {M, F};
     }
 
-    std::pair<stat_type, stat_type> getStatGap(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
+    std::pair<STAT_TYPE, STAT_TYPE> getStatGap(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
     {
-        stat_type low=0.0, high=0.0, current_attribute;
+        STAT_TYPE low=0.0, high=0.0, current_attribute;
         bool uninitialized = true;
         for (const auto &animal : animals)
         {
@@ -109,7 +109,7 @@ namespace stat_fetcher
     double getStatAverage(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
     {
         double average = 0.0, n = 0.0, value=0.0;
-        stat_type raw_value;
+        STAT_TYPE raw_value;
 
         // avg(n+1) = (n / (n + 1)) * avg(n) + (1 / (n + 1)) * kn
 
@@ -130,9 +130,9 @@ namespace stat_fetcher
         return average;
     }
 
-    std::vector<stat_type> getOneStat(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
+    std::vector<STAT_TYPE> getOneStat(const ANIMAL_MAP_TYPE &animals, const std::string &attribute)
     {
-        std::vector<stat_type> attributeList;
+        std::vector<STAT_TYPE> attributeList;
 
         for (const auto &animal : animals)
         {

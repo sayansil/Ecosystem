@@ -31,15 +31,15 @@ struct DatabaseManager
     *******************************/
 
     void deleteRows(const std::vector<std::string> &);
-    void insertRows(const std::vector<std::vector<stat_type>>&);
-    std::vector<std::vector<stat_type>> readRows(const std::string&, const std::vector<std::string>&);
-    void updateRows(const std::vector<std::vector<stat_type>>&);
+    void insertRows(const std::vector<std::vector<STAT_TYPE>>&);
+    std::vector<std::vector<STAT_TYPE>> readRows(const std::string&, const std::vector<std::string>&);
+    void updateRows(const std::vector<std::vector<STAT_TYPE>>&);
 
     /******************************
      *  Miscellaneous operations  *
     *******************************/
 
-    std::unordered_map<std::string, std::vector<std::vector<stat_type>>> groupByKind();
+    std::unordered_map<std::string, std::vector<std::vector<STAT_TYPE>>> groupByKind();
     void clearDatabase();
 };
 

@@ -25,7 +25,7 @@ public:
     ****************************************/
 
     std::string kind;
-    chromosome_map_type chromosome_structure;
+    CHROMOSOME_MAP_TYPE chromosome_structure;
     unsigned int chromosome_number;
 
     // Attributes related to Mating
@@ -201,7 +201,7 @@ public:
     void increment_stamina_by(const double &);
     void increment_vitality_by(const double&);
 
-    stat_type get_stat(const std::string &) const;
+    STAT_TYPE get_stat(const std::string &) const;
 };
 
 #endif // ANIMAL_HPP

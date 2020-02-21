@@ -17,7 +17,7 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
 
     nlohmann::json json_file; in >> json_file;
 
-    this->chromosome_structure  = chromosome_map_type(json_file["chromosome_structure"]);
+    this->chromosome_structure  = CHROMOSOME_MAP_TYPE(json_file["chromosome_structure"]);
     this->chromosome_number     = json_file["species_chromosome_number"];
 
     this->mating_age_start  = json_file["mating_age"]["start"];
@@ -337,7 +337,7 @@ void Animal::generate_death_factor()
     death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 
-stat_type Animal::get_stat(const std::string &attribute) const
+STAT_TYPE Animal::get_stat(const std::string &attribute) const
 {
     if (attribute == "kind")
     {
