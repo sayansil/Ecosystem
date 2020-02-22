@@ -337,7 +337,7 @@ void Animal::generate_death_factor()
     death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 
-STAT_TYPE Animal::get_stat(const std::string &attribute) const
+STAT Animal::get_stat(const std::string &attribute) const
 {
     if (attribute == "kind")
     {

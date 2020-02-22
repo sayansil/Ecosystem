@@ -13,16 +13,16 @@ void evaluation(const God &god)
     std::cout << "Average max stamina: " << stat_fetcher::getStatAverage(god.animals, "max_stamina_at_age") << '\n';
     std::cout << "Average max vitality: " << stat_fetcher::getStatAverage(god.animals, "max_vitality_at_age") << '\n';
 
-    STAT_TYPE low, high;
+    double low, high;
     std::string attribute;
 
     attribute = "age";
     std::tie(low, high) = stat_fetcher::getStatGap(god.animals, attribute);
-    std::cout << attribute << " - Lowest: " << std::get<unsigned int>(low) << " | Highest: " << std::get<unsigned int>(high) << '\n';
+    std::cout << attribute << " - Lowest: " << low << " | Highest: " << high << '\n';
 
     attribute = "generation";
     std::tie(low, high) = stat_fetcher::getStatGap(god.animals, "generation");
-    std::cout << attribute << " - Lowest: " << std::get<unsigned int>(low) << " | Highest: " << std::get<unsigned int>(high) << '\n';
+    std::cout << attribute << " - Lowest: " << low << " | Highest: " << high << '\n';
 
     std::cout << "Kind Distribution:\n";
     for (const auto &kind : stat_fetcher::getKindDistribution(god.animals))
@@ -53,7 +53,7 @@ int main()
         allah.happyNewYear();
 
         ++progressBar;
-        if (years_to_simulate%10 == 0)
+        if (years_to_simulate % 10 == 0)
             progressBar.display();
     }
 

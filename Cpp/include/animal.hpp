@@ -201,7 +201,7 @@ public:
     void increment_stamina_by(const double &);
     void increment_vitality_by(const double&);
 
-    STAT_TYPE get_stat(const std::string &) const;
+    STAT get_stat(const std::string &) const;
 };
 
 #endif // ANIMAL_HPP

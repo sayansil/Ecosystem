@@ -29,10 +29,9 @@ function(setup_ecosystem)
 endfunction()
 
 function(build_ecosystem)
-    find_package(ArrayFire)
     add_executable(ecosystem ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp ${ECOSYSTEM_SOURCES} ${ECOSYSTEM_HEADERS})
     target_include_directories(ecosystem PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(ecosystem ArrayFire::afcpu sqlite3)
+    target_link_libraries(ecosystem sqlite3)
 endfunction()
 
 function(test_arrayfire)

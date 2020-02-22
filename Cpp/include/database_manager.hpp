@@ -7,7 +7,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-
 #include <animal.hpp>
 
 struct DatabaseManager
@@ -31,15 +30,15 @@ struct DatabaseManager
     *******************************/
 
     void deleteRows(const std::vector<std::string> &);
-    void insertRows(const std::vector<std::vector<STAT_TYPE>>&);
-    std::vector<std::vector<STAT_TYPE>> readRows(const std::string&, const std::vector<std::string>&);
-    void updateRows(const std::vector<std::vector<STAT_TYPE>>&);
+    void insertRows(const std::vector<std::vector<STAT>>&);
+    std::vector<std::vector<STAT>> readRows(const std::string&, const std::vector<std::string>&);
+    void updateRows(const std::vector<std::vector<STAT>>&);
 
     /******************************
      *  Miscellaneous operations  *
     *******************************/
 
-    std::unordered_map<std::string, std::vector<std::vector<STAT_TYPE>>> groupByKind();
+    std::unordered_map<std::string, std::vector<std::vector<STAT>>> groupByKind();
     void clearDatabase();
 };
 
