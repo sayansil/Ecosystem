@@ -17,6 +17,14 @@ using DB_HEIGHT = double;
 using DB_WEIGHT = double;
 using DB_FITNESS = double;
 
+//enum class Gender : uint8_t
+//{
+//    MALE, FEMALE
+//};
+
+#define FEMALE 1
+#define MALE 0
+
 struct STAT
 {
     std::variant<unsigned int, double, std::string, bool> data;
@@ -31,6 +39,32 @@ struct STAT
     {
         return std::get<T>(data);
     }
+
+    std::ostream& operator <<(std::ostream& out)const
+    {
+        out << getString();
+        return out;
+    }
+
+    std::string getString()const
+    {
+        if(data.index() == 0)
+            return std::to_string(std::get<unsigned int>(data));
+        else if(data.index() == 1)
+            return std::to_string(std::get<double>(data));
+        else if(data.index() == 2)
+            return std::get<std::string>(data);
+        else if(data.index() == 3)
+            return std::to_string(std::get<bool>(data));
+        else
+            return "";
+    }
 };
+
+std::ostream& operator <<(std::ostream& out, const STAT& stat)
+{
+    out << stat.getString();
+    return out;
+}
 
 #endif // ECOSYSTEMTYPES_HPP

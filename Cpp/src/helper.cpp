@@ -123,6 +123,12 @@ namespace helper
         else
             return 0;
     }
+    void saveCSV(const std::string& buffer, const std::string& filename)
+    {
+        std::ofstream out; out.open(filename);
+        out.write(filename.data(), buffer.length());
+        out.close();
+    }
 };
 
 
