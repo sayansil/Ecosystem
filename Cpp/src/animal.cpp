@@ -12,58 +12,7 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
         this->name = name;
 
     const std::string filepath = "../../data/json/" + kind + ".json";
-
-    std::ifstream in(filepath);
-
-    nlohmann::json json_file; in >> json_file;
-
-    this->chromosome_structure  = CHROMOSOME_MAP_TYPE(json_file["chromosome_structure"]);
-    this->chromosome_number     = json_file["species_chromosome_number"];
-
-    this->mating_age_start  = json_file["mating_age"]["start"];
-    this->mating_age_end    = json_file["mating_age"]["end"];
-    this->max_age           = json_file["species_max_age"];
-    this->offsprings_factor = json_file["offsprings_factor"];
-
-    this->mutation_probability = json_file["mutation_probability"];
-    this->conceiving_probability    = json_file["conceiving_probability"];
-
-    this->age_on_death                  = json_file["species_age_on_death"];
-    this->fitness_on_death              = json_file["species_fitness_on_death"];
-    this->age_fitness_on_death_ratio    = json_file["species_age_fitness_on_death_ratio"];
-
-    this->height_on_speed       = json_file["species_height_on_speed"];
-    this->height_on_stamina     = json_file["species_height_on_stamina"];
-    this->height_on_vitality    = json_file["species_height_on_vitality"];
-    this->weight_on_speed       = json_file["species_weight_on_speed"];
-    this->weight_on_stamina     = json_file["species_weight_on_stamina"];
-    this->weight_on_vitality    = json_file["species_weight_on_vitality"];
-
-    this->vitality_on_appetite  = json_file["species_vitality_on_appetite"];
-    this->vitality_on_speed     = json_file["species_vitality_on_speed"];
-    this->stamina_on_appetite   = json_file["species_stamina_on_appetite"];
-    this->stamina_on_speed      = json_file["species_stamina_on_speed"];
-
-    this->theoretical_maximum_base_appetite = json_file["species_theoretical_maximum_base_appetite"];
-    this->theoretical_maximum_base_height   = json_file["species_theoretical_maximum_base_height"];
-    this->theoretical_maximum_base_speed    = json_file["species_theoretical_maximum_base_speed"];
-    this->theoretical_maximum_base_stamina  = json_file["species_theoretical_maximum_base_stamina"];
-    this->theoretical_maximum_base_vitality = json_file["species_theoretical_maximum_base_vitality"];
-    this->theoretical_maximum_base_weight   = json_file["species_theoretical_maximum_base_weight"];
-
-    this->theoretical_maximum_height_multiplier     = json_file["species_theoretical_maximum_height_multiplier"];
-    this->theoretical_maximum_speed_multiplier      = json_file["species_theoretical_maximum_speed_multiplier"];
-    this->theoretical_maximum_stamina_multiplier    = json_file["species_theoretical_maximum_stamina_multiplier"];
-    this->theoretical_maximum_vitality_multiplier   = json_file["species_theoretical_maximum_vitality_multiplier"];
-    this->theoretical_maximum_weight_multiplier     = json_file["species_theoretical_maximum_weight_multiplier"];
-
-    this->theoretical_maximum_height    = json_file["species_theoretical_maximum_height"];
-    this->theoretical_maximum_speed     = json_file["species_theoretical_maximum_speed"];
-    this->theoretical_maximum_weight    = json_file["species_theoretical_maximum_weight"];
-
-    this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
-
-    in.close();
+    init_from_json(filepath);
 
     if(chromosome.length() == 0)
     {
@@ -108,6 +57,62 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
 
     evaluate_static_fitness();
     evaluate_dynamic_fitness();
+}
+
+void Animal::init_from_json(const std::string &filepath)
+{
+    std::ifstream in(filepath);
+
+    nlohmann::json json_file;
+    in >> json_file;
+
+    this->chromosome_structure = CHROMOSOME_MAP_TYPE(json_file["chromosome_structure"]);
+    this->chromosome_number = json_file["species_chromosome_number"];
+
+    this->mating_age_start = json_file["mating_age"]["start"];
+    this->mating_age_end = json_file["mating_age"]["end"];
+    this->max_age = json_file["species_max_age"];
+    this->offsprings_factor = json_file["offsprings_factor"];
+
+    this->mutation_probability = json_file["mutation_probability"];
+    this->conceiving_probability = json_file["conceiving_probability"];
+
+    this->age_on_death = json_file["species_age_on_death"];
+    this->fitness_on_death = json_file["species_fitness_on_death"];
+    this->age_fitness_on_death_ratio = json_file["species_age_fitness_on_death_ratio"];
+
+    this->height_on_speed = json_file["species_height_on_speed"];
+    this->height_on_stamina = json_file["species_height_on_stamina"];
+    this->height_on_vitality = json_file["species_height_on_vitality"];
+    this->weight_on_speed = json_file["species_weight_on_speed"];
+    this->weight_on_stamina = json_file["species_weight_on_stamina"];
+    this->weight_on_vitality = json_file["species_weight_on_vitality"];
+
+    this->vitality_on_appetite = json_file["species_vitality_on_appetite"];
+    this->vitality_on_speed = json_file["species_vitality_on_speed"];
+    this->stamina_on_appetite = json_file["species_stamina_on_appetite"];
+    this->stamina_on_speed = json_file["species_stamina_on_speed"];
+
+    this->theoretical_maximum_base_appetite = json_file["species_theoretical_maximum_base_appetite"];
+    this->theoretical_maximum_base_height = json_file["species_theoretical_maximum_base_height"];
+    this->theoretical_maximum_base_speed = json_file["species_theoretical_maximum_base_speed"];
+    this->theoretical_maximum_base_stamina = json_file["species_theoretical_maximum_base_stamina"];
+    this->theoretical_maximum_base_vitality = json_file["species_theoretical_maximum_base_vitality"];
+    this->theoretical_maximum_base_weight = json_file["species_theoretical_maximum_base_weight"];
+
+    this->theoretical_maximum_height_multiplier = json_file["species_theoretical_maximum_height_multiplier"];
+    this->theoretical_maximum_speed_multiplier = json_file["species_theoretical_maximum_speed_multiplier"];
+    this->theoretical_maximum_stamina_multiplier = json_file["species_theoretical_maximum_stamina_multiplier"];
+    this->theoretical_maximum_vitality_multiplier = json_file["species_theoretical_maximum_vitality_multiplier"];
+    this->theoretical_maximum_weight_multiplier = json_file["species_theoretical_maximum_weight_multiplier"];
+
+    this->theoretical_maximum_height = json_file["species_theoretical_maximum_height"];
+    this->theoretical_maximum_speed = json_file["species_theoretical_maximum_speed"];
+    this->theoretical_maximum_weight = json_file["species_theoretical_maximum_weight"];
+
+    this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
+
+    in.close();
 }
 
 double Animal::get_base_vitality() const

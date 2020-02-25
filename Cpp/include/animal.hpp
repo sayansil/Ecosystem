@@ -185,6 +185,8 @@ public:
      *  Update methods  *
     *********************/
 
+    void init_from_json(const std::string &);
+
     // Generate fitness values
     void evaluate_dynamic_fitness();
     void evaluate_static_fitness();
