@@ -13,9 +13,6 @@
 #include <helper.hpp>
 #include <nlohmann/json.hpp>
 
-#define MALE 0
-#define FEMALE 1
-
 class Animal
 {
 public:
@@ -203,7 +200,7 @@ public:
     void increment_stamina_by(const double &);
     void increment_vitality_by(const double&);
 
-    STAT_TYPE get_stat(const std::string &) const;
+    STAT get_stat(const std::string &) const;
 };
 
 #endif // ANIMAL_HPP

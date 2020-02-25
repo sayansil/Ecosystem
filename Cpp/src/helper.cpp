@@ -77,16 +77,16 @@ namespace helper
         return num / den;
     }
 
-    void display_stat(const STAT_TYPE& var)
+    void display_stat(const STAT& var)
     {
-        if(var.index() == 0)
-            std::cout << "uint: " << std::get<unsigned int>(var) << ' ';
-        if(var.index() == 1)
-            std::cout << "double: " << std::get<double>(var) << ' ';
-        if(var.index() == 2)
-            std::cout << "string: " << std::get<std::string>(var) << ' ';
-        if(var.index() == 3)
-            std::cout << "bool: " << std::get<bool>(var) << ' ';
+        if(var.data.index() == 0)
+            std::cout << "uint: " << static_cast<unsigned int>(var) << ' ';
+        if(var.data.index() == 1)
+            std::cout << "double: " << static_cast<double>(var) << ' ';
+        if(var.data.index() == 2)
+            std::cout << "string: " << static_cast<std::string>(var) << ' ';
+        if(var.data.index() == 3)
+            std::cout << "bool: " << static_cast<bool>(var) << ' ';
     }
 
     std::string get_random_mixture(const std::string& str1, const std::string &str2)
@@ -122,6 +122,12 @@ namespace helper
             return 1;
         else
             return 0;
+    }
+    void saveCSV(const std::string& buffer, const std::string& filename)
+    {
+        std::ofstream out; out.open(filename);
+        out.write(filename.data(), buffer.length());
+        out.close();
     }
 };
 
