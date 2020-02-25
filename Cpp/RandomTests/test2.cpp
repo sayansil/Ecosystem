@@ -43,7 +43,7 @@ int main()
 
     ProgressBar progressBar(years_to_simulate, 70, '#', '-');
 
-    while (initial_animal_count--) allah.spawnAnimal(Animal("deer"));
+    while (initial_animal_count--) allah.spawnAnimal(Animal("deer", 1));
 
     std::cout << "\n\nINITIAL EVALUATION:\n\n";
     evaluation(allah);

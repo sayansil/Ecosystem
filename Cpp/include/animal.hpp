@@ -143,10 +143,12 @@ public:
     Animal() = default;
     Animal(
         const std::string& kind,
+        const unsigned int& age = 1,
         const std::string& chromosome = "",
         const unsigned int& generation = 1,
         const std::string& name = "",
-        const std::pair<unsigned int, unsigned int>& XY = helper::random_location());
+        const std::pair<unsigned int, unsigned int>& XY = helper::random_location(),
+        const nlohmann::json& species_constants = nlohmann::json());
 
     /*****************
      *  Get methods  *
@@ -182,7 +184,7 @@ public:
      *  Update methods  *
     *********************/
 
-    void init_from_json(const std::string &);
+    void init_from_json(const nlohmann::json &);
 
     // Generate fitness values
     void evaluate_dynamic_fitness();

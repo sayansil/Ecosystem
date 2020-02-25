@@ -1,6 +1,6 @@
 #include <animal.hpp>
 
-Animal::Animal(const std::string& kind, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY)
+Animal::Animal(const std::string& kind, const unsigned int& age, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY, const nlohmann::json& species_constants)
 {
     this->kind = kind;
 
@@ -11,8 +11,22 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
     else
         this->name = name;
 
-    const std::string filepath = "../../data/json/" + kind + "/current.json";
-    init_from_json(filepath);
+    if (species_constants.empty())
+    {
+        const std::string filepath = "../../data/json/" + kind + "/base.json";
+
+        std::ifstream in(filepath);
+        nlohmann::json json_file;
+        in >> json_file;
+
+        init_from_json(json_file);
+
+        in.close();
+    }
+    else
+    {
+        init_from_json(species_constants);
+    }
 
     if(chromosome.length() == 0)
     {
@@ -35,7 +49,7 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
     this->generation    = generation;
     this->gender        = get_gender();
 
-    this->age = 0;
+    this->age = age;
 
     this->max_vitality_at_age   = get_base_vitality();
     this->max_stamina_at_age    = get_base_stamina();
@@ -59,13 +73,8 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
     evaluate_dynamic_fitness();
 }
 
-void Animal::init_from_json(const std::string &filepath)
+void Animal::init_from_json(const nlohmann::json &json_file)
 {
-    std::ifstream in(filepath);
-
-    nlohmann::json json_file;
-    in >> json_file;
-
     this->chromosome_structure = CHROMOSOME_MAP_TYPE(json_file["chromosome_structure"]);
     this->chromosome_number = json_file["species_chromosome_number"];
 
@@ -111,8 +120,6 @@ void Animal::init_from_json(const std::string &filepath)
     this->theoretical_maximum_weight = json_file["species_theoretical_maximum_weight"];
 
     this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
-
-    in.close();
 }
 
 double Animal::get_base_vitality() const

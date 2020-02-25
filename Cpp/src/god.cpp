@@ -99,7 +99,7 @@ void God::killAnimals(const std::vector<std::string> &names)
         animals.erase(lamb_to_slaughter);
 }
 
-bool God::mate(const std::string &name1, const std::string &name2)
+bool God::mate(const std::string &name1, const std::string &name2, const nlohmann::json& species_constants)
 {
     // Animal objects of 2 parents
     const auto& parent1 = animals[name1];
@@ -117,11 +117,13 @@ bool God::mate(const std::string &name1, const std::string &name2)
     if(helper::weighted_prob(parent1.conceiving_probability))
     {
         return spawnAnimal(Animal(parent1.kind,
+                                1,
                                 child_chromosome,
                                 std::max(parent1.generation, parent2.generation) + 1,
                                 "",
                                 {(parent1.X + parent2.X) / 2,
-                                (parent1.Y + parent2.Y) / 2}));
+                                (parent1.Y + parent2.Y) / 2},
+                                species_constants));
     }
 
     return false;
@@ -163,16 +165,16 @@ void God::update_species(const std::string &kind)
     current_out.close();
 }
 
-double killerFunction(const double &x, const double &s)
+double God::killerFunction(const double& index, const double& size) const
 {
     // return std::exp(-x / (s / 10.0))
     // return pow(x / s, 1 / 1.75)
-    return 1 - (1 / (1 + exp(-(10 * x - s) / pow(s, 0.5))));
+    return 1 - (1 / (1 + exp(-(10 * index - size) / pow(size, 0.5))));
 }
 
-int creatorFunction(const double &x, const double &s)
+int God::creatorFunction(const double& value, const double& factor) const
 {
-    return floor(1 - 1 / (s * (x - 1)));
+    return floor(1 - 1 / (factor * (value - 1)));
 }
 
 void God::happyNewYear()
@@ -206,7 +208,7 @@ void God::happyNewYear()
     // Mark the animals in animal_vec for death
 
     int tmp_i = 0;
-    std::for_each(std::execution::par, animals_vec.begin(), animals_vec.end(), [&tmp_i, &animals_vec](std::pair<Animal, double> &x) {
+    std::for_each(std::execution::par, animals_vec.begin(), animals_vec.end(), [this, &tmp_i, &animals_vec](std::pair<Animal, double> &x) {
         x.second = helper::weighted_prob(
             // killerFunction(x.first.get_fitness(), animals_vec.size())
             killerFunction(tmp_i++, animals_vec.size())
@@ -251,6 +253,12 @@ void God::happyNewYear()
 
         update_species(animal_tuple.first);
 
+        const std::string current_filepath = "../../data/json/" + animal_tuple.first + "/current.json";
+        std::ifstream current_in(current_filepath);
+        nlohmann::json species_constants;
+        current_in >> species_constants;
+        current_in.close();
+
         auto& animal_list = animal_tuple.second;
         std::vector<Animal> males, females;
         for(const auto& animal : animal_list)
@@ -283,7 +291,7 @@ void God::happyNewYear()
             int n_children = creatorFunction(dis_children(rng), parent1.offsprings_factor);
             while(n_children--)
             {
-                if (mate(parent1.name, parent2.name))
+                if (mate(parent1.name, parent2.name, species_constants))
                 {
                     newborns++;
                 }

@@ -44,6 +44,10 @@ public:
     std::vector<Animal> animalSort(bool (*comp)(const Animal &, const Animal &));
     std::unordered_map<std::string, std::vector<Animal>> animalSortByKind(bool (*comp)(const Animal &, const Animal &));
 
+protected:
+    double killerFunction(const double &index, const double &size) const;
+    int creatorFunction(const double &value, const double &factor) const;
+
 private:
 
     /************************
@@ -57,7 +61,7 @@ private:
      *         Unavailable to users         *
     *****************************************/
 
-    bool mate(const std::string&, const std::string&);
+    bool mate(const std::string&, const std::string&, const nlohmann::json& = nlohmann::json());
     void update_species(const std::string &);
 };
 
