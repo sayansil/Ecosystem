@@ -11,7 +11,7 @@ Animal::Animal(const std::string& kind, const std::string& chromosome, const uns
     else
         this->name = name;
 
-    const std::string filepath = "../../data/json/" + kind + ".json";
+    const std::string filepath = "../../data/json/" + kind + "/current.json";
     init_from_json(filepath);
 
     if(chromosome.length() == 0)
@@ -69,8 +69,8 @@ void Animal::init_from_json(const std::string &filepath)
     this->chromosome_structure = CHROMOSOME_MAP_TYPE(json_file["chromosome_structure"]);
     this->chromosome_number = json_file["species_chromosome_number"];
 
-    this->mating_age_start = json_file["mating_age"]["start"];
-    this->mating_age_end = json_file["mating_age"]["end"];
+    this->mating_age_start = json_file["mating_age_start"];
+    this->mating_age_end = json_file["mating_age_end"];
     this->max_age = json_file["species_max_age"];
     this->offsprings_factor = json_file["offsprings_factor"];
 

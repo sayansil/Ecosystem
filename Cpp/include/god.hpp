@@ -36,6 +36,7 @@ public:
     ***************************************/
 
     void catastrophe();
+    void reset_species(const std::string &);
     void happyNewYear();
     void killAnimals(const std::vector<std::string> &);
     bool spawnAnimal(const Animal&);
@@ -57,6 +58,7 @@ private:
     *****************************************/
 
     bool mate(const std::string&, const std::string&);
+    void update_species(const std::string &);
 };
 
 #endif // GOD_HPP

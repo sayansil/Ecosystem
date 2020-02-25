@@ -15,6 +15,24 @@ void God::catastrophe()
     animals.clear();
 }
 
+void God::reset_species(const std::string &kind)
+{
+
+    const std::string base_filepath = "../../data/json/" + kind + "/base.json";
+    const std::string current_filepath = "../../data/json/" + kind + "/current.json";
+
+    std::ifstream base_in(base_filepath);
+    std::ofstream current_out(current_filepath);
+
+    nlohmann::json base;
+    base_in >> base;
+
+    current_out << base;
+
+    base_in.close();
+    current_out.close();
+}
+
 bool isNormalChild(const Animal &animal)
 {
     if (animal.height == 0 || animal.height != animal.height ||
@@ -109,6 +127,42 @@ bool God::mate(const std::string &name1, const std::string &name2)
     return false;
 }
 
+double updateStat(double base, double p_range)
+{
+    std::mt19937_64 rng; rng.seed(std::random_device()());
+    std::uniform_real_distribution<double> dis(0.0, p_range * 2);
+    const double x = p_range - dis(rng);
+
+    return base * (1 + x);
+}
+
+void God::update_species(const std::string &kind)
+{
+    const std::string current_filepath = "../../data/json/" + kind + "/current.json";
+    const std::string modify_filepath = "../../data/json/" + kind + "/modify.json";
+
+    std::ifstream current_in(current_filepath);
+    std::ifstream modify_in(modify_filepath);
+
+    nlohmann::json current, modify;
+    current_in >> current;
+    modify_in >> modify;
+
+    for (const auto [key, value]: modify.items())
+    {
+        current[key] = updateStat((double)current[key], (double)value);
+    }
+
+    current_in.close();
+    modify_in.close();
+
+    std::ofstream current_out(current_filepath);
+
+    current_out << current;
+
+    current_out.close();
+}
+
 double killerFunction(const double &x, const double &s)
 {
     // return std::exp(-x / (s / 10.0))
@@ -193,6 +247,10 @@ void God::happyNewYear()
     int index_parent1, index_parent2;
     for(auto& animal_tuple : animalsByKind)
     {
+        // Mating animals of kind animal_tuple.first
+
+        update_species(animal_tuple.first);
+
         auto& animal_list = animal_tuple.second;
         std::vector<Animal> males, females;
         for(const auto& animal : animal_list)
