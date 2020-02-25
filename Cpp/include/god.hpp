@@ -23,6 +23,8 @@ public:
     ************************/
 
     ANIMAL_MAP_TYPE animals;
+    unsigned int recent_deaths;
+    unsigned int recent_births;
 
     /******************************
      *  Constructor / Destructor  *

@@ -169,7 +169,9 @@ double God::killerFunction(const double& index, const double& size) const
 {
     // return std::exp(-x / (s / 10.0))
     // return pow(x / s, 1 / 1.75)
-    return 1 - (1 / (1 + exp(-(10 * index - size) / pow(size, 0.5))));
+    // return 1 - (1 / (1 + exp(-(10 * index - size) / pow(size, 0.5))));
+    const double &ratio = 1.0 / 10.0;
+    return 1 - (1 / (1 + exp((ratio * size - index) / (ratio * pow(size, 0.5)))));
 }
 
 int God::creatorFunction(const double& value, const double& factor) const
@@ -179,12 +181,12 @@ int God::creatorFunction(const double& value, const double& factor) const
 
 void God::happyNewYear()
 {
+    recent_births = 0;
+    recent_deaths = 0;
 
     /************************************
      *       Annual Killing Begins      *
      ************************************/
-
-    int dead = 0;
 
     // Vector for [ (Animal, death_factor) ]
     std::vector<std::pair<Animal, double>>
@@ -228,7 +230,7 @@ void God::happyNewYear()
         }
     }
 
-    dead = animals_to_be_slaughtered.size();
+    recent_deaths = animals_to_be_slaughtered.size();
     killAnimals(animals_to_be_slaughtered);
 
     animals_vec.clear(); animals_vec.shrink_to_fit();
@@ -239,8 +241,6 @@ void God::happyNewYear()
     /***********************************
      *       Annual Mating Begins      *
      ***********************************/
-
-    int newborns = 0;
 
     std::unordered_map<std::string, std::vector<Animal>> animalsByKind;
     for(const auto& animal : animals)
@@ -293,7 +293,7 @@ void God::happyNewYear()
             {
                 if (mate(parent1.name, parent2.name, species_constants))
                 {
-                    newborns++;
+                    recent_births++;
                 }
             }
 

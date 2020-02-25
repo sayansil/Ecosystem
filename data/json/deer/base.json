@@ -1,8 +1,8 @@
 {
     "species_max_age": 30,
     "species_chromosome_number": 256,
-    "species_age_on_death": 5,
-    "species_fitness_on_death": 100,
+    "species_age_on_death": 3,
+    "species_fitness_on_death": 70,
     "species_age_fitness_on_death_ratio": 9,
     "species_height_on_vitality": 0.1,
     "species_weight_on_vitality": 0.25,
@@ -30,70 +30,25 @@
     "species_theoretical_maximum_speed_multiplier": 1,
     "species_theoretical_maximum_base_appetite": 10000,
     "chromosome_structure": {
-        "bv": {
-            "start": 0,
-            "length": 10
-        },
-        "vm": {
-            "start": 10,
-            "length": 8
-        },
-        "bs": {
-            "start": 18,
-            "length": 10
-        },
-        "sm": {
-            "start": 28,
-            "length": 8
-        },
-        "mh": {
-            "start": 36,
-            "length": 10
-        },
-        "mw": {
-            "start": 46,
-            "length": 10
-        },
-        "bh": {
-            "start": 56,
-            "length": 10
-        },
-        "bw": {
-            "start": 66,
-            "length": 10
-        },
-        "hm": {
-            "start": 76,
-            "length": 8
-        },
-        "wm": {
-            "start": 84,
-            "length": 8
-        },
-        "bp": {
-            "start": 92,
-            "length": 10
-        },
-        "pm": {
-            "start": 102,
-            "length": 8
-        },
-        "ba": {
-            "start": 110,
-            "length": 10
-        },
-        "im": {
-            "start": 120,
-            "length": 10
-        },
-        "gn": {
-            "start": 130,
-            "length": 1
-        }
+        "bv": {"start": 0, "length": 10},
+        "vm": {"start": 10, "length": 8},
+        "bs": {"start": 18, "length": 10},
+        "sm": {"start": 28, "length": 8},
+        "mh": {"start": 36, "length": 10},
+        "mw": {"start": 46, "length": 10},
+        "bh": {"start": 56, "length": 10},
+        "bw": {"start": 66, "length": 10},
+        "hm": {"start": 76, "length": 8},
+        "wm": {"start": 84, "length": 8},
+        "bp": {"start": 92, "length": 10},
+        "pm": {"start": 102, "length": 8},
+        "ba": {"start": 110, "length": 10},
+        "im": {"start": 120, "length": 10},
+        "gn": {"start": 130, "length": 1}
     },
     "mating_age_start": 10,
     "mating_age_end": 25,
     "mutation_probability": 0.01,
-    "conceiving_probability": 0.8,
+    "conceiving_probability": 0.95,
     "offsprings_factor": 10.0
 }

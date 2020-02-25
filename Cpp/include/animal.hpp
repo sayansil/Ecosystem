@@ -143,7 +143,7 @@ public:
     Animal() = default;
     Animal(
         const std::string& kind,
-        const unsigned int& age = 1,
+        const unsigned int& age = 0,
         const std::string& chromosome = "",
         const unsigned int& generation = 1,
         const std::string& name = "",

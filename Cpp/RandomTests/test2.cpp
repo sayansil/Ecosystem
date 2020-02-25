@@ -5,6 +5,8 @@
 void evaluation(const God &god)
 {
     std::cout << "Population: " << stat_fetcher::getPopulation(god.animals) << '\n';
+    std::cout << "Deaths: " << god.recent_deaths << '\n';
+    std::cout << "Births: " << god.recent_births << '\n';
 
     std::cout << "Average height: " << stat_fetcher::getStatAverage(god.animals, "height") << '\n';
     std::cout << "Average weight: " << stat_fetcher::getStatAverage(god.animals, "weight") << '\n';
@@ -43,19 +45,33 @@ int main()
 
     ProgressBar progressBar(years_to_simulate, 70, '#', '-');
 
-    while (initial_animal_count--) allah.spawnAnimal(Animal("deer", 1));
+    while (initial_animal_count--) allah.spawnAnimal(Animal("deer", 10));
 
     std::cout << "\n\nINITIAL EVALUATION:\n\n";
     evaluation(allah);
 
     std::cout << "Simulating " << years_to_simulate << " years\n";
-    while (years_to_simulate--)
+    unsigned int i = 0;
+    while (i++ < years_to_simulate)
     {
         allah.happyNewYear();
 
         ++progressBar;
-        if (years_to_simulate % 10 == 0)
+        if (i % 10 == 0)
             progressBar.display();
+
+        // evaluation(allah);
+
+        if (allah.animals.size() == 0)
+        {
+            std::cout << "Population extinct at year #" << i << "\n";
+            break;
+        }
+        if (allah.animals.size() >= 35000)
+        {
+            std::cout << "Overpopulated at year #" << i << "\n";
+            break;
+        }
     }
 
     std::cout << "\n\nFINAL EVALUATION:\n\n";

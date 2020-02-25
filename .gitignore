@@ -3,3 +3,4 @@ python/*
 __pycache__/*
 *.pyc
 .vscode/*
+data/json/**/current.json

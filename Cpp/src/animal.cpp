@@ -49,7 +49,7 @@ Animal::Animal(const std::string& kind, const unsigned int& age, const std::stri
     this->generation    = generation;
     this->gender        = get_gender();
 
-    this->age = age;
+    this->age = age - 1;
 
     this->max_vitality_at_age   = get_base_vitality();
     this->max_stamina_at_age    = get_base_stamina();
