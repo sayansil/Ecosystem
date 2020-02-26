@@ -5,6 +5,10 @@
 void init_csv(const std::string &kind)
 {
     const std::vector<std::string> columns({
+        "male",
+        "female",
+        "matable_male",
+        "matable_female",
         "conceiving_probability",
         "mating_age_start",
         "mating_age_end",
@@ -40,7 +44,6 @@ void init_csv(const std::string &kind)
         "theoretical_maximum_weight_multiplier",
         "sleep_restore_factor",
 
-        "average_gender",
         "average_generation",
         "average_immunity",
         "average_age",
@@ -52,8 +55,7 @@ void init_csv(const std::string &kind)
         "average_max_vitality_at_age",
         "average_static_fitness",
         "average_death_factor",
-        "average_vision_radius"
-    });
+        "average_vision_radius"});
     std::string header = "";
     for (const auto &column : columns)
         header = header + ',' + column;
@@ -65,6 +67,10 @@ void init_csv(const std::string &kind)
 std::string get_row(std::unordered_map<std::string, double> stat_display_map)
 {
     std::vector<double> row({
+        stat_display_map["male"],
+        stat_display_map["female"],
+        stat_display_map["matable_male"],
+        stat_display_map["matable_female"],
         stat_display_map["conceiving_probability"],
         stat_display_map["mating_age_start"],
         stat_display_map["mating_age_end"],
@@ -99,7 +105,6 @@ std::string get_row(std::unordered_map<std::string, double> stat_display_map)
         stat_display_map["theoretical_maximum_vitality_multiplier"],
         stat_display_map["theoretical_maximum_weight_multiplier"],
         stat_display_map["sleep_restore_factor"],
-        stat_display_map["average_gender"],
         stat_display_map["average_generation"],
         stat_display_map["average_immunity"],
         stat_display_map["average_age"],
@@ -182,7 +187,7 @@ int main()
 
         // evaluation(allah);
 
-        std::string row = get_row(stat_fetcher::getAllStatsOfKind(allah.animals, "deer"));
+        std::string row = get_row(stat_fetcher::getAllStats(allah.animals, "deer"));
         helper::appendToCSV(row, "../../data/csv/yearly_deer.csv");
 
         if (allah.animals.size() == 0)
