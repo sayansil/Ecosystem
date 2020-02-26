@@ -31,8 +31,9 @@ namespace helper
     extern std::string to_binary(const unsigned int&);
     extern unsigned int to_decimal(const std::string&);
     extern double weighted_average(const std::vector<double>& values, const std::vector<double>& weights);
-    extern int weighted_prob(const double&);
-    extern void saveCSV(const std::string&, const std::string&);
+    extern int weighted_prob(const double &);
+    extern void saveCSV(const std::string &, const std::string &);
+    extern void appendToCSV(const std::string &, const std::string &);
 };
 
 #endif // HELPER_HPP

@@ -17,6 +17,7 @@ namespace stat_fetcher
     extern double getGenderRatio(const ANIMAL_MAP_TYPE &);
     extern std::pair<unsigned int, unsigned int> getMatablePopulation(const ANIMAL_MAP_TYPE &);
     extern unsigned int getPopulation(const ANIMAL_MAP_TYPE &);
-}; // namespace stat_fetcher
+    extern std::unordered_map<std::string, double> getAllStatsOfKind(const ANIMAL_MAP_TYPE &, const std::string &);
+    }; // namespace stat_fetcher
 
 #endif // STAT_FETCHER_HPP

@@ -127,8 +127,7 @@ namespace stat_fetcher
 
         for (const auto &animal: animals)
         {
-            value = animal.second.get_stat(attribute);
-            average = (n / (n + 1)) * average + (value / (n + 1));
+            average = (n / (n + 1)) * average + ((double)animal.second.get_stat(attribute) / (n + 1));
             n++;
         }
 
@@ -146,4 +145,87 @@ namespace stat_fetcher
 
         return attributeList;
     }
+
+    std::unordered_map<std::string, double> getAllStatsOfKind(const ANIMAL_MAP_TYPE &animals, const std::string &kind)
+    {
+        std::unordered_map<std::string, double> stat_display_map;
+        unsigned int tmp_i;
+        double tmp_d;
+
+        unsigned int count = 0;
+
+        stat_display_map["average_gender"] = 0.0;
+        stat_display_map["average_generation"] = 0.0;
+        stat_display_map["average_immunity"] = 0.0;
+        stat_display_map["average_age"] = 0.0;
+        stat_display_map["average_height"] = 0.0;
+        stat_display_map["average_weight"] = 0.0;
+        stat_display_map["average_max_appetite_at_age"] = 0.0;
+        stat_display_map["average_max_speed_at_age"] = 0.0;
+        stat_display_map["average_max_stamina_at_age"] = 0.0;
+        stat_display_map["average_max_vitality_at_age"] = 0.0;
+        stat_display_map["average_static_fitness"] = 0.0;
+        stat_display_map["average_death_factor"] = 0.0;
+        stat_display_map["average_vision_radius"] = 0.0;
+
+        for (const auto &animal: animals)
+        {
+            if(animal.second.kind == kind)
+            {
+                tmp_d = animal.second.get_stat("conceiving_probability"); stat_display_map["conceiving_probability"] = tmp_d;
+                tmp_i = animal.second.get_stat("mating_age_start"); stat_display_map["mating_age_start"] = (double)tmp_i;
+                tmp_i = animal.second.get_stat("mating_age_end"); stat_display_map["mating_age_end"] = (double)tmp_i;
+                tmp_i = animal.second.get_stat("max_age"); stat_display_map["max_age"] = (double)tmp_i;
+                tmp_d = animal.second.get_stat("mutation_probability"); stat_display_map["mutation_probability"] = tmp_d;
+                tmp_d = animal.second.get_stat("offsprings_factor"); stat_display_map["offsprings_factor"] = tmp_d;
+                tmp_d = animal.second.get_stat("age_on_death"); stat_display_map["age_on_death"] = tmp_d;
+                tmp_d = animal.second.get_stat("fitness_on_death"); stat_display_map["fitness_on_death"] = tmp_d;
+                tmp_d = animal.second.get_stat("age_fitness_on_death_ratio"); stat_display_map["age_fitness_on_death_ratio"] = tmp_d;
+                tmp_d = animal.second.get_stat("height_on_speed"); stat_display_map["height_on_speed"] = tmp_d;
+                tmp_d = animal.second.get_stat("height_on_stamina"); stat_display_map["height_on_stamina"] = tmp_d;
+                tmp_d = animal.second.get_stat("height_on_vitality"); stat_display_map["height_on_vitality"] = tmp_d;
+                tmp_d = animal.second.get_stat("weight_on_speed"); stat_display_map["weight_on_speed"] = tmp_d;
+                tmp_d = animal.second.get_stat("weight_on_stamina"); stat_display_map["weight_on_stamina"] = tmp_d;
+                tmp_d = animal.second.get_stat("weight_on_vitality"); stat_display_map["weight_on_vitality"] = tmp_d;
+                tmp_d = animal.second.get_stat("vitality_on_appetite"); stat_display_map["vitality_on_appetite"] = tmp_d;
+                tmp_d = animal.second.get_stat("vitality_on_speed"); stat_display_map["vitality_on_speed"] = tmp_d;
+                tmp_d = animal.second.get_stat("stamina_on_appetite"); stat_display_map["stamina_on_appetite"] = tmp_d;
+                tmp_d = animal.second.get_stat("stamina_on_speed"); stat_display_map["stamina_on_speed"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_base_appetite"); stat_display_map["theoretical_maximum_base_appetite"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_base_height"); stat_display_map["theoretical_maximum_base_height"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_base_speed"); stat_display_map["theoretical_maximum_base_speed"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_base_stamina"); stat_display_map["theoretical_maximum_base_stamina"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_base_vitality"); stat_display_map["theoretical_maximum_base_vitality"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_base_weight"); stat_display_map["theoretical_maximum_base_weight"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_height"); stat_display_map["theoretical_maximum_height"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_speed"); stat_display_map["theoretical_maximum_speed"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_weight"); stat_display_map["theoretical_maximum_weight"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_height_multiplier"); stat_display_map["theoretical_maximum_height_multiplier"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_speed_multiplier"); stat_display_map["theoretical_maximum_speed_multiplier"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_stamina_multiplier"); stat_display_map["theoretical_maximum_stamina_multiplier"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_vitality_multiplier"); stat_display_map["theoretical_maximum_vitality_multiplier"] = tmp_d;
+                tmp_d = animal.second.get_stat("theoretical_maximum_weight_multiplier"); stat_display_map["theoretical_maximum_weight_multiplier"] = tmp_d;
+                tmp_d = animal.second.get_stat("sleep_restore_factor"); stat_display_map["sleep_restore_factor"] = tmp_d;
+
+                tmp_i = animal.second.get_stat("gender"); stat_display_map["average_gender"] = (count / (count + 1)) * stat_display_map["average_gender"] + ((double)tmp_i / (count + 1));
+                tmp_i = animal.second.get_stat("generation"); stat_display_map["average_generation"] = (count / (count + 1)) * stat_display_map["average_generation"] + ((double)tmp_i / (count + 1));
+                tmp_d = animal.second.get_stat("immunity"); stat_display_map["average_immunity"] = (count / (count + 1)) * stat_display_map["average_immunity"] + (tmp_d / (count + 1));
+                tmp_i = animal.second.get_stat("age"); stat_display_map["average_age"] = (count / (count + 1)) * stat_display_map["average_age"] + ((double)tmp_i / (count + 1));
+                tmp_d = animal.second.get_stat("height"); stat_display_map["average_height"] = (count / (count + 1)) * stat_display_map["average_height"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("weight"); stat_display_map["average_weight"] = (count / (count + 1)) * stat_display_map["average_weight"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("max_appetite_at_age"); stat_display_map["average_max_appetite_at_age"] = (count / (count + 1)) * stat_display_map["average_max_appetite_at_age"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("max_speed_at_age"); stat_display_map["average_max_speed_at_age"] = (count / (count + 1)) * stat_display_map["average_max_speed_at_age"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("max_stamina_at_age"); stat_display_map["average_max_stamina_at_age"] = (count / (count + 1)) * stat_display_map["average_max_stamina_at_age"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("max_vitality_at_age"); stat_display_map["average_max_vitality_at_age"] = (count / (count + 1)) * stat_display_map["average_max_vitality_at_age"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("static_fitness"); stat_display_map["average_static_fitness"] = (count / (count + 1)) * stat_display_map["average_static_fitness"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("death_factor"); stat_display_map["average_death_factor"] = (count / (count + 1)) * stat_display_map["average_death_factor"] + (tmp_d / (count + 1));
+                tmp_d = animal.second.get_stat("vision_radius"); stat_display_map["average_vision_radius"] = (count / (count + 1)) * stat_display_map["average_vision_radius"] + (tmp_d / (count + 1));
+
+                count++;
+            }
+        }
+
+        return stat_display_map;
+    }
+
 };
