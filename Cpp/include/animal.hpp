@@ -78,6 +78,7 @@ public:
 
     // Miscellaneous attributes
     double sleep_restore_factor;
+    unsigned int food_chain_rank;
 
     /******************************************************
      *  Fixed for the organism throughout their lifetime  *

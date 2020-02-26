@@ -120,6 +120,7 @@ void Animal::init_from_json(const nlohmann::json &json_file)
     this->theoretical_maximum_weight = json_file["species_theoretical_maximum_weight"];
 
     this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
+    this->food_chain_rank = json_file["food_chain_rank"];
 }
 
 double Animal::get_base_vitality() const
@@ -494,6 +495,10 @@ STAT Animal::get_stat(const std::string &attribute) const
     if (attribute == "sleep_restore_factor")
     {
         return sleep_restore_factor;
+    }
+    if (attribute == "food_chain_rank")
+    {
+        return food_chain_rank;
     }
     if (attribute == "chromosome")
     {
