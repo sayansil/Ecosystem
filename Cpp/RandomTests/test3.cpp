@@ -1,51 +1,48 @@
-/*
- * ("ABC", "ABC", "ABC", 0, 1.1, 0, 0, 1.1, 1.1, 1.1)
- * ("PQR", "PQR", "ABC", 0, 1.1, 0, 0, 1.1, 1.1, 1.1)
- * conn.execute('INSERT INTO ECOSYSTEM_MASTER ("ABC", "ABC", "ABC");')
-*/
-
-
 #include <filesystem>
-#include <sqlite3.h>
 #include <string>
 #include <iostream>
+#include <fstream>
 
-const std::filesystem::path master_table_path = "../../data/ecosystem_master.db";
-
-static void create_master_table()
+static void attach_missing_json_files()
 {
-    sqlite3 *db;
-    sqlite3_open(master_table_path.c_str(), &db);
-    std::string command = "CREATE TABLE ECOSYSTEM_MASTER("  \
-                          "NAME         TEXT        PRIMARY KEY     NOT NULL," \
-                          "KIND         TEXT                        NOT NULL," \
-                          "CHROMOSOME   TEXT                        NOT NULL," \
-                          "GENERATION   INT                         NOT NULL," \
-                          "IMMUNITY     FLOAT                       NOT NULL," \
-                          "GENDER       INT                         NOT NULL," \
-                          "AGE          INT                         NOT NULL," \
-                          "HEIGHT       FLOAT                       NOT NULL," \
-                          "WEIGHT       FLOAT                       NOT NULL," \
-                          "FITNESS      FLOAT                       NOT NULL);";
-    int rc = sqlite3_exec(db, command.c_str(), nullptr, 0, nullptr);
-    if( rc != SQLITE_OK )
+    const std::filesystem::path json_data_path = "../../data/json";
+    std::filesystem::path filepath;
+
+    for (const auto &entry : std::filesystem::directory_iterator(json_data_path))
     {
-        std::cout << "Master table was not created\n";
-    }
-    else
-    {
-        std::cout << "Master table created successfully\n";
+        filepath = "base.json";
+        if (!std::filesystem::exists(entry.path() / filepath))
+        {
+            std::ofstream to_create(entry.path() / filepath);
+            to_create << "{}";
+            to_create.close();
+        }
+
+        filepath = "current.json";
+        if (!std::filesystem::exists(entry.path() / filepath))
+        {
+            std::ofstream to_create(entry.path() / filepath);
+
+            std::ifstream to_copy(entry.path() / "base.json");
+            std::string tmp((std::istreambuf_iterator<char>(to_copy)),
+                            std::istreambuf_iterator<char>());
+            to_create << tmp;
+
+            to_copy.close();
+            to_create.close();
+        }
+
+        filepath = "modify.json";
+        if (!std::filesystem::exists(entry.path() / filepath))
+        {
+            std::ofstream to_create(entry.path() / filepath);
+            to_create << "{}";
+            to_create.close();
+        }
     }
 }
 
 int main()
 {
-    if(!std::filesystem::exists(master_table_path))
-    {
-        create_master_table();
-    }
-    else
-    {
-        std::cout << "Using existing table at " << master_table_path << '\n';
-    }
+    attach_missing_json_files();
 }
