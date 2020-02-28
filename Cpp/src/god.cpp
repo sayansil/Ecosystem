@@ -50,11 +50,11 @@ bool isNormalChild(const Animal &animal)
         animal.get_base_weight() == 0 || animal.get_base_weight() != animal.get_base_weight() ||
         animal.get_max_height() == 0 || animal.get_max_height() != animal.get_max_height() ||
         animal.get_max_weight() == 0 || animal.get_max_weight() != animal.get_max_weight() ||
-        animal.get_height_multiplier() != animal.get_height_multiplier() ||
-        animal.get_speed_multiplier() != animal.get_speed_multiplier() ||
-        animal.get_stamina_multiplier() != animal.get_stamina_multiplier() ||
-        animal.get_vitality_multiplier() != animal.get_vitality_multiplier() ||
-        animal.get_weight_multiplier() != animal.get_weight_multiplier())
+        animal.get_height_multiplier() == 0 || animal.get_height_multiplier() != animal.get_height_multiplier() ||
+        animal.get_speed_multiplier() == 0 || animal.get_speed_multiplier() != animal.get_speed_multiplier() ||
+        animal.get_stamina_multiplier() == 0 || animal.get_stamina_multiplier() != animal.get_stamina_multiplier() ||
+        animal.get_vitality_multiplier() == 0 || animal.get_vitality_multiplier() != animal.get_vitality_multiplier() ||
+        animal.get_weight_multiplier() == 0 || animal.get_weight_multiplier() != animal.get_weight_multiplier())
         return false;
 
     return true;

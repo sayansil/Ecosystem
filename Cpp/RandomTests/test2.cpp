@@ -205,5 +205,3 @@ int main()
     std::cout << "\n\nFINAL EVALUATION:\n\n";
     evaluation(allah);
 }
-
-

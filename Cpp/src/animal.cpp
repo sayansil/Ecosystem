@@ -13,7 +13,7 @@ Animal::Animal(const std::string& kind, const unsigned int& age, const std::stri
 
     if (species_constants.empty())
     {
-        const std::string filepath = "../../data/json/" + kind + "/base.json";
+        const std::string filepath = "../../data/json/" + kind + "/base.json";        
 
         std::ifstream in(filepath);
         nlohmann::json json_file;
@@ -308,6 +308,13 @@ void Animal::increment_age()
     max_stamina_at_age = get_base_stamina() * ( get_stamina_multiplier() * 0.5 * pow(max_age, 0.5) *
                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_stamina())) + 1);
     max_speed_at_age = get_speed_multiplier() * 100 * exp((-1 / (get_speed_multiplier() * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + get_base_speed();
+
+    if(max_speed_at_age != max_speed_at_age)
+    {
+        std::cout << "max_speed_at_age is Nan\n";
+        std::cout << "speed multiplier = " << get_speed_multiplier() << '\n';
+    }
+
     max_appetite_at_age = get_base_appetite() + get_base_appetite() * exp((-0.5 / pow(max_age, 1.25)) * pow(age - max_age / 3.0, 2));
 
     // change stats dependently
