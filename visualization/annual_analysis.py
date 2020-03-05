@@ -8,23 +8,6 @@ kind = "deer"
 filepath = "../data/csv/yearly_" + kind + ".csv"
 df = pd.read_csv(filepath).dropna()
 
-theoretical_columns = [
-    'theoretical_maximum_base_height',
-    'theoretical_maximum_base_weight',
-    'theoretical_maximum_base_speed',
-    'theoretical_maximum_base_appetite',
-    'theoretical_maximum_base_stamina',
-    'theoretical_maximum_base_vitality',
-    'theoretical_maximum_height',
-    'theoretical_maximum_weight',
-    'theoretical_maximum_speed',
-    'theoretical_maximum_speed_multiplier',
-    'theoretical_maximum_height_multiplier',
-    'theoretical_maximum_weight_multiplier',
-    'theoretical_maximum_stamina_multiplier',
-    'theoretical_maximum_vitality_multiplier']
-
-
 def save():
     figs = []
     fig = get_mortality_graphs()
@@ -36,6 +19,9 @@ def save():
     fig = get_dependency_graphs()
     figs.append(fig)
     fig1, fig2 = get_average_graphs()
+    figs.append(fig1)
+    figs.append(fig2)
+    fig1, fig2 = get_theoretical_graphs()
     figs.append(fig1)
     figs.append(fig2)
 
@@ -402,6 +388,155 @@ def get_average_graphs():
     x = df.index
     y = df['average_vision_radius']
     ax.plot(x, y, '-m')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    return fig1, fig2
+
+def get_theoretical_graphs():
+    """
+        theoretical_maximum_base_height
+        theoretical_maximum_base_weight
+        theoretical_maximum_height
+        theoretical_maximum_weight
+        theoretical_maximum_base_speed
+        theoretical_maximum_base_appetite
+        theoretical_maximum_base_stamina
+        theoretical_maximum_base_vitality
+        theoretical_maximum_speed
+        theoretical_maximum_speed_multiplier
+        theoretical_maximum_stamina_multiplier
+        theoretical_maximum_vitality_multiplier
+        theoretical_maximum_height_multiplier
+        theoretical_maximum_weight_multiplier
+    """
+    fig1 = plt.figure()
+    fig1.set_size_inches(8, 10)
+    fig1.subplots_adjust(hspace=0.3)
+    fig1.subplots_adjust(wspace=0.3)
+    fig1.suptitle('Theoretical Graphs 1')
+    gs = GridSpec(4, 2, figure=fig1)
+
+    ax = fig1.add_subplot(gs[0, 0])
+    ax.set_title('Max base height')
+    x = df.index
+    y = df['theoretical_maximum_base_height']
+    ax.plot(x, y, '-b')
+    ax.set_ylabel("meters")
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[0, -1])
+    ax.set_title('Max height')
+    x = df.index
+    y = df['theoretical_maximum_height']
+    ax.plot(x, y, '-b')
+    ax.set_ylabel("meters")
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[1, 0])
+    ax.set_title('Max base weight')
+    x = df.index
+    y = df['theoretical_maximum_base_weight']
+    ax.plot(x, y, '-r')
+    ax.set_ylabel("kg")
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[1, -1])
+    ax.set_title('Max weight')
+    x = df.index
+    y = df['theoretical_maximum_weight']
+    ax.plot(x, y, '-r')
+    ax.set_ylabel("kg")
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[2, 0])
+    ax.set_title('Max base speed')
+    x = df.index
+    y = df['theoretical_maximum_base_speed']
+    ax.plot(x, y, '-b')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[2, -1])
+    ax.set_title('Max base appetite')
+    x = df.index
+    y = df['theoretical_maximum_base_appetite']
+    ax.plot(x, y, '-r')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[3, 0])
+    ax.set_title('Max base stamina')
+    x = df.index
+    y = df['theoretical_maximum_base_stamina']
+    ax.plot(x, y, '-c')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[3, -1])
+    ax.set_title('Max base vitality')
+    x = df.index
+    y = df['theoretical_maximum_base_vitality']
+    ax.plot(x, y, '-g')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    fig2 = plt.figure()
+    fig2.set_size_inches(8, 10)
+    fig2.subplots_adjust(hspace=0.3)
+    fig2.subplots_adjust(wspace=0.9)
+    fig2.suptitle('Theoretical Graphs 2')
+    gs = GridSpec(3, 6, figure=fig2)
+
+    ax = fig2.add_subplot(gs[0, :])
+    ax.set_title('Max speed')
+    x = df.index
+    y = df['theoretical_maximum_speed']
+    ax.plot(x, y, '-b')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig2.add_subplot(gs[1, 0:2])
+    ax.set_title('Max speed multiplier')
+    x = df.index
+    y = df['theoretical_maximum_speed_multiplier']
+    ax.plot(x, y, '-g')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig2.add_subplot(gs[1, 2:4])
+    ax.set_title('Max stamina multiplier')
+    x = df.index
+    y = df['theoretical_maximum_stamina_multiplier']
+    ax.plot(x, y, '-c')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig2.add_subplot(gs[1, 4:6])
+    ax.set_title('Max vitality multiplier')
+    x = df.index
+    y = df['theoretical_maximum_vitality_multiplier']
+    ax.plot(x, y, '-m')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig2.add_subplot(gs[2, 0:3])
+    ax.set_title('Max height multiplier')
+    x = df.index
+    y = df['theoretical_maximum_height_multiplier']
+    ax.plot(x, y, '-r')
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig2.add_subplot(gs[2, 3:6])
+    ax.set_title('Max weight multiplier')
+    x = df.index
+    y = df['theoretical_maximum_weight_multiplier']
+    ax.plot(x, y, '-b')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
