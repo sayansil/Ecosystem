@@ -35,22 +35,9 @@ average_columns = [
     'average_immunity',
     'average_death_factor',
     'average_vision_radius']
-dependency_columns = [
-    'height_on_stamina',
-    'weight_on_stamina',
-    'height_on_vitality',
-    'weight_on_vitality',
-    'vitality_on_appetite',
-    'stamina_on_appetite',
-    'height_on_speed',
-    'weight_on_speed',
-    'stamina_on_speed',
-    'vitality_on_speed',
-    'age_on_death',
-    'fitness_on_death',
-    'age_fitness_on_death_ratio']
 
-def get_mortality_plot():
+
+def get_mortality_graphs():
     """
         age_on_death
         fitness_on_death
@@ -102,7 +89,7 @@ def get_mortality_plot():
 
     plt.show()
 
-def get_demographic_plot():
+def get_demographic_graphs():
     """
         male
         female
@@ -202,6 +189,86 @@ def get_copulation_graphs():
     ax6.plot(x, y, '-b')
     ax6.set_ylabel("Factor")
     for tick in ax6.get_yticklabels():
+        tick.set_rotation(45)
+
+    plt.show()
+
+def get_dependency_graphs():
+    """
+        height_on_stamina
+        weight_on_stamina
+        height_on_vitality
+        weight_on_vitality
+        height_on_speed
+        weight_on_speed
+        stamina_on_speed
+        vitality_on_speed
+        vitality_on_appetite
+        stamina_on_appetite
+    """
+    fig = plt.figure()
+    fig.set_size_inches(8, 10)
+    fig.subplots_adjust(hspace=0.3)
+    fig.subplots_adjust(wspace=0.3)
+    fig.suptitle('Dependency Graphs')
+    gs = GridSpec(3, 2, figure=fig)
+
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax1.set_title('Factors affecting Stamina')
+    x = df.index
+    y = df['height_on_stamina']
+    ax1.plot(x, y, '-r', label='Height')
+    x = df.index
+    y = df['weight_on_stamina']
+    ax1.plot(x, y, '-b', label='Weight')
+    ax1.set_ylabel("Factor")
+    ax1.legend(loc="upper right")
+    for tick in ax1.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax2 = fig.add_subplot(gs[0, -1])
+    ax2.set_title('Factors affecting Vitality')
+    x = df.index
+    y = df['height_on_vitality']
+    ax2.plot(x, y, '-r', label='Height')
+    x = df.index
+    y = df['weight_on_vitality']
+    ax2.plot(x, y, '-b', label='Weight')
+    ax2.set_ylabel("Factor")
+    ax2.legend(loc="upper right")
+    for tick in ax2.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax3 = fig.add_subplot(gs[1, :])
+    ax3.set_title('Factors affecting Speed')
+    x = df.index
+    y = df['height_on_speed']
+    ax3.plot(x, y, '-r', label='Height')
+    x = df.index
+    y = df['weight_on_speed']
+    ax3.plot(x, y, '-b', label='Weight')
+    x = df.index
+    y = df['stamina_on_speed']
+    ax3.plot(x, y, '-c', label='Stamina')
+    x = df.index
+    y = df['vitality_on_speed']
+    ax3.plot(x, y, '-g', label='Vitality')
+    ax3.set_ylabel("Factor")
+    ax3.legend(loc="upper right")
+    for tick in ax3.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax4 = fig.add_subplot(gs[2, :])
+    ax4.set_title('Factors affecting Appetite')
+    x = df.index
+    y = df['vitality_on_appetite']
+    ax4.plot(x, y, '-g', label='Vitality')
+    x = df.index
+    y = df['stamina_on_appetite']
+    ax4.plot(x, y, '-c', label='Stamina')
+    ax4.set_ylabel("Factor")
+    ax4.legend(loc="upper right")
+    for tick in ax4.get_yticklabels():
         tick.set_rotation(45)
 
     plt.show()
