@@ -49,55 +49,159 @@ dependency_columns = [
     'age_on_death',
     'fitness_on_death',
     'age_fitness_on_death_ratio']
-copulation_columns = [
-    'matable_male',
-    'matable_female',
-    'conceiving_probability',
-    'mating_age_start',
-    'mating_age_end',
-    'mutation_probability',
-    'offsprings_factor']
-demographic_columns = [
-    'male',
-    'female'
-]
 
-
-def get_mortality_plot(df):
+def get_mortality_plot():
     """
         age_on_death
         fitness_on_death
         age_fitness_on_death_ratio
         max_age
     """
-    fig, axs = plt.subplots(3, sharex=True)
-    fig.set_size_inches(8.27, 11.69)
-    fig.subplots_adjust(hspace=0.2)
+    fig = plt.figure()
+    fig.set_size_inches(8, 10)
+    fig.subplots_adjust(hspace=0.3)
+    fig.subplots_adjust(wspace=0.3)
     fig.suptitle('Mortality Graphs')
+    gs = GridSpec(3, 2, figure=fig)
 
-    axs[0].set_title('Factors affecting Death')
+    ax1 = fig.add_subplot(gs[0, 0])
+    ax1.set_title('Age affecting Death')
     x = df.index
     y = df['age_on_death']
-    axs[0].plot(x, y, '-r')
+    ax1.plot(x, y, '-r')
+    ax1.set_ylabel("Factor")
+    for tick in ax1.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax2 = fig.add_subplot(gs[0, 1])
+    ax2.set_title('Fitness affecting Death')
     x = df.index
     y = df['fitness_on_death']
-    axs[0].plot(x, y, '-b')
-    axs[0].set_ylabel("Factors")
-    for tick in axs[0].get_yticklabels():
+    ax2.plot(x, y, '-b')
+    ax2.set_ylabel("Factor")
+    for tick in ax2.get_yticklabels():
         tick.set_rotation(45)
 
-    axs[1].set_title('Age vs. Fitness affecting Death')
+    ax3 = fig.add_subplot(gs[1, :])
+    ax3.set_title('Age vs. Fitness affecting Death')
     x = df.index
     y = df['age_fitness_on_death_ratio']
-    axs[1].plot(x, y, '-b')
-    axs[1].set_ylabel("Ratio")
-    for tick in axs[1].get_yticklabels():
+    ax3.plot(x, y, '-b')
+    ax3.set_ylabel("Ratio")
+    for tick in ax3.get_yticklabels():
         tick.set_rotation(45)
 
-    axs[2].set_title('Max age with time')
+    ax4 = fig.add_subplot(gs[2, :])
+    ax4.set_title('Max age with time')
     x = df.index
     y = df['max_age']
-    axs[2].plot(x, y, '-b')
-    axs[2].set_ylabel("Max age")
-    for tick in axs[1].get_yticklabels():
+    ax4.plot(x, y, '-b')
+    ax4.set_ylabel("Max age")
+    for tick in ax4.get_yticklabels():
         tick.set_rotation(45)
+
+    plt.show()
+
+def get_demographic_plot():
+    """
+        male
+        female
+    """
+    fig = plt.figure()
+    fig.set_size_inches(8, 10)
+    fig.subplots_adjust(hspace=0.3)
+    fig.subplots_adjust(wspace=0.3)
+    fig.suptitle('Demographic Graphs')
+    gs = GridSpec(1, 1, figure=fig)
+
+    ax1 = fig.add_subplot(gs[:, :])
+    ax1.set_title('Population')
+    x = df.index
+    y = df['male']
+    ax1.plot(x, y, '-b', label='Male')
+    x = df.index
+    y = df['female']
+    ax1.plot(x, y, '-r', label='Female')
+    ax1.set_ylabel("Population")
+    ax1.legend(loc="upper right")
+    for tick in ax1.get_yticklabels():
+        tick.set_rotation(45)
+
+    plt.show()
+
+def get_copulation_graphs():
+    """
+        matable_male
+        matable_female
+        mating_age_start
+        mating_age_end
+        conceiving_probability
+        mutation_probability
+        offsprings_factor
+    """
+    fig = plt.figure()
+    fig.set_size_inches(8, 10)
+    fig.subplots_adjust(hspace=0.3)
+    fig.subplots_adjust(wspace=0.3)
+    fig.suptitle('Copulation Graphs')
+    gs = GridSpec(4, 2, figure=fig)
+
+    ax1 = fig.add_subplot(gs[0, :])
+    ax1.set_title('Matable population')
+    x = df.index
+    y = df['matable_male']
+    ax1.plot(x, y, '-b', label='Male')
+    x = df.index
+    y = df['matable_female']
+    ax1.plot(x, y, '-r', label='Female')
+    ax1.set_ylabel("Matable Population")
+    ax1.legend(loc="upper right")
+    for tick in ax1.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax2 = fig.add_subplot(gs[1, 0])
+    ax2.set_title('Mating Start')
+    x = df.index
+    y = df['mating_age_start']
+    ax2.plot(x, y, '-b')
+    ax2.set_ylabel("Age")
+    for tick in ax2.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax3 = fig.add_subplot(gs[1, -1])
+    ax3.set_title('Mating End')
+    x = df.index
+    y = df['mating_age_end']
+    ax3.plot(x, y, '-r')
+    ax3.set_ylabel("Age")
+    for tick in ax3.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax4 = fig.add_subplot(gs[2, 0])
+    ax4.set_title('Mutation')
+    x = df.index
+    y = df['mutation_probability']
+    ax4.plot(x, y, '-r')
+    ax4.set_ylabel("Probability")
+    for tick in ax4.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax5 = fig.add_subplot(gs[2, -1])
+    ax5.set_title('Conceive')
+    x = df.index
+    y = df['conceiving_probability']
+    ax5.plot(x, y, '-b')
+    ax5.set_ylabel("Probability")
+    for tick in ax5.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax6 = fig.add_subplot(gs[3, :])
+    ax6.set_title('Multiple offprings')
+    x = df.index
+    y = df['offsprings_factor']
+    ax6.plot(x, y, '-b')
+    ax6.set_ylabel("Factor")
+    for tick in ax6.get_yticklabels():
+        tick.set_rotation(45)
+
+    plt.show()
