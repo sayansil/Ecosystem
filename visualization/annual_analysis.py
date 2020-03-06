@@ -2,9 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.backends.backend_pdf import PdfPages
+from datetime import datetime
 
 
-def generate_and_save(kind, savepath='../outputs/report.pdf'):
+def generate_and_save(kind, savepath='../outputs/'):
     filepath = "../data/csv/yearly_" + kind + ".csv"
     df = pd.read_csv(filepath).dropna()
 
@@ -25,7 +26,9 @@ def generate_and_save(kind, savepath='../outputs/report.pdf'):
     fig1, fig2 = get_theoretical_graphs(df)
     figs.append(fig1)
     figs.append(fig2)
-
+    
+    timestamp = str(datetime.timestamp(datetime.now()))
+    savepath += 'report_' + kind + '_' + timestamp + '.pdf'
     with PdfPages(savepath) as pdf:
         for fig in figs:
             plt.figure(fig.number)
