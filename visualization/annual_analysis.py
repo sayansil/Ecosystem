@@ -3,34 +3,49 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.backends.backend_pdf import PdfPages
 
-kind = "deer"
 
-filepath = "../data/csv/yearly_" + kind + ".csv"
-df = pd.read_csv(filepath).dropna()
+def generate_and_save(kind, savepath='../outputs/report.pdf'):
+    filepath = "../data/csv/yearly_" + kind + ".csv"
+    df = pd.read_csv(filepath).dropna()
 
-def save():
     figs = []
-    fig = get_mortality_graphs()
+    fig = get_start_page(kind)
     figs.append(fig)
-    fig = get_demographic_graphs()
+    fig = get_mortality_graphs(df)
     figs.append(fig)
-    fig = get_copulation_graphs()
+    fig = get_demographic_graphs(df)
     figs.append(fig)
-    fig = get_dependency_graphs()
+    fig = get_copulation_graphs(df)
     figs.append(fig)
-    fig1, fig2 = get_average_graphs()
+    fig = get_dependency_graphs(df)
+    figs.append(fig)
+    fig1, fig2 = get_average_graphs(df)
     figs.append(fig1)
     figs.append(fig2)
-    fig1, fig2 = get_theoretical_graphs()
+    fig1, fig2 = get_theoretical_graphs(df)
     figs.append(fig1)
     figs.append(fig2)
 
-    with PdfPages('multipage_pdf.pdf') as pdf:
+    with PdfPages(savepath) as pdf:
         for fig in figs:
             plt.figure(fig.number)
             pdf.savefig()
 
-def get_mortality_graphs():
+def get_start_page(kind):
+    fig = plt.figure()
+    fig.set_size_inches(8, 10)
+    gs = GridSpec(1, 1, figure=fig)
+
+    ax = fig.add_subplot(gs[0, 0])
+    ax.text(0.275, 0.5, 'Annual Report', dict(size=30))
+    ax.text(0.025, 0.025, "Species: " + kind, dict(size=10))
+    ax.get_yaxis().set_visible(False)
+    ax.get_xaxis().set_visible(False)
+
+    return fig
+
+
+def get_mortality_graphs(df):
     """
         age_on_death
         fitness_on_death
@@ -82,7 +97,7 @@ def get_mortality_graphs():
 
     return fig
 
-def get_demographic_graphs():
+def get_demographic_graphs(df):
     """
         male
         female
@@ -109,7 +124,7 @@ def get_demographic_graphs():
 
     return fig
 
-def get_copulation_graphs():
+def get_copulation_graphs(df):
     """
         matable_male
         matable_female
@@ -186,7 +201,7 @@ def get_copulation_graphs():
 
     return fig
 
-def get_dependency_graphs():
+def get_dependency_graphs(df):
     """
         height_on_stamina
         weight_on_stamina
@@ -266,7 +281,7 @@ def get_dependency_graphs():
 
     return fig
 
-def get_average_graphs():
+def get_average_graphs(df):
     """
         average_generation
         average_age
@@ -393,7 +408,7 @@ def get_average_graphs():
 
     return fig1, fig2
 
-def get_theoretical_graphs():
+def get_theoretical_graphs(df):
     """
         theoretical_maximum_base_height
         theoretical_maximum_base_weight
