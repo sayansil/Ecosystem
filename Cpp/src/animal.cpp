@@ -121,6 +121,7 @@ void Animal::init_from_json(const nlohmann::json &json_file)
 
     this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
     this->food_chain_rank = json_file["food_chain_rank"];
+    this->vision_radius = json_file["vision_radius"];
 }
 
 double Animal::get_base_vitality() const

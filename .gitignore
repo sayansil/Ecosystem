@@ -6,3 +6,6 @@ __pycache__/*
 data/json/*/current.json
 data/csv/*
 Cpp/build/*
+.clangd/*
+**.swp
+compile_commands.json

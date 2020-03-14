@@ -51,5 +51,6 @@
     "mutation_probability": 0.01,
     "conceiving_probability": 0.95,
     "offsprings_factor": 10.0,
-    "food_chain_rank": 1
+    "food_chain_rank": 1,
+    "vision_radius" : 300
 }
