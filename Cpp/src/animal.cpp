@@ -13,7 +13,7 @@ Animal::Animal(const std::string& kind, const unsigned int& age, const std::stri
 
     if (species_constants.empty())
     {
-        const std::string filepath = "../../data/json/" + kind + "/base.json";        
+        const std::string filepath = "../../data/json/" + kind + "/current.json"; 
 
         std::ifstream in(filepath);
         nlohmann::json json_file;
