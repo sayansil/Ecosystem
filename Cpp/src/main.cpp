@@ -1,13 +1,18 @@
+#include <filesystem>
 #include <iostream>
 #include <helper.hpp>
+#include <stat_fetcher.hpp>
 
 int main()
 {
-    const double mutationChance = 0.5;
-    std::string child_chromosome = "1010101010101010";
-    std::cout << child_chromosome << '\n';
-    for(auto& bit : child_chromosome)
-        if(helper::weighted_prob(mutationChance))
-            bit = (bit == '1')?'0':'1';
-    std::cout << child_chromosome << '\n';
+
+        std::filesystem::path species_folder = "../../data/json";
+
+        for(auto file : std::filesystem::directory_iterator(species_folder))
+        {
+            std::string current_species = file.path();
+            current_species = current_species.substr(current_species.find_last_of('/') + 1);
+            const std::string filepath = file / std::filesystem::path("current.json");
+            std::cout << current_species << '\n' << filepath << "\n****\n"; 
+        }
 }

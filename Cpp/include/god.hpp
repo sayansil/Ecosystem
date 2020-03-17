@@ -12,6 +12,8 @@
 #include <animal.hpp>
 #include <stat_fetcher.hpp>
 
+#include <zmq.hpp>
+
 using ANIMAL_MAP_TYPE = std::unordered_map<std::string, Animal>;
 
 class God
@@ -42,6 +44,7 @@ public:
     void happyNewYear();
     void killAnimals(const std::vector<std::string> &);
     bool spawnAnimal(const Animal&);
+    void sendDataToPy();
 
     std::vector<Animal> animalSort(bool (*comp)(const Animal &, const Animal &));
     std::unordered_map<std::string, std::vector<Animal>> animalSortByKind(bool (*comp)(const Animal &, const Animal &));
@@ -58,6 +61,9 @@ private:
 
     DatabaseManager db;
     const int maxMateTrials = 100;
+    zmq::context_t context;
+    zmq::socket_t socket;
+
 
     /****************************************
      *         Unavailable to users         *

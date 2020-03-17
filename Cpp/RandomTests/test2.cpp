@@ -181,6 +181,8 @@ int main()
     {
         allah.happyNewYear();
 
+        allah.sendDataToPy();
+
         ++progressBar;
         if (i % 10 == 0)
             progressBar.display();

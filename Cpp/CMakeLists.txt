@@ -60,9 +60,9 @@ function(random_test)
     endfunction()
 #    add_code(test1)
     add_code(test2)
-#    add_code(test3)
-    add_code(client)
-    add_code(server)
+    add_code(test3)
+#    add_code(client)
+#    add_code(server)
 endfunction()
 
 

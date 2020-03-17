@@ -1,8 +1,12 @@
+#include "zmq.hpp"
 #include <god.hpp>
 
 God::God()
 {
     db = DatabaseManager();
+    context = zmq::context_t(1);
+    socket = zmq::socket_t(context, zmq::socket_type::dealer);
+    socket.bind("tcp://*:5556");
 }
 
 God::~God()
@@ -340,4 +344,9 @@ std::unordered_map<std::string, std::vector<Animal>> God::animalSortByKind(bool 
         std::sort(i.second.begin(), i.second.end(), comp);
     }
     return animal_map;
+}
+
+void God::sendDataToPy()
+{
+    socket.send(zmq::buffer(stat_fetcher::generateDataForPy(animals)), zmq::send_flags::dontwait);
 }
