@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.backends.backend_pdf import PdfPages
 from datetime import datetime
+import os
 
 
 def generate_and_save(kind, savepath='../outputs/'):
@@ -26,7 +27,7 @@ def generate_and_save(kind, savepath='../outputs/'):
     fig1, fig2 = get_theoretical_graphs(df)
     figs.append(fig1)
     figs.append(fig2)
-    
+
     timestamp = str(datetime.timestamp(datetime.now()))
     savepath += 'report_' + kind + '_' + timestamp + '.pdf'
     with PdfPages(savepath) as pdf:
@@ -46,7 +47,6 @@ def get_start_page(kind):
     ax.get_xaxis().set_visible(False)
 
     return fig
-
 
 def get_mortality_graphs(df):
     """
@@ -559,3 +559,10 @@ def get_theoretical_graphs(df):
         tick.set_rotation(45)
 
     return fig1, fig2
+
+if __name__ == "__main__":
+    arr = os.listdir('../data/csv')
+    csvkinds = [i.replace('yearly_', '').replace('.csv', '') for i in arr if i.endswith('.csv') and i.startswith('yearly_')]
+    for csvkind in csvkinds:
+        print("Generating report for species:", csvkind)
+        generate_and_save(csvkind)
