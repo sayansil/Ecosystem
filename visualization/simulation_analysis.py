@@ -41,7 +41,7 @@ def get_start_page(kind):
     gs = GridSpec(1, 1, figure=fig)
 
     ax = fig.add_subplot(gs[0, 0])
-    ax.text(0.275, 0.5, 'Annual Report', dict(size=30))
+    ax.text(0.275, 0.5, 'Simulation Report', dict(size=30))
     ax.text(0.025, 0.025, "Species: " + kind, dict(size=10))
     ax.get_yaxis().set_visible(False)
     ax.get_xaxis().set_visible(False)
