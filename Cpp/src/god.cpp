@@ -1,4 +1,6 @@
-#include "zmq.hpp"
+#include "helper.hpp"
+#include <random>
+#include <zmq.hpp>
 #include <god.hpp>
 
 God::God()
@@ -16,7 +18,7 @@ God::~God()
 void God::catastrophe()
 {
     db.clearDatabase();
-    animals.clear();
+    organisms.clear();
 }
 
 void God::reset_species(const std::string &kind)
@@ -37,52 +39,52 @@ void God::reset_species(const std::string &kind)
     current_out.close();
 }
 
-bool isNormalChild(const Animal &animal)
-{
-    if (animal.height == 0 || animal.height != animal.height ||
-        animal.weight == 0 || animal.weight != animal.weight ||
-        animal.immunity == 0 || animal.immunity != animal.immunity ||
-        animal.max_appetite_at_age == 0 || animal.max_appetite_at_age != animal.max_appetite_at_age ||
-        animal.max_speed_at_age == 0 || animal.max_speed_at_age != animal.max_speed_at_age ||
-        animal.max_stamina_at_age == 0 || animal.max_stamina_at_age != animal.max_stamina_at_age ||
-        animal.max_vitality_at_age == 0 || animal.max_vitality_at_age != animal.max_vitality_at_age ||
-        animal.get_base_appetite() == 0 || animal.get_base_appetite() != animal.get_base_appetite() ||
-        animal.get_base_height() == 0 || animal.get_base_height() != animal.get_base_height() ||
-        animal.get_base_speed() == 0 || animal.get_base_speed() != animal.get_base_speed() ||
-        animal.get_base_stamina() == 0 || animal.get_base_stamina() != animal.get_base_stamina() ||
-        animal.get_base_vitality() == 0 || animal.get_base_vitality() != animal.get_base_vitality() ||
-        animal.get_base_weight() == 0 || animal.get_base_weight() != animal.get_base_weight() ||
-        animal.get_max_height() == 0 || animal.get_max_height() != animal.get_max_height() ||
-        animal.get_max_weight() == 0 || animal.get_max_weight() != animal.get_max_weight() ||
-        animal.get_height_multiplier() == 0 || animal.get_height_multiplier() != animal.get_height_multiplier() ||
-        animal.get_speed_multiplier() == 0 || animal.get_speed_multiplier() != animal.get_speed_multiplier() ||
-        animal.get_stamina_multiplier() == 0 || animal.get_stamina_multiplier() != animal.get_stamina_multiplier() ||
-        animal.get_vitality_multiplier() == 0 || animal.get_vitality_multiplier() != animal.get_vitality_multiplier() ||
-        animal.get_weight_multiplier() == 0 || animal.get_weight_multiplier() != animal.get_weight_multiplier())
-        return false;
+//bool isNormalChild(const ORGANISM &organism)
+//{
+//    if (organism.height == 0 || organism.height != organism.height ||
+//        organism.weight == 0 || organism.weight != organism.weight ||
+//        organism.immunity == 0 || organism.immunity != organism.immunity ||
+//        organism.max_appetite_at_age == 0 || organism.max_appetite_at_age != organism.max_appetite_at_age ||
+//        organism.max_speed_at_age == 0 || organism.max_speed_at_age != organism.max_speed_at_age ||
+//        organism.max_stamina_at_age == 0 || organism.max_stamina_at_age != organism.max_stamina_at_age ||
+//        organism.max_vitality_at_age == 0 || organism.max_vitality_at_age != organism.max_vitality_at_age ||
+//        organism.get_base_appetite() == 0 || organism.get_base_appetite() != organism.get_base_appetite() ||
+//        organism.get_base_height() == 0 || organism.get_base_height() != organism.get_base_height() ||
+//        organism.get_base_speed() == 0 || organism.get_base_speed() != organism.get_base_speed() ||
+//        organism.get_base_stamina() == 0 || organism.get_base_stamina() != organism.get_base_stamina() ||
+//        organism.get_base_vitality() == 0 || organism.get_base_vitality() != organism.get_base_vitality() ||
+//        organism.get_base_weight() == 0 || organism.get_base_weight() != organism.get_base_weight() ||
+//        organism.get_max_height() == 0 || organism.get_max_height() != organism.get_max_height() ||
+//        organism.get_max_weight() == 0 || organism.get_max_weight() != organism.get_max_weight() ||
+//        organism.get_height_multiplier() == 0 || organism.get_height_multiplier() != organism.get_height_multiplier() ||
+//        organism.get_speed_multiplier() == 0 || organism.get_speed_multiplier() != organism.get_speed_multiplier() ||
+//        organism.get_stamina_multiplier() == 0 || organism.get_stamina_multiplier() != organism.get_stamina_multiplier() ||
+//        organism.get_vitality_multiplier() == 0 || organism.get_vitality_multiplier() != organism.get_vitality_multiplier() ||
+//        organism.get_weight_multiplier() == 0 || organism.get_weight_multiplier() != organism.get_weight_multiplier())
+//        return false;
+//
+//    return true;
+//}
 
-    return true;
-}
-
-bool God::spawnAnimal(const Animal& current_animal)
+bool God::spawnOrganism(const ORGANISM& current_organism)
 {
-    if (isNormalChild(current_animal))
+    if (current_organism->is_normal_child())
     {
         // Add to memory
-        animals[current_animal.name] = current_animal;
+        organisms[current_organism->name] = current_organism;
 
         std::vector<std::vector<STAT>> tmp;
         tmp.emplace_back(std::vector<STAT>{
-            STAT(current_animal.name),
-            STAT(current_animal.kind),
-            STAT(current_animal.chromosome),
-            STAT(current_animal.generation),
-            STAT(current_animal.immunity),
-            STAT(current_animal.gender),
-            STAT(current_animal.age),
-            STAT(current_animal.height),
-            STAT(current_animal.weight),
-            STAT(current_animal.static_fitness)});
+            STAT(current_organism->name),
+            STAT(current_organism->kind),
+            STAT(current_organism->chromosome),
+            STAT(current_organism->generation),
+            STAT(current_organism->immunity),
+            STAT(current_organism->gender),
+            STAT(current_organism->age),
+            STAT(current_organism->height),
+            STAT(current_organism->weight),
+            STAT(current_organism->static_fitness)});
 
         // Add to database
         db.insertRows(tmp);
@@ -93,40 +95,40 @@ bool God::spawnAnimal(const Animal& current_animal)
     return false;
 }
 
-void God::killAnimals(const std::vector<std::string> &names)
+void God::killOrganisms(const std::vector<std::string> &names)
 {
     // Remove from database
     db.deleteRows(names);
 
     // Remove from memory
     for (const auto &lamb_to_slaughter : names)
-        animals.erase(lamb_to_slaughter);
+        organisms.erase(lamb_to_slaughter);
 }
 
 bool God::mate(const std::string &name1, const std::string &name2, const nlohmann::json& species_constants)
 {
-    // Animal objects of 2 parents
-    const auto& parent1 = animals[name1];
-    const auto& parent2 = animals[name2];
+    // ORGANISM objects of 2 parents
+    const auto& parent1 = organisms[name1];
+    const auto& parent2 = organisms[name2];
 
     // Generate chromosomes of the child
-    auto child_chromosome = helper::get_random_mixture(parent1.chromosome, parent2.chromosome);
+    auto child_chromosome = helper::get_random_mixture(parent1->chromosome, parent2->chromosome);
 
     // Mutate chromosomes
     for(auto& bit : child_chromosome)
-        if(helper::weighted_prob(parent1.mutation_probability))
+        if(helper::weighted_prob(parent1->mutation_probability))
             bit = (bit == '1')?'0':'1';
 
     // Spawn child (if probable)
-    if(helper::weighted_prob(parent1.conceiving_probability))
+    if(helper::weighted_prob(parent1->conceiving_probability))
     {
-        return spawnAnimal(Animal(parent1.kind,
+        return spawnOrganism(parent1->clone(parent1->kind,
                                 1,
                                 child_chromosome,
-                                std::max(parent1.generation, parent2.generation) + 1,
+                                std::max(parent1->generation, parent2->generation) + 1,
                                 "",
-                                {(parent1.X + parent2.X) / 2,
-                                (parent1.Y + parent2.Y) / 2},
+                                {(parent1->X + parent2->X) / 2,
+                                (parent1->Y + parent2->Y) / 2},
                                 species_constants));
     }
 
@@ -192,53 +194,53 @@ void God::happyNewYear()
      *       Annual Killing Begins      *
      ************************************/
 
-    // Vector for [ (Animal, death_factor) ]
-    std::vector<std::pair<Animal, double>>
-        animals_vec;
+    // Vector for [ (ORGANISM, death_factor) ]
+    std::vector<std::pair<ORGANISM, double>>
+        organisms_vec;
 
-    for(auto& animal : animals)
+    for(auto& organism : organisms)
     {
-        animal.second.generate_death_factor();
-        animals_vec.push_back({animal.second, 0.0});
+        organism.second->generate_death_factor();
+        organisms_vec.push_back({organism.second, 0.0});
     }
 
-    // Sort animal_vec by death factor
+    // Sort organism_vec by death factor
 
     std::sort(std::execution::par,
-        animals_vec.begin(),
-        animals_vec.end(),
-        [](const std::pair<Animal, double>& x, const std::pair<Animal, double>& y){
-            return x.first.death_factor > y.first.death_factor;
+        organisms_vec.begin(),
+        organisms_vec.end(),
+        [](const std::pair<ORGANISM, double>& x, const std::pair<ORGANISM, double>& y){
+            return x.first->death_factor > y.first->death_factor;
     });
 
-    // Mark the animals in animal_vec for death
+    // Mark the organisms in organism_vec for death
 
     int tmp_i = 0;
-    std::for_each(std::execution::par, animals_vec.begin(), animals_vec.end(), [this, &tmp_i, &animals_vec](std::pair<Animal, double> &x) {
+    std::for_each(std::execution::par, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ORGANISM, double> &x) {
         x.second = helper::weighted_prob(
-            // killerFunction(x.first.get_fitness(), animals_vec.size())
-            killerFunction(tmp_i++, animals_vec.size())
+            // killerFunction(x.first.get_fitness(), organisms_vec.size())
+            killerFunction(tmp_i++, organisms_vec.size())
         );
     });
 
-    // Remove the above marked animals from the f****** universe
+    // Remove the above marked organisms from the f****** universe
 
-    std::vector<std::string> animals_to_be_slaughtered;
+    std::vector<std::string> organisms_to_be_slaughtered;
 
-    for(const auto& animal_tuple : animals_vec)
+    for(const auto& organism_tuple : organisms_vec)
     {
-        if(animal_tuple.second == 1)
+        if(organism_tuple.second == 1)
         {
             // Being dragged to the slaughterhouse
-            animals_to_be_slaughtered.push_back(animal_tuple.first.name);
+            organisms_to_be_slaughtered.push_back(organism_tuple.first->name);
         }
     }
 
-    recent_deaths = animals_to_be_slaughtered.size();
-    killAnimals(animals_to_be_slaughtered);
+    recent_deaths = organisms_to_be_slaughtered.size();
+    killOrganisms(organisms_to_be_slaughtered);
 
-    animals_vec.clear(); animals_vec.shrink_to_fit();
-    animals_to_be_slaughtered.clear(); animals_to_be_slaughtered.shrink_to_fit();
+    organisms_vec.clear(); organisms_vec.shrink_to_fit();
+    organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
 
 
 
@@ -246,66 +248,89 @@ void God::happyNewYear()
      *       Annual Mating Begins      *
      ***********************************/
 
-    std::unordered_map<std::string, std::vector<Animal>> animalsByKind;
-    for(const auto& animal : animals)
-        animalsByKind[animal.second.kind].push_back(animal.second);
+    std::unordered_map<std::string, std::vector<ORGANISM>> organismsByKind;
+    for(const auto& organism : organisms)
+        organismsByKind[organism.second->kind].push_back(organism.second);
 
     int index_parent1, index_parent2;
-    for(auto& animal_tuple : animalsByKind)
+    for(auto& organism_tuple : organismsByKind)
     {
-        // Mating animals of kind animal_tuple.first
+        // Mating organisms of kind organism_tuple.first
 
-        update_species(animal_tuple.first);
+        update_species(organism_tuple.first);
 
-        const std::string current_filepath = "../../data/json/" + animal_tuple.first + "/current.json";
+        const std::string current_filepath = "../../data/json/" + organism_tuple.first + "/current.json";
         std::ifstream current_in(current_filepath);
         nlohmann::json species_constants;
         current_in >> species_constants;
         current_in.close();
 
-        auto& animal_list = animal_tuple.second;
-        std::vector<Animal> males, females;
-        for(const auto& animal : animal_list)
-            if(animal.gender == MALE)
+        auto& organism_list = organism_tuple.second;
+        std::vector<ORGANISM> mating_list1, mating_list2;
+        
+        if(organism_list.empty())
+            continue;
+
+        bool current_kind_asexual = organism_list[0]->is_asexual;
+
+        for(const auto& organism : organism_list)
+        {
+            if(current_kind_asexual)
             {
-                if(animal.age >= animal.mating_age_start && animal.age <= animal.mating_age_end)
+                if(helper::weighted_prob(0.5) == 0)
                 {
-                    males.push_back(animal);
+                    mating_list1.push_back(organism);
+                }
+                else
+                {
+                    mating_list2.push_back(organism);
                 }
             }
             else
             {
-                if(animal.age >= animal.mating_age_start && animal.age <= animal.mating_age_end)
+                if(organism->gender == MALE)
                 {
-                    females.push_back(animal);
+                    if(organism->age >= organism->mating_age_start && organism->age <= organism->mating_age_end)
+                    {
+                        mating_list1.push_back(organism);
+                    }
                 }
+                else
+                {
+                    if(organism->age >= organism->mating_age_start && organism->age <= organism->mating_age_end)
+                    {
+                        mating_list2.push_back(organism);
+                    }
+                }
+
             }
+        }
 
         std::mt19937_64 rng; rng.seed(std::random_device()());
 
-        while (males.size() > 0 && females.size() > 0)
+        while (mating_list1.size() > 0 && mating_list2.size() > 0)
         {
-            std::uniform_int_distribution<int> dis_parent(0, std::min(females.size(), males.size()) - 1);
+            std::uniform_int_distribution<int> dis_parent(0, std::min(mating_list2.size(), mating_list1.size()) - 1);
             index_parent1 = dis_parent(rng);
             index_parent2 = dis_parent(rng);
-            const auto& parent1 = males[index_parent1];
-            const auto& parent2 = females[index_parent2];
+            const auto& parent1 = mating_list1[index_parent1];
+            const auto& parent2 = mating_list2[index_parent2];
 
             std::uniform_real_distribution<double> dis_children(0.0, 1.0);
-            int n_children = creatorFunction(dis_children(rng), parent1.offsprings_factor);
+            int n_children = creatorFunction(dis_children(rng), parent1->offsprings_factor);
             while(n_children--)
             {
-                if (mate(parent1.name, parent2.name, species_constants))
+                if (mate(parent1->name, parent2->name, species_constants))
                 {
                     recent_births++;
                 }
             }
 
-            males.erase(males.begin() + index_parent1);
-            females.erase(females.begin() + index_parent2);
-            males.shrink_to_fit();
-            females.shrink_to_fit();
-        }
+            mating_list1.erase(mating_list1.begin() + index_parent1);
+            mating_list2.erase(mating_list2.begin() + index_parent2);
+            mating_list1.shrink_to_fit();
+            mating_list2.shrink_to_fit();
+        }   
     }
 
 
@@ -315,38 +340,38 @@ void God::happyNewYear()
 
     // todo: parallel v sequential performance test
 
-    std::for_each(std::execution::par, animals.begin(), animals.end(), [](auto& x){
-        x.second.increment_age();
+    std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto& x){
+        x.second->increment_age();
     });
 }
 
-std::vector<Animal> God::animalSort(bool (*comp)(const Animal &, const Animal &))
+std::vector<ORGANISM> God::organismSort(bool (*comp)(const ORGANISM &, const ORGANISM &))
 {
-    std::vector<Animal> animal_vec;
-    for (auto &i : animals)
+    std::vector<ORGANISM> organism_vec;
+    for (auto &i : organisms)
     {
-        animal_vec.push_back(i.second);
+        organism_vec.push_back(i.second);
     }
-    animal_vec.shrink_to_fit();
-    std::sort(animal_vec.begin(), animal_vec.end(), comp);
-    return animal_vec;
+    organism_vec.shrink_to_fit();
+    std::sort(organism_vec.begin(), organism_vec.end(), comp);
+    return organism_vec;
 }
 
-std::unordered_map<std::string, std::vector<Animal>> God::animalSortByKind(bool (*comp)(const Animal &, const Animal &))
+std::unordered_map<std::string, std::vector<ORGANISM>> God::organismSortByKind(bool (*comp)(const ORGANISM &, const ORGANISM &))
 {
-    std::unordered_map<std::string, std::vector<Animal>> animal_map;
-    for (const auto &i : animals)
+    std::unordered_map<std::string, std::vector<ORGANISM>> organism_map;
+    for (const auto &i : organisms)
     {
-        animal_map[i.second.kind].push_back(i.second);
+        organism_map[i.second->kind].push_back(i.second);
     }
-    for (auto &i : animal_map)
+    for (auto &i : organism_map)
     {
         std::sort(i.second.begin(), i.second.end(), comp);
     }
-    return animal_map;
+    return organism_map;
 }
 
 void God::sendDataToPy()
 {
-    socket.send(zmq::buffer(stat_fetcher::generateDataForPy(animals)), zmq::send_flags::dontwait);
+    socket.send(zmq::buffer(stat_fetcher::generateDataForPy(organisms)), zmq::send_flags::dontwait);
 }

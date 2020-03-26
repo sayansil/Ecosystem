@@ -63,6 +63,8 @@ namespace helper
 
     double get_value_from_chromosome(const std::string& chromosome, const unsigned int& start, const unsigned int& length, const double& multiplier)
     {
+        if(length == 0)
+            return 0;
         return (to_decimal(chromosome.substr(start, length)) / static_cast<double>(1 << length)) * multiplier;
     }
 

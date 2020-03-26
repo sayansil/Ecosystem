@@ -1,6 +1,10 @@
+#include "nlohmann/json_fwd.hpp"
+#include <iomanip>
+#include <ostream>
 #include <string>
 #include <zmq.hpp>
 #include <iostream>
+#include <nlohmann/json.hpp>
 
 int main()
 {
@@ -16,7 +20,7 @@ int main()
         std::string str = reply.to_string();
         if(str.length() > 0)
         {
-            std::cout << "Received:\n" << str << '\n';
+            std::cout << "Received:\n" << nlohmann::json(str) << '\n';
         }
     }
 

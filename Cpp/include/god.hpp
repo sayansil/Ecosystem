@@ -9,12 +9,11 @@
 #include <vector>
 
 #include <database_manager.hpp>
-#include <animal.hpp>
+#include <organism.hpp>
+#include <plant.hpp>
 #include <stat_fetcher.hpp>
 
 #include <zmq.hpp>
-
-using ANIMAL_MAP_TYPE = std::unordered_map<std::string, Animal>;
 
 class God
 {
@@ -24,7 +23,7 @@ public:
      *  Public attributes  *
     ************************/
 
-    ANIMAL_MAP_TYPE animals;
+    ORGANISM_MAP_TYPE organisms;
     unsigned int recent_deaths;
     unsigned int recent_births;
 
@@ -42,12 +41,12 @@ public:
     void catastrophe();
     void reset_species(const std::string &);
     void happyNewYear();
-    void killAnimals(const std::vector<std::string> &);
-    bool spawnAnimal(const Animal&);
+    void killOrganisms(const std::vector<std::string> &);
+    bool spawnOrganism(const ORGANISM&);
     void sendDataToPy();
 
-    std::vector<Animal> animalSort(bool (*comp)(const Animal &, const Animal &));
-    std::unordered_map<std::string, std::vector<Animal>> animalSortByKind(bool (*comp)(const Animal &, const Animal &));
+    std::vector<ORGANISM> organismSort(bool (*comp)(const ORGANISM&, const ORGANISM&));
+    std::unordered_map<std::string, std::vector<ORGANISM>> organismSortByKind(bool (*comp)(const ORGANISM&, const ORGANISM&));
 
 protected:
     double killerFunction(const double &index, const double &size) const;

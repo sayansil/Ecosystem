@@ -13,6 +13,8 @@ set(ECOSYSTEM_HEADERS
     include/god.hpp
     include/database_manager.hpp
     include/EcosystemTypes.hpp
+    include/organism.hpp
+    include/plant.hpp
     include/zmq.hpp
     include/zmq_addon.hpp
     )
@@ -23,6 +25,8 @@ set(ECOSYSTEM_SOURCES
     src/animal.cpp
     src/god.cpp
     src/database_manager.cpp
+    src/organism.cpp
+    src/plant.cpp
     )
 
 function(setup_ecosystem)
@@ -58,7 +62,7 @@ function(random_test)
         target_link_directories(rt_${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
         target_link_libraries(rt_${name} PRIVATE sqlite3 zmq pthread)
     endfunction()
-#    add_code(test1)
+    add_code(test1)
 #    add_code(test2)
 #    add_code(test3)
 #    add_code(client)
