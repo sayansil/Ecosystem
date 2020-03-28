@@ -66,25 +66,25 @@ void God::reset_species(const std::string &kind)
 //    return true;
 //}
 
-bool God::spawnOrganism(const ORGANISM& current_organism)
+bool God::spawnOrganism(const ENTITY& current_organism)
 {
     if (current_organism->is_normal_child())
     {
         // Add to memory
-        organisms[current_organism->name] = current_organism;
+        organisms[current_organism->get_name()] = current_organism;
 
         std::vector<std::vector<STAT>> tmp;
         tmp.emplace_back(std::vector<STAT>{
-            STAT(current_organism->name),
-            STAT(current_organism->kind),
-            STAT(current_organism->chromosome),
-            STAT(current_organism->generation),
-            STAT(current_organism->immunity),
-            STAT(current_organism->gender),
-            STAT(current_organism->age),
-            STAT(current_organism->height),
-            STAT(current_organism->weight),
-            STAT(current_organism->static_fitness)});
+            STAT(current_organism->get_name()),
+            STAT(current_organism->get_kind()),
+            STAT(current_organism->get_chromosome()),
+            STAT(current_organism->get_generation()),
+            STAT(current_organism->get_immunity()),
+            STAT(current_organism->get_gender()),
+            STAT(current_organism->get_age()),
+            STAT(current_organism->get_height()),
+            STAT(current_organism->get_weight()),
+            STAT(current_organism->get_static_fitness())});
 
         // Add to database
         db.insertRows(tmp);
@@ -112,23 +112,23 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
     const auto& parent2 = organisms[name2];
 
     // Generate chromosomes of the child
-    auto child_chromosome = helper::get_random_mixture(parent1->chromosome, parent2->chromosome);
+    auto child_chromosome = helper::get_random_mixture(parent1->get_chromosome(), parent2->get_chromosome());
 
     // Mutate chromosomes
     for(auto& bit : child_chromosome)
-        if(helper::weighted_prob(parent1->mutation_probability))
+        if(helper::weighted_prob(parent1->get_mutation_probability()))
             bit = (bit == '1')?'0':'1';
 
     // Spawn child (if probable)
-    if(helper::weighted_prob(parent1->conceiving_probability))
+    if(helper::weighted_prob(parent1->get_conceiving_probability()))
     {
-        return spawnOrganism(parent1->clone(parent1->kind,
+        return spawnOrganism(parent1->clone(parent1->get_kind(),
                                 1,
                                 child_chromosome,
-                                std::max(parent1->generation, parent2->generation) + 1,
+                                std::max(parent1->get_generation(), parent2->get_generation()) + 1,
                                 "",
-                                {(parent1->X + parent2->X) / 2,
-                                (parent1->Y + parent2->Y) / 2},
+                                {(parent1->get_X() + parent2->get_X()) / 2,
+                                (parent1->get_Y() + parent2->get_Y()) / 2},
                                 species_constants));
     }
 
@@ -195,7 +195,7 @@ void God::happyNewYear()
      ************************************/
 
     // Vector for [ (ORGANISM, death_factor) ]
-    std::vector<std::pair<ORGANISM, double>>
+    std::vector<std::pair<ENTITY, double>>
         organisms_vec;
 
     for(auto& organism : organisms)
@@ -209,14 +209,14 @@ void God::happyNewYear()
     std::sort(std::execution::par,
         organisms_vec.begin(),
         organisms_vec.end(),
-        [](const std::pair<ORGANISM, double>& x, const std::pair<ORGANISM, double>& y){
-            return x.first->death_factor > y.first->death_factor;
+        [](const std::pair<ENTITY, double>& x, const std::pair<ENTITY, double>& y){
+            return x.first->get_death_factor() > y.first->get_death_factor();
     });
 
     // Mark the organisms in organism_vec for death
 
     int tmp_i = 0;
-    std::for_each(std::execution::par, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ORGANISM, double> &x) {
+    std::for_each(std::execution::par, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
         x.second = helper::weighted_prob(
             // killerFunction(x.first.get_fitness(), organisms_vec.size())
             killerFunction(tmp_i++, organisms_vec.size())
@@ -232,7 +232,7 @@ void God::happyNewYear()
         if(organism_tuple.second == 1)
         {
             // Being dragged to the slaughterhouse
-            organisms_to_be_slaughtered.push_back(organism_tuple.first->name);
+            organisms_to_be_slaughtered.push_back(organism_tuple.first->get_name());
         }
     }
 
@@ -248,9 +248,9 @@ void God::happyNewYear()
      *       Annual Mating Begins      *
      ***********************************/
 
-    std::unordered_map<std::string, std::vector<ORGANISM>> organismsByKind;
+    std::unordered_map<std::string, std::vector<ENTITY>> organismsByKind;
     for(const auto& organism : organisms)
-        organismsByKind[organism.second->kind].push_back(organism.second);
+        organismsByKind[organism.second->get_kind()].push_back(organism.second);
 
     int index_parent1, index_parent2;
     for(auto& organism_tuple : organismsByKind)
@@ -266,12 +266,12 @@ void God::happyNewYear()
         current_in.close();
 
         auto& organism_list = organism_tuple.second;
-        std::vector<ORGANISM> mating_list1, mating_list2;
+        std::vector<ENTITY> mating_list1, mating_list2;
         
         if(organism_list.empty())
             continue;
 
-        bool current_kind_asexual = organism_list[0]->is_asexual;
+        bool current_kind_asexual = organism_list[0]->get_is_asexual();
 
         for(const auto& organism : organism_list)
         {
@@ -288,16 +288,16 @@ void God::happyNewYear()
             }
             else
             {
-                if(organism->gender == MALE)
+                if(organism->get_gender() == MALE)
                 {
-                    if(organism->age >= organism->mating_age_start && organism->age <= organism->mating_age_end)
+                    if(organism->get_age() >= organism->get_mating_age_start() && organism->get_age() <= organism->get_mating_age_end())
                     {
                         mating_list1.push_back(organism);
                     }
                 }
                 else
                 {
-                    if(organism->age >= organism->mating_age_start && organism->age <= organism->mating_age_end)
+                    if(organism->get_age() >= organism->get_mating_age_start() && organism->get_age() <= organism->get_mating_age_end())
                     {
                         mating_list2.push_back(organism);
                     }
@@ -317,10 +317,10 @@ void God::happyNewYear()
             const auto& parent2 = mating_list2[index_parent2];
 
             std::uniform_real_distribution<double> dis_children(0.0, 1.0);
-            int n_children = creatorFunction(dis_children(rng), parent1->offsprings_factor);
+            int n_children = creatorFunction(dis_children(rng), parent1->get_offsprings_factor());
             while(n_children--)
             {
-                if (mate(parent1->name, parent2->name, species_constants))
+                if (mate(parent1->get_name(), parent2->get_name(), species_constants))
                 {
                     recent_births++;
                 }
@@ -345,9 +345,9 @@ void God::happyNewYear()
     });
 }
 
-std::vector<ORGANISM> God::organismSort(bool (*comp)(const ORGANISM &, const ORGANISM &))
+std::vector<ENTITY> God::organismSort(bool (*comp)(const ENTITY &, const ENTITY &))
 {
-    std::vector<ORGANISM> organism_vec;
+    std::vector<ENTITY> organism_vec;
     for (auto &i : organisms)
     {
         organism_vec.push_back(i.second);
@@ -357,12 +357,12 @@ std::vector<ORGANISM> God::organismSort(bool (*comp)(const ORGANISM &, const ORG
     return organism_vec;
 }
 
-std::unordered_map<std::string, std::vector<ORGANISM>> God::organismSortByKind(bool (*comp)(const ORGANISM &, const ORGANISM &))
+std::unordered_map<std::string, std::vector<ENTITY>> God::organismSortByKind(bool (*comp)(const ENTITY &, const ENTITY &))
 {
-    std::unordered_map<std::string, std::vector<ORGANISM>> organism_map;
+    std::unordered_map<std::string, std::vector<ENTITY>> organism_map;
     for (const auto &i : organisms)
     {
-        organism_map[i.second->kind].push_back(i.second);
+        organism_map[i.second->get_kind()].push_back(i.second);
     }
     for (auto &i : organism_map)
     {

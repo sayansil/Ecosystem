@@ -14,8 +14,10 @@
 #include <EcosystemTypes.hpp>
 #include <helper.hpp>
 #include <nlohmann/json.hpp>
+#include <entity.hpp>
 
-class Organism
+template <typename T>
+class Organism : public Entity
 {
 public:
 
@@ -91,38 +93,190 @@ public:
     ******************/
 
     // Get base stats
-    virtual double get_base_appetite() const = 0;
-    virtual double get_base_height() const = 0;
-    virtual double get_base_speed() const = 0;
-    virtual double get_base_stamina() const = 0;
-    virtual double get_base_vitality() const = 0;
-    virtual double get_base_weight() const = 0;
+    double get_base_appetite() const
+    {
+        return static_cast<const T&>(*this).get_base_appetite();
+    }
+    double get_base_height() const
+    {
+        return static_cast<const T&>(*this).get_base_height();
+    }
+    double get_base_speed() const
+    {
+        return static_cast<const T&>(*this).get_base_speed();
+    }
+    double get_base_stamina() const
+    {
+        return static_cast<const T&>(*this).get_base_stamina();
+    }
+    double get_base_vitality() const
+    {
+        return static_cast<const T&>(*this).get_base_vitality();
+    }
+    double get_base_weight() const
+    {
+        return static_cast<const T&>(*this).get_base_weight();
+    }
 
     // Get multipliers
-    virtual double get_height_multiplier() const = 0;
-    virtual double get_speed_multiplier() const = 0;
-    virtual double get_stamina_multiplier() const = 0;
-    virtual double get_vitality_multiplier() const = 0;
-    virtual double get_weight_multiplier() const = 0;
+    double get_height_multiplier() const
+    {
+        return static_cast<const T&>(*this).get_height_multiplier();
+    }
+    double get_speed_multiplier() const
+    {
+        return static_cast<const T&>(*this).get_speed_multiplier();
+    }
+    double get_stamina_multiplier() const
+    {
+        return static_cast<const T&>(*this).get_stamina_multiplier();
+    }
+    double get_vitality_multiplier() const
+    {
+        return static_cast<const T&>(*this).get_vitality_multiplier();
+    }
+    double get_weight_multiplier() const
+    {
+        return static_cast<const T&>(*this).get_weight_multiplier();
+    }
 
     // Get max stats
-    virtual double get_max_height() const = 0;
-    virtual double get_max_weight() const = 0;
+    
+    double get_max_height() const
+    {
+        return static_cast<const T&>(*this).get_max_height();
+    }
+    double get_max_weight() const
+    {
+        return static_cast<const T&>(*this).get_max_weight();
+    }
 
     // Get miscellaneous stats
-    double get_die_of_age_factor() const;
-    double get_die_of_fitness_factor() const;
-    double get_fitness() const;
-    double get_immunity() const;
-    unsigned int get_gender() const;
-    virtual bool is_normal_child() const = 0;
+    double get_die_of_age_factor() const
+    {
+        return std::min(1.0, exp(age_on_death * (static_cast<double>(age) / max_age - 1)));
+    }
+    double get_die_of_fitness_factor() const
+    {
+        return std::min(1.0, exp(-fitness_on_death * get_fitness()));
+    }
+    double get_fitness() const
+    {
+        return static_fitness * dynamic_fitness;
+    }
+    double get_immunity() const
+    {
+        return helper::get_value_from_chromosome(chromosome,
+                          this->chromosome_structure.at("im").at("start"),
+                          this->chromosome_structure.at("im").at("length"),
+                          1.0);
+    }
+    unsigned int get_gender() const
+    {
+        return static_cast<unsigned int>(helper::get_value_from_chromosome(chromosome,
+                          this->chromosome_structure.at("bv").at("start"),
+                          this->chromosome_structure.at("bv").at("length"),
+                          2.0));
+    }
+    
+    std::string get_kind() const
+    {
+        return kind;
+    }
+    
+    unsigned int get_mating_age_start() const
+    {
+        return mating_age_start;
+    }
+    
+    unsigned int get_mating_age_end() const
+    {
+        return mating_age_end;
+    }
+    unsigned int get_age() const
+    {
+        return age;
+    }
+
+    std::string get_name() const
+    {
+        return name;
+    }
+
+    std::string get_chromosome() const
+    {
+        return chromosome;
+    }
+   
+    unsigned int get_generation() const
+    {
+        return generation;
+    }
+
+    double get_height() const
+    {
+        return height;
+    }
+
+    double get_weight() const
+    {
+        return weight;
+    }
+
+    double get_static_fitness() const
+    {
+        return static_fitness;
+    }
+    
+    double get_mutation_probability() const
+    {
+        return mutation_probability;
+    }
+    
+    double get_conceiving_probability() const
+    {
+        return conceiving_probability;
+    }
+   
+    unsigned int get_X() const
+    {
+        return X;
+    }
+
+    unsigned int get_Y() const
+    {
+        return Y;
+    }
+    
+    double get_death_factor() const
+    {
+        return death_factor;
+    }
+    
+    unsigned int get_is_asexual() const
+    {
+        return is_asexual;
+    }
+    
+    double get_offsprings_factor() const
+    {
+        return offsprings_factor;
+    }
+    
+    bool is_normal_child() const
+    {
+        return static_cast<const T&>(*this).is_normal_child();
+    }
 
     /********************
      *  Clone function  *
     *********************/
     
-    virtual std::shared_ptr<Organism> clone() const = 0;
-    virtual std::shared_ptr<Organism> clone(
+    std::shared_ptr<Entity> clone() const
+    {
+        return static_cast<const T&>(*this).clone();
+    }
+    std::shared_ptr<Entity> clone(
                 const std::string& kind,
                 const unsigned int& age = 0,
                 const std::string& chromosome = "",
@@ -130,39 +284,70 @@ public:
                 const std::string& name = "",
                 const std::pair<unsigned int, unsigned int>& XY = helper::random_location(),
                 const nlohmann::json& species_constants = nlohmann::json()
-            ) const = 0;
+            ) const
+    {
+        return static_cast<const T&>(*this).clone(kind, age, chromosome, generation, name, XY, species_constants);
+    }
     
     /********************
      *  Update methods  *
      ********************/
 
-    virtual void init_from_json(const nlohmann::json &) = 0;
+    void init_from_json(const nlohmann::json &data)
+    {
+        static_cast<T&>(*this).init_from_json(data);
+    }
 
     // Generate fitness values
-    virtual void evaluate_dynamic_fitness() = 0;
-    virtual void evaluate_static_fitness() = 0;
+    void evaluate_dynamic_fitness()
+    {
+        static_cast<T&>(*this).evaluate_dynamic_fitness();
+    }
+    void evaluate_static_fitness()
+    {
+        static_cast<T&>(*this).evaluate_static_fitness();
+    }
 
     // Miscellaneous methods
-    virtual void eat(const double &) = 0;
-    virtual void generate_death_factor() = 0;
-    virtual void increment_age() = 0;
-    virtual void sleep(const double &) = 0;
+    void eat(const double &data)
+    {
+        static_cast<T&>(*this).eat(data);
+    }
+    void generate_death_factor()
+    {
+        static_cast<T&>(*this).generate_death_factor();
+    }
+    void increment_age()
+    {
+        static_cast<T&>(*this).increment_age();
+    }
+    void sleep(const double &data)
+    {
+        static_cast<T&>(*this).sleep(data);
+    }
 
     // Update stats
-    virtual void decrement_stamina_by(const double &) = 0;
-    virtual void decrement_vitality_by(const double &) = 0;
-    virtual void increment_stamina_by(const double &) = 0;
-    virtual void increment_vitality_by(const double&) = 0;
+    void decrement_stamina_by(const double &data)
+    {
+        static_cast<T&>(*this).decrement_stamina_by(data);
+    }
+    void decrement_vitality_by(const double &data)
+    {
+        static_cast<T&>(*this).decrement_vitality_by(data);
+    }
+    void increment_stamina_by(const double &data)
+    {
+        static_cast<T&>(*this).increment_stamina_by(data);
+    }
+    void increment_vitality_by(const double&data)
+    {
+        static_cast<T&>(*this).increment_vitality_by(data);
+    }
 
-    virtual STAT get_stat(const std::string &) const = 0;
-
-    /************************
-     *  Virtual Destructor  *
-     ************************/
-
-    virtual ~Organism();
+    STAT get_stat(const std::string &data) const
+    {
+        return static_cast<const T&>(*this).get_stat(data);
+    }
 };
-
-using ORGANISM = std::shared_ptr<Organism>;
 
 #endif /* ORGANISM_HPP */

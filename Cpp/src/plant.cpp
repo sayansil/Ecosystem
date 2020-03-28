@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include <plant.hpp>
 
 double Plant::get_base_height() const
@@ -383,12 +384,12 @@ Plant::~Plant()
 
 }
 
-ORGANISM Plant::clone() const
+std::shared_ptr<Entity> Plant::clone() const
 {
     return std::make_shared<Plant>();
 }
 
-ORGANISM Plant::clone(
+std::shared_ptr<Entity> Plant::clone(
                 const std::string& kind,
                 const unsigned int& age,
                 const std::string& chromosome,
@@ -418,62 +419,5 @@ bool Plant::is_normal_child() const
 
     return true;
 }
-
-
-    /*************************
-     *  Redundant functions  *
-     *************************/
-
-double Plant::get_base_appetite() const
-{
-    std::cout << "Redundant function get_base_appetite called\n";
-    return NULL;
-}
-
-
-double Plant::get_base_speed() const
-{
-    std::cout << "Redundant function get_base_speed called\n";
-    return NULL;
-}
-
-double Plant::get_base_stamina() const
-{
-    std::cout << "Redundant function get_base_stamina called\n";
-    return NULL;
-}
-
-double Plant::get_speed_multiplier() const
-{
-    std::cout << "Redundant function get_speed_multiplier called\n";
-    return NULL;
-}
-
-double Plant::get_stamina_multiplier() const
-{
-    std::cout << "Redundant function get_stamina_multiplier called\n";
-    return NULL;
-}
-
-void Plant::eat(const double&)
-{
-    std::cout << "Redundant function eat called\n";
-}
-
-void Plant::sleep(const double&)
-{
-    std::cout << "Redundant function sleep called\n";
-}
-
-void Plant::decrement_stamina_by(const double&)
-{
-    std::cout << "Redundant function decrement_stamina_by called\n";
-}
-
-void Plant::increment_stamina_by(const double&)
-{
-    std::cout << "Redundant function increment_stamina_by called\n";
-}
-
 
 

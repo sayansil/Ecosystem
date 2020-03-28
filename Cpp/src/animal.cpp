@@ -79,12 +79,12 @@ Animal::~Animal()
 
 }
 
-ORGANISM Animal::clone() const
+std::shared_ptr<Entity> Animal::clone() const
 {
     return std::make_shared<Animal>();
 }
 
-ORGANISM Animal::clone(
+std::shared_ptr<Entity> Animal::clone(
                 const std::string& kind,
                 const unsigned int& age,
                 const std::string& chromosome,

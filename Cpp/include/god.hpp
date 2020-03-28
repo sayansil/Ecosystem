@@ -23,7 +23,7 @@ public:
      *  Public attributes  *
     ************************/
 
-    ORGANISM_MAP_TYPE organisms;
+    ENTITY_MAP_TYPE organisms;
     unsigned int recent_deaths;
     unsigned int recent_births;
 
@@ -42,11 +42,11 @@ public:
     void reset_species(const std::string &);
     void happyNewYear();
     void killOrganisms(const std::vector<std::string> &);
-    bool spawnOrganism(const ORGANISM&);
+    bool spawnOrganism(const ENTITY&);
     void sendDataToPy();
 
-    std::vector<ORGANISM> organismSort(bool (*comp)(const ORGANISM&, const ORGANISM&));
-    std::unordered_map<std::string, std::vector<ORGANISM>> organismSortByKind(bool (*comp)(const ORGANISM&, const ORGANISM&));
+    std::vector<ENTITY> organismSort(bool (*comp)(const ENTITY&, const ENTITY&));
+    std::unordered_map<std::string, std::vector<ENTITY>> organismSortByKind(bool (*comp)(const ENTITY&, const ENTITY&));
 
 protected:
     double killerFunction(const double &index, const double &size) const;

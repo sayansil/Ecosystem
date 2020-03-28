@@ -4,6 +4,7 @@
 #include <climits>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <map>
 #include <math.h>
@@ -14,7 +15,7 @@
 #include <nlohmann/json.hpp>
 #include <organism.hpp>
 
-class Animal : public Organism
+class Animal : public Organism<Animal>
 {
 public:
 
@@ -110,8 +111,8 @@ public:
      *  Virtual functions  *
      ***********************/
 
-    ORGANISM clone() const;
-    ORGANISM clone(
+    std::shared_ptr<Entity> clone() const;
+    std::shared_ptr<Entity> clone(
                 const std::string& kind,
                 const unsigned int& age = 0,
                 const std::string& chromosome = "",

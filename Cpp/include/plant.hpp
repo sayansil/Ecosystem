@@ -4,6 +4,7 @@
 #include <climits>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <map>
 #include <math.h>
@@ -14,7 +15,7 @@
 #include <nlohmann/json.hpp>
 #include <organism.hpp>
 
-class Plant : public Organism
+class Plant : public Organism<Plant>
 {
 public:
 
@@ -75,8 +76,8 @@ public:
      *  Virtual functions  *
      ***********************/
 
-    ORGANISM clone() const;
-    ORGANISM clone(
+    std::shared_ptr<Entity> clone() const;
+    std::shared_ptr<Entity> clone(
                 const std::string& kind,
                 const unsigned int& age = 0,
                 const std::string& chromosome = "",
@@ -104,20 +105,6 @@ public:
     void increment_vitality_by(const double&);
     STAT get_stat(const std::string &) const;
     bool is_normal_child() const;
-
-    /***********************
-     *  Redundant functions  *
-     ***********************/
-    
-    double get_base_appetite() const;
-    double get_base_speed() const;
-    double get_base_stamina() const;
-    double get_speed_multiplier() const;
-    double get_stamina_multiplier() const;
-    void eat(const double &);
-    void sleep(const double &);
-    void decrement_stamina_by(const double &);
-    void increment_stamina_by(const double &);
 
 };
 

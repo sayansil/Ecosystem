@@ -3,9 +3,9 @@
 #include <stat_fetcher.hpp>
 #include <string>
 
-std::vector<ORGANISM> getOrganismVector(const ORGANISM_MAP_TYPE &organisms)
+std::vector<ENTITY> getOrganismVector(const ENTITY_MAP_TYPE &organisms)
 {
-    std::vector<ORGANISM> organisms_vec;
+    std::vector<ENTITY> organisms_vec;
     for (auto &organism : organisms)
     {
         organisms_vec.push_back(organism.second);
@@ -16,15 +16,15 @@ std::vector<ORGANISM> getOrganismVector(const ORGANISM_MAP_TYPE &organisms)
 
 namespace stat_fetcher
 {
-    double getGenderRatio(const ORGANISM_MAP_TYPE &organisms, const std::string & kind)
+    double getGenderRatio(const ENTITY_MAP_TYPE &organisms, const std::string & kind)
     {
         unsigned int M = 0, F = 0;
         for (auto organism : organisms)
         {
-            if (kind != "" && kind != organism.second->kind)
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            if (organism.second->gender == MALE)
+            if (organism.second->get_gender() == MALE)
             {
                 M++;
             }
@@ -37,12 +37,12 @@ namespace stat_fetcher
         return (1.0 * M) / F;
     }
 
-    unsigned int getPopulation(const ORGANISM_MAP_TYPE &organisms, const std::string &kind)
+    unsigned int getPopulation(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int count = 0;
         for (const auto &organism: organisms)
         {
-            if (kind != "" && kind != organism.second->kind)
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
             count++;
@@ -51,18 +51,18 @@ namespace stat_fetcher
         return count;
     }
 
-    std::pair<unsigned int, unsigned int> getMatablePopulation(const ORGANISM_MAP_TYPE &organisms, const std::string &kind)
+    std::pair<unsigned int, unsigned int> getMatablePopulation(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int M = 0, F = 0;
 
         for (const auto &organism: organisms)
         {
-            if (kind != "" && kind != organism.second->kind)
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            if (organism.second->age >= organism.second->mating_age_start && organism.second->age <= organism.second->mating_age_end)
+            if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
             {
-                if (organism.second->gender == MALE)
+                if (organism.second->get_gender() == MALE)
                 {
                     M++;
                 }
@@ -76,14 +76,14 @@ namespace stat_fetcher
         return {M, F};
     }
 
-    std::pair<double, double> getStatGap(const ORGANISM_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    std::pair<double, double> getStatGap(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double low = 0.0, high = 0.0, value;
         STAT current_attribute;
         bool uninitialized = true;
         for (const auto &organism : organisms)
         {
-            if (kind != "" && kind != organism.second->kind)
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
             current_attribute = organism.second->get_stat(attribute);
@@ -121,26 +121,26 @@ namespace stat_fetcher
         return {low, high};
     }
 
-    std::unordered_map<std::string, unsigned int> getKindDistribution(const ORGANISM_MAP_TYPE &organisms)
+    std::unordered_map<std::string, unsigned int> getKindDistribution(const ENTITY_MAP_TYPE &organisms)
     {
         std::unordered_map<std::string, unsigned int> kindDistribution;
 
         for (const auto &organism: organisms)
         {
-            if(kindDistribution.find(organism.second->kind) == kindDistribution.end())
+            if(kindDistribution.find(organism.second->get_kind()) == kindDistribution.end())
             {
-                kindDistribution[organism.second->kind] = 1;
+                kindDistribution[organism.second->get_kind()] = 1;
             }
             else
             {
-                kindDistribution[organism.second->kind]++;
+                kindDistribution[organism.second->get_kind()]++;
             }
         }
 
         return kindDistribution;
     }
 
-    double getStatAverage(const ORGANISM_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    double getStatAverage(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double average = 0.0, n = 0.0, value = 0.0;
 
@@ -148,7 +148,7 @@ namespace stat_fetcher
 
         for (const auto &organism: organisms)
         {
-            if (kind != "" && kind != organism.second->kind)
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
             average = (n / (n + 1)) * average + ((double)organism.second->get_stat(attribute) / (n + 1));
@@ -158,13 +158,13 @@ namespace stat_fetcher
         return average;
     }
 
-    std::vector<STAT> getOneStat(const ORGANISM_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    std::vector<STAT> getOneStat(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         std::vector<STAT> attributeList;
 
         for (const auto &organism : organisms)
         {
-            if (kind != "" && kind != organism.second->kind)
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
             attributeList.push_back(organism.second->get_stat(attribute));
@@ -173,7 +173,7 @@ namespace stat_fetcher
         return attributeList;
     }
 
-    std::unordered_map<std::string, double> getAllGenericStats(const ORGANISM_MAP_TYPE &organisms, const std::string &kind)
+    std::unordered_map<std::string, double> getAllGenericStats(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         std::unordered_map<std::string, double> stat_display_map;
         unsigned int tmp_i;
@@ -195,14 +195,14 @@ namespace stat_fetcher
 
         for (const auto &organism: organisms)
         {
-            if (kind != "" && kind != organism.second->kind)
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            if (organism.second->gender == MALE)
+            if (organism.second->get_gender() == MALE)
             {
                 stat_display_map["male"]++;
 
-                if (organism.second->age >= organism.second->mating_age_start && organism.second->age <= organism.second->mating_age_end)
+                if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                 {
                     stat_display_map["matable_male"]++;
                 }
@@ -211,7 +211,7 @@ namespace stat_fetcher
             {
                 stat_display_map["female"]++;
 
-                if (organism.second->age >= organism.second->mating_age_start && organism.second->age <= organism.second->mating_age_end)
+                if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                 {
                     stat_display_map["matable_female"]++;
                 }
@@ -241,7 +241,7 @@ namespace stat_fetcher
         return stat_display_map;
     }
     
-    std::string generateDataForPy(const ORGANISM_MAP_TYPE& organisms)
+    std::string generateDataForPy(const ENTITY_MAP_TYPE& organisms)
     {
         nlohmann::json master_data;
 

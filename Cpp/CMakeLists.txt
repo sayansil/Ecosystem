@@ -14,6 +14,7 @@ set(ECOSYSTEM_HEADERS
     include/database_manager.hpp
     include/EcosystemTypes.hpp
     include/organism.hpp
+    include/entity.hpp
     include/plant.hpp
     include/zmq.hpp
     include/zmq_addon.hpp
@@ -25,7 +26,6 @@ set(ECOSYSTEM_SOURCES
     src/animal.cpp
     src/god.cpp
     src/database_manager.cpp
-    src/organism.cpp
     src/plant.cpp
     )
 
