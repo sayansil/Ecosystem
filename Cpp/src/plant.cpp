@@ -129,7 +129,6 @@ void Plant::init_from_json(const nlohmann::json &json_file)
     this->offsprings_factor = json_file["offsprings_factor"];
     this->is_asexual = json_file["is_asexual"];
 
-
     this->mutation_probability = json_file["mutation_probability"];
     this->conceiving_probability = json_file["conceiving_probability"];
 
@@ -150,9 +149,8 @@ void Plant::init_from_json(const nlohmann::json &json_file)
 
     this->theoretical_maximum_height = json_file["species_theoretical_maximum_height"];
     this->theoretical_maximum_weight = json_file["species_theoretical_maximum_weight"];
-
+    
     this->food_chain_rank = json_file["food_chain_rank"];
-    this->vision_radius = json_file["vision_radius"];
 }
 
 STAT Plant::get_stat(const std::string &attribute) const
@@ -313,8 +311,9 @@ STAT Plant::get_stat(const std::string &attribute) const
     return "null";
 }
 
-Plant::Plant(const std::string& kind, const unsigned int& age, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY, const nlohmann::json& species_constants)
+Plant::Plant(const std::string& kind, const unsigned int& age, const bool& monitor_in_simulation, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY, const nlohmann::json& species_constants)
 {
+    this->monitor_in_simulation = monitor_in_simulation;
     this->kind = kind;
 
     if(name.length() == 0)
@@ -392,13 +391,14 @@ std::shared_ptr<Entity> Plant::clone() const
 std::shared_ptr<Entity> Plant::clone(
                 const std::string& kind,
                 const unsigned int& age,
+                const bool& monitor_in_simulation,
                 const std::string& chromosome,
                 const unsigned int& generation,
                 const std::string& name,
                 const std::pair<unsigned int, unsigned int>& XY,
                 const nlohmann::json& species_constants) const
 {
-    return std::make_shared<Plant>(kind, age, chromosome, generation, name, XY, species_constants);
+    return std::make_shared<Plant>(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
 }
 
 bool Plant::is_normal_child() const

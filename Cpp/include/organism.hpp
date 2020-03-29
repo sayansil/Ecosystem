@@ -21,6 +21,8 @@ class Organism : public Entity
 {
 public:
 
+    bool monitor_in_simulation;
+
     /***************************************
      *         Fixed for a species         *
     ****************************************/
@@ -92,6 +94,12 @@ public:
      *  Get methods  *
     ******************/
 
+    bool get_monitor_in_simulation() const
+    {
+        return monitor_in_simulation;
+    }
+    
+    
     // Get base stats
     double get_base_appetite() const
     {
@@ -279,6 +287,7 @@ public:
     std::shared_ptr<Entity> clone(
                 const std::string& kind,
                 const unsigned int& age = 0,
+                const bool& monitor_in_simulation = false,
                 const std::string& chromosome = "",
                 const unsigned int& generation = 1,
                 const std::string& name = "",
@@ -286,7 +295,7 @@ public:
                 const nlohmann::json& species_constants = nlohmann::json()
             ) const
     {
-        return static_cast<const T&>(*this).clone(kind, age, chromosome, generation, name, XY, species_constants);
+        return static_cast<const T&>(*this).clone(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
     }
     
     /********************

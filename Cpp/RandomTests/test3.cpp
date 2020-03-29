@@ -1,4 +1,3 @@
-#include "nlohmann/json_fwd.hpp"
 #include <iomanip>
 #include <ostream>
 #include <string>

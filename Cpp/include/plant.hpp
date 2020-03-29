@@ -66,6 +66,7 @@ public:
     Plant(
         const std::string& kind,
         const unsigned int& age = 0,
+        const bool& monitor_in_simulation = false,
         const std::string& chromosome = "",
         const unsigned int& generation = 1,
         const std::string& name = "",
@@ -80,6 +81,7 @@ public:
     std::shared_ptr<Entity> clone(
                 const std::string& kind,
                 const unsigned int& age = 0,
+                const bool& monitor_in_simulation = false,
                 const std::string& chromosome = "",
                 const unsigned int& generation = 1,
                 const std::string& name = "",

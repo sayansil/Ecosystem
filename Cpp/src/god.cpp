@@ -1,4 +1,5 @@
 #include "helper.hpp"
+#include <iostream>
 #include <random>
 #include <zmq.hpp>
 #include <god.hpp>
@@ -38,33 +39,6 @@ void God::reset_species(const std::string &kind)
     base_in.close();
     current_out.close();
 }
-
-//bool isNormalChild(const ORGANISM &organism)
-//{
-//    if (organism.height == 0 || organism.height != organism.height ||
-//        organism.weight == 0 || organism.weight != organism.weight ||
-//        organism.immunity == 0 || organism.immunity != organism.immunity ||
-//        organism.max_appetite_at_age == 0 || organism.max_appetite_at_age != organism.max_appetite_at_age ||
-//        organism.max_speed_at_age == 0 || organism.max_speed_at_age != organism.max_speed_at_age ||
-//        organism.max_stamina_at_age == 0 || organism.max_stamina_at_age != organism.max_stamina_at_age ||
-//        organism.max_vitality_at_age == 0 || organism.max_vitality_at_age != organism.max_vitality_at_age ||
-//        organism.get_base_appetite() == 0 || organism.get_base_appetite() != organism.get_base_appetite() ||
-//        organism.get_base_height() == 0 || organism.get_base_height() != organism.get_base_height() ||
-//        organism.get_base_speed() == 0 || organism.get_base_speed() != organism.get_base_speed() ||
-//        organism.get_base_stamina() == 0 || organism.get_base_stamina() != organism.get_base_stamina() ||
-//        organism.get_base_vitality() == 0 || organism.get_base_vitality() != organism.get_base_vitality() ||
-//        organism.get_base_weight() == 0 || organism.get_base_weight() != organism.get_base_weight() ||
-//        organism.get_max_height() == 0 || organism.get_max_height() != organism.get_max_height() ||
-//        organism.get_max_weight() == 0 || organism.get_max_weight() != organism.get_max_weight() ||
-//        organism.get_height_multiplier() == 0 || organism.get_height_multiplier() != organism.get_height_multiplier() ||
-//        organism.get_speed_multiplier() == 0 || organism.get_speed_multiplier() != organism.get_speed_multiplier() ||
-//        organism.get_stamina_multiplier() == 0 || organism.get_stamina_multiplier() != organism.get_stamina_multiplier() ||
-//        organism.get_vitality_multiplier() == 0 || organism.get_vitality_multiplier() != organism.get_vitality_multiplier() ||
-//        organism.get_weight_multiplier() == 0 || organism.get_weight_multiplier() != organism.get_weight_multiplier())
-//        return false;
-//
-//    return true;
-//}
 
 bool God::spawnOrganism(const ENTITY& current_organism)
 {
@@ -124,6 +98,7 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
     {
         return spawnOrganism(parent1->clone(parent1->get_kind(),
                                 1,
+                                false,
                                 child_chromosome,
                                 std::max(parent1->get_generation(), parent2->get_generation()) + 1,
                                 "",
@@ -242,8 +217,6 @@ void God::happyNewYear()
     organisms_vec.clear(); organisms_vec.shrink_to_fit();
     organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
 
-
-
     /***********************************
      *       Annual Mating Begins      *
      ***********************************/
@@ -332,7 +305,6 @@ void God::happyNewYear()
             mating_list2.shrink_to_fit();
         }   
     }
-
 
     /************************************
      *       Annual Ageing Begins      *

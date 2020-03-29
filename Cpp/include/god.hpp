@@ -24,8 +24,8 @@ public:
     ************************/
 
     ENTITY_MAP_TYPE organisms;
-    unsigned int recent_deaths;
-    unsigned int recent_births;
+    unsigned int recent_deaths = 0;
+    unsigned int recent_births = 0;
 
     /******************************
      *  Constructor / Destructor  *

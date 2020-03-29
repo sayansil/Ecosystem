@@ -1,8 +1,9 @@
 #include <animal.hpp>
 #include <memory>
 
-Animal::Animal(const std::string& kind, const unsigned int& age, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY, const nlohmann::json& species_constants)
+Animal::Animal(const std::string& kind, const unsigned int& age, const bool& monitor_in_simulation, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY, const nlohmann::json& species_constants)
 {
+    this->monitor_in_simulation = monitor_in_simulation;
     this->kind = kind;
 
     if(name.length() == 0)
@@ -87,13 +88,14 @@ std::shared_ptr<Entity> Animal::clone() const
 std::shared_ptr<Entity> Animal::clone(
                 const std::string& kind,
                 const unsigned int& age,
+                const bool& monitor_in_simulation,
                 const std::string& chromosome,
                 const unsigned int& generation,
                 const std::string& name,
                 const std::pair<unsigned int, unsigned int>& XY,
                 const nlohmann::json& species_constants) const
 {
-    return std::make_shared<Animal>(kind, age, chromosome, generation, name, XY, species_constants);
+    return std::make_shared<Animal>(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
 }
 
 void Animal::init_from_json(const nlohmann::json &json_file)
