@@ -77,7 +77,6 @@ public:
     double death_factor;
 
     // Miscellaneous attributes
-    double vision_radius;
 
     /**************************************
      *  Changes dynamically every moment  *
@@ -353,6 +352,16 @@ public:
         static_cast<T&>(*this).increment_vitality_by(data);
     }
 
+    std::string get_kingdom() const
+    {
+        return static_cast<const T&>(*this).get_kingdom();
+    }
+
+    unsigned int get_food_chain_rank() const
+    {
+        return food_chain_rank;
+    }
+    
     STAT get_stat(const std::string &data) const
     {
         return static_cast<const T&>(*this).get_stat(data);

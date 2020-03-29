@@ -599,6 +599,11 @@ STAT Animal::get_stat(const std::string &attribute) const
     return "null";
 }
 
+std::string Animal::get_kingdom() const
+{
+    return "animal";
+}
+
 bool Animal::is_normal_child() const
 {
     if (height == 0 || height != height ||

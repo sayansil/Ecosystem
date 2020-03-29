@@ -48,6 +48,8 @@ public:
     virtual unsigned int get_is_asexual() const = 0;
     virtual double get_offsprings_factor() const = 0;
     virtual bool get_monitor_in_simulation() const = 0;
+    virtual std::string get_kingdom() const = 0;
+    virtual unsigned int get_food_chain_rank() const = 0;
 
     virtual void generate_death_factor() = 0;
     virtual void increment_age() = 0;

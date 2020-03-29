@@ -23,7 +23,7 @@ public:
      *  Public attributes  *
     ************************/
 
-    ENTITY_MAP_TYPE organisms;
+    ENTITY_MAP_TYPE organisms;  // < name, Entity >
     unsigned int recent_deaths = 0;
     unsigned int recent_births = 0;
 
@@ -44,6 +44,8 @@ public:
     void killOrganisms(const std::vector<std::string> &);
     bool spawnOrganism(const ENTITY&);
     void sendDataToPy();
+    bool listenForSimulationPing();
+    void startListeningForSimulationPing();
 
     std::vector<ENTITY> organismSort(bool (*comp)(const ENTITY&, const ENTITY&));
     std::unordered_map<std::string, std::vector<ENTITY>> organismSortByKind(bool (*comp)(const ENTITY&, const ENTITY&));

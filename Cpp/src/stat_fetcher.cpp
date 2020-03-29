@@ -1,4 +1,6 @@
+#include "nlohmann/json_fwd.hpp"
 #include <iostream>
+#include <memory>
 #include <nlohmann/json.hpp>
 #include <filesystem>
 #include <stat_fetcher.hpp>
@@ -242,32 +244,87 @@ namespace stat_fetcher
         return stat_display_map;
     }
     
-    std::string generateDataForPy(const ENTITY_MAP_TYPE& organisms)
+    //std::string generateDataForPy(const ENTITY_MAP_TYPE& organisms)
+    //{
+    //    nlohmann::json master_data;
+
+    //    std::filesystem::path species_folder = "../../data/json";
+
+    //    for(auto file : std::filesystem::directory_iterator(species_folder))
+    //    {
+    //        nlohmann::json species_json;
+    //        std::string current_species = file.path();
+    //        current_species = current_species.substr(current_species.find_last_of('/') + 1);
+    //        const std::string filepath = file / std::filesystem::path("current.json"); 
+    //        std::ifstream in(filepath);
+    //        nlohmann::json json_file;
+    //        in >> json_file;
+    //        species_json["name"] = current_species;
+    //        species_json["food_chain_rank"] = json_file["food_chain_rank"];
+    //        species_json["vision_radius"] = json_file["vision_radius"];
+    //        species_json["theoretical_maximum_speed"] = json_file["theoretical_maximum_speed"];
+    //        species_json["theoretical_maximum_base_vitality"] = json_file["theoretical_maximum_base_vitality"];
+    //        species_json["species_theoretical_maximum_base_appetite"] = json_file["theoretical_maximum_base_appetite"];
+    //        species_json["population"] = getPopulation(organisms, current_species);
+    //        in.close();
+    //        //master_data[current_species] = species_json;
+    //        master_data.push_back(species_json);
+    //    }
+    //    return master_data.dump();
+    //}
+    std::string prepareDataForSimulation(const ENTITY_MAP_TYPE& organisms)
     {
-        nlohmann::json master_data;
-
-        std::filesystem::path species_folder = "../../data/json";
-
-        for(auto file : std::filesystem::directory_iterator(species_folder))
+        nlohmann::json response;
+        response["animal"] = nlohmann::json::array();
+        response["plant"] = nlohmann::json::array();
+        response["status"] = "failure";
+        response["log"] = "";
+        if(organisms.size() < 1)
         {
-            nlohmann::json species_json;
-            std::string current_species = file.path();
-            current_species = current_species.substr(current_species.find_last_of('/') + 1);
-            const std::string filepath = file / std::filesystem::path("current.json"); 
-            std::ifstream in(filepath);
-            nlohmann::json json_file;
-            in >> json_file;
-            species_json["name"] = current_species;
-            species_json["food_chain_rank"] = json_file["food_chain_rank"];
-            species_json["vision_radius"] = json_file["vision_radius"];
-            species_json["theoretical_maximum_speed"] = json_file["theoretical_maximum_speed"];
-            species_json["theoretical_maximum_base_vitality"] = json_file["theoretical_maximum_base_vitality"];
-            species_json["species_theoretical_maximum_base_appetite"] = json_file["theoretical_maximum_base_appetite"];
-            species_json["population"] = getPopulation(organisms, current_species);
-            in.close();
-            //master_data[current_species] = species_json;
-            master_data.push_back(species_json);
+            response["log"] = "Underpopulation";
+            return response.dump();
         }
-        return master_data.dump();
+        if(organisms.size() > 35000)
+        {
+            response["log"] = "Overpopulation";
+            return response.dump();
+        }
+        for(const auto& organism : organisms)
+        {
+            if(organism.second->get_monitor_in_simulation())
+            {
+                if(organism.second->get_kingdom() == "animal")
+                {
+                    Animal *obj = static_cast<Animal*>(organism.second.get());
+                    response["animal"].push_back({
+                                {"name", obj->name},
+                                {"food_chain_rank", obj->food_chain_rank},
+                                {"vision_radius", obj->vision_radius},
+                                {"max_speed_at_age", obj->max_speed_at_age},
+                                {"max_vitality_at_age", obj->max_vitality_at_age},
+                                {"max_appetite_at_age", obj->max_appetite_at_age},
+                                {"X", obj->X},
+                                {"Y", obj->Y}
+                            });
+                }
+                else if(organism.second->get_kingdom() == "plant")
+                {
+                    Plant *obj = static_cast<Plant*>(organism.second.get());
+                    response["plant"].push_back({
+                                {"name", obj->name},
+                                {"food_chain_rank", obj->food_chain_rank},
+                                {"max_vitality_at_age", obj->max_vitality_at_age},
+                                {"X", obj->X},
+                                {"Y", obj->Y}
+                            });
+                }
+                else
+                {
+                    std::cout << "Kingdom not supported\n";
+                }
+            }
+        }
+        response["status"] = "success";
+        return response.dump();
     }
 };

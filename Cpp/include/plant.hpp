@@ -106,6 +106,7 @@ public:
     void decrement_vitality_by(const double &);
     void increment_vitality_by(const double&);
     STAT get_stat(const std::string &) const;
+    std::string get_kingdom() const;
     bool is_normal_child() const;
 
 };

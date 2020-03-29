@@ -1,6 +1,8 @@
 #include "helper.hpp"
+#include "stat_fetcher.hpp"
 #include <iostream>
 #include <random>
+#include <string>
 #include <zmq.hpp>
 #include <god.hpp>
 
@@ -315,6 +317,9 @@ void God::happyNewYear()
     std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto& x){
         x.second->increment_age();
     });
+    std::cout << "Recent births: " << recent_births << ' ';
+    std::cout << "Recent deaths: " << recent_deaths << ' ';
+    std::cout << "Population: " << organisms.size() << '\n';
 }
 
 std::vector<ENTITY> God::organismSort(bool (*comp)(const ENTITY &, const ENTITY &))
@@ -345,5 +350,36 @@ std::unordered_map<std::string, std::vector<ENTITY>> God::organismSortByKind(boo
 
 void God::sendDataToPy()
 {
-    socket.send(zmq::buffer(stat_fetcher::generateDataForPy(organisms)), zmq::send_flags::dontwait);
+    socket.send(zmq::buffer(stat_fetcher::prepareDataForSimulation(organisms)), zmq::send_flags::dontwait);
+}
+
+bool God::listenForSimulationPing()
+{
+    std::string positive = "SEND";
+    std::string negative = "STOP";
+    zmq::message_t response;
+    socket.recv(response);
+    std::string response_str = response.to_string();
+    if(response_str == positive)
+    {
+        sendDataToPy();
+        happyNewYear();
+        return true;
+    }    
+    else if(response_str == negative)
+    {    
+        return false;
+    }
+    else
+    {
+        std::cout << "Error: " << response_str << " received\n";
+        return false;
+    }
+}
+
+void God::startListeningForSimulationPing()
+{
+    std::cout << "God starts listening...\n";
+    while(listenForSimulationPing());
+    std::cout << "Alas! God stopped listening.\n";
 }

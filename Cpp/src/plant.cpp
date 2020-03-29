@@ -287,10 +287,6 @@ STAT Plant::get_stat(const std::string &attribute) const
     {
         return death_factor;
     }
-    if (attribute == "vision_radius")
-    {
-        return vision_radius;
-    }
     if (attribute == "vitality")
     {
         return vitality;
@@ -399,6 +395,11 @@ std::shared_ptr<Entity> Plant::clone(
                 const nlohmann::json& species_constants) const
 {
     return std::make_shared<Plant>(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
+}
+
+std::string Plant::get_kingdom() const
+{
+    return "plant";
 }
 
 bool Plant::is_normal_child() const

@@ -62,6 +62,8 @@ public:
     double theoretical_maximum_weight_multiplier;
 
     // Miscellaneous attributes
+    
+    double vision_radius;
     double sleep_restore_factor;
 
 
@@ -148,6 +150,7 @@ public:
     void increment_stamina_by(const double &);
     void increment_vitality_by(const double&);
     STAT get_stat(const std::string &) const;
+    std::string get_kingdom() const;
     bool is_normal_child() const;
 };
 

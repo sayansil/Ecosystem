@@ -8,6 +8,8 @@
 #include <nlohmann/json.hpp>
 #include <organism.hpp>
 #include <filesystem>
+#include <animal.hpp>
+#include <plant.hpp>
 
 using ENTITY_MAP_TYPE = std::unordered_map<std::string, ENTITY>;
 
@@ -21,7 +23,7 @@ namespace stat_fetcher
     extern std::pair<unsigned int, unsigned int> getMatablePopulation(const ENTITY_MAP_TYPE &, const std::string & = "");
     extern unsigned int getPopulation(const ENTITY_MAP_TYPE &, const std::string & = "");
     extern std::unordered_map<std::string, double> getAllStats(const ENTITY_MAP_TYPE &, const std::string & = "");
-    extern std::string generateDataForPy(const ENTITY_MAP_TYPE&);
+    extern std::string prepareDataForSimulation(const ENTITY_MAP_TYPE&);
 }; // namespace stat_fetcher
 
 #endif // STAT_FETCHER_HPP
