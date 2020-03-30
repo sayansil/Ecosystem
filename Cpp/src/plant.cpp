@@ -1,6 +1,144 @@
-#include <iostream>
-#include <memory>
 #include <plant.hpp>
+
+Plant::Plant(const std::string &kind, const unsigned int &age, const bool &monitor_in_simulation, const std::string &chromosome, const unsigned int &generation, const std::string &name, const std::pair<unsigned int, unsigned int> &XY, const nlohmann::json &species_constants)
+{
+    this->monitor_in_simulation = monitor_in_simulation;
+    this->kind = kind;
+
+    this->generation = generation;
+
+    if (name.length() == 0)
+    {
+        this->name = kind + "-" + helper::random_name(16);
+    }
+    else
+        this->name = name;
+
+    if (species_constants.empty())
+    {
+        const std::string filepath = "../../data/json/" + kind + "/current.json";
+
+        std::ifstream in(filepath);
+        nlohmann::json json_file;
+        in >> json_file;
+
+        init_from_json(json_file);
+
+        in.close();
+    }
+    else
+    {
+        init_from_json(species_constants);
+    }
+
+    this->vitality = this->max_vitality_at_age;
+
+    std::tie(this->X, this->Y) = helper::random_location();
+
+    this->age = age - 1;
+    increment_age();
+
+    evaluate_static_fitness();
+    evaluate_dynamic_fitness();
+}
+
+Plant::~Plant()
+{
+}
+
+std::shared_ptr<Entity> Plant::clone() const
+{
+    return std::make_shared<Plant>();
+}
+
+std::shared_ptr<Entity> Plant::clone(
+    const std::string &kind,
+    const unsigned int &age,
+    const bool &monitor_in_simulation,
+    const std::string &chromosome,
+    const unsigned int &generation,
+    const std::string &name,
+    const std::pair<unsigned int, unsigned int> &XY,
+    const nlohmann::json &species_constants) const
+{
+    return std::make_shared<Plant>(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
+}
+
+void Plant::init_from_json(const nlohmann::json &json_file)
+{
+    this->chromosome_structure = CHROMOSOME_MAP_TYPE(json_file["chromosome_structure"]);
+    this->chromosome_number = json_file["species_chromosome_number"];
+
+    this->mating_age_start = json_file["mating_age_start"];
+    this->mating_age_end = json_file["mating_age_end"];
+    this->max_age = json_file["species_max_age"];
+    this->offsprings_factor = json_file["offsprings_factor"];
+    this->is_asexual = json_file["is_asexual"];
+
+    this->mutation_probability = json_file["mutation_probability"];
+    this->conceiving_probability = json_file["conceiving_probability"];
+
+    this->age_on_death = json_file["species_age_on_death"];
+    this->fitness_on_death = json_file["species_fitness_on_death"];
+    this->age_fitness_on_death_ratio = json_file["species_age_fitness_on_death_ratio"];
+
+    this->height_on_vitality = json_file["species_height_on_vitality"];
+    this->weight_on_vitality = json_file["species_weight_on_vitality"];
+
+    this->theoretical_maximum_base_height = json_file["species_theoretical_maximum_base_height"];
+    this->theoretical_maximum_base_vitality = json_file["species_theoretical_maximum_base_vitality"];
+    this->theoretical_maximum_base_weight = json_file["species_theoretical_maximum_base_weight"];
+
+    this->theoretical_maximum_height_multiplier = json_file["species_theoretical_maximum_height_multiplier"];
+    this->theoretical_maximum_vitality_multiplier = json_file["species_theoretical_maximum_vitality_multiplier"];
+    this->theoretical_maximum_weight_multiplier = json_file["species_theoretical_maximum_weight_multiplier"];
+
+    this->theoretical_maximum_height = json_file["species_theoretical_maximum_height"];
+    this->theoretical_maximum_weight = json_file["species_theoretical_maximum_weight"];
+
+    this->food_chain_rank = json_file["food_chain_rank"];
+
+    if (chromosome.length() == 0)
+    {
+        unsigned int chromosome_length = 0;
+
+        // Do not disturb this loop...
+
+        for (auto i = chromosome_structure.begin(); i != chromosome_structure.end(); i++)
+        {
+            chromosome_length += i->second["length"];
+        }
+        this->chromosome = helper::random_binary(chromosome_length);
+    }
+    else
+    {
+        this->chromosome = chromosome;
+    }
+
+    this->immunity = get_immunity_from_chromosome();
+    this->gender = get_gender_from_chromosome();
+
+    this->max_vitality_at_age = get_base_vitality();
+
+    this->height = get_base_height();
+    this->weight = get_base_weight();
+}
+
+unsigned int Plant::get_gender_from_chromosome() const
+{
+    return static_cast<unsigned int>(helper::get_value_from_chromosome(chromosome,
+                      this->chromosome_structure.at("gn").at("start"),
+                      this->chromosome_structure.at("gn").at("length"),
+                      2.0));
+}
+
+double Plant::get_immunity_from_chromosome() const
+{
+    return helper::get_value_from_chromosome(chromosome,
+                      this->chromosome_structure.at("im").at("start"),
+                      this->chromosome_structure.at("im").at("length"),
+                      1.0);
+}
 
 double Plant::get_base_height() const
 {
@@ -108,49 +246,14 @@ void Plant::increment_age()
     evaluate_static_fitness();
 }
 
-void Plant::decrement_vitality_by(const double &units)
-{
-    vitality = std::max(vitality - units, 0.0);
-}
-
 void Plant::increment_vitality_by(const double &units)
 {
     vitality = std::min(vitality + units, max_vitality_at_age);
 }
 
-void Plant::init_from_json(const nlohmann::json &json_file)
+void Plant::decrement_vitality_by(const double &units)
 {
-    this->chromosome_structure = CHROMOSOME_MAP_TYPE(json_file["chromosome_structure"]);
-    this->chromosome_number = json_file["species_chromosome_number"];
-
-    this->mating_age_start = json_file["mating_age_start"];
-    this->mating_age_end = json_file["mating_age_end"];
-    this->max_age = json_file["species_max_age"];
-    this->offsprings_factor = json_file["offsprings_factor"];
-    this->is_asexual = json_file["is_asexual"];
-
-    this->mutation_probability = json_file["mutation_probability"];
-    this->conceiving_probability = json_file["conceiving_probability"];
-
-    this->age_on_death = json_file["species_age_on_death"];
-    this->fitness_on_death = json_file["species_fitness_on_death"];
-    this->age_fitness_on_death_ratio = json_file["species_age_fitness_on_death_ratio"];
-
-    this->height_on_vitality = json_file["species_height_on_vitality"];
-    this->weight_on_vitality = json_file["species_weight_on_vitality"];
-
-    this->theoretical_maximum_base_height = json_file["species_theoretical_maximum_base_height"];
-    this->theoretical_maximum_base_vitality = json_file["species_theoretical_maximum_base_vitality"];
-    this->theoretical_maximum_base_weight = json_file["species_theoretical_maximum_base_weight"];
-
-    this->theoretical_maximum_height_multiplier = json_file["species_theoretical_maximum_height_multiplier"];
-    this->theoretical_maximum_vitality_multiplier = json_file["species_theoretical_maximum_vitality_multiplier"];
-    this->theoretical_maximum_weight_multiplier = json_file["species_theoretical_maximum_weight_multiplier"];
-
-    this->theoretical_maximum_height = json_file["species_theoretical_maximum_height"];
-    this->theoretical_maximum_weight = json_file["species_theoretical_maximum_weight"];
-    
-    this->food_chain_rank = json_file["food_chain_rank"];
+    vitality = std::max(vitality - units, 0.0);
 }
 
 STAT Plant::get_stat(const std::string &attribute) const
@@ -307,101 +410,6 @@ STAT Plant::get_stat(const std::string &attribute) const
     return "null";
 }
 
-Plant::Plant(const std::string& kind, const unsigned int& age, const bool& monitor_in_simulation, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY, const nlohmann::json& species_constants)
-{
-    this->monitor_in_simulation = monitor_in_simulation;
-    this->kind = kind;
-
-    if(name.length() == 0)
-    {
-        this->name = kind + "-" + helper::random_name(16);
-    }
-    else
-        this->name = name;
-
-    if (species_constants.empty())
-    {
-        const std::string filepath = "../../data/json/" + kind + "/current.json"; 
-
-        std::ifstream in(filepath);
-        nlohmann::json json_file;
-        in >> json_file;
-
-        init_from_json(json_file);
-
-        in.close();
-    }
-    else
-    {
-        init_from_json(species_constants);
-    }
-
-    if(chromosome.length() == 0)
-    {
-        unsigned int chromosome_length = 0;
-
-        // Do not disturb this loop...
-
-        for(auto i = chromosome_structure.begin(); i != chromosome_structure.end(); i++)
-        {
-            chromosome_length += i->second["length"];
-        }
-        this->chromosome = helper::random_binary(chromosome_length);
-    }
-    else
-    {
-        this->chromosome = chromosome;
-    }
-
-    this->immunity      = get_immunity();
-    this->generation    = generation;
-    this->gender        = get_gender();
-
-    this->age = age - 1;
-
-    this->max_vitality_at_age   = get_base_vitality();
-
-    this->height = get_base_height();
-    this->weight = get_base_weight();
-
-    this->vitality  = this->max_vitality_at_age;
-
-    std::tie(this->X, this->Y) = helper::random_location();
-
-    increment_age();
-
-    evaluate_static_fitness();
-    evaluate_dynamic_fitness();
-}
-
-Plant::~Plant()
-{
-
-}
-
-std::shared_ptr<Entity> Plant::clone() const
-{
-    return std::make_shared<Plant>();
-}
-
-std::shared_ptr<Entity> Plant::clone(
-                const std::string& kind,
-                const unsigned int& age,
-                const bool& monitor_in_simulation,
-                const std::string& chromosome,
-                const unsigned int& generation,
-                const std::string& name,
-                const std::pair<unsigned int, unsigned int>& XY,
-                const nlohmann::json& species_constants) const
-{
-    return std::make_shared<Plant>(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
-}
-
-std::string Plant::get_kingdom() const
-{
-    return "plant";
-}
-
 bool Plant::is_normal_child() const
 {
     if (height == 0 || height != height ||
@@ -421,4 +429,7 @@ bool Plant::is_normal_child() const
     return true;
 }
 
-
+std::string Plant::get_kingdom() const
+{
+    return "plant";
+}

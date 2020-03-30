@@ -4,13 +4,16 @@
 #include <algorithm>
 #include <execution>
 #include <iostream>
+#include <random>
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include <string>
 
 #include <database_manager.hpp>
+#include <zmq.hpp>
 #include <organism.hpp>
-#include <plant.hpp>
+#include <helper.hpp>
 #include <stat_fetcher.hpp>
 
 #include <zmq.hpp>
@@ -19,29 +22,27 @@ class God
 {
 public:
 
-    /***********************
-     *  Public attributes  *
-    ************************/
-
     ENTITY_MAP_TYPE organisms;  // < name, Entity >
     unsigned int recent_deaths = 0;
     unsigned int recent_births = 0;
 
+
     /******************************
      *  Constructor / Destructor  *
-    *******************************/
+     ******************************/
 
     God();
     ~God();
 
+
     /**************************************
      *         Available to users         *
-    ***************************************/
+     **************************************/
 
     void catastrophe();
-    void reset_species(const std::string &);
-    void happyNewYear();
-    void killOrganisms(const std::vector<std::string> &);
+    void reset_species(const std::string&);
+    void happyNewYear(const bool &log = false);
+    void killOrganisms(const std::vector<std::string>&);
     bool spawnOrganism(const ENTITY&);
     void sendDataToPy();
     bool listenForSimulationPing();
@@ -56,10 +57,6 @@ protected:
 
 private:
 
-    /************************
-     *  Private attributes  *
-    *************************/
-
     DatabaseManager db;
     const int maxMateTrials = 100;
     zmq::context_t context;
@@ -68,10 +65,10 @@ private:
 
     /****************************************
      *         Unavailable to users         *
-    *****************************************/
+     ****************************************/
 
-    bool mate(const std::string&, const std::string&, const nlohmann::json& = nlohmann::json());
-    void update_species(const std::string &);
+    bool mate(const std::string&, const std::string&, const nlohmann::json & = nlohmann::json());
+    void update_species(const std::string&);
 };
 
 #endif // GOD_HPP

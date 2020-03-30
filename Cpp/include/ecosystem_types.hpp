@@ -30,7 +30,7 @@ struct STAT
     STAT() = default;
 
     template <typename T>
-    STAT(const T& t) : data(t) {}
+    STAT(const T &t) : data(t) {}
 
     template <typename T>
     operator T()const

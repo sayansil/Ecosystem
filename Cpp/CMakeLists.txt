@@ -12,7 +12,7 @@ set(ECOSYSTEM_HEADERS
     include/animal.hpp
     include/god.hpp
     include/database_manager.hpp
-    include/EcosystemTypes.hpp
+    include/ecosystem_types.hpp
     include/organism.hpp
     include/entity.hpp
     include/plant.hpp

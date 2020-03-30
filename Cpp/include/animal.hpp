@@ -1,16 +1,7 @@
 #ifndef ANIMAL_HPP
 #define ANIMAL_HPP
 
-#include <climits>
-#include <fstream>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <map>
-#include <math.h>
-#include <variant>
-
-#include <EcosystemTypes.hpp>
+#include <ecosystem_types.hpp>
 #include <helper.hpp>
 #include <nlohmann/json.hpp>
 #include <organism.hpp>
@@ -21,7 +12,7 @@ public:
 
     /***************************************
      *         Fixed for a species         *
-    ****************************************/
+     ***************************************/
 
     // Height dependance factors
     double height_on_speed;
@@ -62,15 +53,13 @@ public:
     double theoretical_maximum_weight_multiplier;
 
     // Miscellaneous attributes
-    
     double vision_radius;
     double sleep_restore_factor;
 
 
     /*************************************************************
      *  Changes slowly - once every year (during mating season)  *
-    **************************************************************/
-
+     *************************************************************/
 
     // Stats affected by age
     double max_appetite_at_age;
@@ -81,7 +70,7 @@ public:
 
     /**************************************
      *  Changes dynamically every moment  *
-    ***************************************/
+     **************************************/
 
     // Physical attributes
     double appetite;
@@ -89,41 +78,41 @@ public:
     double stamina;
     double vitality;
 
-
     // Miscellanous attributes
     bool asleep;
 
+
     /******************************
      *  Constructor / Destructor  *
-    *******************************/
+     ******************************/
 
     Animal() = default;
     Animal(
-        const std::string& kind,
-        const unsigned int& age = 0,
-        const bool& monitor_in_simulation = false,
-        const std::string& chromosome = "",
-        const unsigned int& generation = 1,
-        const std::string& name = "",
-        const std::pair<unsigned int, unsigned int>& XY = helper::random_location(),
-        const nlohmann::json& species_constants = nlohmann::json());
-
+        const std::string &kind,
+        const unsigned int &age = 0,
+        const bool &monitor_in_simulation = false,
+        const std::string &chromosome = "",
+        const unsigned int &generation = 1,
+        const std::string &name = "",
+        const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),
+        const nlohmann::json &species_constants = nlohmann::json());
     ~Animal();
-    
+
+
     /***********************
      *  Virtual functions  *
      ***********************/
 
     std::shared_ptr<Entity> clone() const;
     std::shared_ptr<Entity> clone(
-                const std::string& kind,
-                const unsigned int& age = 0,
-                const bool& monitor_in_simulation = false,
-                const std::string& chromosome = "",
-                const unsigned int& generation = 1,
-                const std::string& name = "",
-                const std::pair<unsigned int, unsigned int>& XY = helper::random_location(),
-                const nlohmann::json& species_constants = nlohmann::json()
+                const std::string &kind,
+                const unsigned int &age = 0,
+                const bool &monitor_in_simulation = false,
+                const std::string &chromosome = "",
+                const unsigned int &generation = 1,
+                const std::string &name = "",
+                const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),
+                const nlohmann::json &species_constants = nlohmann::json()
             ) const;
     double get_base_appetite() const;
     double get_base_height() const;
@@ -131,6 +120,8 @@ public:
     double get_base_stamina() const;
     double get_base_vitality() const;
     double get_base_weight() const;
+    double get_immunity_from_chromosome() const;
+    unsigned int get_gender_from_chromosome() const;
     double get_height_multiplier() const;
     double get_speed_multiplier() const;
     double get_stamina_multiplier() const;

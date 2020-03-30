@@ -11,7 +11,7 @@
 #include <memory>
 #include <vector>
 
-#include <EcosystemTypes.hpp>
+#include <ecosystem_types.hpp>
 #include <helper.hpp>
 #include <nlohmann/json.hpp>
 #include <entity.hpp>
@@ -25,7 +25,7 @@ public:
 
     /***************************************
      *         Fixed for a species         *
-    ****************************************/
+     ***************************************/
 
     std::string kind;
     CHROMOSOME_MAP_TYPE chromosome_structure;
@@ -34,13 +34,11 @@ public:
     unsigned int is_asexual;
 
     // Attributes related to death
-
     double age_on_death;
     double fitness_on_death;
     double age_fitness_on_death_ratio;
 
     // Attributes related to Mating
-
     double conceiving_probability;
     unsigned int mating_age_start;
     unsigned int mating_age_end;
@@ -48,9 +46,10 @@ public:
     double mutation_probability;
     double offsprings_factor;
 
+
     /******************************************************
      *  Fixed for the organism throughout their lifetime  *
-    *******************************************************/
+     ******************************************************/
 
     // Chromosome (binary string)
     std::string chromosome;
@@ -61,9 +60,10 @@ public:
     double immunity;
     std::string name;
 
+
     /*************************************************************
      *  Changes slowly - once every year (during mating season)  *
-    **************************************************************/
+     *************************************************************/
 
     // Physical changes (in appearance)
     unsigned int age;
@@ -76,11 +76,10 @@ public:
     // Death factor determined by present age and fitness
     double death_factor;
 
-    // Miscellaneous attributes
 
     /**************************************
      *  Changes dynamically every moment  *
-    ***************************************/
+     **************************************/
 
     // Position
     unsigned int X;
@@ -89,16 +88,16 @@ public:
     // Dynamic fitness value
     double dynamic_fitness;
 
-    /*****************
-     *  Get methods  *
-    ******************/
+
+    /********************
+     *      Getters     *
+     ********************/
 
     bool get_monitor_in_simulation() const
     {
         return monitor_in_simulation;
     }
-    
-    
+
     // Get base stats
     double get_base_appetite() const
     {
@@ -148,7 +147,6 @@ public:
     }
 
     // Get max stats
-    
     double get_max_height() const
     {
         return static_cast<const T&>(*this).get_max_height();
@@ -158,7 +156,23 @@ public:
         return static_cast<const T&>(*this).get_max_weight();
     }
 
-    // Get miscellaneous stats
+    // Get other stats
+    std::string get_kind() const
+    {
+        return kind;
+    }
+    std::string get_name() const
+    {
+        return name;
+    }
+    std::string get_chromosome() const
+    {
+        return chromosome;
+    }
+    double get_immunity() const
+    {
+        return immunity;
+    }
     double get_die_of_age_factor() const
     {
         return std::min(1.0, exp(age_on_death * (static_cast<double>(age) / max_age - 1)));
@@ -171,31 +185,42 @@ public:
     {
         return static_fitness * dynamic_fitness;
     }
-    double get_immunity() const
+    double get_height() const
     {
-        return helper::get_value_from_chromosome(chromosome,
-                          this->chromosome_structure.at("im").at("start"),
-                          this->chromosome_structure.at("im").at("length"),
-                          1.0);
+        return height;
+    }
+    double get_weight() const
+    {
+        return weight;
+    }
+    double get_static_fitness() const
+    {
+        return static_fitness;
+    }
+    double get_mutation_probability() const
+    {
+        return mutation_probability;
+    }
+    double get_conceiving_probability() const
+    {
+        return conceiving_probability;
+    }
+    double get_death_factor() const
+    {
+        return death_factor;
+    }
+    double get_offsprings_factor() const
+    {
+        return offsprings_factor;
     }
     unsigned int get_gender() const
     {
-        return static_cast<unsigned int>(helper::get_value_from_chromosome(chromosome,
-                          this->chromosome_structure.at("bv").at("start"),
-                          this->chromosome_structure.at("bv").at("length"),
-                          2.0));
+        return gender;
     }
-    
-    std::string get_kind() const
-    {
-        return kind;
-    }
-    
     unsigned int get_mating_age_start() const
     {
         return mating_age_start;
     }
-    
     unsigned int get_mating_age_end() const
     {
         return mating_age_end;
@@ -204,99 +229,63 @@ public:
     {
         return age;
     }
-
-    std::string get_name() const
-    {
-        return name;
-    }
-
-    std::string get_chromosome() const
-    {
-        return chromosome;
-    }
-   
     unsigned int get_generation() const
     {
         return generation;
     }
-
-    double get_height() const
-    {
-        return height;
-    }
-
-    double get_weight() const
-    {
-        return weight;
-    }
-
-    double get_static_fitness() const
-    {
-        return static_fitness;
-    }
-    
-    double get_mutation_probability() const
-    {
-        return mutation_probability;
-    }
-    
-    double get_conceiving_probability() const
-    {
-        return conceiving_probability;
-    }
-   
     unsigned int get_X() const
     {
         return X;
     }
-
     unsigned int get_Y() const
     {
         return Y;
     }
-    
-    double get_death_factor() const
-    {
-        return death_factor;
-    }
-    
     unsigned int get_is_asexual() const
     {
         return is_asexual;
     }
-    
-    double get_offsprings_factor() const
+    unsigned int get_food_chain_rank() const
     {
-        return offsprings_factor;
+        return food_chain_rank;
     }
-    
     bool is_normal_child() const
     {
         return static_cast<const T&>(*this).is_normal_child();
     }
+    std::string get_kingdom() const
+    {
+        return static_cast<const T &>(*this).get_kingdom();
+    }
+    STAT get_stat(const std::string &data) const
+    {
+        return static_cast<const T &>(*this).get_stat(data);
+    }
+
 
     /********************
      *  Clone function  *
-    *********************/
-    
+     ********************/
+
     std::shared_ptr<Entity> clone() const
     {
         return static_cast<const T&>(*this).clone();
     }
     std::shared_ptr<Entity> clone(
-                const std::string& kind,
-                const unsigned int& age = 0,
-                const bool& monitor_in_simulation = false,
-                const std::string& chromosome = "",
-                const unsigned int& generation = 1,
-                const std::string& name = "",
-                const std::pair<unsigned int, unsigned int>& XY = helper::random_location(),
-                const nlohmann::json& species_constants = nlohmann::json()
+                const std::string &kind,
+                const unsigned int &age = 0,
+                const bool &monitor_in_simulation = false,
+                const std::string &chromosome = "",
+                const unsigned int &generation = 1,
+                const std::string &name = "",
+                const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),
+                const nlohmann::json &species_constants = nlohmann::json()
             ) const
     {
         return static_cast<const T&>(*this).clone(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
     }
-    
+
+
     /********************
      *  Update methods  *
      ********************/
@@ -350,21 +339,6 @@ public:
     void increment_vitality_by(const double&data)
     {
         static_cast<T&>(*this).increment_vitality_by(data);
-    }
-
-    std::string get_kingdom() const
-    {
-        return static_cast<const T&>(*this).get_kingdom();
-    }
-
-    unsigned int get_food_chain_rank() const
-    {
-        return food_chain_rank;
-    }
-    
-    STAT get_stat(const std::string &data) const
-    {
-        return static_cast<const T&>(*this).get_stat(data);
     }
 };
 

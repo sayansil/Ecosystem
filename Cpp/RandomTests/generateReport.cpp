@@ -39,13 +39,13 @@ int main()
     unsigned int years_to_simulate = 100;
 
     God allah;
-    allah.reset_species("bamboo");
+    allah.reset_species("deer");
 
     ProgressBar progressBar(years_to_simulate, 70, '#', '-');
 
     while (initial_organism_count--)
     {
-        allah.spawnOrganism(std::make_shared<Plant>("bamboo", 10, true));
+        allah.spawnOrganism(std::make_shared<Animal>("deer", 10, true));
     }
 
     std::cout << "\n\nINITIAL EVALUATION:\n\n";

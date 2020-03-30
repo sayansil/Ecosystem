@@ -1,10 +1,4 @@
-#include "nlohmann/json_fwd.hpp"
-#include <iostream>
-#include <memory>
-#include <nlohmann/json.hpp>
-#include <filesystem>
 #include <stat_fetcher.hpp>
-#include <string>
 
 std::vector<ENTITY> getOrganismVector(const ENTITY_MAP_TYPE &organisms)
 {
@@ -19,7 +13,7 @@ std::vector<ENTITY> getOrganismVector(const ENTITY_MAP_TYPE &organisms)
 
 namespace stat_fetcher
 {
-    double getGenderRatio(const ENTITY_MAP_TYPE &organisms, const std::string & kind)
+    double getGenderRatio(const ENTITY_MAP_TYPE &organisms, const std::string  &kind)
     {
         unsigned int M = 0, F = 0;
         for (auto organism : organisms)
@@ -243,36 +237,8 @@ namespace stat_fetcher
 
         return stat_display_map;
     }
-    
-    //std::string generateDataForPy(const ENTITY_MAP_TYPE& organisms)
-    //{
-    //    nlohmann::json master_data;
 
-    //    std::filesystem::path species_folder = "../../data/json";
-
-    //    for(auto file : std::filesystem::directory_iterator(species_folder))
-    //    {
-    //        nlohmann::json species_json;
-    //        std::string current_species = file.path();
-    //        current_species = current_species.substr(current_species.find_last_of('/') + 1);
-    //        const std::string filepath = file / std::filesystem::path("current.json"); 
-    //        std::ifstream in(filepath);
-    //        nlohmann::json json_file;
-    //        in >> json_file;
-    //        species_json["name"] = current_species;
-    //        species_json["food_chain_rank"] = json_file["food_chain_rank"];
-    //        species_json["vision_radius"] = json_file["vision_radius"];
-    //        species_json["theoretical_maximum_speed"] = json_file["theoretical_maximum_speed"];
-    //        species_json["theoretical_maximum_base_vitality"] = json_file["theoretical_maximum_base_vitality"];
-    //        species_json["species_theoretical_maximum_base_appetite"] = json_file["theoretical_maximum_base_appetite"];
-    //        species_json["population"] = getPopulation(organisms, current_species);
-    //        in.close();
-    //        //master_data[current_species] = species_json;
-    //        master_data.push_back(species_json);
-    //    }
-    //    return master_data.dump();
-    //}
-    std::string prepareDataForSimulation(const ENTITY_MAP_TYPE& organisms)
+    std::string prepareDataForSimulation(const ENTITY_MAP_TYPE &organisms)
     {
         nlohmann::json response;
         response["animal"] = nlohmann::json::array();
@@ -289,7 +255,7 @@ namespace stat_fetcher
             response["log"] = "Overpopulation";
             return response.dump();
         }
-        for(const auto& organism : organisms)
+        for(const auto &organism : organisms)
         {
             if(organism.second->get_monitor_in_simulation())
             {

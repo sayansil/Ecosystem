@@ -43,7 +43,7 @@ static int callback_group(void *data, int argc, char **argv, char **colName)
     return 0;
 }
 
-DatabaseManager::DatabaseManager(const std::filesystem::path& path)
+DatabaseManager::DatabaseManager(const std::filesystem::path &path)
 {
     db_path = path;
     sqlite3_open(db_path.c_str(), &db);
@@ -54,12 +54,12 @@ DatabaseManager::~DatabaseManager()
     sqlite3_close(db);
 }
 
-void DatabaseManager::insertRows(const std::vector<std::vector<STAT>>& rows)
+void DatabaseManager::insertRows(const std::vector<std::vector<STAT>> &rows)
 {
-    for(const auto& row : rows)
+    for(const auto &row : rows)
     {
         std::string values = "";
-        for(const auto& value : row)
+        for(const auto &value : row)
         {
             if(value.data.index() == 0)
             {
@@ -90,10 +90,10 @@ void DatabaseManager::insertRows(const std::vector<std::vector<STAT>>& rows)
     }
 }
 
-void DatabaseManager::deleteRows(const std::vector<std::string>& names)
+void DatabaseManager::deleteRows(const std::vector<std::string> &names)
 {
     std::string values = "";
-    for(const auto& name : names)
+    for(const auto &name : names)
         values += "\'" + name + "\',";
     values = values.substr(0, values.length() - 1);
     std::string sql_command = "DELETE FROM ECOSYSTEM_MASTER "\
@@ -101,11 +101,11 @@ void DatabaseManager::deleteRows(const std::vector<std::string>& names)
     sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
 }
 
-std::vector<std::vector<STAT>> DatabaseManager::readRows(const std::string& colName, const std::vector<std::string>& names)
+std::vector<std::vector<STAT>> DatabaseManager::readRows(const std::string &colName, const std::vector<std::string> &names)
 {
     gRows.clear(); gRows.shrink_to_fit();
     std::string values = "";
-    for(const auto& name : names)
+    for(const auto &name : names)
         values += "\'" + name + "\',";
     values = values.substr(0, values.length() - 1);
     std::string sql_command = "SELECT * FROM ECOSYSTEM_MASTER "\
@@ -113,7 +113,7 @@ std::vector<std::vector<STAT>> DatabaseManager::readRows(const std::string& colN
 
     sqlite3_exec(db, sql_command.c_str(), callback_read, 0, nullptr);
     std::vector<std::vector<STAT>> rows;
-    for(const auto& gRow : gRows)
+    for(const auto &gRow : gRows)
     {
         std::vector<STAT> row;
         row.push_back(gRow.NAME);
@@ -131,9 +131,9 @@ std::vector<std::vector<STAT>> DatabaseManager::readRows(const std::string& colN
     return rows;
 }
 
-void DatabaseManager::updateRows(const std::vector<std::vector<STAT>>& rows)
+void DatabaseManager::updateRows(const std::vector<std::vector<STAT>> &rows)
 {
-    for(const auto& row : rows)
+    for(const auto &row : rows)
     {
         std::string values = "";
         values += "KIND = \'" + static_cast<std::string>(row[1]) + "\',";
@@ -163,7 +163,7 @@ std::unordered_map<std::string, std::vector<std::vector<STAT>>> DatabaseManager:
     std::string sql_command = "SELECT DISTINCT KIND FROM ECOSYSTEM_MASTER;";
     sqlite3_exec(db, sql_command.c_str(), callback_group, 0, nullptr);
     std::unordered_map<std::string, std::vector<std::vector<STAT>>> rowMap;
-    for(const auto& item : items)
+    for(const auto &item : items)
     {
         auto rows = readRows("KIND", {item});
         rowMap[item] = rows;

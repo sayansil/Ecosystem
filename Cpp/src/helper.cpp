@@ -5,7 +5,7 @@ namespace helper
     unsigned int map_height = 1000;
     unsigned int map_width = 1000;
 
-    std::string to_binary(const unsigned int& x)
+    std::string to_binary(const unsigned int &x)
     {
         auto num = x; std::string str = "";
         while(num)
@@ -16,7 +16,7 @@ namespace helper
         return str;
     }
 
-    unsigned int to_decimal(const std::string& str)
+    unsigned int to_decimal(const std::string &str)
     {
         unsigned int ans = 0; auto n = str.length();
         for(int i = n - 1; i >= 0; i--)
@@ -27,7 +27,7 @@ namespace helper
         return ans;
     }
 
-    std::string random_binary(const unsigned int& n)
+    std::string random_binary(const unsigned int &n)
     {
         std::string str = "";
         std::uniform_int_distribution<int> dis(0, 1);
@@ -37,7 +37,7 @@ namespace helper
         return str;
     }
 
-    std::string random_name(const int& inp)
+    std::string random_name(const int &inp)
     {
         std::string str = "";
         std::uniform_int_distribution<int> dis(0, 35);
@@ -61,14 +61,14 @@ namespace helper
         return {dis_width(rng), dis_height(rng)};
     }
 
-    double get_value_from_chromosome(const std::string& chromosome, const unsigned int& start, const unsigned int& length, const double& multiplier)
+    double get_value_from_chromosome(const std::string &chromosome, const unsigned int &start, const unsigned int &length, const double &multiplier)
     {
         if(length == 0)
             return 0;
         return (to_decimal(chromosome.substr(start, length)) / static_cast<double>(1 << length)) * multiplier;
     }
 
-    double weighted_average(const std::vector<double>& values, const std::vector<double>& weights)
+    double weighted_average(const std::vector<double> &values, const std::vector<double> &weights)
     {
         double num = 0.0, den = 0.0;
         for(size_t i = 0; i < values.size(); i++)
@@ -79,7 +79,7 @@ namespace helper
         return num / den;
     }
 
-    void display_stat(const STAT& var)
+    void display_stat(const STAT &var)
     {
         if(var.data.index() == 0)
             std::cout << "uint: " << static_cast<unsigned int>(var) << ' ';
@@ -91,7 +91,7 @@ namespace helper
             std::cout << "bool: " << static_cast<bool>(var) << ' ';
     }
 
-    std::string get_random_mixture(const std::string& str1, const std::string &str2)
+    std::string get_random_mixture(const std::string &str1, const std::string &str2)
     {
         std::string str3;
         std::mt19937_64 rng;
@@ -115,7 +115,7 @@ namespace helper
 
     // returns 1 for the given probability
     // eg. p = 1.0 always returns 1
-    int weighted_prob(const double& p)
+    int weighted_prob(const double &p)
     {
         std::mt19937_64 rng; rng.seed(std::random_device()());
         std::uniform_real_distribution<double> dis(0.0, 1.0);
@@ -126,7 +126,7 @@ namespace helper
             return 0;
     }
 
-    void saveCSV(const std::string& buffer, const std::string& filename)
+    void saveCSV(const std::string &buffer, const std::string &filename)
     {
         std::ofstream out; out.open(filename);
         out << buffer;

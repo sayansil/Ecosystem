@@ -1,10 +1,11 @@
 #include <animal.hpp>
-#include <memory>
 
-Animal::Animal(const std::string& kind, const unsigned int& age, const bool& monitor_in_simulation, const std::string& chromosome, const unsigned int& generation, const std::string& name, const std::pair<unsigned int, unsigned int>& XY, const nlohmann::json& species_constants)
+Animal::Animal(const std::string &kind, const unsigned int &age, const bool &monitor_in_simulation, const std::string &chromosome, const unsigned int &generation, const std::string &name, const std::pair<unsigned int, unsigned int> &XY, const nlohmann::json &species_constants)
 {
     this->monitor_in_simulation = monitor_in_simulation;
     this->kind = kind;
+
+    this->generation = generation;
 
     if(name.length() == 0)
     {
@@ -15,7 +16,7 @@ Animal::Animal(const std::string& kind, const unsigned int& age, const bool& mon
 
     if (species_constants.empty())
     {
-        const std::string filepath = "../../data/json/" + kind + "/current.json"; 
+        const std::string filepath = "../../data/json/" + kind + "/current.json";
 
         std::ifstream in(filepath);
         nlohmann::json json_file;
@@ -30,45 +31,15 @@ Animal::Animal(const std::string& kind, const unsigned int& age, const bool& mon
         init_from_json(species_constants);
     }
 
-    if(chromosome.length() == 0)
-    {
-        unsigned int chromosome_length = 0;
-
-        // Do not disturb this loop...
-
-        for(auto i = chromosome_structure.begin(); i != chromosome_structure.end(); i++)
-        {
-            chromosome_length += i->second["length"];
-        }
-        this->chromosome = helper::random_binary(chromosome_length);
-    }
-    else
-    {
-        this->chromosome = chromosome;
-    }
-
-    this->immunity      = get_immunity();
-    this->generation    = generation;
-    this->gender        = get_gender();
-
-    this->age = age - 1;
-
-    this->max_vitality_at_age   = get_base_vitality();
-    this->max_stamina_at_age    = get_base_stamina();
-    this->max_speed_at_age      = get_base_speed();
-    this->max_appetite_at_age   = get_base_appetite();
-
-    this->height = get_base_height();
-    this->weight = get_base_weight();
-
-    this->vitality  = this->max_vitality_at_age;
-    this->stamina   = this->max_stamina_at_age;
-    this->appetite  = this->max_appetite_at_age;
-    this->speed     = this->max_speed_at_age;
+    this->vitality = this->max_vitality_at_age;
+    this->stamina = this->max_stamina_at_age;
+    this->appetite = this->max_appetite_at_age;
+    this->speed = this->max_speed_at_age;
 
     std::tie(this->X, this->Y) = helper::random_location();
     this->asleep = false;
 
+    this->age = age - 1;
     increment_age();
 
     evaluate_static_fitness();
@@ -77,7 +48,6 @@ Animal::Animal(const std::string& kind, const unsigned int& age, const bool& mon
 
 Animal::~Animal()
 {
-
 }
 
 std::shared_ptr<Entity> Animal::clone() const
@@ -86,14 +56,14 @@ std::shared_ptr<Entity> Animal::clone() const
 }
 
 std::shared_ptr<Entity> Animal::clone(
-                const std::string& kind,
-                const unsigned int& age,
-                const bool& monitor_in_simulation,
-                const std::string& chromosome,
-                const unsigned int& generation,
-                const std::string& name,
-                const std::pair<unsigned int, unsigned int>& XY,
-                const nlohmann::json& species_constants) const
+                const std::string &kind,
+                const unsigned int &age,
+                const bool &monitor_in_simulation,
+                const std::string &chromosome,
+                const unsigned int &generation,
+                const std::string &name,
+                const std::pair<unsigned int, unsigned int> &XY,
+                const nlohmann::json &species_constants) const
 {
     return std::make_shared<Animal>(kind, age, monitor_in_simulation, chromosome, generation, name, XY, species_constants);
 }
@@ -148,6 +118,50 @@ void Animal::init_from_json(const nlohmann::json &json_file)
     this->sleep_restore_factor = json_file["species_sleep_restore_factor"];
     this->food_chain_rank = json_file["food_chain_rank"];
     this->vision_radius = json_file["vision_radius"];
+
+    if (chromosome.length() == 0)
+    {
+        unsigned int chromosome_length = 0;
+
+        // Do not disturb this loop...
+
+        for (auto i = chromosome_structure.begin(); i != chromosome_structure.end(); i++)
+        {
+            chromosome_length += i->second["length"];
+        }
+        this->chromosome = helper::random_binary(chromosome_length);
+    }
+    else
+    {
+        this->chromosome = chromosome;
+    }
+
+    this->immunity = get_immunity_from_chromosome();
+    this->gender = get_gender_from_chromosome();
+
+    this->max_vitality_at_age = get_base_vitality();
+    this->max_stamina_at_age = get_base_stamina();
+    this->max_speed_at_age = get_base_speed();
+    this->max_appetite_at_age = get_base_appetite();
+
+    this->height = get_base_height();
+    this->weight = get_base_weight();
+}
+
+unsigned int Animal::get_gender_from_chromosome() const
+{
+    return static_cast<unsigned int>(helper::get_value_from_chromosome(chromosome,
+                      this->chromosome_structure.at("gn").at("start"),
+                      this->chromosome_structure.at("gn").at("length"),
+                      2.0));
+}
+
+double Animal::get_immunity_from_chromosome() const
+{
+    return helper::get_value_from_chromosome(chromosome,
+                      this->chromosome_structure.at("im").at("start"),
+                      this->chromosome_structure.at("im").at("length"),
+                      1.0);
 }
 
 double Animal::get_base_appetite() const
@@ -266,6 +280,51 @@ void Animal::evaluate_dynamic_fitness()
     dynamic_fitness = 1;
 }
 
+void Animal::increment_age()
+{
+    age += 1;
+
+    // change height and weight independently
+
+    height = std::min(std::max(0.5 * (1 + get_height_multiplier()) * log(age + 1) - pow(static_cast<double>(age) / max_age, 2) + get_base_height(),
+                               get_base_height()),
+                      get_max_height());
+    weight = std::min(std::max(get_weight_multiplier() * max_age * log(age + 1) - (0.5 / max_age) * pow(age, 2 * (get_weight_multiplier() + 0.75)) + get_base_weight(),
+                               get_base_weight()),
+                      get_max_weight());
+
+    // change stats independently
+
+    max_vitality_at_age = get_base_vitality() * (get_vitality_multiplier() * 0.5 * pow(max_age, 0.5) *
+                                                     exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_vitality())) +
+                                                 1);
+    max_stamina_at_age = get_base_stamina() * (get_stamina_multiplier() * 0.5 * pow(max_age, 0.5) *
+                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_stamina())) +
+                                               1);
+    max_speed_at_age = get_speed_multiplier() * 100 * exp((-1 / (get_speed_multiplier() * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + get_base_speed();
+
+    if (max_speed_at_age != max_speed_at_age)
+    {
+        std::cout << "max_speed_at_age is Nan\n";
+        std::cout << "speed multiplier = " << get_speed_multiplier() << '\n';
+    }
+
+    max_appetite_at_age = get_base_appetite() + get_base_appetite() * exp((-0.5 / pow(max_age, 1.25)) * pow(age - max_age / 3.0, 2));
+
+    // change stats dependently
+
+    max_vitality_at_age = max_vitality_at_age * (1 +
+                                                 height_on_vitality * height / get_max_height() +
+                                                 weight_on_vitality * weight / get_max_weight());
+    max_stamina_at_age = max_stamina_at_age * (1 +
+                                               height_on_stamina * height / get_max_height() +
+                                               weight_on_stamina * weight / get_max_weight());
+    max_speed_at_age = max_speed_at_age * (1 +
+                                           height_on_speed * height / get_max_height() +
+                                           weight_on_speed * weight / get_max_weight());
+    evaluate_static_fitness();
+}
+
 void Animal::increment_vitality_by(const double &units)
 {
     vitality = std::min(vitality + units, max_vitality_at_age);
@@ -292,49 +351,6 @@ void Animal::decrement_stamina_by(const double &units)
     stamina = std::max(stamina - units, 0.0);
     appetite = appetite * ( 1 + stamina_on_appetite * stamina / max_stamina_at_age );
     speed = speed * (1 + stamina_on_speed * stamina / max_stamina_at_age);
-}
-
-void Animal::increment_age()
-{
-    age += 1;
-
-    // change height and weight independently
-
-    height = std::min(std::max(0.5 * (1 + get_height_multiplier()) * log(age + 1) - pow(static_cast<double>(age) / max_age, 2) + get_base_height(),
-                               get_base_height()),
-                      get_max_height());
-    weight = std::min(std::max(get_weight_multiplier() * max_age * log(age + 1) - (0.5 / max_age) * pow(age, 2 * (get_weight_multiplier() + 0.75)) + get_base_weight(),
-                               get_base_weight()),
-                      get_max_weight());
-
-    // change stats independently
-
-    max_vitality_at_age = get_base_vitality() * ( get_vitality_multiplier() * 0.5 * pow(max_age, 0.5) *
-                                                  exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_vitality())) + 1);
-    max_stamina_at_age = get_base_stamina() * ( get_stamina_multiplier() * 0.5 * pow(max_age, 0.5) *
-                                                  exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_stamina())) + 1);
-    max_speed_at_age = get_speed_multiplier() * 100 * exp((-1 / (get_speed_multiplier() * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + get_base_speed();
-
-    if(max_speed_at_age != max_speed_at_age)
-    {
-        std::cout << "max_speed_at_age is Nan\n";
-        std::cout << "speed multiplier = " << get_speed_multiplier() << '\n';
-    }
-
-    max_appetite_at_age = get_base_appetite() + get_base_appetite() * exp((-0.5 / pow(max_age, 1.25)) * pow(age - max_age / 3.0, 2));
-
-    // change stats dependently
-
-    max_vitality_at_age = max_vitality_at_age * (1 +
-                                                 height_on_vitality * height / get_max_height() +
-                                                 weight_on_vitality * weight / get_max_weight());
-    max_stamina_at_age = max_stamina_at_age * (1 +
-                                               height_on_stamina * height / get_max_height() +
-                                               weight_on_stamina * weight / get_max_weight());
-    max_speed_at_age = max_speed_at_age * (1 +
-                                           height_on_speed * height / get_max_height() +
-                                           weight_on_speed * weight / get_max_weight());
-    evaluate_static_fitness();
 }
 
 void Animal::sleep(const double &duration)
@@ -599,11 +615,6 @@ STAT Animal::get_stat(const std::string &attribute) const
     return "null";
 }
 
-std::string Animal::get_kingdom() const
-{
-    return "animal";
-}
-
 bool Animal::is_normal_child() const
 {
     if (height == 0 || height != height ||
@@ -629,4 +640,9 @@ bool Animal::is_normal_child() const
         return false;
 
     return true;
+}
+
+std::string Animal::get_kingdom() const
+{
+    return "animal";
 }
