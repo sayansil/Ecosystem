@@ -6,9 +6,11 @@
 
 int main()
 {
-    unsigned int initial_organism_count = 1000;
+    unsigned int initial_organism_count = 20000;
 
     God allah;
+    allah.monitor_offsprings = true;
+
     allah.reset_species("deer");
 
     while (initial_organism_count--)

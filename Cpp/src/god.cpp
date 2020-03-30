@@ -20,7 +20,6 @@ void God::catastrophe()
 
 void God::reset_species(const std::string &kind)
 {
-
     const std::string base_filepath = "../../data/json/" + kind + "/base.json";
     const std::string current_filepath = "../../data/json/" + kind + "/current.json";
 
@@ -92,15 +91,20 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
     // Spawn child (if probable)
     if(helper::weighted_prob(parent1->get_conceiving_probability()))
     {
+        bool monitor_in_simulation = false;
+
+        if (monitor_offsprings && (parent1->get_monitor_in_simulation() || parent2->get_monitor_in_simulation()))
+            monitor_in_simulation = true;
+
         return spawnOrganism(parent1->clone(parent1->get_kind(),
-                                1,
-                                false,
-                                child_chromosome,
-                                std::max(parent1->get_generation(), parent2->get_generation()) + 1,
-                                "",
-                                {(parent1->get_X() + parent2->get_X()) / 2,
-                                (parent1->get_Y() + parent2->get_Y()) / 2},
-                                species_constants));
+                                            1,
+                                            monitor_in_simulation,
+                                            child_chromosome,
+                                            std::max(parent1->get_generation(), parent2->get_generation()) + 1,
+                                            "",
+                                            {(parent1->get_X() + parent2->get_X()) / 2,
+                                             (parent1->get_Y() + parent2->get_Y()) / 2},
+                                            species_constants));
     }
 
     return false;

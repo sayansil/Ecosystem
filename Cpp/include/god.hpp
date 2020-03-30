@@ -26,6 +26,7 @@ public:
     unsigned int recent_deaths = 0;
     unsigned int recent_births = 0;
 
+    bool monitor_offsprings = false;
 
     /******************************
      *  Constructor / Destructor  *

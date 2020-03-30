@@ -245,6 +245,7 @@ namespace stat_fetcher
         response["plant"] = nlohmann::json::array();
         response["status"] = "failure";
         response["log"] = "";
+
         if(organisms.size() < 1)
         {
             response["log"] = "Underpopulation";
@@ -255,6 +256,7 @@ namespace stat_fetcher
             response["log"] = "Overpopulation";
             return response.dump();
         }
+
         for(const auto &organism : organisms)
         {
             if(organism.second->get_monitor_in_simulation())
