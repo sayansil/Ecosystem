@@ -126,14 +126,14 @@ namespace helper
             return 0;
     }
 
-    void saveCSV(const std::string &buffer, const std::string &filename)
+    void save_CSV(const std::string &buffer, const std::string &filename)
     {
         std::ofstream out; out.open(filename);
         out << buffer;
         out.close();
     }
 
-    void appendToCSV(const std::string &buffer, const std::string &filename)
+    void append_CSV(const std::string &buffer, const std::string &filename)
     {
         std::ofstream out; out.open(filename, std::ios_base::app);
         out << buffer;

@@ -31,18 +31,18 @@ struct DatabaseManager
      *  Standard DBMS operations  *
      ******************************/
 
-    std::vector<std::vector<STAT>> readRows(const std::string &, const std::vector<std::string> &);
-    void deleteRows(const std::vector<std::string> &);
-    void insertRows(const std::vector<std::vector<STAT>>&);
-    void updateRows(const std::vector<std::vector<STAT>>&);
+    std::vector<std::vector<STAT>> read_rows(const std::string &, const std::vector<std::string> &);
+    void delete_rows(const std::vector<std::string> &);
+    void insert_rows(const std::vector<std::vector<STAT>>&);
+    void update_rows(const std::vector<std::vector<STAT>>&);
 
 
     /******************************
      *  Miscellaneous operations  *
      ******************************/
 
-    std::unordered_map<std::string, std::vector<std::vector<STAT>>> groupByKind();
-    void clearDatabase();
+    std::unordered_map<std::string, std::vector<std::vector<STAT>>> groupby_kind();
+    void clear_database();
 };
 
 #endif // DATABASEMANAGER_HPP

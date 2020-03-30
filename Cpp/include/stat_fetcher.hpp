@@ -7,7 +7,6 @@
 #include <utility>
 #include <nlohmann/json.hpp>
 #include <nlohmann/json_fwd.hpp>
-#include <organism.hpp>
 #include <filesystem>
 #include <iostream>
 #include <animal.hpp>
@@ -17,15 +16,15 @@ using ENTITY_MAP_TYPE = std::unordered_map<std::string, ENTITY>;
 
 namespace stat_fetcher
 {
-    extern std::unordered_map<std::string, unsigned int> getKindDistribution(const ENTITY_MAP_TYPE &);
-    extern std::unordered_map<std::string, double> getAllStats(const ENTITY_MAP_TYPE &, const std::string & = "");
-    extern std::vector<STAT> getOneStat(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
-    extern std::pair<double, double> getStatGap(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
-    extern std::pair<unsigned int, unsigned int> getMatablePopulation(const ENTITY_MAP_TYPE &, const std::string & = "");
-    extern std::string prepareDataForSimulation(const ENTITY_MAP_TYPE &);
-    extern unsigned int getPopulation(const ENTITY_MAP_TYPE &, const std::string & = "");
-    extern double getStatAverage(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
-    extern double getGenderRatio(const ENTITY_MAP_TYPE &, const std::string & = "");
+    extern std::unordered_map<std::string, unsigned int> get_kind_distribution(const ENTITY_MAP_TYPE &);
+    extern std::unordered_map<std::string, double> get_all_generic_stats(const ENTITY_MAP_TYPE &, const std::string & = "");
+    extern std::vector<STAT> get_one_stat(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
+    extern std::pair<double, double> get_stat_gap(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
+    extern std::pair<unsigned int, unsigned int> get_matable_population(const ENTITY_MAP_TYPE &, const std::string & = "");
+    extern std::string prepare_data_for_simulation(const ENTITY_MAP_TYPE &);
+    extern unsigned int get_population(const ENTITY_MAP_TYPE &, const std::string & = "");
+    extern double get_stat_average(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
+    extern double get_gender_ratio(const ENTITY_MAP_TYPE &, const std::string & = "");
 }; // namespace stat_fetcher
 
 #endif // STAT_FETCHER_HPP

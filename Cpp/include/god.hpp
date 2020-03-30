@@ -42,24 +42,24 @@ public:
 
     void catastrophe();
     void reset_species(const std::string&);
-    void happyNewYear(const bool &log = false);
-    void killOrganisms(const std::vector<std::string>&);
-    bool spawnOrganism(const ENTITY&);
-    void sendDataToPy();
-    bool listenForSimulationPing();
-    void startListeningForSimulationPing();
+    void happy_new_year(const bool &log = false);
+    void kill_organisms(const std::vector<std::string>&);
+    bool spawn_organism(const ENTITY&);
+    void send_data_to_simulation();
+    bool listen_for_simulation_once();
+    void start_listening_for_simulation();
 
-    std::vector<ENTITY> organismSort(bool (*comp)(const ENTITY&, const ENTITY&));
-    std::unordered_map<std::string, std::vector<ENTITY>> organismSortByKind(bool (*comp)(const ENTITY&, const ENTITY&));
+    std::vector<ENTITY> organism_sort(bool (*comp)(const ENTITY&, const ENTITY&));
+    std::unordered_map<std::string, std::vector<ENTITY>> organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&));
 
 protected:
-    double killerFunction(const double &index, const double &size) const;
-    int creatorFunction(const double &value, const double &factor) const;
+    double killer_function(const double &index, const double &size) const;
+    int creator_function(const double &value, const double &factor) const;
 
 private:
 
     DatabaseManager db;
-    const int maxMateTrials = 100;
+    const int max_mate_trials = 100;
     zmq::context_t context;
     zmq::socket_t socket;
 

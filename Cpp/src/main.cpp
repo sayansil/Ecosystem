@@ -6,7 +6,7 @@
 
 int main()
 {
-    unsigned int initial_organism_count = 20000;
+    unsigned int initial_organism_count = 500;
 
     God allah;
     allah.monitor_offsprings = true;
@@ -15,8 +15,8 @@ int main()
 
     while (initial_organism_count--)
     {
-        allah.spawnOrganism(std::make_shared<Animal>("deer", 10, true));
+        allah.spawn_organism(std::make_shared<Animal>("deer", 10, true));
     }
 
-    allah.startListeningForSimulationPing();
+    allah.start_listening_for_simulation();
 }

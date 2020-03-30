@@ -13,7 +13,7 @@ std::vector<ENTITY> getOrganismVector(const ENTITY_MAP_TYPE &organisms)
 
 namespace stat_fetcher
 {
-    double getGenderRatio(const ENTITY_MAP_TYPE &organisms, const std::string  &kind)
+    double get_gender_ratio(const ENTITY_MAP_TYPE &organisms, const std::string  &kind)
     {
         unsigned int M = 0, F = 0;
         for (auto organism : organisms)
@@ -34,7 +34,7 @@ namespace stat_fetcher
         return (1.0 * M) / F;
     }
 
-    unsigned int getPopulation(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
+    unsigned int get_population(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int count = 0;
         for (const auto &organism: organisms)
@@ -48,7 +48,7 @@ namespace stat_fetcher
         return count;
     }
 
-    std::pair<unsigned int, unsigned int> getMatablePopulation(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
+    std::pair<unsigned int, unsigned int> get_matable_population(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int M = 0, F = 0;
 
@@ -73,7 +73,7 @@ namespace stat_fetcher
         return {M, F};
     }
 
-    std::pair<double, double> getStatGap(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    std::pair<double, double> get_stat_gap(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double low = 0.0, high = 0.0, value;
         STAT current_attribute;
@@ -118,7 +118,7 @@ namespace stat_fetcher
         return {low, high};
     }
 
-    std::unordered_map<std::string, unsigned int> getKindDistribution(const ENTITY_MAP_TYPE &organisms)
+    std::unordered_map<std::string, unsigned int> get_kind_distribution(const ENTITY_MAP_TYPE &organisms)
     {
         std::unordered_map<std::string, unsigned int> kindDistribution;
 
@@ -137,7 +137,7 @@ namespace stat_fetcher
         return kindDistribution;
     }
 
-    double getStatAverage(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    double get_stat_average(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double average = 0.0, n = 0.0, value = 0.0;
 
@@ -155,7 +155,7 @@ namespace stat_fetcher
         return average;
     }
 
-    std::vector<STAT> getOneStat(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    std::vector<STAT> get_one_stat(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         std::vector<STAT> attributeList;
 
@@ -170,7 +170,7 @@ namespace stat_fetcher
         return attributeList;
     }
 
-    std::unordered_map<std::string, double> getAllGenericStats(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
+    std::unordered_map<std::string, double> get_all_generic_stats(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         std::unordered_map<std::string, double> stat_display_map;
         unsigned int tmp_i;
@@ -238,7 +238,7 @@ namespace stat_fetcher
         return stat_display_map;
     }
 
-    std::string prepareDataForSimulation(const ENTITY_MAP_TYPE &organisms)
+    std::string prepare_data_for_simulation(const ENTITY_MAP_TYPE &organisms)
     {
         nlohmann::json response;
         response["animal"] = nlohmann::json::array();

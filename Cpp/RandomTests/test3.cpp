@@ -14,7 +14,7 @@ int main()
     zmq::socket_t socket(context, zmq::socket_type::dealer);
     socket.connect("tcp://localhost:5556");
 
-    for(int i = 0; i < 500; i++)
+    for(int i = 0; i < 10; i++)
     {
         std::cout << "i = " << i << '\n';
         socket.send(zmq::str_buffer("SEND"));

@@ -14,7 +14,7 @@ God::~God()
 
 void God::catastrophe()
 {
-    db.clearDatabase();
+    db.clear_database();
     organisms.clear();
 }
 
@@ -35,7 +35,7 @@ void God::reset_species(const std::string &kind)
     current_out.close();
 }
 
-bool God::spawnOrganism(const ENTITY &current_organism)
+bool God::spawn_organism(const ENTITY &current_organism)
 {
     if (current_organism->is_normal_child())
     {
@@ -56,7 +56,7 @@ bool God::spawnOrganism(const ENTITY &current_organism)
             STAT(current_organism->get_static_fitness())});
 
         // Add to database
-        db.insertRows(tmp);
+        db.insert_rows(tmp);
 
         return true;
     }
@@ -64,10 +64,10 @@ bool God::spawnOrganism(const ENTITY &current_organism)
     return false;
 }
 
-void God::killOrganisms(const std::vector<std::string> &names)
+void God::kill_organisms(const std::vector<std::string> &names)
 {
     // Remove from database
-    db.deleteRows(names);
+    db.delete_rows(names);
 
     // Remove from memory
     for (const auto &lamb_to_slaughter : names)
@@ -96,7 +96,7 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
         if (monitor_offsprings && (parent1->get_monitor_in_simulation() || parent2->get_monitor_in_simulation()))
             monitor_in_simulation = true;
 
-        return spawnOrganism(parent1->clone(parent1->get_kind(),
+        return spawn_organism(parent1->clone(parent1->get_kind(),
                                             1,
                                             monitor_in_simulation,
                                             child_chromosome,
@@ -146,7 +146,7 @@ void God::update_species(const std::string &kind)
     current_out.close();
 }
 
-double God::killerFunction(const double &index, const double &size) const
+double God::killer_function(const double &index, const double &size) const
 {
     // return std::exp(-x / (s / 10.0))
     // return pow(x / s, 1 / 1.75)
@@ -155,12 +155,12 @@ double God::killerFunction(const double &index, const double &size) const
     return 1 - (1 / (1 + exp((ratio * size - index) / (ratio * pow(size, 0.5)))));
 }
 
-int God::creatorFunction(const double &value, const double &factor) const
+int God::creator_function(const double &value, const double &factor) const
 {
     return floor(1 - 1 / (factor * (value - 1)));
 }
 
-void God::happyNewYear(const bool &log)
+void God::happy_new_year(const bool &log)
 {
     recent_births = 0;
     recent_deaths = 0;
@@ -195,7 +195,7 @@ void God::happyNewYear(const bool &log)
     std::for_each(std::execution::par, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
         x.second = helper::weighted_prob(
             // killerFunction(x.first.get_fitness(), organisms_vec.size())
-            killerFunction(tmp_i++, organisms_vec.size())
+            killer_function(tmp_i++, organisms_vec.size())
         );
     });
 
@@ -213,7 +213,7 @@ void God::happyNewYear(const bool &log)
     }
 
     recent_deaths = organisms_to_be_slaughtered.size();
-    killOrganisms(organisms_to_be_slaughtered);
+    kill_organisms(organisms_to_be_slaughtered);
 
     organisms_vec.clear(); organisms_vec.shrink_to_fit();
     organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
@@ -292,7 +292,7 @@ void God::happyNewYear(const bool &log)
             const auto &parent2 = mating_list2[index_parent2];
 
             std::uniform_real_distribution<double> dis_children(0.0, 1.0);
-            int n_children = creatorFunction(dis_children(rng), parent1->get_offsprings_factor());
+            int n_children = creator_function(dis_children(rng), parent1->get_offsprings_factor());
             while(n_children--)
             {
                 if (mate(parent1->get_name(), parent2->get_name(), species_constants))
@@ -332,7 +332,7 @@ void God::happyNewYear(const bool &log)
     }
 }
 
-std::vector<ENTITY> God::organismSort(bool (*comp)(const ENTITY&, const ENTITY&))
+std::vector<ENTITY> God::organism_sort(bool (*comp)(const ENTITY&, const ENTITY&))
 {
     std::vector<ENTITY> organism_vec;
     for (auto &i : organisms)
@@ -344,7 +344,7 @@ std::vector<ENTITY> God::organismSort(bool (*comp)(const ENTITY&, const ENTITY&)
     return organism_vec;
 }
 
-std::unordered_map<std::string, std::vector<ENTITY>> God::organismSortByKind(bool (*comp)(const ENTITY&, const ENTITY&))
+std::unordered_map<std::string, std::vector<ENTITY>> God::organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&))
 {
     std::unordered_map<std::string, std::vector<ENTITY>> organism_map;
     for (const auto &i : organisms)
@@ -358,12 +358,12 @@ std::unordered_map<std::string, std::vector<ENTITY>> God::organismSortByKind(boo
     return organism_map;
 }
 
-void God::sendDataToPy()
+void God::send_data_to_simulation()
 {
-    socket.send(zmq::buffer(stat_fetcher::prepareDataForSimulation(organisms)), zmq::send_flags::dontwait);
+    socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);
 }
 
-bool God::listenForSimulationPing()
+bool God::listen_for_simulation_once()
 {
     std::string positive = "SEND";
     std::string negative = "STOP";
@@ -372,8 +372,8 @@ bool God::listenForSimulationPing()
     std::string response_str = response.to_string();
     if(response_str == positive)
     {
-        sendDataToPy();
-        happyNewYear(true);
+        send_data_to_simulation();
+        happy_new_year(true);
         return true;
     }
     else if(response_str == negative)
@@ -387,9 +387,9 @@ bool God::listenForSimulationPing()
     }
 }
 
-void God::startListeningForSimulationPing()
+void God::start_listening_for_simulation()
 {
     std::cout << "God starts listening...\n";
-    while(listenForSimulationPing());
+    while(listen_for_simulation_once());
     std::cout << "Alas! God stopped listening.\n";
 }

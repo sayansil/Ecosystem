@@ -6,26 +6,26 @@
 
 void evaluation(const God &god)
 {
-    std::cout << "Population: " << stat_fetcher::getPopulation(god.organisms) << '\n';
+    std::cout << "Population: " << stat_fetcher::get_population(god.organisms) << '\n';
     std::cout << "Deaths: " << god.recent_deaths << '\n';
     std::cout << "Births: " << god.recent_births << '\n';
 
-    std::cout << "Average height: " << stat_fetcher::getStatAverage(god.organisms, "height") << '\n';
-    std::cout << "Average weight: " << stat_fetcher::getStatAverage(god.organisms, "weight") << '\n';
+    std::cout << "Average height: " << stat_fetcher::get_stat_average(god.organisms, "height") << '\n';
+    std::cout << "Average weight: " << stat_fetcher::get_stat_average(god.organisms, "weight") << '\n';
 
     double low, high;
     std::string attribute;
 
     attribute = "age";
-    std::tie(low, high) = stat_fetcher::getStatGap(god.organisms, attribute);
+    std::tie(low, high) = stat_fetcher::get_stat_gap(god.organisms, attribute);
     std::cout << attribute << " - Lowest: " << low << " | Highest: " << high << '\n';
 
     attribute = "generation";
-    std::tie(low, high) = stat_fetcher::getStatGap(god.organisms, "generation");
+    std::tie(low, high) = stat_fetcher::get_stat_gap(god.organisms, "generation");
     std::cout << attribute << " - Lowest: " << low << " | Highest: " << high << '\n';
 
     std::cout << "Kind Distribution:\n";
-    for (const auto &kind : stat_fetcher::getKindDistribution(god.organisms))
+    for (const auto &kind : stat_fetcher::get_kind_distribution(god.organisms))
     {
         std::cout << kind.first << " : " << kind.second << '\n';
     }
@@ -45,7 +45,7 @@ int main()
 
     while (initial_organism_count--)
     {
-        allah.spawnOrganism(std::make_shared<Animal>("deer", 10, true));
+        allah.spawn_organism(std::make_shared<Animal>("deer", 10, true));
     }
 
     std::cout << "\n\nINITIAL EVALUATION:\n\n";
@@ -55,16 +55,13 @@ int main()
     unsigned int i = 0;
     while (i++ < years_to_simulate)
     {
-        allah.happyNewYear();
-
-        //allah.sendDataToPy();
+        allah.happy_new_year();
 
         ++progressBar;
         if (i % 10 == 0)
             progressBar.display();
 
         // evaluation(allah);
-
 
         if (allah.organisms.size() == 0)
         {

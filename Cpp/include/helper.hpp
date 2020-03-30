@@ -24,8 +24,8 @@ namespace helper
      *******************/
 
     extern void display_stat(const STAT &);
-    extern void saveCSV(const std::string &, const std::string &);
-    extern void appendToCSV(const std::string &, const std::string &);
+    extern void save_CSV(const std::string &, const std::string &);
+    extern void append_CSV(const std::string &, const std::string &);
     extern int weighted_prob(const double &);
     extern std::pair<unsigned int, unsigned int> random_location();
     extern std::string get_random_mixture(const std::string &, const std::string &);

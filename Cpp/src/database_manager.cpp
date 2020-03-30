@@ -54,7 +54,7 @@ DatabaseManager::~DatabaseManager()
     sqlite3_close(db);
 }
 
-void DatabaseManager::insertRows(const std::vector<std::vector<STAT>> &rows)
+void DatabaseManager::insert_rows(const std::vector<std::vector<STAT>> &rows)
 {
     for(const auto &row : rows)
     {
@@ -90,7 +90,7 @@ void DatabaseManager::insertRows(const std::vector<std::vector<STAT>> &rows)
     }
 }
 
-void DatabaseManager::deleteRows(const std::vector<std::string> &names)
+void DatabaseManager::delete_rows(const std::vector<std::string> &names)
 {
     std::string values = "";
     for(const auto &name : names)
@@ -101,7 +101,7 @@ void DatabaseManager::deleteRows(const std::vector<std::string> &names)
     sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
 }
 
-std::vector<std::vector<STAT>> DatabaseManager::readRows(const std::string &colName, const std::vector<std::string> &names)
+std::vector<std::vector<STAT>> DatabaseManager::read_rows(const std::string &colName, const std::vector<std::string> &names)
 {
     gRows.clear(); gRows.shrink_to_fit();
     std::string values = "";
@@ -131,7 +131,7 @@ std::vector<std::vector<STAT>> DatabaseManager::readRows(const std::string &colN
     return rows;
 }
 
-void DatabaseManager::updateRows(const std::vector<std::vector<STAT>> &rows)
+void DatabaseManager::update_rows(const std::vector<std::vector<STAT>> &rows)
 {
     for(const auto &row : rows)
     {
@@ -151,13 +151,13 @@ void DatabaseManager::updateRows(const std::vector<std::vector<STAT>> &rows)
     }
 }
 
-void DatabaseManager::clearDatabase()
+void DatabaseManager::clear_database()
 {
     std::string sql_command = "DELETE FROM ECOSYSTEM_MASTER;";
     sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
 }
 
-std::unordered_map<std::string, std::vector<std::vector<STAT>>> DatabaseManager::groupByKind()
+std::unordered_map<std::string, std::vector<std::vector<STAT>>> DatabaseManager::groupby_kind()
 {
     items.clear(); items.shrink_to_fit();
     std::string sql_command = "SELECT DISTINCT KIND FROM ECOSYSTEM_MASTER;";
@@ -165,7 +165,7 @@ std::unordered_map<std::string, std::vector<std::vector<STAT>>> DatabaseManager:
     std::unordered_map<std::string, std::vector<std::vector<STAT>>> rowMap;
     for(const auto &item : items)
     {
-        auto rows = readRows("KIND", {item});
+        auto rows = read_rows("KIND", {item});
         rowMap[item] = rows;
     }
     return rowMap;
