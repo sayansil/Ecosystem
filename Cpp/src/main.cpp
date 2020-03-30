@@ -11,11 +11,11 @@ int main()
     God allah;
     allah.monitor_offsprings = true;
 
-    allah.reset_species("deer");
+    allah.reset_species("plant/bamboo");
 
     while (initial_organism_count--)
     {
-        allah.spawn_organism(std::make_shared<Animal>("deer", 10, true));
+        allah.spawn_organism(std::make_shared<Plant>("bamboo", 10, true));
     }
 
     allah.start_listening_for_simulation();

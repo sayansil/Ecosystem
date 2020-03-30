@@ -4,6 +4,7 @@ Animal::Animal(const std::string &kind, const unsigned int &age, const bool &mon
 {
     this->monitor_in_simulation = monitor_in_simulation;
     this->kind = kind;
+    this->full_species_name = get_kingdom() + "/" + kind;
 
     this->generation = generation;
 
@@ -16,7 +17,7 @@ Animal::Animal(const std::string &kind, const unsigned int &age, const bool &mon
 
     if (species_constants.empty())
     {
-        const std::string filepath = "../../data/json/" + kind + "/current.json";
+        const std::string filepath = "../../data/json/" + full_species_name + "/current.json";
 
         std::ifstream in(filepath);
         nlohmann::json json_file;

@@ -48,6 +48,7 @@ public:
     virtual unsigned int get_is_asexual() const = 0;
     virtual unsigned int get_food_chain_rank() const = 0;
     virtual std::string get_kind() const = 0;
+    virtual std::string get_full_species_name() const = 0;
     virtual std::string get_name() const = 0;
     virtual std::string get_chromosome() const = 0;
     virtual std::string get_kingdom() const = 0;

@@ -28,6 +28,7 @@ public:
      ***************************************/
 
     std::string kind;
+    std::string full_species_name;
     CHROMOSOME_MAP_TYPE chromosome_structure;
     unsigned int chromosome_number;
     unsigned int food_chain_rank;
@@ -160,6 +161,10 @@ public:
     std::string get_kind() const
     {
         return kind;
+    }
+    std::string get_full_species_name() const
+    {
+        return full_species_name;
     }
     std::string get_name() const
     {

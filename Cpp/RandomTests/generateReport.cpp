@@ -39,7 +39,9 @@ int main()
     unsigned int years_to_simulate = 100;
 
     God allah;
-    allah.reset_species("deer");
+    allah.reset_species("animal/deer");
+
+
 
     ProgressBar progressBar(years_to_simulate, 70, '#', '-');
 

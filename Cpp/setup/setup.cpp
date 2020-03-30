@@ -4,14 +4,16 @@
 #include <sqlite3.h>
 #include <string>
 
-const std::filesystem::path master_table_path = "../../data/ecosystem_master.db";
+const std::filesystem::path master_db_path = "../../data/ecosystem_master.db";
 const std::filesystem::path json_data_path = "../../data/json";
 
-static void attach_missing_json_files()
+sqlite3 *db;
+
+static void parse_species_directories(std::string subdirectory)
 {
     std::filesystem::path filepath;
 
-    for (const auto &entry : std::filesystem::directory_iterator(json_data_path))
+    for (const auto &entry : std::filesystem::directory_iterator(json_data_path / subdirectory))
     {
         filepath = "base.json";
         if (!std::filesystem::exists(entry.path() / filepath))
@@ -42,26 +44,29 @@ static void attach_missing_json_files()
             to_create << "{}";
             to_create.close();
         }
+
+        std::cout << entry << '\n';
     }
 }
 
 static void create_master_table()
 {
-    sqlite3 *db;
-    sqlite3_open(master_table_path.c_str(), &db);
-    std::string command = "CREATE TABLE ECOSYSTEM_MASTER("  \
-                          "NAME         TEXT        PRIMARY KEY     NOT NULL," \
-                          "KIND         TEXT                        NOT NULL," \
-                          "CHROMOSOME   TEXT                        NOT NULL," \
-                          "GENERATION   INT                         NOT NULL," \
-                          "IMMUNITY     FLOAT                       NOT NULL," \
-                          "GENDER       INT                         NOT NULL," \
-                          "AGE          INT                         NOT NULL," \
-                          "HEIGHT       FLOAT                       NOT NULL," \
-                          "WEIGHT       FLOAT                       NOT NULL," \
-                          "FITNESS      FLOAT                       NOT NULL);";
-    int rc = sqlite3_exec(db, command.c_str(), nullptr, 0, nullptr);
-    if( rc != SQLITE_OK )
+    std::string sql_command;
+    int rc;
+
+    sql_command = "CREATE TABLE ECOSYSTEM_MASTER("
+                  "NAME         TEXT        PRIMARY KEY     NOT NULL,"
+                  "KIND         TEXT                        NOT NULL,"
+                  "CHROMOSOME   TEXT                        NOT NULL,"
+                  "GENERATION   INT                         NOT NULL,"
+                  "IMMUNITY     FLOAT                       NOT NULL,"
+                  "GENDER       INT                         NOT NULL,"
+                  "AGE          INT                         NOT NULL,"
+                  "HEIGHT       FLOAT                       NOT NULL,"
+                  "WEIGHT       FLOAT                       NOT NULL,"
+                  "FITNESS      FLOAT                       NOT NULL);";
+    rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
+    if (rc != SQLITE_OK)
     {
         std::cout << "Master table was not created\n";
     }
@@ -71,18 +76,29 @@ static void create_master_table()
     }
 }
 
+static void create_table(const std::string &path)
+{
+}
+
 int main()
 {
-    if(!std::filesystem::exists(master_table_path))
+    sqlite3_open(master_db_path.c_str(), &db);
+
+    if(!std::filesystem::exists(master_db_path))
     {
         create_master_table();
     }
     else
     {
-        std::cout << "Using existing table at " << master_table_path << '\n';
+        std::cout << "Using existing db at " << master_db_path << '\n';
     }
-    if(std::filesystem::exists(json_data_path))
+
+    if (std::filesystem::exists(json_data_path / "animal"))
     {
-        attach_missing_json_files();
+        parse_species_directories("animal");
+    }
+    if (std::filesystem::exists(json_data_path / "plant"))
+    {
+        parse_species_directories("plant");
     }
 }

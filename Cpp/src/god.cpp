@@ -18,10 +18,10 @@ void God::catastrophe()
     organisms.clear();
 }
 
-void God::reset_species(const std::string &kind)
+void God::reset_species(const std::string &full_species_name)
 {
-    const std::string base_filepath = "../../data/json/" + kind + "/base.json";
-    const std::string current_filepath = "../../data/json/" + kind + "/current.json";
+    const std::string base_filepath = "../../data/json/" + full_species_name + "/base.json";
+    const std::string current_filepath = "../../data/json/" + full_species_name + "/current.json";
 
     std::ifstream base_in(base_filepath);
     std::ofstream current_out(current_filepath);
@@ -33,6 +33,9 @@ void God::reset_species(const std::string &kind)
 
     base_in.close();
     current_out.close();
+
+    std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
+    db.clear_table(kind);
 }
 
 bool God::spawn_organism(const ENTITY &current_organism)
@@ -225,12 +228,18 @@ void God::happy_new_year(const bool &log)
 
     std::unordered_map<std::string, std::vector<ENTITY>> organismsByKind;
     for(const auto &organism : organisms)
-        organismsByKind[organism.second->get_kind()].push_back(organism.second);
+        organismsByKind[organism.second->get_full_species_name()].push_back(organism.second);
 
     int index_parent1, index_parent2;
     for(auto &organism_tuple : organismsByKind)
     {
-        // Mating organisms of kind organism_tuple.first
+        // Mating organisms of species organism_tuple.first
+
+        auto &organism_list = organism_tuple.second;
+        if (organism_list.size() == 0)
+        {
+            continue;
+        }
 
         update_species(organism_tuple.first);
 
@@ -240,7 +249,6 @@ void God::happy_new_year(const bool &log)
         current_in >> species_constants;
         current_in.close();
 
-        auto &organism_list = organism_tuple.second;
         std::vector<ENTITY> mating_list1, mating_list2;
 
         if(organism_list.empty())
@@ -319,6 +327,7 @@ void God::happy_new_year(const bool &log)
         x.second->increment_age();
     });
 
+    year++;
 
     /*********************
      *       Logging     *

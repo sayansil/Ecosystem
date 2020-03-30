@@ -22,6 +22,8 @@ class God
 {
 public:
 
+    unsigned int year = 0;
+
     ENTITY_MAP_TYPE organisms;  // < name, Entity >
     unsigned int recent_deaths = 0;
     unsigned int recent_births = 0;
