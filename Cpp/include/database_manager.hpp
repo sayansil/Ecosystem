@@ -32,6 +32,7 @@ struct DatabaseManager
      ******************************/
 
     std::vector<std::vector<STAT>> read_rows(const std::string &, const std::vector<std::string> &);
+    std::vector<std::vector<STAT>> read_all_rows_from(const std::string &);
     void delete_rows(const std::vector<std::string> &);
     void insert_rows(const std::vector<std::vector<STAT>> &);
     void update_rows(const std::vector<std::vector<STAT>> &);

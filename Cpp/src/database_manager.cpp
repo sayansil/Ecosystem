@@ -176,6 +176,32 @@ std::vector<std::vector<STAT>> DatabaseManager::read_rows(const std::string &col
     return rows;
 }
 
+std::vector<std::vector<STAT>> DatabaseManager::read_all_rows_from(const std::string &table)
+{
+    gRows.clear();
+    gRows.shrink_to_fit();
+    std::string sql_command = "SELECT * FROM " + table;
+
+    sqlite3_exec(db, sql_command.c_str(), callback_read, 0, nullptr);
+    std::vector<std::vector<STAT>> rows;
+    for (const auto &gRow : gRows)
+    {
+        std::vector<STAT> row;
+        row.push_back(gRow.NAME);
+        row.push_back(gRow.KIND);
+        row.push_back(gRow.CHROMOSOME);
+        row.push_back(gRow.GENERATION);
+        row.push_back(gRow.IMMUNITY);
+        row.push_back(gRow.GENDER);
+        row.push_back(gRow.AGE);
+        row.push_back(gRow.HEIGHT);
+        row.push_back(gRow.WEIGHT);
+        row.push_back(gRow.FITNESS);
+        rows.push_back(row);
+    }
+    return rows;
+}
+
 void DatabaseManager::update_rows(const std::vector<std::vector<STAT>> &rows)
 {
     for(const auto &row : rows)
