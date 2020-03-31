@@ -41,8 +41,6 @@ int main()
     God allah;
     allah.reset_species("animal/deer");
 
-
-
     ProgressBar progressBar(years_to_simulate, 70, '#', '-');
 
     while (initial_organism_count--)

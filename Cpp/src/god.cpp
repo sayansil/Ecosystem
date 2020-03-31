@@ -367,6 +367,18 @@ std::unordered_map<std::string, std::vector<ENTITY>> God::organism_sort_by_kind(
     return organism_map;
 }
 
+void God::remember_species(const std::string &full_species_name)
+{
+    std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
+    std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
+
+    std::string table_name = "STATS_" + kind;
+    for (auto & c: table_name) c = toupper(c);
+
+    std::vector<STAT> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year);
+    db.insert_stat_row(db_row, kind, kingdom);
+}
+
 void God::send_data_to_simulation()
 {
     socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);

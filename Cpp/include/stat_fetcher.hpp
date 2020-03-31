@@ -17,7 +17,6 @@ using ENTITY_MAP_TYPE = std::unordered_map<std::string, ENTITY>;
 namespace stat_fetcher
 {
     extern std::unordered_map<std::string, unsigned int> get_kind_distribution(const ENTITY_MAP_TYPE &);
-    extern std::unordered_map<std::string, double> get_all_generic_stats(const ENTITY_MAP_TYPE &, const std::string & = "");
     extern std::vector<STAT> get_one_stat(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
     extern std::pair<double, double> get_stat_gap(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
     extern std::pair<unsigned int, unsigned int> get_matable_population(const ENTITY_MAP_TYPE &, const std::string & = "");
@@ -25,6 +24,7 @@ namespace stat_fetcher
     extern unsigned int get_population(const ENTITY_MAP_TYPE &, const std::string & = "");
     extern double get_stat_average(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
     extern double get_gender_ratio(const ENTITY_MAP_TYPE &, const std::string & = "");
+    extern std::vector<STAT> get_db_row(const ENTITY_MAP_TYPE &, const std::string &, const std::string &, const unsigned int &);
 }; // namespace stat_fetcher
 
 #endif // STAT_FETCHER_HPP

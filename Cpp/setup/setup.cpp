@@ -146,11 +146,11 @@ static void create_species_table(const std::string &path)
     int rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
     if (rc != SQLITE_OK)
     {
-        std::cout << kind << " table was not created\n";
+        std::cout << "New " << table_name << " table cannot be created\n";
     }
     else
     {
-        std::cout << kind << " table created successfully\n";
+        std::cout << table_name << " table created successfully\n";
     }
 }
 
