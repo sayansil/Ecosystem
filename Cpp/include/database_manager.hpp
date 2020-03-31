@@ -45,7 +45,6 @@ struct DatabaseManager
     std::unordered_map<std::string, std::vector<std::vector<STAT>>> groupby_kind();
     void clear_database();
     void clear_table(const std::string &);
-    void create_table(const std::string &, const std::string &);
 };
 
 #endif // DATABASEMANAGER_HPP
