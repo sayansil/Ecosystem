@@ -3,8 +3,9 @@ python/*
 __pycache__/*
 *.pyc
 .vscode/*
-data/json/*/current.json
+data/json/**/current.json
 data/csv/*
+data/*.db
 Cpp/build/*
 .clangd/*
 **.swp
