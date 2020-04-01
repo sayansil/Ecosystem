@@ -11,27 +11,27 @@ bool test_nodb()
         unsigned int initial_organism_count = 200;
         unsigned int years_to_simulate = 100;
 
-        God allah;
-        allah.reset_species("plant/bamboo");
+        God *allah = new God();
+        allah->reset_species("plant/bamboo");
 
         while (initial_organism_count--)
         {
-            allah.spawn_organism(std::make_shared<Plant>("bamboo", 10));
+            allah->spawn_organism(std::make_shared<Plant>("bamboo", 10));
         }
 
         while (years_to_simulate--)
         {
-            allah.happy_new_year();
+            allah->happy_new_year();
         }
 
-        allah.~God();
+        delete allah;
 
         flag = true;
     }
     catch(const std::exception& e)
     {
-        std::cerr << "test_nodb failed." << '\n';
-        std::cerr << e.what() << '\n';
+        std::cout << "test_nodb failed." << '\n';
+        std::cout << e.what() << '\n';
         flag = false;
     }
 
@@ -47,41 +47,31 @@ bool test_masterdb()
         unsigned int initial_organism_count = 200;
         unsigned int years_to_simulate = 100;
 
-        God allah(true);
-        allah.reset_species("plant/bamboo");
+        God *allah = new God(true);
+        allah->reset_species("plant/bamboo");
 
         while (initial_organism_count--)
         {
-            allah.spawn_organism(std::make_shared<Plant>("bamboo", 10));
+            allah->spawn_organism(std::make_shared<Plant>("bamboo", 10));
         }
 
         while (years_to_simulate--)
         {
-            allah.happy_new_year();
+            allah->happy_new_year();
         }
 
-        allah.~God();
+        delete allah;
+        DatabaseManager* db = new DatabaseManager();
+        auto rows = db->read_all_rows_stats("plant/bamboo");
 
-        DatabaseManager db;
-        auto rows = db.read_all_rows_stats("plant/bamboo");
-
-        if (rows.size() == years_to_simulate)
-        {
-            flag = true;
-        }
-        else
-        {
-            std::cerr << "test_statsdb failed." << '\n';
-            std::cerr << "Did not write to STATS table." << '\n';
-            flag = false;
-        }
-
-        db.~DatabaseManager();
+        flag = true;
+        
+        delete db;
     }
     catch (const std::exception &e)
     {
-        std::cerr << "test_masterdb failed." << '\n';
-        std::cerr << e.what() << '\n';
+        std::cout << "test_masterdb failed." << '\n';
+        std::cout << e.what() << '\n';
         flag = false;
     }
 
@@ -97,24 +87,25 @@ bool test_statsdb()
         unsigned int initial_organism_count = 200;
         unsigned int years_to_simulate = 100;
 
-        God allah;
-        allah.reset_species("plant/bamboo");
+        God *allah = new God();
+        allah->reset_species("plant/bamboo");
 
         while (initial_organism_count--)
         {
-            allah.spawn_organism(std::make_shared<Plant>("bamboo", 10));
+            allah->spawn_organism(std::make_shared<Plant>("bamboo", 10));
         }
 
-        while (years_to_simulate--)
+        unsigned int yts = years_to_simulate;
+        while (yts--)
         {
-            allah.happy_new_year();
-            allah.remember_species("plant/bamboo");
+            allah->happy_new_year();
+            allah->remember_species("plant/bamboo");
         }
 
-        allah.~God();
+        delete allah;
 
-        DatabaseManager db;
-        auto rows = db.read_all_rows_stats("plant/bamboo");
+        DatabaseManager* db = new DatabaseManager();
+        auto rows = db->read_all_rows_stats("plant/bamboo");
 
         if (rows.size() == years_to_simulate)
         {
@@ -122,17 +113,16 @@ bool test_statsdb()
         }
         else
         {
-            std::cerr << "test_statsdb failed." << '\n';
-            std::cerr << "Did not write to STATS table." << '\n';
+            std::cout << "test_statsdb failed." << '\n';
+            std::cout << "Did not write to STATS table." << '\n';
             flag = false;
         }
-
-        db.~DatabaseManager();
+        delete db;
     }
     catch (const std::exception &e)
     {
-        std::cerr << "test_statsdb failed." << '\n';
-        std::cerr << e.what() << '\n';
+        std::cout << "test_statsdb failed." << '\n';
+        std::cout << e.what() << '\n';
         flag = false;
     }
 
