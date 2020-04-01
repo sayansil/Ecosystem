@@ -6,17 +6,6 @@
 
 using CHROMOSOME_MAP_TYPE = std::map<std::string, std::map<std::string, unsigned int>>;
 
-using DB_NAME = std::string;
-using DB_KIND = std::string;
-using DB_CHROMOSOME = std::string;
-using DB_GENERATION = unsigned int;
-using DB_IMMUNITY = double;
-using DB_GENDER = unsigned int;
-using DB_AGE = unsigned int;
-using DB_HEIGHT = double;
-using DB_WEIGHT = double;
-using DB_FITNESS = double;
-
 enum Gender
 {
     MALE = 0,

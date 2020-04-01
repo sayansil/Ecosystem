@@ -1,7 +1,6 @@
 #include <god.hpp>
 #include <iostream>
 #include <memory>
-#include <prakhar1989/ProgressBar.hpp>
 #include <stat_fetcher.hpp>
 
 void evaluation(const God &god)
@@ -38,10 +37,8 @@ int main()
     unsigned int initial_organism_count = 200;
     unsigned int years_to_simulate = 100;
 
-    God allah;
+    God allah(true);
     allah.reset_species("animal/deer");
-
-    ProgressBar progressBar(years_to_simulate, 70, '#', '-');
 
     while (initial_organism_count--)
     {
@@ -55,11 +52,7 @@ int main()
     unsigned int i = 0;
     while (i++ < years_to_simulate)
     {
-        allah.happy_new_year();
-
-        ++progressBar;
-        if (i % 10 == 0)
-            progressBar.display();
+        allah.happy_new_year(true);
 
         // evaluation(allah);
 

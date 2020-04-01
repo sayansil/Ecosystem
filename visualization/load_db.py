@@ -25,7 +25,7 @@ def select_all_rows(conn, table):
 conn = create_connection('../data/ecosystem_master.db')
 
 with conn:
-    rows = select_all_rows(conn, 'STATS_DEER')
+    rows = select_all_rows(conn, 'ECOSYSTEM_MASTER')
 
 print("rows: ", len(rows))
 for row in rows:

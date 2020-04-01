@@ -34,7 +34,7 @@ public:
      *  Constructor / Destructor  *
      ******************************/
 
-    God();
+    God(const bool &gods_eye = false);
     ~God();
 
 
@@ -62,6 +62,7 @@ protected:
 private:
 
     DatabaseManager db;
+    bool gods_eye = false;
     const int max_mate_trials = 100;
     zmq::context_t context;
     zmq::socket_t socket;

@@ -1,8 +1,8 @@
 #include <god.hpp>
 
-God::God()
+God::God(const bool &gods_eye)
 {
-    db = DatabaseManager();
+    this->gods_eye = gods_eye;
     context = zmq::context_t(1);
     socket = zmq::socket_t(context, zmq::socket_type::dealer);
     socket.bind("tcp://*:5556");
@@ -14,7 +14,10 @@ God::~God()
 
 void God::catastrophe()
 {
-    db.clear_database();
+    if(gods_eye)
+    {
+        db.clear_database();
+    }
     organisms.clear();
 }
 
@@ -33,7 +36,7 @@ void God::reset_species(const std::string &full_species_name)
 
     base_in.close();
     current_out.close();
-
+    
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     db.clear_table(kind);
 }
@@ -44,23 +47,25 @@ bool God::spawn_organism(const ENTITY &current_organism)
     {
         // Add to memory
         organisms[current_organism->get_name()] = current_organism;
+        
+        if(gods_eye)
+        {
+            std::vector<std::vector<STAT>> tmp;
+            tmp.emplace_back(std::vector<STAT>{
+                STAT(current_organism->get_name()),
+                STAT(current_organism->get_kind()),
+                STAT(current_organism->get_chromosome()),
+                STAT(current_organism->get_generation()),
+                STAT(current_organism->get_immunity()),
+                STAT(current_organism->get_gender()),
+                STAT(current_organism->get_age()),
+                STAT(current_organism->get_height()),
+                STAT(current_organism->get_weight()),
+                STAT(current_organism->get_static_fitness())});
 
-        std::vector<std::vector<STAT>> tmp;
-        tmp.emplace_back(std::vector<STAT>{
-            STAT(current_organism->get_name()),
-            STAT(current_organism->get_kind()),
-            STAT(current_organism->get_chromosome()),
-            STAT(current_organism->get_generation()),
-            STAT(current_organism->get_immunity()),
-            STAT(current_organism->get_gender()),
-            STAT(current_organism->get_age()),
-            STAT(current_organism->get_height()),
-            STAT(current_organism->get_weight()),
-            STAT(current_organism->get_static_fitness())});
-
-        // Add to database
-        db.insert_rows(tmp);
-
+            // Add to database
+            db.insert_rows(tmp);
+        }
         return true;
     }
 
@@ -70,7 +75,10 @@ bool God::spawn_organism(const ENTITY &current_organism)
 void God::kill_organisms(const std::vector<std::string> &names)
 {
     // Remove from database
-    db.delete_rows(names);
+    if(gods_eye)
+    {
+        db.delete_rows(names);
+    }
 
     // Remove from memory
     for (const auto &lamb_to_slaughter : names)
@@ -335,6 +343,7 @@ void God::happy_new_year(const bool &log)
 
     if (log)
     {
+        std::cout << "Year: " << year << " - ";
         std::cout << "Recent births: " << recent_births << ' ';
         std::cout << "Recent deaths: " << recent_deaths << ' ';
         std::cout << "Population: " << organisms.size() << '\n';

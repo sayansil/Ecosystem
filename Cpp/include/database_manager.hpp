@@ -23,7 +23,7 @@ struct DatabaseManager
      *  Constructor / Destructor  *
      ******************************/
 
-    DatabaseManager(const std::filesystem::path &path = "../../data/ecosystem_master.db");
+    DatabaseManager(const std::filesystem::path& filename = "../../data/ecosystem_master.db");
     ~DatabaseManager();
 
 
@@ -31,8 +31,9 @@ struct DatabaseManager
      *  Standard DBMS operations  *
      ******************************/
 
-    std::vector<std::vector<STAT>> read_rows(const std::string &, const std::vector<std::string> &);
-    std::vector<std::vector<STAT>> read_all_rows_from(const std::string &);
+    std::vector<std::vector<STAT>> read_rows_master(const std::string &, const std::vector<std::string> &);
+    std::vector<std::vector<STAT>> read_all_rows_stats(const std::string &);
+    std::vector<std::vector<STAT>> read_all_rows_master();
     void delete_rows(const std::vector<std::string> &);
     void insert_rows(const std::vector<std::vector<STAT>> &);
     void update_rows(const std::vector<std::vector<STAT>> &);
@@ -43,6 +44,8 @@ struct DatabaseManager
      *  Miscellaneous operations  *
      ******************************/
 
+    void begin_transaction();
+    void end_transaction();
     std::unordered_map<std::string, std::vector<std::vector<STAT>>> groupby_kind();
     void clear_database();
     void clear_table(const std::string &);

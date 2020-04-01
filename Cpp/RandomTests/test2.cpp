@@ -3,8 +3,6 @@
 int main()
 {
     DatabaseManager dbm;
-    dbm = DatabaseManager();
-    auto vec = dbm.read_all_rows_from("ECOSYSTEM_MASTER");
-
+    auto vec = dbm.read_all_rows_master();
     std::cout << vec.size() << '\n';
 }

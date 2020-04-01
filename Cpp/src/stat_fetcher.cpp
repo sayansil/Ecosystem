@@ -259,7 +259,7 @@ namespace stat_fetcher
 
             for (const auto &organism: organisms)
             {
-                Animal *obj = static_cast<Animal *>(organism.second.get());
+                const Animal *obj = static_cast<const Animal *>(organism.second.get());
 
                 if (kind != obj->kind)
                     continue;
