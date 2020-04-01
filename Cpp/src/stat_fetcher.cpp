@@ -203,8 +203,9 @@ namespace stat_fetcher
                                 {"max_speed_at_age", obj->max_speed_at_age},
                                 {"max_vitality_at_age", obj->max_vitality_at_age},
                                 {"max_appetite_at_age", obj->max_appetite_at_age},
-                                {"X", obj->X},
-                                {"Y", obj->Y}
+                                {"max_stamina_at_age", obj->max_stamina_at_age},
+                                {"height", obj->height},
+                                {"weight", obj->weight}
                             });
                 }
                 else if(organism.second->get_kingdom() == "plant")
@@ -214,8 +215,8 @@ namespace stat_fetcher
                                 {"name", obj->name},
                                 {"food_chain_rank", obj->food_chain_rank},
                                 {"max_vitality_at_age", obj->max_vitality_at_age},
-                                {"X", obj->X},
-                                {"Y", obj->Y}
+                                {"height", obj->height},
+                                {"weight", obj->weight}
                             });
                 }
                 else
