@@ -8,7 +8,7 @@ int main()
     unsigned int initial_organism_count_m = 500;
     unsigned int initial_organism_count_nm = 500;
 
-    God allah(true);
+    God allah(false);
     allah.monitor_offsprings = true;
 
     allah.reset_species("plant/bamboo");

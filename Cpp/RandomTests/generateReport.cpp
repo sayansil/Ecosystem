@@ -34,8 +34,8 @@ void evaluation(const God &god)
 
 int main()
 {
-    unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 100;
+    unsigned int initial_organism_count = 500;
+    unsigned int years_to_simulate = 500;
 
     God allah(true);
     allah.reset_species("animal/deer");
@@ -53,7 +53,7 @@ int main()
     while (i++ < years_to_simulate)
     {
         allah.happy_new_year(true);
-
+        allah.remember_species("animal/deer");
         // evaluation(allah);
 
         if (allah.organisms.size() == 0)
