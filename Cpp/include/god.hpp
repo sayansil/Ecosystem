@@ -1,14 +1,13 @@
 #ifndef GOD_HPP
 #define GOD_HPP
 
-#include <algorithm>
+#include <parallel/algorithm>
 #include <iostream>
 #include <random>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 #include <string>
-#include <execution>
 
 #include <database_manager.hpp>
 #include <zmq.hpp>
