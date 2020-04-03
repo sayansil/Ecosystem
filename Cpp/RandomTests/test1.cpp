@@ -53,7 +53,6 @@ int main()
     while (years_to_simulate--)
     {
         allah.happy_new_year(true);
-        allah.remember_species("plant/bamboo");
     }
 
     std::cout << "\n\nFINAL EVALUATION:\n\n";
