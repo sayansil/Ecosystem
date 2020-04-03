@@ -1,4 +1,6 @@
 
+![build](https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu)
+
 # Overview
 
 An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control ***directly controllable*** environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.
