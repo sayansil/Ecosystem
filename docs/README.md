@@ -1,8 +1,12 @@
 
+<p align="center">
+
 ![build][build-link] ![cpp][cpp-link] [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] [![Hits][hits-link]](https://hits.seeyoufarm.com)
+
 
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3821/badge)][cii-link]
 
+</p>
 
 # Overview
 
