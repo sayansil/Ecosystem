@@ -1,11 +1,24 @@
 
+<!-- Badges -->
+
 <p align="center">
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu" /></a>
 
-![build][build-link] ![cpp][cpp-link] [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] [![Hits][hits-link]](https://hits.seeyoufarm.com)
+<a href="https://isocpp.org/files/papers/p0636r0.html">
+        <img src="https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B" /></a>
+
+<a href="https://hits.seeyoufarm.com/">
+        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsayansil%2FEcosystem" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
+</p>
 
 
-[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3821/badge)][cii-link]
-
+<p align="center">
+<a href="https://bestpractices.coreinfrastructure.org/projects/3821">
+        <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
 </p>
 
 # Overview
@@ -331,9 +344,3 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 ![Maximum appetite dependency](https://i.ibb.co/FWsCmb2/herbivore-max-app.png)
 
 
-
-[build-link]: https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu
-[license-link]: https://github.com/sayansil/Ecosystem/blob/master/LICENSE
-[hits-link]: https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsayansil%2FEcosystem
-[cpp-link]: https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B
-[cii-link]: https://bestpractices.coreinfrastructure.org/projects/3821
