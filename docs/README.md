@@ -1,5 +1,5 @@
 
-![build][build-link]  [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] 
+![build][build-link]  [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] [![Maintainability](https://api.codeclimate.com/v1/badges/c5d25d0dc24f39d95103/maintainability)][maintain-link]
 
 # Overview
 
@@ -327,3 +327,4 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 
 [build-link]: https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu
 [license-link]: https://github.com/sayansil/Ecosystem/blob/master/LICENSE
+[maintain-link]: https://codeclimate.com/github/sayansil/Ecosystem/maintainability
