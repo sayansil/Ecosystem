@@ -1,5 +1,5 @@
 
-![build](https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu)
+![build][build-link]  [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] 
 
 # Overview
 
@@ -322,3 +322,8 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 **a, b, c** = constants
 
 ![Maximum appetite dependency](https://i.ibb.co/FWsCmb2/herbivore-max-app.png)
+
+
+
+[build-link]: https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu
+[license-link]: https://github.com/sayansil/Ecosystem/blob/master/LICENSE
