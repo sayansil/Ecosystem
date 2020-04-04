@@ -12,3 +12,4 @@ Cpp/build/*
 .ccls-cache/*
 **.swp
 compile_commands.json
+release/
