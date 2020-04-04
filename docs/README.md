@@ -1,5 +1,35 @@
 
-![build](https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu)
+<p align="center">
+
+<a href="https://github.com/sayansil/Ecosystem">
+  <img src="https://i.ibb.co/PZP7XMZ/eco.png" />
+</a>
+
+</p>
+
+
+
+<!-- Badges -->
+
+<p align="center">
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu" /></a>
+
+<a href="https://isocpp.org/files/papers/p0636r0.html">
+        <img src="https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B" /></a>
+
+<a href="https://hits.seeyoufarm.com/">
+        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsayansil%2FEcosystem" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
+</p>
+
+
+<p align="center">
+<a href="https://bestpractices.coreinfrastructure.org/projects/3821">
+        <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
+</p>
 
 # Overview
 
@@ -322,3 +352,5 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 **a, b, c** = constants
 
 ![Maximum appetite dependency](https://i.ibb.co/FWsCmb2/herbivore-max-app.png)
+
+
