@@ -41,10 +41,7 @@
 
 <a href="https://github.com/sayansil/Ecosystem">
         <img src="https://img.shields.io/github/languages/code-size/sayansil/Ecosystem" /></a>
-</p>
 
-
-<p align="center">
 <a href="https://github.com/sayansil/Ecosystem/tree/65c357ec0cf76e0e3a1e51d82b77ac2c675dd7c9">
         <img src="https://img.shields.io/date/1577458330?color=%23000&label=started" /></a>
 
