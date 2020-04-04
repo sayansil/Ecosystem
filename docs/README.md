@@ -15,6 +15,9 @@
 <a href="https://github.com/sayansil/Ecosystem/actions">
         <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu" /></a>
 
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=ubuntu" /></a>
+
 <a href="https://isocpp.org/files/papers/p0636r0.html">
         <img src="https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B" /></a>
 
