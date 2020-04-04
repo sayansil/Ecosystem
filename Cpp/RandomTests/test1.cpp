@@ -35,14 +35,14 @@ void evaluation(const God &god)
 int main()
 {
     unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 1000;
+    unsigned int years_to_simulate = 500;
 
     God allah;
-    allah.reset_species("plant/bamboo");
+    allah.reset_species("animal/deer");
 
     while (initial_organism_count--)
     {
-        allah.spawn_organism(std::make_shared<Plant>("bamboo", 10, true));
+        allah.spawn_organism(std::make_shared<Animal>("deer", 10, true));
     }
 
     std::cout << "\n\nINITIAL EVALUATION:\n\n";
@@ -53,6 +53,7 @@ int main()
     while (years_to_simulate--)
     {
         allah.happy_new_year(true);
+        allah.remember_species("animal/deer");
     }
 
     std::cout << "\n\nFINAL EVALUATION:\n\n";

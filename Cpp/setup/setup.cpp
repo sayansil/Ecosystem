@@ -6,6 +6,7 @@
 
 const std::filesystem::path master_db_path = "../../data/ecosystem_master.db";
 const std::filesystem::path json_data_path = "../../data/json";
+const std::filesystem::path json_template_path = "../../data/templates/json";
 
 sqlite3 *db;
 
@@ -158,39 +159,36 @@ static void parse_species_directories(std::string subdirectory)
 {
     std::filesystem::path filepath;
 
+    auto copy_contents = [](const std::filesystem::path &source, const std::filesystem::path &sink) {
+        if (!std::filesystem::exists(sink))
+        {
+            std::ifstream to_read(source, std::ios::binary);
+            std::ofstream to_create(sink, std::ios::binary);
+
+            to_create << to_read.rdbuf();
+
+            to_read.close();
+            to_create.close();
+        }
+    };
+
     for (const auto &entry : std::filesystem::directory_iterator(json_data_path / subdirectory))
     {
-        filepath = "base.json";
-        if (!std::filesystem::exists(entry.path() / filepath))
-        {
-            std::ofstream to_create(entry.path() / filepath);
-            to_create << "{}";
-            to_create.close();
-        }
+        // Creating base.json from template
+        copy_contents(
+            json_template_path / subdirectory / "base.json",
+            entry.path() / "base.json");
 
-        filepath = "current.json";
-        if (!std::filesystem::exists(entry.path() / filepath))
-        {
-            std::ofstream to_create(entry.path() / filepath);
+        // Creating modify.json from template
+        copy_contents(
+            json_template_path / subdirectory / "modify.json",
+            entry.path() / "modify.json");
 
-            std::ifstream to_copy(entry.path() / "base.json");
-            std::string tmp((std::istreambuf_iterator<char>(to_copy)),
-                            std::istreambuf_iterator<char>());
-            to_create << tmp;
+        // Creating current.json from base.json
+        copy_contents(
+            entry.path() / "base.json",
+            entry.path() / "current.json");
 
-            to_copy.close();
-            to_create.close();
-        }
-
-        filepath = "modify.json";
-        if (!std::filesystem::exists(entry.path() / filepath))
-        {
-            std::ofstream to_create(entry.path() / filepath);
-            to_create << "{}";
-            to_create.close();
-        }
-
-        // std::cout << entry.path() << '\n';
         create_species_table(entry.path());
     }
 }
