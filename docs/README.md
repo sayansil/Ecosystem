@@ -1,5 +1,5 @@
 
-![build][build-link]  [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] [![Hits][hits-link]](https://hits.seeyoufarm.com)
+![build][build-link] ![cpp][cpp-link] [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] [![Hits][hits-link]](https://hits.seeyoufarm.com)
 
 # Overview
 
@@ -328,3 +328,4 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 [build-link]: https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=ubuntu
 [license-link]: https://github.com/sayansil/Ecosystem/blob/master/LICENSE
 [hits-link]: https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsayansil%2FEcosystem
+[cpp-link]: https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B
