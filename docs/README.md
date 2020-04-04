@@ -1,6 +1,9 @@
 
 ![build][build-link] ![cpp][cpp-link] [![GPLv3 License](https://img.shields.io/badge/license-GPL%20v3-yellow.svg)][license-link] [![Hits][hits-link]](https://hits.seeyoufarm.com)
 
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/3821/badge)][cii-link]
+
+
 # Overview
 
 An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control ***directly controllable*** environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.
@@ -329,3 +332,4 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 [license-link]: https://github.com/sayansil/Ecosystem/blob/master/LICENSE
 [hits-link]: https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsayansil%2FEcosystem
 [cpp-link]: https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B
+[cii-link]: https://bestpractices.coreinfrastructure.org/projects/3821
