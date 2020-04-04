@@ -9,5 +9,6 @@ data/*.db
 data/*.db-*
 Cpp/build/*
 .clangd/*
+.ccls-cache/*
 **.swp
 compile_commands.json
