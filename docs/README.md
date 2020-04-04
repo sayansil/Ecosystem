@@ -18,8 +18,11 @@
 <a href="https://github.com/sayansil/Ecosystem/actions">
         <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=ubuntu" /></a>
 
-<a href="https://isocpp.org/files/papers/p0636r0.html">
-        <img src="https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B" /></a>
+<a href="https://github.com/sayansil/Ecosystem/releases">
+        <img src="https://img.shields.io/github/v/release/sayansil/Ecosystem?include_prereleases" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/commits">
+        <img src="https://img.shields.io/github/last-commit/sayansil/Ecosystem" /></a>
 
 <a href="https://hits.seeyoufarm.com/">
         <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsayansil%2FEcosystem" /></a>
@@ -32,6 +35,16 @@
 <p align="center">
 <a href="https://bestpractices.coreinfrastructure.org/projects/3821">
         <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
+
+<a href="https://isocpp.org/files/papers/p0636r0.html">
+        <img src="https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem">
+        <img src="https://img.shields.io/github/languages/code-size/sayansil/Ecosystem" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/tree/65c357ec0cf76e0e3a1e51d82b77ac2c675dd7c9">
+        <img src="https://img.shields.io/date/1577458330?color=%23000&label=started" /></a>
+
 </p>
 
 # Overview
