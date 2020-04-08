@@ -36,9 +36,6 @@
 <a href="https://isocpp.org/files/papers/p0636r0.html">
         <img src="https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B" /></a>
 
-<a href="https://github.com/sayansil/Ecosystem/tree/65c357ec0cf76e0e3a1e51d82b77ac2c675dd7c9">
-        <img src="https://img.shields.io/date/1577458330?color=%23000&label=started" /></a>
-
 </p>
 
 # Overview
