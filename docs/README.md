@@ -18,9 +18,6 @@
 <a href="https://github.com/sayansil/Ecosystem/actions">
         <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=ubuntu" /></a>
 
-<a href="https://github.com/sayansil/Ecosystem/releases">
-        <img src="https://img.shields.io/github/v/release/sayansil/Ecosystem?include_prereleases" /></a>
-
 <a href="https://hits.seeyoufarm.com/">
         <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fsayansil%2FEcosystem" /></a>
 
