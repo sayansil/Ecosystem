@@ -17,7 +17,7 @@ namespace helper
 
     extern unsigned int map_height;
     extern unsigned int map_width;
-
+    extern std::mt19937_64 rng;
 
     /*******************
      *  Helper methods *

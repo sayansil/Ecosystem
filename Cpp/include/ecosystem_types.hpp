@@ -3,6 +3,7 @@
 
 #include <map>
 #include <variant>
+#include <string>
 
 using CHROMOSOME_MAP_TYPE = std::map<std::string, std::map<std::string, unsigned int>>;
 
