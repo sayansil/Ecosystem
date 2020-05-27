@@ -4,9 +4,9 @@ God::God(const bool &gods_eye)
 {
     this->gods_eye = gods_eye;
     helper::rng.seed(std::random_device()());
-    context = zmq::context_t(1);
-    socket = zmq::socket_t(context, zmq::socket_type::dealer);
-    socket.bind("tcp://*:5556");
+    //context = zmq::context_t(1);
+    //socket = zmq::socket_t(context, zmq::socket_type::dealer);
+    //socket.bind("tcp://*:5556");
 }
 
 God::~God()
@@ -385,38 +385,38 @@ void God::remember_species(const std::string &full_species_name)
     db.insert_stat_row(db_row, kind, kingdom);
 }
 
-void God::send_data_to_simulation()
-{
-    socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);
-}
+//void God::send_data_to_simulation()
+//{
+//    socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);
+//}
 
-bool God::listen_for_simulation_once()
-{
-    std::string positive = "SEND";
-    std::string negative = "STOP";
-    zmq::message_t response;
-    socket.recv(response);
-    std::string response_str = response.to_string();
-    if(response_str == positive)
-    {
-        send_data_to_simulation();
-        happy_new_year(true);
-        return true;
-    }
-    else if(response_str == negative)
-    {
-        return false;
-    }
-    else
-    {
-        std::cout << "Error: " << response_str << " received\n";
-        return false;
-    }
-}
+//bool God::listen_for_simulation_once()
+//{
+//    std::string positive = "SEND";
+//    std::string negative = "STOP";
+//    zmq::message_t response;
+//    socket.recv(response);
+//    std::string response_str = response.to_string();
+//    if(response_str == positive)
+//    {
+//        send_data_to_simulation();
+//        happy_new_year(true);
+//        return true;
+//    }
+//    else if(response_str == negative)
+//    {
+//        return false;
+//    }
+//    else
+//    {
+//        std::cout << "Error: " << response_str << " received\n";
+//        return false;
+//    }
+//}
 
-void God::start_listening_for_simulation()
-{
-    std::cout << "God starts listening...\n";
-    while(listen_for_simulation_once());
-    std::cout << "Alas! God stopped listening.\n";
-}
+//void God::start_listening_for_simulation()
+//{
+//    std::cout << "God starts listening...\n";
+//    while(listen_for_simulation_once());
+//    std::cout << "Alas! God stopped listening.\n";
+//}

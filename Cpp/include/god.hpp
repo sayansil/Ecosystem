@@ -10,12 +10,10 @@
 #include <string>
 
 #include <database_manager.hpp>
-#include <zmq.hpp>
+//#include <zmq.hpp>
 #include <organism.hpp>
 #include <helper.hpp>
 #include <stat_fetcher.hpp>
-
-#include <zmq.hpp>
 
 class God
 {
@@ -47,9 +45,9 @@ public:
     void kill_organisms(const std::vector<std::string>&);
     bool spawn_organism(const ENTITY&);
     void remember_species(const std::string &);
-    void send_data_to_simulation();
-    bool listen_for_simulation_once();
-    void start_listening_for_simulation();
+    //void send_data_to_simulation();
+    //bool listen_for_simulation_once();
+    //void start_listening_for_simulation();
 
     std::vector<ENTITY> organism_sort(bool (*comp)(const ENTITY&, const ENTITY&));
     std::unordered_map<std::string, std::vector<ENTITY>> organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&));
@@ -63,8 +61,8 @@ private:
     DatabaseManager db;
     bool gods_eye = false;
     const int max_mate_trials = 100;
-    zmq::context_t context;
-    zmq::socket_t socket;
+    //zmq::context_t context;
+    //zmq::socket_t socket;
 
 
     /****************************************
