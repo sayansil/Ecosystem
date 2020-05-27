@@ -24,11 +24,11 @@ void God::catastrophe()
 
 void God::reset_species(const std::string &full_species_name)
 {
-    const std::string base_filepath = "../../data/json/" + full_species_name + "/base.json";
-    const std::string current_filepath = "../../data/json/" + full_species_name + "/current.json";
+    const std::string base_filepath = "/home/runner/fyp/Ecosystem/data/json/" + full_species_name + "/base.json";
+    const std::string current_filepath = "/home/runner/fyp/Ecosystem/data/json/" + full_species_name + "/current.json";
 
     std::ifstream base_in(base_filepath);
-    std::ofstream current_out(current_filepath);
+    std::ofstream current_out((current_filepath));
 
     nlohmann::json base;
     base_in >> base;
@@ -132,8 +132,8 @@ double updateStat(double base, double p_range)
 
 void God::update_species(const std::string &kind)
 {
-    const std::string current_filepath = "../../data/json/" + kind + "/current.json";
-    const std::string modify_filepath = "../../data/json/" + kind + "/modify.json";
+    const std::string current_filepath = "/home/runner/fyp/Ecosystem/data/json/" + kind + "/current.json";
+    const std::string modify_filepath = "/home/runner/fyp/Ecosystem/data/json/" + kind + "/modify.json";
 
     std::ifstream current_in(current_filepath);
     std::ifstream modify_in(modify_filepath);
@@ -250,7 +250,7 @@ void God::happy_new_year(const bool &log)
 
         update_species(organism_tuple.first);
 
-        const std::string current_filepath = "../../data/json/" + organism_tuple.first + "/current.json";
+        const std::string current_filepath = "/home/runner/fyp/Ecosystem/data/json/" + organism_tuple.first + "/current.json";
         std::ifstream current_in(current_filepath);
         nlohmann::json species_constants;
         current_in >> species_constants;

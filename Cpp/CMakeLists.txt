@@ -11,6 +11,9 @@ endif()
 project(Cpp)
 
 set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp -march=native")
+add_subdirectory(pybind11)
+set(CMAKE_CXX_STANDARD 17)
+set(PYBIND11_CPP_STANDARD -std=c++17)
 
 set(SQLITE_HEADERS
     include/sqlite3.h
@@ -47,11 +50,18 @@ set(ECOSYSTEM_SOURCES
 
 set(ECOSYSTEM_LIB "ecosystem")
 set(ECOSYSTEM_EXE "run")
+set(ECOSYSTEM_PY "pyecosystem")
 
 function(build_ecosystem_lib)
     add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES} ${SQLITE_SOURCES})
     target_include_directories(${ECOSYSTEM_LIB} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE stdc++fs)
+endfunction()
+
+function(build_ecosystem_python_module)
+    pybind11_add_module(${ECOSYSTEM_PY} ${CMAKE_CURRENT_SOURCE_DIR}/src/ecosystem.cpp ${ECOSYSTEM_SOURCES} ${SQLITE_SOURCES})
+    target_include_directories(${ECOSYSTEM_PY} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(${ECOSYSTEM_PY} PRIVATE dl stdc++fs)
 endfunction()
 
 function(setup_ecosystem)
@@ -84,6 +94,7 @@ function(random_test)
 endfunction()
 
 build_ecosystem_lib()
+build_ecosystem_python_module()
 setup_ecosystem()
 build_ecosystem_exe()
 random_test()

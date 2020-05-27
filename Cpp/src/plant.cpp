@@ -17,7 +17,7 @@ Plant::Plant(const std::string &kind, const unsigned int &age, const bool &monit
 
     if (species_constants.empty())
     {
-        const std::string filepath = "../../data/json/" + full_species_name + "/current.json";
+        const std::string filepath = "/home/runner/fyp/Ecosystem/data/json/" + full_species_name + "/current.json";
 
         std::ifstream in(filepath);
         nlohmann::json json_file;

@@ -1,4 +1,5 @@
 #include <god.hpp>
+#include <iostream>
 
 int main()
 {
@@ -6,8 +7,9 @@ int main()
     unsigned int years_to_simulate = 100;
 
     God allah(true);
+    std::cout << "reached HERE1\n";
     allah.reset_species("animal/deer");
-
+    std::cout << "reached HERE2\n";
     while (initial_organism_count--)
     {
         allah.spawn_organism(std::make_shared<Animal>("deer", 10));

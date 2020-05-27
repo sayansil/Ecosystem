@@ -4,9 +4,9 @@
 #include <sqlite3.h>
 #include <string>
 
-const std::experimental::filesystem::path master_db_path = "../../data/ecosystem_master.db";
-const std::experimental::filesystem::path json_data_path = "../../data/json";
-const std::experimental::filesystem::path json_template_path = "../../data/templates/json";
+const std::experimental::filesystem::path master_db_path = "/home/runner/fyp/Ecosystem/data/ecosystem_master.db";
+const std::experimental::filesystem::path json_data_path = "/home/runner/fyp/Ecosystem/data/json";
+const std::experimental::filesystem::path json_template_path = "/home/runner/fyp/Ecosystem/data/templates/json";
 
 sqlite3 *db;
 
