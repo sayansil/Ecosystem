@@ -1,7 +1,7 @@
 #ifndef DATABASEMANAGER_HPP
 #define DATABASEMANAGER_HPP
 
-#include <filesystem>
+#include <experimental/filesystem>
 #include <iostream>
 #include <sqlite3.h>
 #include <string>
@@ -16,14 +16,14 @@ struct DatabaseManager
      ***************/
 
     sqlite3 *db;
-    std::filesystem::path db_path;
+    std::experimental::filesystem::path db_path;
 
 
     /******************************
      *  Constructor / Destructor  *
      ******************************/
 
-    DatabaseManager(const std::filesystem::path& filename = "../../data/ecosystem_master.db");
+    DatabaseManager(const std::experimental::filesystem::path& filename = "../../data/ecosystem_master.db");
     ~DatabaseManager();
 
 
