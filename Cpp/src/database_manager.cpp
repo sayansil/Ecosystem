@@ -1,6 +1,4 @@
 #include <database_manager.hpp>
-#include <iostream>
-#include <string>
 
 struct RowTypeMaster
 {

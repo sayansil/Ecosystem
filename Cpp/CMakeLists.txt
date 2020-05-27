@@ -10,7 +10,16 @@ endif()
 
 project(Cpp)
 
-set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp -march=native")
+set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -fopenmp -march=native")
+
+set(SQLITE_HEADERS
+    include/sqlite3.h
+    include/sqlite3ext.h
+    )
+
+set(SQLITE_SOURCES
+    src/sqlite3.c
+    )
 
 set(ECOSYSTEM_HEADERS
     include/nlohmann/json.hpp
@@ -40,28 +49,29 @@ set(ECOSYSTEM_LIB "ecosystem")
 set(ECOSYSTEM_EXE "run")
 
 function(build_ecosystem_lib)
-    add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_HEADERS} ${ECOSYSTEM_SOURCES})
+    add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES} ${SQLITE_SOURCES})
     target_include_directories(${ECOSYSTEM_LIB} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(${ECOSYSTEM_LIB} PRIVATE tbb sqlite3 zmq)
+    target_link_libraries(${ECOSYSTEM_LIB} PRIVATE tbb zmq)
 endfunction()
 
 function(setup_ecosystem)
-    add_executable(setup ${CMAKE_CURRENT_SOURCE_DIR}/setup/setup.cpp)
-    target_link_libraries(setup PRIVATE sqlite3)
+    add_executable(setup ${CMAKE_CURRENT_SOURCE_DIR}/setup/setup.cpp ${SQLITE_SOURCES})
+    target_include_directories(setup PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    target_link_libraries(setup PRIVATE dl)
 endfunction()
 
 function(build_ecosystem_exe)
     add_executable(${ECOSYSTEM_EXE} ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
     target_include_directories(${ECOSYSTEM_EXE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(${ECOSYSTEM_EXE} PRIVATE ${ECOSYSTEM_LIB})
+    target_link_libraries(${ECOSYSTEM_EXE} PRIVATE ${ECOSYSTEM_LIB} dl)
 endfunction()
 
 function(random_test)
     set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/RandomTests)
     function(add_code name)
-        add_executable(rt_${name} ${SOURCE_DIR}/${name}.cpp)
+        add_executable(rt_${name} ${SOURCE_DIR}/${name}.cpp ${SQLITE_SOURCES})
         target_include_directories(rt_${name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-        target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} zmq tbb sqlite3)
+        target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} zmq tbb dl)
     endfunction()
     add_code(generateReport)
     add_code(sanity_test)
