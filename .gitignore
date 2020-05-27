@@ -13,3 +13,6 @@ Cpp/build/*
 **.swp
 compile_commands.json
 release/
+app/app/src/androidTest/
+app/.idea/
+app/app/src/test/

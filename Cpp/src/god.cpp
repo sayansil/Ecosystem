@@ -3,6 +3,7 @@
 God::God(const bool &gods_eye)
 {
     this->gods_eye = gods_eye;
+    helper::rng.seed(std::random_device()());
     context = zmq::context_t(1);
     socket = zmq::socket_t(context, zmq::socket_type::dealer);
     socket.bind("tcp://*:5556");
@@ -123,9 +124,8 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
 
 double updateStat(double base, double p_range)
 {
-    std::mt19937_64 rng; rng.seed(std::random_device()());
     std::uniform_real_distribution<double> dis(0.0, p_range * 2);
-    const double x = p_range - dis(rng);
+    const double x = p_range - dis(helper::rng);
 
     return base * (1 + x);
 }
@@ -296,18 +296,16 @@ void God::happy_new_year(const bool &log)
             }
         }
 
-        std::mt19937_64 rng; rng.seed(std::random_device()());
-
         while (mating_list1.size() > 0 && mating_list2.size() > 0)
         {
             std::uniform_int_distribution<int> dis_parent(0, std::min(mating_list2.size(), mating_list1.size()) - 1);
-            index_parent1 = dis_parent(rng);
-            index_parent2 = dis_parent(rng);
+            index_parent1 = dis_parent(helper::rng);
+            index_parent2 = dis_parent(helper::rng);
             const auto &parent1 = mating_list1[index_parent1];
             const auto &parent2 = mating_list2[index_parent2];
 
             std::uniform_real_distribution<double> dis_children(0.0, 1.0);
-            int n_children = creator_function(dis_children(rng), parent1->get_offsprings_factor());
+            int n_children = creator_function(dis_children(helper::rng), parent1->get_offsprings_factor());
             while(n_children--)
             {
                 if (mate(parent1->get_name(), parent2->get_name(), species_constants))
