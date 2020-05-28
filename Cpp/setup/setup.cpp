@@ -3,10 +3,11 @@
 #include <fstream>
 #include <sqlite3.h>
 #include <string>
+#include <helper.hpp>
 
-const std::experimental::filesystem::path master_db_path = "../../data/ecosystem_master.db";
-const std::experimental::filesystem::path json_data_path = "../../data/json";
-const std::experimental::filesystem::path json_template_path = "../../data/templates/json";
+const std::filesystem::path master_db_path = helper::get_ecosystem_root() / "data/ecosystem_master.db";
+const std::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
+const std::filesystem::path json_template_path = helper::get_ecosystem_root() / "data/templates/json";
 
 sqlite3 *db;
 

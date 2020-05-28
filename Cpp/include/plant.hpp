@@ -9,6 +9,7 @@
 #include <map>
 #include <math.h>
 #include <variant>
+#include <filesystem>
 
 #include <ecosystem_types.hpp>
 #include <helper.hpp>
