@@ -25,6 +25,7 @@ jobs:
 
     - name: configure
       run: |
+        git submodule update --init
         cd Cpp
         mkdir build
         cd build
