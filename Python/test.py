@@ -1,5 +1,7 @@
 import sys
-sys.path.insert(1, '/home/runner/fyp/Ecosystem/Cpp/build/')
+import os
+ECOSYSTEM_ROOT = os.environ['ECOSYSTEM_ROOT']
+sys.path.insert(1, os.path.join(ECOSYSTEM_ROOT, 'Cpp/build'))
 import pyecosystem as pyeco
 
 initial_organism_count = 200

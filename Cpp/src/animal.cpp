@@ -17,7 +17,7 @@ Animal::Animal(const std::string &kind, const unsigned int &age, const bool &mon
 
     if (species_constants.empty())
     {
-        const std::filesystem::path filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
+        const std::experimental::filesystem::path filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
         std::ifstream in(filepath);
         nlohmann::json json_file;
         in >> json_file;

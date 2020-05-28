@@ -18,7 +18,6 @@ jobs:
         sudo update-alternatives --set gcc "/usr/bin/gcc-9"
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 50
         sudo update-alternatives --set g++ "/usr/bin/g++-9"
-        sudo apt-get update
 
     - name: configure
       run: |
