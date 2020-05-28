@@ -37,4 +37,3 @@ jobs:
         export ECOSYSTEM_ROOT=`pwd`
         ./Cpp/build/setup
         ./Cpp/build/rt_sanity_test
-        python Python/test.py
