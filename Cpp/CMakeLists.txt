@@ -57,7 +57,7 @@ endfunction()
 function(setup_ecosystem)
     add_executable(setup ${CMAKE_CURRENT_SOURCE_DIR}/setup/setup.cpp ${SQLITE_SOURCES})
     target_include_directories(setup PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    target_link_libraries(setup PRIVATE dl)
+    target_link_libraries(setup PRIVATE dl ${ECOSYSTEM_LIB})
 endfunction()
 
 function(build_ecosystem_exe)

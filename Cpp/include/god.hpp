@@ -16,8 +16,6 @@
 #include <helper.hpp>
 #include <stat_fetcher.hpp>
 
-#include <zmq.hpp>
-
 class God
 {
 public:
