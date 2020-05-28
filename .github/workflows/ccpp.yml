@@ -18,13 +18,11 @@ jobs:
         sudo update-alternatives --set gcc "/usr/bin/gcc-9"
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 50
         sudo update-alternatives --set g++ "/usr/bin/g++-9"
-        sudo apt-get install libsqlite3-dev
-        sudo apt-get install libzmq3-dev
-        sudo apt-get install ccache
         sudo apt-get update
 
     - name: configure
       run: |
+        git submodule update --init
         cd Cpp
         mkdir build
         cd build
