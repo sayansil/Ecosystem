@@ -34,9 +34,3 @@ jobs:
       run: |
         cd Cpp/build
         make
-        
-    - name: test
-      run: |
-        cd Cpp/build
-        ./setup
-        ./rt_sanity_test
