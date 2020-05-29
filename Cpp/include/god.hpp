@@ -44,7 +44,8 @@ public:
     void happy_new_year(const bool &log = false);
     void kill_organisms(const std::vector<std::string>&);
     bool spawn_organism(const ENTITY&);
-    void remember_species(const std::string &);
+    void remember_species(const std::string&);
+    std::string get_annual_data(const std::string&);
     //void send_data_to_simulation();
     //bool listen_for_simulation_once();
     //void start_listening_for_simulation();

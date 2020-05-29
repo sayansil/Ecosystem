@@ -36,7 +36,7 @@ void God::reset_species(const std::string &full_species_name)
 
     base_in.close();
     current_out.close();
-    
+
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     db.clear_table(kind);
 }
@@ -47,7 +47,7 @@ bool God::spawn_organism(const ENTITY &current_organism)
     {
         // Add to memory
         organisms[current_organism->get_name()] = current_organism;
-        
+
         if(gods_eye)
         {
             std::vector<std::vector<STAT>> tmp;
@@ -133,7 +133,7 @@ void God::update_species(const std::string &kind)
 {
     const std::experimental::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / kind / "current.json";
     const std::experimental::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data/json" / kind / "modify.json";
-    
+
     std::ifstream current_in(current_filepath);
     std::ifstream modify_in(modify_filepath);
 
@@ -377,11 +377,28 @@ void God::remember_species(const std::string &full_species_name)
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
 
-    std::string table_name = "STATS_" + kind;
-    for (auto & c: table_name) c = toupper(c);
-
     std::vector<STAT> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year);
     db.insert_stat_row(db_row, kind, kingdom);
+}
+
+std::string God::get_annual_data(const std::string &full_species_name)
+{
+    auto data = db.read_all_rows_stats(full_species_name);
+
+    std::string final_data = "";
+
+    for(const auto& row: data)
+    {
+        for(const auto& item: row)
+        {
+            final_data += item.getString() + ",";
+        }
+        if (final_data.length() > 0)
+            final_data = final_data.substr(0, final_data.length() - 1);
+        final_data += '\n';
+    }
+
+    return final_data;
 }
 
 //void God::send_data_to_simulation()
