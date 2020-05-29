@@ -24,14 +24,15 @@ struct pyecosystem
         guru_nanak->monitor_offsprings = val;
     }
 
-    void spawn_plant(const std::string& species, const int& num, const bool& val)
+    void spawn_organism(const std::string &full_species_name, const int &num, const bool &val)
     {
-        guru_nanak->spawn_organism(std::make_shared<Plant>(species, num, val));
-    }
+        const std::string &kingdom = full_species_name.substr(0, full_species_name.find('/'));
+        const std::string &species = full_species_name.substr(full_species_name.find('/') + 1);
 
-    void spawn_animal(const std::string& species, const int& num, const bool& val)
-    {
-        guru_nanak->spawn_organism(std::make_shared<Animal>(species, num, val));
+        if (kingdom == "animal")
+            guru_nanak->spawn_organism(std::make_shared<Animal>(species, num, val));
+        else if (kingdom == "plant")
+            guru_nanak->spawn_organism(std::make_shared<Plant>(species, num, val));
     }
 
     // void start_listening_for_simulation()
@@ -58,11 +59,10 @@ struct pyecosystem
 PYBIND11_MODULE(pyecosystem, m)
 {
     pybind11::class_<pyecosystem>(m, "pyecosystem")
-        .def(pybind11::init<const bool&>())
+        .def(pybind11::init<const bool &>())
         .def("reset_species", &pyecosystem::reset_species)
         .def("set_monitor_offsprings", &pyecosystem::set_monitor_offsprings)
-        .def("spawn_plant", &pyecosystem::spawn_plant)
-        .def("spawn_animal", &pyecosystem::spawn_animal)
+        .def("spawn_organism", &pyecosystem::spawn_organism)
         //.def("start_listening_for_simulation", &pyecosystem::start_listening_for_simulation)
         .def("happy_new_year", &pyecosystem::happy_new_year)
         .def("remember_species", &pyecosystem::remember_species)
