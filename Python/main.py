@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+import json
 import sys
 import os
 ECOSYSTEM_ROOT = os.environ['ECOSYSTEM_ROOT']
@@ -9,11 +10,24 @@ app = Flask('app')
 
 available = True
 
+with open('keys.json') as config_file:
+  configs = json.load(config_file)
+  keys = configs['API-KEYS']
+
 @app.route('/query/<kingdom>/<species>')
 def main(kingdom, species):
   global available
+  global keys
 
   if available:
+    key = request.values.get('api-key', '')
+    if key not in keys:
+      return jsonify({
+        "status": "failure",
+        "log": "invalid api key",
+        "data": ""
+      })
+
     available = False
 
     full_species_name = kingdom + '/' + species
@@ -53,7 +67,7 @@ def main(kingdom, species):
 
 @app.route('/')
 def ok():
-  return "Tested. Ok."
+  return "Ok."
 
 @app.route('/help/menu')
 def menu():
