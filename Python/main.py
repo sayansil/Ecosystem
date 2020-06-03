@@ -3,7 +3,7 @@ import json
 import sys
 import os
 ECOSYSTEM_ROOT = os.environ['ECOSYSTEM_ROOT']
-sys.path.insert(1, os.path.join(ECOSYSTEM_ROOT, 'Cpp/build'))
+sys.path.insert(1, os.path.join(ECOSYSTEM_ROOT, 'Cpp/build/python'))
 import pyecosystem as pyeco
 
 app = Flask('app')

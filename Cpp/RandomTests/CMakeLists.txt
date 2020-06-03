@@ -1,0 +1,16 @@
+set(SOURCE_DIR ${Ecosystem_SOURCE_DIR}/RandomTests)
+
+function(add_code name)
+    add_executable(rt_${name} ${SOURCE_DIR}/${name}.cpp ${SQLITE_SOURCES})
+    target_include_directories(rt_${name} PRIVATE ${Ecosystem_SOURCE_DIR}/include)
+    target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl stdc++fs)
+endfunction()
+
+add_code(generateReport)
+add_code(sanity_test)
+add_code(unit_tests)
+add_code(test1)
+#    add_code(test2)
+#    add_code(test3)
+#    add_code(client)
+#    add_code(server)
