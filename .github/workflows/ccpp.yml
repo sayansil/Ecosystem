@@ -30,4 +30,4 @@ jobs:
     - name: build
       run: |
         cd Cpp/build
-        make
+        cmake --build . -- -j $(nproc)

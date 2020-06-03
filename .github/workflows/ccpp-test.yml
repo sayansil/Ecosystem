@@ -30,10 +30,10 @@ jobs:
     - name: build
       run: |
         cd Cpp/build
-        make
+        cmake --build . -- -j $(nproc)
 
     - name: test
       run: |
         export ECOSYSTEM_ROOT=`pwd`
-        ./Cpp/build/setup
-        ./Cpp/build/rt_sanity_test
+        ./Cpp/build/setup/setup
+        ./Cpp/build/RandomTests/rt_sanity_test
