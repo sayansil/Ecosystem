@@ -7,7 +7,7 @@ project(Ecosystem
 
 
 include(FetchContent)
-include(ExternalProject)
+include(cmake/download_file.cmake)
 
 if(${CMAKE_VERSION} VERSION_LESS 3.14)
     include(cmake/add_FetchContent_MakeAvailable.cmake)
