@@ -1,6 +1,6 @@
 
 set(SOURCE_LIST
-    ${Ecosystem_SOURCE_DIR}/setup/setup.cpp
+    setup.cpp
     )
 
 add_executable(setup ${SOURCE_LIST} ${SQLITE_SOURCES})

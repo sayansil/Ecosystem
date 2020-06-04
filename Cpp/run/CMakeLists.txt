@@ -1,5 +1,5 @@
 set(SOURCE_LIST
-    ${Ecosystem_SOURCE_DIR}/run/main.cpp
+    main.cpp
     )
 
 add_executable(${ECOSYSTEM_EXE} ${SOURCE_LIST})

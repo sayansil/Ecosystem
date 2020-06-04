@@ -1,5 +1,5 @@
 set(SOURCE_LIST
-    ${Ecosystem_SOURCE_DIR}/python/ecosystem.cpp
+    ecosystem.cpp
     )
 
 add_subdirectory(pybind11)

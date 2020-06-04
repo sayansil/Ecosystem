@@ -5,6 +5,14 @@ project(Ecosystem
     LANGUAGES C CXX
     )
 
+
+include(FetchContent)
+include(ExternalProject)
+
+if(${CMAKE_VERSION} VERSION_LESS 3.14)
+    include(cmake/add_FetchContent_MakeAvailable.cmake)
+endif()
+
 set(ECOSYSTEM_LIB "ecosystem")
 set(ECOSYSTEM_EXE "run")
 set(ECOSYSTEM_PYTHON_MODULE "pyecosystem")
@@ -35,3 +43,6 @@ add_subdirectory(RandomTests)
 add_subdirectory(setup)
 add_subdirectory(run)
 add_subdirectory(python)
+
+include(CTest)
+add_subdirectory(tests)
