@@ -4,7 +4,7 @@
 #include <memory>
 #include <catch.hpp>
 
-bool test_nodb()
+TEST_CASE("Test with no database", "[test_nodb]")
 {
     bool flag;
 
@@ -37,10 +37,10 @@ bool test_nodb()
         flag = false;
     }
 
-    return flag;
+    REQUIRE( flag == true );
 }
 
-bool test_masterdb()
+TEST_CASE("Test with master database", "[test_masterdb]")
 {
     bool flag;
 
@@ -77,10 +77,10 @@ bool test_masterdb()
         flag = false;
     }
 
-    return flag;
+    REQUIRE( flag == true );
 }
 
-bool test_statsdb()
+TEST_CASE("Test with stats database", "[test_statsdb]")
 {
     bool flag;
 
@@ -128,23 +128,5 @@ bool test_statsdb()
         flag = false;
     }
 
-    return flag;
-}
-
-TEST_CASE("Test with no database", "[test_nodb]")
-{
-    auto ans = test_nodb();
-    REQUIRE( ans == true );
-}
-
-TEST_CASE("Test with master database", "[test_masterdb]")
-{
-    auto ans = test_masterdb();
-    REQUIRE( ans == true );
-}
-
-TEST_CASE("Test with stats database", "[test_statsdb]")
-{
-    auto ans = test_statsdb();
-    REQUIRE( ans == true );
+    REQUIRE( flag == true );
 }
