@@ -13,15 +13,22 @@ std::string message = "Hello " + std::to_string(port_number);
 
 std::unordered_map<std::string, std::string> fetch_params(const std::string_view &query)
 {
-    auto replaceAll = [](std::string &str, const std::string &from, const std::string &to) {
-        if (from.empty())
-            return;
-        size_t start_pos = 0;
-        while ((start_pos = str.find(from, start_pos)) != std::string::npos)
+    auto replaceAll = [](std::string &source, const std::string &from, const std::string &to) {
+        std::string newString;
+        newString.reserve(source.length());
+
+        std::string::size_type lastPos = 0;
+        std::string::size_type findPos;
+
+        while(std::string::npos != (findPos = source.find(from, lastPos)))
         {
-            str.replace(start_pos, from.length(), to);
-            start_pos += to.length();
+            newString.append(source, lastPos, findPos - lastPos);
+            newString += to;
+            lastPos = findPos + from.length();
         }
+
+        newString += source.substr(lastPos);
+        source.swap(newString);
     };
 
     std::unordered_map<std::string, std::string> query_map;
