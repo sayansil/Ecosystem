@@ -79,32 +79,42 @@ bool authenticate_api(const std::string &key)
 
 
 int main() {
-    auto fetchParams = &fetch_params;
-    auto authenticateAPI = &authenticate_api;
-
     uWS::App()
         .get("/", [](auto *res, auto *req) { res->end("Ok"); })
         .listen("0.0.0.0", port_number, [](auto *listenSocket) {
             if (listenSocket)
             {
-                std::cout << "Listening at " << port_number << "...\n";
+                std::cout << "Listening at " << port_number << ".\n";
             }
         })
 
-        .get("/query", [fetchParams, authenticateAPI](auto *res, auto *req) {
+        .get("/query", [](auto *res, auto *req) {
             auto query_map = fetch_params(req->getQuery());
+            nlohmann::json response = {
+                {"status", ""},
+                {"log", ""},
+                {"data", ""}
+            };
 
             if (authenticate_api(query_map["api-key"]))
             {
-                std::cout << "Query map:\n";
-                for (const auto &[x, y] : query_map)
-                    std::cout << x << '=' << y << '\n';
-                res->end("/query call recieved\n");
+                // std::cout << "Query map:\n";
+                // for (const auto &[x, y] : query_map)
+                //     std::cout << x << '=' << y << '\n';
+
+                // TODO
+
+                response["status"] = "success";
+                response["log"] = "Test";
+                response["data"] = "{}";
             }
             else
             {
-                res->end("/query call recieved\n");
+                response["status"] = "failure";
+                response["log"] = "Invalid API-KEY";
             }
+
+            res->writeHeader("Content-Type", "application/json; charset=utf-8")->end(response.dump());
         })
 
         .get("/help/menu", [](auto *res, auto *req) {
@@ -113,7 +123,7 @@ int main() {
                 {"plant", {"bamboo"}}
             };
 
-            res->end(menu.dump());
+            res->writeHeader("Content-Type", "application/json; charset=utf-8")->end(menu.dump());
         })
 
         .get("/help/schema", [](auto *res, auto *req) {
@@ -122,7 +132,7 @@ int main() {
                 {"plant", {"YEAR", "POP", "M_POP", "C_PROB", "M_AGE_START", "M_AGE_END", "MX_AGE", "MT_PROB", "OF_FACTOR", "AGE_DTH", "FIT_DTH", "AFR_DTH", "HT_VT", "WT_VT", "TMB_HT", "TMB_VT", "TMB_WT", "TM_HT", "TM_WT", "TMM_HT", "TMM_VT", "TMM_WT", "AVG_GEN", "AVG_IMM", "AVG_AGE", "AVG_HT", "AVG_WT", "AVGMA_VT", "AVG_SFIT", "AVG_DTHF"}}
             };
 
-            res->end(schema.dump());
+            res->writeHeader("Content-Type", "application/json; charset=utf-8")->end(schema.dump());
         })
 
         .run();
