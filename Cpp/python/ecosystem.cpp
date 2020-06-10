@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <stat_fetcher.hpp>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 struct pyecosystem
 {
@@ -24,15 +25,15 @@ struct pyecosystem
         guru_nanak->monitor_offsprings = val;
     }
 
-    void spawn_organism(const std::string &full_species_name, const int &num, const bool &val)
+    void spawn_organism(const std::string &full_species_name, const int &age, const bool &monitor)
     {
         const std::string &kingdom = full_species_name.substr(0, full_species_name.find('/'));
         const std::string &species = full_species_name.substr(full_species_name.find('/') + 1);
 
         if (kingdom == "animal")
-            guru_nanak->spawn_organism(std::make_shared<Animal>(species, num, val));
+            guru_nanak->spawn_organism(std::make_shared<Animal>(species, age, monitor));
         else if (kingdom == "plant")
-            guru_nanak->spawn_organism(std::make_shared<Plant>(species, num, val));
+            guru_nanak->spawn_organism(std::make_shared<Plant>(species, age, monitor));
     }
 
     // void start_listening_for_simulation()
@@ -40,19 +41,24 @@ struct pyecosystem
     //     guru_nanak->start_listening_for_simulation();
     // }
 
-    void happy_new_year(const bool &val)
+    void happy_new_year(const bool &log)
     {
-        guru_nanak->happy_new_year(val);
+        guru_nanak->happy_new_year(log);
     }
 
-    void remember_species(const std::string& str)
+    void remember_species(const std::string& full_species_name)
     {
-        guru_nanak->remember_species(str);
+        guru_nanak->remember_species(full_species_name);
     }
 
     std::string get_annual_data(const std::string& full_species_name)
     {
         return guru_nanak->get_annual_data(full_species_name);
+    }
+
+    std::vector<std::map<std::string, std::string>> get_live_data()
+    {
+        return guru_nanak->get_live_data();
     }
 };
 
@@ -66,5 +72,6 @@ PYBIND11_MODULE(pyecosystem, m)
         //.def("start_listening_for_simulation", &pyecosystem::start_listening_for_simulation)
         .def("happy_new_year", &pyecosystem::happy_new_year)
         .def("remember_species", &pyecosystem::remember_species)
-        .def("get_annual_data", &pyecosystem::get_annual_data);
+        .def("get_annual_data", &pyecosystem::get_annual_data)
+        .def("get_live_data", &pyecosystem::get_live_data);
 }

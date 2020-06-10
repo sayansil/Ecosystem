@@ -229,6 +229,70 @@ namespace stat_fetcher
         return response.dump();
     }
 
+    std::vector<std::map<std::string, std::string>> prepare_data_for_simulation_2(const ENTITY_MAP_TYPE &organisms)
+    {
+        std::vector<std::map<std::string, std::string>> representatives;
+
+        for (const auto &organism : organisms)
+        {
+            if (organism.second->get_monitor_in_simulation())
+            {
+                if (organism.second->get_kingdom() == "animal")
+                {
+                    std::map<std::string, std::string> temp;
+                    Animal *obj = static_cast<Animal *>(organism.second.get());
+
+                    temp.insert({"name", obj->name});
+                    temp.insert({"kingdom", obj->get_kingdom()});
+                    temp.insert({"species", obj->kind});
+
+                    temp.insert({"gender", std::to_string(obj->gender)});
+                    temp.insert({"age", std::to_string(obj->age)});
+                    temp.insert({"height", std::to_string(obj->height)});
+                    temp.insert({"weight", std::to_string(obj->weight)});
+
+                    temp.insert({"food chain rank", std::to_string(obj->food_chain_rank)});
+                    temp.insert({"vision radius", std::to_string(obj->vision_radius)});
+
+                    temp.insert({"max appetite at age", std::to_string(obj->max_appetite_at_age)});
+                    temp.insert({"max speed at age", std::to_string(obj->max_speed_at_age)});
+                    temp.insert({"max stamina at age", std::to_string(obj->max_stamina_at_age)});
+                    temp.insert({"max vitality at age", std::to_string(obj->max_vitality_at_age)});
+                    representatives.push_back(temp);
+                }
+                else if (organism.second->get_kingdom() == "plant")
+                {
+                    std::map<std::string, std::string> temp;
+                    Plant *obj = static_cast<Plant *>(organism.second.get());
+
+                    temp.insert({"name", obj->name});
+                    temp.insert({"kingdom", obj->get_kingdom()});
+                    temp.insert({"species", obj->kind});
+
+                    temp.insert({"gender", std::to_string(obj->gender)});
+                    temp.insert({"age", std::to_string(obj->age)});
+                    temp.insert({"height", std::to_string(obj->height)});
+                    temp.insert({"weight", std::to_string(obj->weight)});
+
+                    temp.insert({"food chain rank", std::to_string(obj->food_chain_rank)});
+                    temp.insert({"vision radius", std::to_string(0)});
+
+                    temp.insert({"max appetite at age", std::to_string(0)});
+                    temp.insert({"max speed at age", std::to_string(0)});
+                    temp.insert({"max stamina at age", std::to_string(0)});
+                    temp.insert({"max vitality at age", std::to_string(obj->max_vitality_at_age)});
+                    representatives.push_back(temp);
+                }
+                else
+                {
+                    std::cout << "Kingdom " << organism.second->get_kingdom() << " not supported\n";
+                }
+            }
+        }
+
+        return representatives;
+    }
+
     std::vector<STAT> get_db_row(const ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year)
     {
         std::vector<STAT> db_row;

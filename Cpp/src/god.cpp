@@ -401,6 +401,11 @@ std::string God::get_annual_data(const std::string &full_species_name)
     return final_data;
 }
 
+std::vector<std::map<std::string, std::string>> God::get_live_data()
+{
+    return stat_fetcher::prepare_data_for_simulation_2(organisms);
+}
+
 //void God::send_data_to_simulation()
 //{
 //    socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);

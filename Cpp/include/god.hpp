@@ -46,6 +46,7 @@ public:
     bool spawn_organism(const ENTITY&);
     void remember_species(const std::string&);
     std::string get_annual_data(const std::string&);
+    std::vector<std::map<std::string, std::string>> get_live_data();
     //void send_data_to_simulation();
     //bool listen_for_simulation_once();
     //void start_listening_for_simulation();

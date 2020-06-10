@@ -21,6 +21,7 @@ namespace stat_fetcher
     extern std::pair<double, double> get_stat_gap(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
     extern std::pair<unsigned int, unsigned int> get_matable_population(const ENTITY_MAP_TYPE &, const std::string & = "");
     extern std::string prepare_data_for_simulation(const ENTITY_MAP_TYPE &);
+    extern std::vector<std::map<std::string, std::string>> prepare_data_for_simulation_2(const ENTITY_MAP_TYPE &);
     extern unsigned int get_population(const ENTITY_MAP_TYPE &, const std::string & = "");
     extern double get_stat_average(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
     extern double get_gender_ratio(const ENTITY_MAP_TYPE &, const std::string & = "");
