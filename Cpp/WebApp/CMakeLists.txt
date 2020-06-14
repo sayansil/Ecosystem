@@ -6,7 +6,7 @@ else()
     MESSAGE("make executable found")
     if(NOT EXISTS ${Ecosystem_SOURCE_DIR}/WebApp/extern/uWebSockets/uSockets/uSockets.a)
         execute_process(COMMAND ${MAKE} -C ${Ecosystem_SOURCE_DIR}/WebApp/extern/uWebSockets
-                        COMMAND_ECHO STDOUT)
+                        )
     endif()
 endif()
 
