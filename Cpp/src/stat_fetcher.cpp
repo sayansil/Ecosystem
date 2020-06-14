@@ -251,13 +251,13 @@ namespace stat_fetcher
                     temp.insert({"height", std::to_string(obj->height)});
                     temp.insert({"weight", std::to_string(obj->weight)});
 
-                    temp.insert({"food chain rank", std::to_string(obj->food_chain_rank)});
-                    temp.insert({"vision radius", std::to_string(obj->vision_radius)});
+                    temp.insert({"food_chain_rank", std::to_string(obj->food_chain_rank)});
+                    temp.insert({"vision_radius", std::to_string(obj->vision_radius)});
 
-                    temp.insert({"max appetite at age", std::to_string(obj->max_appetite_at_age)});
-                    temp.insert({"max speed at age", std::to_string(obj->max_speed_at_age)});
-                    temp.insert({"max stamina at age", std::to_string(obj->max_stamina_at_age)});
-                    temp.insert({"max vitality at age", std::to_string(obj->max_vitality_at_age)});
+                    temp.insert({"max_appetite_at_age", std::to_string(obj->max_appetite_at_age)});
+                    temp.insert({"max_speed_at_age", std::to_string(obj->max_speed_at_age)});
+                    temp.insert({"max_stamina_at_age", std::to_string(obj->max_stamina_at_age)});
+                    temp.insert({"max_vitality_at_age", std::to_string(obj->max_vitality_at_age)});
                     representatives.push_back(temp);
                 }
                 else if (organism.second->get_kingdom() == "plant")
@@ -274,13 +274,13 @@ namespace stat_fetcher
                     temp.insert({"height", std::to_string(obj->height)});
                     temp.insert({"weight", std::to_string(obj->weight)});
 
-                    temp.insert({"food chain rank", std::to_string(obj->food_chain_rank)});
-                    temp.insert({"vision radius", std::to_string(0)});
+                    temp.insert({"food_chain_rank", std::to_string(obj->food_chain_rank)});
+                    temp.insert({"vision_radius", std::to_string(0)});
 
-                    temp.insert({"max appetite at age", std::to_string(0)});
-                    temp.insert({"max speed at age", std::to_string(0)});
-                    temp.insert({"max stamina at age", std::to_string(0)});
-                    temp.insert({"max vitality at age", std::to_string(obj->max_vitality_at_age)});
+                    temp.insert({"max_appetite_at_age", std::to_string(0)});
+                    temp.insert({"max_speed_at_age", std::to_string(0)});
+                    temp.insert({"max_stamina_at_age", std::to_string(0)});
+                    temp.insert({"max_vitality_at_age", std::to_string(obj->max_vitality_at_age)});
                     representatives.push_back(temp);
                 }
                 else
