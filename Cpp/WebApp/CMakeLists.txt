@@ -21,6 +21,6 @@ target_include_directories(app PRIVATE
     ${Ecosystem_SOURCE_DIR}/WebApp/extern/uWebSockets/src
     ${Ecosystem_SOURCE_DIR}/WebApp/extern/uWebSockets/uSockets/src)
 
-target_link_libraries(app PRIVATE ${ECOSYSTEM_LIB} dl stdc++fs
+target_link_libraries(app PRIVATE ${ECOSYSTEM_LIB} dl stdc++fs pthread
     ${Ecosystem_SOURCE_DIR}/WebApp/extern/uWebSockets/uSockets/uSockets.a
     z)

@@ -10,10 +10,15 @@
 #include <animal.hpp>
 #include <plant.hpp>
 #include <god.hpp>
+#include <thread>
+#include <algorithm>
+#include <mutex>
 
 const int port_number = 8080;
 std::string message = "Hello " + std::to_string(port_number);
-
+bool available = true;
+std::string ip_address;
+std::mutex m;
 
 std::unordered_map<std::string, std::string> fetch_params(const std::string_view &query)
 {
@@ -88,25 +93,18 @@ bool authenticate_api(const std::string &key)
     return auth;
 }
 
-
-int main(int argc, char** argv) {
-    argh::parser cmdl(argc, argv);
-    std::string ip_address = cmdl("ip").str();
-    if(ip_address.length() == 0)
-        ip_address = "0.0.0.0";
-
-    bool available = true;
-
+void run_app()
+{
     uWS::App()
         .get("/", [](auto *res, auto *req) { res->end("Ok"); })
-        .listen(ip_address, port_number, [&ip_address](auto *listenSocket) {
+        .listen(ip_address, port_number, [](auto *listenSocket) {
             if (listenSocket)
             {
                 std::cout << "Listening at " << ip_address << ":" << port_number << ".\n";
             }
         })
 
-        .get("/query", [&available](auto *res, auto *req) {
+        .get("/query", [](auto *res, auto *req) {
             auto query_map = fetch_params(req->getQuery());
             nlohmann::json response = {
                 {"status", ""},
@@ -126,7 +124,9 @@ int main(int argc, char** argv) {
             }
             else
             {
+                m.lock();
                 available = false;
+                m.unlock();
 
                 int initial_organism_count = query_map.find("initial_count") == query_map.end() ?
                     200 : std::stoi(query_map["initial_count"]);
@@ -160,7 +160,9 @@ int main(int argc, char** argv) {
                 response["log"] = "";
                 response["data"] = laxmi.get_annual_data(full_species_name);
 
+                m.lock();
                 available = true;
+                m.unlock();
             }
 
             res->writeHeader("Content-Type", "application/json; charset=utf-8")->end(response.dump());
@@ -184,10 +186,25 @@ int main(int argc, char** argv) {
             res->writeHeader("Content-Type", "application/json; charset=utf-8")->end(schema.dump());
         })
 
-        .get("/available", [available](auto *res, auto *req) {
+        .get("/available", [](auto *res, auto *req) {
             std::string response = available ? "true" : "false";
             res->end(response);
         })
 
         .run();
+
+}
+
+int main(int argc, char** argv) {
+    argh::parser cmdl(argc, argv);
+    ip_address = cmdl("ip").str();
+    if(ip_address.length() == 0)
+        ip_address = "0.0.0.0";
+
+    std::vector<std::thread*> threads(std::thread::hardware_concurrency());
+    std::transform(threads.begin(), threads.end(), threads.begin(), [](std::thread* t){
+        return new std::thread(&run_app);
+    });
+    for(auto& i : threads)
+        i->join();
 }
