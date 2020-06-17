@@ -6,6 +6,7 @@
 #include <string_view>
 #include <unordered_map>
 #include <nlohmann/json.hpp>
+#include <argh.h>
 
 const int port_number = 8080;
 std::string message = "Hello " + std::to_string(port_number);
@@ -85,13 +86,17 @@ bool authenticate_api(const std::string &key)
 }
 
 
-int main() {
+int main(int argc, char** argv) {
+    argh::parser cmdl(argc, argv);
+    std::string ip_address = cmdl("ip").str();
+    if(ip_address.length() == 0)
+        ip_address = "0.0.0.0";
     uWS::App()
         .get("/", [](auto *res, auto *req) { res->end("Ok"); })
-        .listen("0.0.0.0", port_number, [](auto *listenSocket) {
+        .listen(ip_address, port_number, [&ip_address](auto *listenSocket) {
             if (listenSocket)
             {
-                std::cout << "Listening at " << port_number << ".\n";
+                std::cout << "Listening at " << ip_address << ":" << port_number << ".\n";
             }
         })
 
