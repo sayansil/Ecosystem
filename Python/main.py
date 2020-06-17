@@ -14,8 +14,8 @@ with open('keys.json') as config_file:
   configs = json.load(config_file)
   keys = configs['API-KEYS']
 
-@app.route('/query/<kingdom>/<species>')
-def main(kingdom, species):
+@app.route('/query')
+def main():
   global available
   global keys
 
@@ -30,10 +30,12 @@ def main(kingdom, species):
 
     available = False
 
-    full_species_name = kingdom + '/' + species
-
     initial_organism_count = int(request.values.get('initial_count', '200'))
     years_to_simulate = int(request.values.get('years', '100'))
+    kingdom = request.values.get('kingdom', 'plant')
+    species = request.values.get('species', 'bamboo')
+
+    full_species_name = kingdom + '/' + species
 
     print("Simulating " + str(years_to_simulate) + " years with " + \
       str(initial_organism_count) + " " + species + "(s) of kingdom " + kingdom + ".")
