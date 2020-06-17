@@ -49,4 +49,12 @@ public class BaseUtility {
 
         alertDialog.show();
     }
+
+    public static String safeURL(String raw_url) {
+        String url = raw_url;
+        if (!raw_url.startsWith("http"))
+            url = "http://" + raw_url;
+
+        return url;
+    }
 }

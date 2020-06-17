@@ -84,7 +84,7 @@
             android:layout_marginVertical="8dp"
             android:fontFamily="@font/montserrat_medium"
             android:hint="Local address"
-            android:inputType="number"
+            android:inputType="text"
             android:lines="1"
             app:layout_constraintEnd_toEndOf="parent"
 

@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                                     },
                                     error -> {
                                         progressBar.setVisibility(View.GONE);
+                                        error.printStackTrace();
                                         BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                                     }
                             );
@@ -202,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     },
                     error -> {
                         progressBar.setVisibility(View.GONE);
+                        error.printStackTrace();
                         BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                     }
             );
@@ -235,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getBaseUrl() {
         if (isLocal) {
-            return ipText.getText().toString();
+            return BaseUtility.safeURL(ipText.getText().toString());
         } else {
             return getString(R.string.url_base);
         }
