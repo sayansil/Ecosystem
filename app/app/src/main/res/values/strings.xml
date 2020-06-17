@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Ecosystem</string>
+
+    <string name="url_available">https://ecosystem--sayansil.repl.co/available</string>
+    <string name="url_menu">https://ecosystem--sayansil.repl.co/help/menu</string>
+    <string name="url_schema">https://ecosystem--sayansil.repl.co/help/schema</string>
+    <string name="url_query">https://ecosystem--sayansil.repl.co/query</string>
+
+    <string name="error_network">No internet access! :(</string>
+    <string name="error_server">Could not connect to server! :\</string>
 </resources>
