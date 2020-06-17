@@ -38,6 +38,8 @@ public class SplashActivity extends AppCompatActivity {
     Handler handler = new Handler();
     Runnable runnable;
 
+    boolean flag;
+
     RequestQueue queue;
 
     private static final String TAG = "SplashActivity";
@@ -53,6 +55,8 @@ public class SplashActivity extends AppCompatActivity {
         animation = findViewById(R.id.centreAnimation);
         footer = findViewById(R.id.footer);
         errorText = findViewById(R.id.errorText);
+
+        flag = false;
 
         queue = Volley.newRequestQueue(this);
     }
@@ -80,7 +84,9 @@ public class SplashActivity extends AppCompatActivity {
     protected void onStart() {
         handler.postDelayed( runnable = () -> {
             if(BaseUtility.isNetworkConnected(getApplicationContext())) {
-                fetchDataAndForward();
+                if(!flag) {
+                    fetchDataAndForward();
+                }
             } else {
                 errorText.setText(getString(R.string.error_network));
                 animateIn(errorText);
@@ -98,7 +104,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void fetchDataAndForward() {
-        String url_menu = getString(R.string.url_menu);
+        flag = true;
+        String url_menu = getString(R.string.url_base) + "/" + getString(R.string.endpoint_menu);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url_menu, null,
                 response -> {
                     Intent intent = new Intent(SplashActivity.this, MainActivity.class);
@@ -109,6 +116,7 @@ public class SplashActivity extends AppCompatActivity {
                 error -> {
                     errorText.setText(getString(R.string.error_server));
                     animateIn(errorText);
+                    flag = false;
                 }
         );
         queue.add(getRequest);

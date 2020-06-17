@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +31,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.luongvo.widget.iosswitchview.SwitchView;
+
 public class MainActivity extends AppCompatActivity {
 
     List<String> kingdom;
@@ -38,9 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
     MaterialEditText countText;
     MaterialEditText yearsText;
+    MaterialEditText ipText;
+
+    SwitchView switchLocal;
 
     String text_kingdom;
     String text_species;
+    boolean isLocal;
 
     Button simBtn;
 
@@ -61,8 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
         countText = findViewById(R.id.textCount);
         yearsText = findViewById(R.id.textYears);
+        ipText = findViewById(R.id.textIP);
+
+        switchLocal = findViewById(R.id.switchLocal);
 
         simBtn = findViewById(R.id.simBtn);
+
+        isLocal = false;
 
         queue = Volley.newRequestQueue(this);
 
@@ -122,27 +137,46 @@ public class MainActivity extends AppCompatActivity {
             if (text_kingdom.equalsIgnoreCase("plant")) {
                 text_species = plant.get(position);
             } else if (text_kingdom.equalsIgnoreCase("animal")) {
-                text_species = plant.get(position);
+                text_species = animal.get(position);
             }
         });
 
         simBtn.setOnClickListener(view -> {
             BaseUtility.vibrate(this);
-            String available_url = getString(R.string.url_available);
+            String available_url = getBaseUrl() + "/" + getString(R.string.endpoint_available);
             StringRequest getRequest = new StringRequest(Request.Method.GET, available_url,
                     response -> {
                         if (response.equalsIgnoreCase("True")) {
-                            String query_url = getString(R.string.url_query);
+                            String query_url = getBaseUrl() + "/" + getString(R.string.endpoint_query);
                             query_url += "/" + text_kingdom + "/" + text_species +
                                     "?initial_count=" + countText.getText().toString() +
                                     "&years=" + yearsText.getText().toString() +
                                     "&api-key=" + getString(R.string.api_key);
 
-                            StringRequest newRequest = new StringRequest(Request.Method.GET, query_url,
-                                    data -> {
-                                        // todo with data string
+                            JsonObjectRequest newRequest = new JsonObjectRequest(Request.Method.GET, query_url, null,
+                                    newResponse -> {
+
+                                        try {
+                                            String status = newResponse.getString("status");
+                                            if (status.equals("0")) {
+                                                String data = newResponse.getString("data");
+
+                                                // todo with data string
+                                            } else if (status.equals("1")) {
+                                                BaseUtility.show_popup(R.layout.dialog_invalidapi, this);
+                                            } else if (status.equals("2")) {
+                                                BaseUtility.show_popup(R.layout.dialog_unavailable, this);
+                                            }
+
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            BaseUtility.show_popup(R.layout.dialog_unavailable, this);
+                                        }
                                     },
-                                    error -> {}
+                                    error -> {
+                                        BaseUtility.show_popup(R.layout.dialog_unavailable, this);
+                                    }
                             );
                             queue.add(newRequest);
                         } else {
@@ -153,5 +187,64 @@ public class MainActivity extends AppCompatActivity {
             );
             queue.add(getRequest);
         });
+
+        switchLocal.setOnCheckedChangeListener((switchView, b) -> {
+            isLocal = b;
+            if (isLocal) {
+                ipText.setVisibility(View.VISIBLE);
+            } else {
+                ipText.setVisibility(View.INVISIBLE);
+                refreshSpinners();
+            }
+        });
+
+        ipText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    actionId == EditorInfo.IME_ACTION_DONE ||
+                    event != null &&
+                            event.getAction() == KeyEvent.ACTION_DOWN &&
+                            event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                if (event == null || !event.isShiftPressed()) {
+                    refreshSpinners();
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    private String getBaseUrl() {
+        if (isLocal) {
+            return ipText.getText().toString();
+        } else {
+            return getString(R.string.url_base);
+        }
+    }
+
+    private void refreshSpinners() {
+        String url_menu = getString(R.string.url_base) + "/" + getString(R.string.endpoint_menu);
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url_menu, null,
+                response -> {
+                    try {
+                        plant.clear();
+                        animal.clear();
+
+                        JSONArray array;
+                        array = response.getJSONArray("plant");
+                        for(int i = 0 ; i < array.length() ; i++) {
+                            plant.add(array.getString(i));
+                        }
+
+                        array = response.getJSONArray("animal");
+                        for(int i = 0 ; i < array.length() ; i++) {
+                            animal.add(array.getString(i));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> {}
+        );
+        queue.add(getRequest);
     }
 }

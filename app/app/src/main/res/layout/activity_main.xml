@@ -12,67 +12,85 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35">
 
         <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
             android:id="@+id/spinnerKingdom"
             android:layout_width="256dp"
             android:layout_height="wrap_content"
-            android:hint="Kingdom"
             android:layout_marginVertical="8dp"
             android:fontFamily="@font/montserrat_medium"
-            app:met_floatingLabel="normal"
-
-            app:layout_constraintTop_toTopOf="parent"
+            android:hint="Kingdom"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:met_floatingLabel="normal" />
 
         <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
             android:id="@+id/spinnerSpecies"
             android:layout_width="256dp"
             android:layout_height="wrap_content"
-            android:hint="Species"
             android:layout_marginVertical="8dp"
             android:fontFamily="@font/montserrat_medium"
-            app:met_floatingLabel="normal"
-
-            app:layout_constraintTop_toBottomOf="@id/spinnerKingdom"
+            android:hint="Species"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerKingdom"
+            app:met_floatingLabel="normal" />
 
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/textCount"
-            android:layout_height="wrap_content"
             android:layout_width="256dp"
+            android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
-            app:met_floatingLabel="normal"
             android:fontFamily="@font/montserrat_medium"
-            android:lines="1"
-            android:inputType="number"
             android:hint="Initial Count"
-
-            app:layout_constraintTop_toBottomOf="@id/spinnerSpecies"
+            android:inputType="number"
+            android:lines="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinnerSpecies"
+            app:met_floatingLabel="normal" />
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/textYears"
-            android:layout_height="wrap_content"
             android:layout_width="256dp"
+            android:layout_height="wrap_content"
             android:layout_marginVertical="8dp"
-            app:met_floatingLabel="normal"
             android:fontFamily="@font/montserrat_medium"
-            android:lines="1"
-            android:inputType="number"
             android:hint="Years to Simulate"
-
-            app:layout_constraintTop_toBottomOf="@id/textCount"
+            android:inputType="number"
+            android:lines="1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textCount"
+            app:met_floatingLabel="normal" />
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/textIP"
+            android:visibility="invisible"
+            android:layout_width="256dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:hint="Local address"
+            android:inputType="number"
+            android:lines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textYears"
+            app:met_floatingLabel="normal" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -80,7 +98,7 @@
         android:id="@+id/simBtn"
         android:layout_width="256dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="64dp"
+        android:layout_marginVertical="32dp"
         android:text="Simulate"
         android:textColor="@android:color/white"
         android:fontFamily="@font/montserrat_medium"
@@ -90,5 +108,28 @@
         app:layout_constraintTop_toBottomOf="@id/formLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <vn.luongvo.widget.iosswitchview.SwitchView
+        android:id="@+id/switchLocal"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="local address"
+        android:fontFamily="@font/montserrat_medium"
+        android:textSize="14sp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="@id/switchLocal"
+        app:layout_constraintTop_toTopOf="@id/switchLocal"
+        app:layout_constraintStart_toEndOf="@id/switchLocal"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
