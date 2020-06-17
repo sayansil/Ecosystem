@@ -187,7 +187,7 @@ void run_app()
         })
 
         .get("/available", [](auto *res, auto *req) {
-            std::string response = available ? "true" : "false";
+            std::string response = available ? "True" : "False";
             res->end(response);
         })
 

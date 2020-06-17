@@ -13,6 +13,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     SwitchView switchLocal;
 
+    ProgressBar progressBar;
+
     String text_kingdom;
     String text_species;
     boolean isLocal;
@@ -66,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
 
         spinnerK = findViewById(R.id.spinnerKingdom);
         spinnerS = findViewById(R.id.spinnerSpecies);
@@ -144,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
 
         simBtn.setOnClickListener(view -> {
             BaseUtility.vibrate(this);
+            progressBar.setVisibility(View.VISIBLE);
+
             String available_url = getBaseUrl() + "/" + getString(R.string.endpoint_available);
             StringRequest getRequest = new StringRequest(Request.Method.GET, available_url,
                     response -> {
@@ -157,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
 
                             JsonObjectRequest newRequest = new JsonObjectRequest(Request.Method.GET, query_url, null,
                                     newResponse -> {
-                                        Log.e(TAG, newResponse.toString());
+                                        progressBar.setVisibility(View.GONE);
                                         try {
                                             String status = newResponse.getString("status");
                                             if (status.equals("0")) {
@@ -177,7 +185,10 @@ public class MainActivity extends AppCompatActivity {
                                             BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                                         }
                                     },
-                                    error -> BaseUtility.show_popup(R.layout.dialog_unavailable, this)
+                                    error -> {
+                                        progressBar.setVisibility(View.GONE);
+                                        BaseUtility.show_popup(R.layout.dialog_unavailable, this);
+                                    }
                             );
                             newRequest.setRetryPolicy(new DefaultRetryPolicy(
                                     900000, // 15 minutes timeout
@@ -185,10 +196,14 @@ public class MainActivity extends AppCompatActivity {
                                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                             queue.add(newRequest);
                         } else {
+                            progressBar.setVisibility(View.GONE);
                             BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                         }
                     },
-                    error -> {}
+                    error -> {
+                        progressBar.setVisibility(View.GONE);
+                        BaseUtility.show_popup(R.layout.dialog_unavailable, this);
+                    }
             );
             queue.add(getRequest);
         });
