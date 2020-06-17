@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -148,20 +149,22 @@ public class MainActivity extends AppCompatActivity {
                     response -> {
                         if (response.equalsIgnoreCase("True")) {
                             String query_url = getBaseUrl() + "/" + getString(R.string.endpoint_query);
-                            query_url += "/" + text_kingdom + "/" + text_species +
-                                    "?initial_count=" + countText.getText().toString() +
+                            query_url += "?initial_count=" + countText.getText().toString() +
                                     "&years=" + yearsText.getText().toString() +
+                                    "&kingdom=" + text_kingdom +
+                                    "&species=" + text_species +
                                     "&api-key=" + getString(R.string.api_key);
 
                             JsonObjectRequest newRequest = new JsonObjectRequest(Request.Method.GET, query_url, null,
                                     newResponse -> {
-
+                                        Log.e(TAG, newResponse.toString());
                                         try {
                                             String status = newResponse.getString("status");
                                             if (status.equals("0")) {
                                                 String data = newResponse.getString("data");
 
                                                 // todo with data string
+                                                Toast.makeText(getApplicationContext(), data, Toast.LENGTH_SHORT).show();
                                             } else if (status.equals("1")) {
                                                 BaseUtility.show_popup(R.layout.dialog_invalidapi, this);
                                             } else if (status.equals("2")) {
@@ -174,10 +177,12 @@ public class MainActivity extends AppCompatActivity {
                                             BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                                         }
                                     },
-                                    error -> {
-                                        BaseUtility.show_popup(R.layout.dialog_unavailable, this);
-                                    }
+                                    error -> BaseUtility.show_popup(R.layout.dialog_unavailable, this)
                             );
+                            newRequest.setRetryPolicy(new DefaultRetryPolicy(
+                                    900000, // 15 minutes timeout
+                                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                             queue.add(newRequest);
                         } else {
                             BaseUtility.show_popup(R.layout.dialog_unavailable, this);
