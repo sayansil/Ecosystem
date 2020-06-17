@@ -7,6 +7,9 @@
 #include <unordered_map>
 #include <nlohmann/json.hpp>
 #include <argh.h>
+#include <animal.hpp>
+#include <plant.hpp>
+#include <god.hpp>
 
 const int port_number = 8080;
 std::string message = "Hello " + std::to_string(port_number);
@@ -91,6 +94,9 @@ int main(int argc, char** argv) {
     std::string ip_address = cmdl("ip").str();
     if(ip_address.length() == 0)
         ip_address = "0.0.0.0";
+
+    bool available = true;
+
     uWS::App()
         .get("/", [](auto *res, auto *req) { res->end("Ok"); })
         .listen(ip_address, port_number, [&ip_address](auto *listenSocket) {
@@ -100,7 +106,7 @@ int main(int argc, char** argv) {
             }
         })
 
-        .get("/query", [](auto *res, auto *req) {
+        .get("/query", [&available](auto *res, auto *req) {
             auto query_map = fetch_params(req->getQuery());
             nlohmann::json response = {
                 {"status", ""},
@@ -108,22 +114,53 @@ int main(int argc, char** argv) {
                 {"data", ""}
             };
 
-            if (authenticate_api(query_map["api-key"]))
+            if (!available)
             {
-                // std::cout << "Query map:\n";
-                // for (const auto &[x, y] : query_map)
-                //     std::cout << x << '=' << y << '\n';
-
-                // TODO
-
-                response["status"] = "success";
-                response["log"] = "Test";
-                response["data"] = "{}";
+                response["status"] = "2";
+                response["log"] = "Server Busy";
+            }
+            else if (query_map.find("api-key") == query_map.end() || !authenticate_api(query_map["api-key"]))
+            {
+                response["status"] = "1";
+                response["log"] = "Invalid API-KEY";
             }
             else
             {
-                response["status"] = "failure";
-                response["log"] = "Invalid API-KEY";
+                available = false;
+
+                int initial_organism_count = query_map.find("initial_count") == query_map.end() ?
+                    200 : std::stoi(query_map["initial_count"]);
+                int years_to_simulate = query_map.find("years") == query_map.end() ?
+                    100 : std::stoi(query_map["years"]);
+                std::string kingdom = query_map.find("kingdom") == query_map.end() ?
+                    "plant" : query_map["kingdom"];
+                std::string species = query_map.find("species") == query_map.end() ?
+                    "bamboo" : query_map["species"];
+
+                std::string full_species_name = kingdom + "/" + species;
+
+                God laxmi(false);
+                laxmi.reset_species(full_species_name);
+
+                while (initial_organism_count--)
+                {
+                    if (kingdom == "animal")
+                        laxmi.spawn_organism(std::make_shared<Animal>(species, 10));
+                    else if (kingdom == "plant")
+                        laxmi.spawn_organism(std::make_shared<Plant>(species, 10));
+                }
+
+                while (years_to_simulate--)
+                {
+                    laxmi.happy_new_year(true);
+                    laxmi.remember_species(full_species_name);
+                }
+
+                response["status"] = "0";
+                response["log"] = "";
+                response["data"] = laxmi.get_annual_data(full_species_name);
+
+                available = true;
             }
 
             res->writeHeader("Content-Type", "application/json; charset=utf-8")->end(response.dump());
@@ -145,6 +182,11 @@ int main(int argc, char** argv) {
             };
 
             res->writeHeader("Content-Type", "application/json; charset=utf-8")->end(schema.dump());
+        })
+
+        .get("/available", [available](auto *res, auto *req) {
+            std::string response = available ? "true" : "false";
+            res->end(response);
         })
 
         .run();

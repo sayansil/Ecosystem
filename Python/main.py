@@ -23,7 +23,7 @@ def main(kingdom, species):
     key = request.values.get('api-key', '')
     if key not in keys:
       return jsonify({
-        "status": "failure",
+        "status": "1",
         "log": "invalid api key",
         "data": ""
       })
@@ -55,12 +55,12 @@ def main(kingdom, species):
 
     available = True
     return jsonify({
-      "status": "success",
+      "status": "0",
       "log": "",
       "data": data
     })
   return jsonify({
-    "status": "failure",
+    "status": "2",
     "log": "Server Busy. A process is already running.",
     "data": ""
   })
