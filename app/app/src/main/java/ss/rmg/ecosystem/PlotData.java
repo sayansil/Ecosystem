@@ -1,36 +1,39 @@
 package ss.rmg.ecosystem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PlotData {
-    private double[] X;
-    private double[] Y;
+    private List<Double> X;
+    private List<Double> Y;
 
     private String title;
 
     public PlotData() {
-        X = new double[0];
-        Y = new double[0];
-        title = "";
+        X = new ArrayList<>();
+        Y = new ArrayList<>();
+        this.title = "";
     }
 
-    public PlotData(double[] x, double[] y, String title) {
+    public PlotData(List<Double> x, List<Double> y, String title) {
         X = x;
         Y = y;
         this.title = title;
     }
 
-    public double[] getX() {
+    public List<Double> getX() {
         return X;
     }
 
-    public void setX(double[] x) {
+    public void setX(List<Double> x) {
         X = x;
     }
 
-    public double[] getY() {
+    public List<Double> getY() {
         return Y;
     }
 
-    public void setY(double[] y) {
+    public void setY(List<Double> y) {
         Y = y;
     }
 

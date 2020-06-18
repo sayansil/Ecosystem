@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ReportActivity extends AppCompatActivity {
 
@@ -71,6 +73,8 @@ public class ReportActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String data = intent.getStringExtra("data");
+        String kingdom = intent.getStringExtra("kingdom");
+
         mortality_graphs = new ArrayList<>();
         demographic_graphs = new ArrayList<>();
         copulation_graphs = new ArrayList<>();
@@ -78,7 +82,7 @@ public class ReportActivity extends AppCompatActivity {
         average_graphs = new ArrayList<>();
         theoretical_graphs = new ArrayList<>();
 
-        generatePlots(data);
+        generatePlots(data, kingdom);
 
         populatePlotList(mortality_graphs, mortality_listview, mortality_title);
         populatePlotList(demographic_graphs, demographic_listview, demographic_title);
@@ -98,8 +102,45 @@ public class ReportActivity extends AppCompatActivity {
         }
     }
 
-    private void generatePlots(String data) {
-        // todo
+    private void generatePlots(String data, String kingdom) {
+        List<List<String>> raw_table = new ArrayList<>();
+        List<List<Double>> table = new ArrayList<>();
+        for (String row : data.split("\\s*\\n\\s*")) {
+            raw_table.add(Arrays.asList(row.split("\\s*,\\s*")));
+        }
+
+        double value;
+        for (List<String> raw_row : raw_table) {
+            List<Double> row = new ArrayList<>();
+            for (String raw_value : raw_row) {
+                try {
+                    if (raw_value.length() <= 20) {
+                        value = Double.parseDouble(raw_value);
+                    } else {
+                        value = Double.parseDouble(raw_value.substring(0, 20));
+                    }
+                } catch (NumberFormatException e) {
+                    value = 0;
+                }
+                row.add(value);
+            }
+            table.add(row);
+        }
+
+        mortality_graphs.clear();
+        demographic_graphs.clear();
+        copulation_graphs.clear();
+        dependency_graphs.clear();
+        average_graphs.clear();
+        theoretical_graphs.clear();
+
+        // todo with table and schema
+
+        if (kingdom.equalsIgnoreCase("plant")) {
+
+        } else if (kingdom.equalsIgnoreCase("animal")) {
+
+        }
     }
 
     private void populatePlotList(ArrayList<PlotData> graphs, ListView listView, TextView header) {

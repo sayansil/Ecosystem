@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                 Intent newIntent = new Intent(MainActivity.this, ReportActivity.class);
                                                 newIntent.putExtra("data", data);
+                                                newIntent.putExtra("kingdom", text_kingdom);
                                                 startActivity(newIntent);
                                                 Toast.makeText(getApplicationContext(), data, Toast.LENGTH_SHORT).show();
                                             } else if (status.equals("1")) {
