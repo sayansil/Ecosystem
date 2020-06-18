@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Report"
+                android:textColor="@color/colorPrimaryDark"
+                android:textAlignment="center"
+                android:fontFamily="@font/montserrat_medium"
+                android:layout_marginVertical="32dp"
+                android:textSize="32sp"/>
+
+            <TextView
+                android:id="@+id/headerMO"
+                android:text="Mortality graphs"
+                style="@style/TextViewSubtitle"/>
+
+            <ListView
+                android:id="@+id/listViewMO"
+                style="@style/ListViewDefault"/>
+
+            <TextView
+                android:id="@+id/headerDM"
+                android:text="Demographic graphs"
+                style="@style/TextViewSubtitle"/>
+
+            <ListView
+                android:id="@+id/listViewDM"
+                style="@style/ListViewDefault"/>
+
+            <TextView
+                android:id="@+id/headerCP"
+                android:text="Copulation graphs"
+                style="@style/TextViewSubtitle"/>
+
+            <ListView
+                android:id="@+id/listViewCP"
+                style="@style/ListViewDefault"/>
+
+            <TextView
+                android:id="@+id/headerDP"
+                android:text="Dependency graphs"
+                style="@style/TextViewSubtitle"/>
+
+            <ListView
+                android:id="@+id/listViewDP"
+                style="@style/ListViewDefault"/>
+
+            <TextView
+                android:id="@+id/headerAV"
+                android:text="Average graphs"
+                style="@style/TextViewSubtitle"/>
+
+            <ListView
+                android:id="@+id/listViewAV"
+                style="@style/ListViewDefault"
+                tools:ignore="NestedScrolling" />
+
+            <TextView
+                android:id="@+id/headerTH"
+                android:text="Theoretical graphs"
+                style="@style/TextViewSubtitle"/>
+
+            <ListView
+                android:id="@+id/listViewTH"
+                style="@style/ListViewDefault"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/emptyAnim"
+        android:layout_width="wrap_content"
+        android:layout_height="128dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/empty"
+        app:lottie_speed="0.75" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

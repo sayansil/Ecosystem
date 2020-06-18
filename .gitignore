@@ -18,3 +18,8 @@ app/.idea/
 app/app/src/test/
 Python/keys.json
 Cpp/WebApp/keys.json
+app/.project
+app/.settings/*
+app/app/.classpath
+app/app/.project
+app/app/.settings/*

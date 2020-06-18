@@ -171,7 +171,9 @@ public class MainActivity extends AppCompatActivity {
                                             if (status.equals("0")) {
                                                 String data = newResponse.getString("data");
 
-                                                // todo with data string
+                                                Intent newIntent = new Intent(MainActivity.this, ReportActivity.class);
+                                                newIntent.putExtra("data", data);
+                                                startActivity(newIntent);
                                                 Toast.makeText(getApplicationContext(), data, Toast.LENGTH_SHORT).show();
                                             } else if (status.equals("1")) {
                                                 BaseUtility.show_popup(R.layout.dialog_invalidapi, this);
