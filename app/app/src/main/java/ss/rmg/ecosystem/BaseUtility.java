@@ -3,6 +3,7 @@ package ss.rmg.ecosystem;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -14,6 +15,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import java.util.Random;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -56,5 +59,14 @@ public class BaseUtility {
             url = "http://" + raw_url;
 
         return url;
+    }
+
+    public static int getRandomColor() {
+        Random rand = new Random();
+        int r = rand.nextInt(255);
+        int g = rand.nextInt(255);
+        int b = rand.nextInt(255);
+
+        return Color.rgb(r,g,b);
     }
 }

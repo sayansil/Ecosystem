@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         switchLocal = findViewById(R.id.switchLocal);
 
         simBtn = findViewById(R.id.simBtn);
+        simBtn.setEnabled(true);
 
         isLocal = false;
 
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         simBtn.setOnClickListener(view -> {
             BaseUtility.vibrate(this);
             progressBar.setVisibility(View.VISIBLE);
+            simBtn.setEnabled(false);
 
             String available_url = getBaseUrl() + "/" + getString(R.string.endpoint_schema);
             JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, available_url, null,
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
                             JsonObjectRequest newRequest = new JsonObjectRequest(Request.Method.GET, query_url, null,
                                     newResponse -> {
                                         progressBar.setVisibility(View.GONE);
+                                        simBtn.setEnabled(true);
                                         try {
                                             String status = newResponse.getString("status");
                                             if (status.equals("0")) {
@@ -186,7 +189,6 @@ public class MainActivity extends AppCompatActivity {
                                                 newIntent.putExtra("kingdom", text_kingdom);
                                                 newIntent.putExtra("schema", schema);
                                                 startActivity(newIntent);
-                                                Toast.makeText(getApplicationContext(), data, Toast.LENGTH_SHORT).show();
                                             } else if (status.equals("1")) {
                                                 BaseUtility.show_popup(R.layout.dialog_invalidapi, this);
                                             } else if (status.equals("2")) {
@@ -201,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
                                     },
                                     error -> {
                                         progressBar.setVisibility(View.GONE);
+                                        simBtn.setEnabled(true);
                                         error.printStackTrace();
                                         BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                                     }
@@ -212,11 +215,13 @@ public class MainActivity extends AppCompatActivity {
                             queue.add(newRequest);
                         } else {
                             progressBar.setVisibility(View.GONE);
+                            simBtn.setEnabled(true);
                             BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                         }
                     },
                     error -> {
                         progressBar.setVisibility(View.GONE);
+                        simBtn.setEnabled(true);
                         error.printStackTrace();
                         BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                     }
