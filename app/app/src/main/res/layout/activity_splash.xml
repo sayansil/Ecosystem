@@ -20,8 +20,8 @@
 
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/splash"
-        app:lottie_speed="2" />
+        app:lottie_speed="2"
+        app:lottie_rawRes="@raw/splash"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"

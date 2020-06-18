@@ -19,6 +19,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.35">
 
+
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/textIP"
+            android:visibility="invisible"
+            android:layout_width="256dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:fontFamily="@font/montserrat_medium"
+            android:hint="Local address"
+            android:inputType="text"
+            android:lines="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:met_floatingLabel="normal" />
+
         <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
             android:id="@+id/spinnerKingdom"
             android:layout_width="256dp"
@@ -29,7 +46,7 @@
             app:layout_constraintEnd_toEndOf="parent"
 
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textIP"
             app:met_floatingLabel="normal" />
 
         <com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner
@@ -76,29 +93,13 @@
             app:layout_constraintTop_toBottomOf="@id/textCount"
             app:met_floatingLabel="normal" />
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/textIP"
-            android:visibility="invisible"
-            android:layout_width="256dp"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            android:fontFamily="@font/montserrat_medium"
-            android:hint="Local address"
-            android:inputType="text"
-            android:lines="1"
-            app:layout_constraintEnd_toEndOf="parent"
-
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textYears"
-            app:met_floatingLabel="normal" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/simBtn"
         android:layout_width="256dp"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="32dp"
+        android:layout_marginVertical="48dp"
         android:text="Simulate"
         android:textColor="@android:color/white"
         android:fontFamily="@font/montserrat_medium"

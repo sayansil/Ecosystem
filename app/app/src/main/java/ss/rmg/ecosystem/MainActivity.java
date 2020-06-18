@@ -100,18 +100,27 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         try {
-            JSONObject menu;
-            JSONArray array;
-            menu = new JSONObject(intent.getStringExtra("menu"));
+            String tmp = intent.getStringExtra("menu");
 
-            array = menu.getJSONArray("plant");
-            for(int i = 0 ; i < array.length() ; i++) {
-                plant.add(array.getString(i));
-            }
+            if (!tmp.isEmpty()) {
+                JSONObject menu;
+                JSONArray array;
+                menu = new JSONObject(tmp);
 
-            array = menu.getJSONArray("animal");
-            for(int i = 0 ; i < array.length() ; i++) {
-                animal.add(array.getString(i));
+                array = menu.getJSONArray("plant");
+                for(int i = 0 ; i < array.length() ; i++) {
+                    plant.add(array.getString(i));
+                }
+
+                array = menu.getJSONArray("animal");
+                for(int i = 0 ; i < array.length() ; i++) {
+                    animal.add(array.getString(i));
+                }
+            } else {
+                isLocal = true;
+                switchLocal.setChecked(true);
+                ipText.setVisibility(View.VISIBLE);
+                BaseUtility.show_popup(R.layout.dialog_nonet, this);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -247,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshSpinners() {
-        String url_menu = getString(R.string.url_base) + "/" + getString(R.string.endpoint_menu);
+        String url_menu = getBaseUrl() + "/" + getString(R.string.endpoint_menu);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url_menu, null,
                 response -> {
                     try {

@@ -26,15 +26,11 @@ public class SplashActivity extends AppCompatActivity {
 
     LottieAnimationView animation;
     ConstraintLayout footer;
-    TextView errorText;
 
-    final int startDelay = 3500;
-    final int delay = 2000;
+    final int delay = 3000;
 
     Handler handler = new Handler();
     Runnable runnable;
-
-    boolean flag;
 
     RequestQueue queue;
 
@@ -50,45 +46,20 @@ public class SplashActivity extends AppCompatActivity {
 
         animation = findViewById(R.id.centreAnimation);
         footer = findViewById(R.id.footer);
-        errorText = findViewById(R.id.errorText);
-
-        flag = false;
 
         queue = Volley.newRequestQueue(this);
     }
 
-    public void animateIn(final View v) {
-        if(v.getVisibility()!=View.VISIBLE) {
-            ObjectAnimator fadeIn = ObjectAnimator.ofFloat(v, "alpha", 0f, 1f);
-            fadeIn.setDuration(startDelay);
-
-            final AnimatorSet mAnimationSet = new AnimatorSet();
-
-            mAnimationSet.play(fadeIn);
-            mAnimationSet.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    v.setVisibility(View.VISIBLE);
-                }
-            });
-            mAnimationSet.start();
-        }
-    }
-
     @Override
     protected void onStart() {
-        handler.postDelayed( runnable = () -> {
+        runnable = () -> {
             if(BaseUtility.isNetworkConnected(getApplicationContext())) {
-                if(!flag) {
-                    fetchDataAndForward();
-                }
+                fetchDataAndForward();
             } else {
-                errorText.setText(getString(R.string.error_network));
-                animateIn(errorText);
+                forward("");
             }
-            handler.postDelayed(runnable, delay);
-        }, startDelay);
+        };
+        handler.postDelayed(runnable, delay);
 
         super.onStart();
     }
@@ -100,21 +71,18 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void fetchDataAndForward() {
-        flag = true;
         String url_menu = getString(R.string.url_base) + "/" + getString(R.string.endpoint_menu);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url_menu, null,
-                response -> {
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                    intent.putExtra("menu", response.toString());
-                    startActivity(intent);
-                    finish();
-                },
-                error -> {
-                    errorText.setText(getString(R.string.error_server));
-                    animateIn(errorText);
-                    flag = false;
-                }
+                response -> forward(response.toString()),
+                error -> forward("")
         );
         queue.add(getRequest);
+    }
+
+    private void forward(String menu) {
+        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        intent.putExtra("menu", menu);
+        startActivity(intent);
+        finish();
     }
 }
