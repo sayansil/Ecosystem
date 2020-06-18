@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlotData {
-    private List<Double> X;
-    private List<Double> Y;
+    private List<List<Double>> X;
+    private List<List<Double>> Y;
 
     private String title;
+    private List<String> legend;
 
     public PlotData() {
         X = new ArrayList<>();
@@ -15,25 +16,26 @@ public class PlotData {
         this.title = "";
     }
 
-    public PlotData(List<Double> x, List<Double> y, String title) {
+    public PlotData(List<List<Double>> x, List<List<Double>> y, String title, List<String> legend) {
         X = x;
         Y = y;
         this.title = title;
+        this.legend = legend;
     }
 
-    public List<Double> getX() {
+    public List<List<Double>> getX() {
         return X;
     }
 
-    public void setX(List<Double> x) {
+    public void setX(List<List<Double>> x) {
         X = x;
     }
 
-    public List<Double> getY() {
+    public List<List<Double>> getY() {
         return Y;
     }
 
-    public void setY(List<Double> y) {
+    public void setY(List<List<Double>> y) {
         Y = y;
     }
 

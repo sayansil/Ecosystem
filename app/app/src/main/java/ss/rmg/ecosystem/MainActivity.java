@@ -161,10 +161,11 @@ public class MainActivity extends AppCompatActivity {
             BaseUtility.vibrate(this);
             progressBar.setVisibility(View.VISIBLE);
 
-            String available_url = getBaseUrl() + "/" + getString(R.string.endpoint_available);
-            StringRequest getRequest = new StringRequest(Request.Method.GET, available_url,
+            String available_url = getBaseUrl() + "/" + getString(R.string.endpoint_schema);
+            JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, available_url, null,
                     response -> {
-                        if (response.equalsIgnoreCase("True")) {
+                        String schema = response.toString();
+                        if (!schema.isEmpty()) {
                             String query_url = getBaseUrl() + "/" + getString(R.string.endpoint_query);
                             query_url += "?initial_count=" + countText.getText().toString() +
                                     "&years=" + yearsText.getText().toString() +
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                                                 Intent newIntent = new Intent(MainActivity.this, ReportActivity.class);
                                                 newIntent.putExtra("data", data);
                                                 newIntent.putExtra("kingdom", text_kingdom);
+                                                newIntent.putExtra("schema", schema);
                                                 startActivity(newIntent);
                                                 Toast.makeText(getApplicationContext(), data, Toast.LENGTH_SHORT).show();
                                             } else if (status.equals("1")) {
