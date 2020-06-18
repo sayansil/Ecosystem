@@ -87,7 +87,7 @@ public class ReportActivity extends AppCompatActivity {
         average_graphs = new ArrayList<>();
         theoretical_graphs = new ArrayList<>();
 
-        generatePlots(data, kingdom, schema);
+        generatePlotData(data, kingdom, schema);
 
         populatePlotList(mortality_graphs, mortality_listview, mortality_title);
         populatePlotList(demographic_graphs, demographic_listview, demographic_title);
@@ -107,7 +107,7 @@ public class ReportActivity extends AppCompatActivity {
         }
     }
 
-    private void generatePlots(String data, String kingdom, String schema) {
+    private void generatePlotData(String data, String kingdom, String schema) {
         mortality_graphs.clear();
         demographic_graphs.clear();
         copulation_graphs.clear();
@@ -158,9 +158,6 @@ public class ReportActivity extends AppCompatActivity {
             }
             table.add(row);
         }
-
-
-        // todo with table and schema
 
         String title = "";
         List<Double> X = getRowOfValue(table, plant_schema, "YEAR");
@@ -321,7 +318,7 @@ public class ReportActivity extends AppCompatActivity {
             Xs.add(X);
             Ys.add(getRowOfValue(table, plant_schema, "AVGMA_VT"));
             legend.add("");
-            title = "Maximum Vitality at age";
+            title = "Maximum Vitality";
             average_graphs.add(new PlotData(Xs, Ys, title, legend));
 
             // THEORETICAL GRAPHS
@@ -372,6 +369,304 @@ public class ReportActivity extends AppCompatActivity {
 
         } else if (kingdom.equalsIgnoreCase("animal")) {
 
+            // MORTALITY GRAPHS
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AGE_DTH"));
+            legend.add("");
+            title = "Age affecting Death";
+            mortality_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "FIT_DTH"));
+            legend.add("");
+            title = "Fitness affecting Death";
+            mortality_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AFR_DTH"));
+            legend.add("");
+            title = "Age vs. Fitness affecting Death";
+            mortality_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "MX_AGE"));
+            legend.add("");
+            title = "Maximum age";
+            mortality_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            // DEMOGRAPHIC GRAPHS
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "MALE"));
+            legend.add("Male");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "FEMALE"));
+            legend.add("Female");
+            title = "Population";
+            demographic_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            // COPULATION GRAPHS
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "M_MALE"));
+            legend.add("Male");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "M_FEMALE"));
+            legend.add("Female");
+            title = "Matable Population";
+            copulation_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "M_AGE_START"));
+            legend.add("Age");
+            title = "Mating Start";
+            copulation_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "M_AGE_END"));
+            legend.add("Age");
+            title = "Mating End";
+            copulation_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "MT_PROB"));
+            legend.add("");
+            title = "Mutation Probability";
+            copulation_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "C_PROB"));
+            legend.add("");
+            title = "Conceiving Probability";
+            copulation_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "OF_FACTOR"));
+            legend.add("");
+            title = "Multiple offspring factor";
+            copulation_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            // DEPENDENCY GRAPHS
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "HT_ST"));
+            legend.add("Height");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "WT_ST"));
+            legend.add("Weight");
+            title = "Factors effecting Stamina";
+            dependency_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "HT_VT"));
+            legend.add("Height");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "WT_VT"));
+            legend.add("Weight");
+            title = "Factors effecting Vitality";
+            dependency_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "HT_SP"));
+            legend.add("Height");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "WT_SP"));
+            legend.add("Weight");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "ST_SP"));
+            legend.add("Stamina");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "VT_SP"));
+            legend.add("Vitality");
+            title = "Factors effecting Speed";
+            dependency_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "VT_AP"));
+            legend.add("Vitality");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "ST_AP"));
+            legend.add("Stamina");
+            title = "Factors effecting Appetite";
+            dependency_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            //AVERAGE GRAPHS
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_GEN"));
+            legend.add("");
+            title = "Generation";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_AGE"));
+            legend.add("");
+            title = "Age";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_HT"));
+            legend.add("");
+            title = "Height";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_WT"));
+            legend.add("");
+            title = "Weight";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_SFIT"));
+            legend.add("");
+            title = "Static Fitness";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_IMM"));
+            legend.add("");
+            title = "Immunity";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_DTHF"));
+            legend.add("");
+            title = "Death Factor";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVGMA_SP"));
+            legend.add("");
+            title = "Maximum speed";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVGMA_AP"));
+            legend.add("");
+            title = "Maximum appetite";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVGMA_ST"));
+            legend.add("");
+            title = "Maximum stamina";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVGMA_VT"));
+            legend.add("");
+            title = "Maximum vitality";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "AVG_VIS"));
+            legend.add("");
+            title = "Maximum Vision radius";
+            average_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            // THEORETICAL GRAPHS
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMB_HT"));
+            legend.add("Base height");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TM_HT"));
+            legend.add("Net height");
+            title = "Maximum height";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMB_WT"));
+            legend.add("Base weight");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TM_WT"));
+            legend.add("Net weight");
+            title = "Maximum weight";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMB_SP"));
+            legend.add("Base speed");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TM_SP"));
+            legend.add("Net speed");
+            title = "Maximum speed";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMB_AP"));
+            legend.add("");
+            title = "Maximum base appetite";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMB_ST"));
+            legend.add("");
+            title = "Maximum base stamina";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMB_VT"));
+            legend.add("");
+            title = "Maximum base vitality";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMM_ST"));
+            legend.add("Stamina multiplier");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMM_SP"));
+            legend.add("Speed multiplier");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMM_VT"));
+            legend.add("Vitality multiplier");
+            title = "Maximum attribute multipliers";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
+
+            Xs.clear();Ys.clear();legend.clear();
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMM_HT"));
+            legend.add("Height multiplier");
+            Xs.add(X);
+            Ys.add(getRowOfValue(table, animal_schema, "TMM_WT"));
+            legend.add("Weight multiplier");
+            title = "Maximum physical multipliers";
+            theoretical_graphs.add(new PlotData(Xs, Ys, title, legend));
         }
     }
 
