@@ -25,9 +25,9 @@
     "species_theoretical_maximum_base_weight": 20,
     "species_theoretical_maximum_height_multiplier": 1,
     "species_theoretical_maximum_weight_multiplier": 1,
-    "species_theoretical_maximum_speed": 150,
-    "species_theoretical_maximum_base_speed": 15,
-    "species_theoretical_maximum_speed_multiplier": 1,
+    "species_theoretical_maximum_speed": 80,
+    "species_theoretical_maximum_base_speed": 5,
+    "species_theoretical_maximum_speed_multiplier": 0.75,
     "species_theoretical_maximum_base_appetite": 10000,
     "chromosome_structure": {
         "bv": {"start": 0, "length": 10},
@@ -52,6 +52,6 @@
     "conceiving_probability": 0.95,
     "offsprings_factor": 10.0,
     "food_chain_rank": 1,
-    "vision_radius" : 300,
+    "vision_radius" : 100,
     "is_asexual": 0
 }
