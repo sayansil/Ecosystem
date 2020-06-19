@@ -242,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         ipText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                     actionId == EditorInfo.IME_ACTION_DONE ||
+                    actionId == EditorInfo.IME_ACTION_NEXT ||
                     event != null &&
                             event.getAction() == KeyEvent.ACTION_DOWN &&
                             event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
@@ -256,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getBaseUrl() {
         if (isLocal) {
-            return BaseUtility.safeURL(ipText.getText().toString());
+            return BaseUtility.safeURL(ipText.getText().toString() + ":" + getString(R.string.port_default));
         } else {
             return getString(R.string.url_base);
         }
@@ -264,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshSpinners() {
         String url_menu = getBaseUrl() + "/" + getString(R.string.endpoint_menu);
+        Log.e(TAG, url_menu);
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url_menu, null,
                 response -> {
                     try {
@@ -280,11 +282,12 @@ public class MainActivity extends AppCompatActivity {
                         for(int i = 0 ; i < array.length() ; i++) {
                             animal.add(array.getString(i));
                         }
+                        Toast.makeText(getApplicationContext(), "Fetched species list", Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 },
-                error -> {}
+                error -> {error.printStackTrace();}
         );
         queue.add(getRequest);
     }
