@@ -100,7 +100,7 @@ void run_app()
         .listen(ip_address, port_number, [](auto *listenSocket) {
             if (listenSocket)
             {
-                std::cout << "Listening at " << ip_address << ":" << port_number << ".\n";
+                std::cout << "Listening at " << ip_address << ":" << port_number << "\n";
             }
         })
 
