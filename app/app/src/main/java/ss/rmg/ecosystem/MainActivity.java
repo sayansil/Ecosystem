@@ -1,8 +1,11 @@
 package ss.rmg.ecosystem;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         switchLocal = findViewById(R.id.switchLocal);
 
         simBtn = findViewById(R.id.simBtn);
-        simBtn.setEnabled(true);
+        submitEnable(true);
 
         isLocal = false;
 
@@ -161,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
         simBtn.setOnClickListener(view -> {
             BaseUtility.vibrate(this);
             progressBar.setVisibility(View.VISIBLE);
-            simBtn.setEnabled(false);
+            submitEnable(false);
+            requestStoragePermissions();
 
             String available_url = getBaseUrl() + "/" + getString(R.string.endpoint_schema);
             JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, available_url, null,
@@ -178,14 +182,17 @@ public class MainActivity extends AppCompatActivity {
                             JsonObjectRequest newRequest = new JsonObjectRequest(Request.Method.GET, query_url, null,
                                     newResponse -> {
                                         progressBar.setVisibility(View.GONE);
-                                        simBtn.setEnabled(true);
+                                        submitEnable(true);
                                         try {
                                             String status = newResponse.getString("status");
                                             if (status.equals("0")) {
                                                 String data = newResponse.getString("data");
 
                                                 Intent newIntent = new Intent(MainActivity.this, ReportActivity.class);
-                                                newIntent.putExtra("data", data);
+                                                String data_file = BaseUtility.saveToFile(data,
+                                                        getString(R.string.directory_parent),
+                                                        getString(R.string.file_fetched_data));
+                                                newIntent.putExtra("data_file", data_file);
                                                 newIntent.putExtra("kingdom", text_kingdom);
                                                 newIntent.putExtra("schema", schema);
                                                 startActivity(newIntent);
@@ -203,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                                     },
                                     error -> {
                                         progressBar.setVisibility(View.GONE);
-                                        simBtn.setEnabled(true);
+                                        submitEnable(true);
                                         error.printStackTrace();
                                         BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                                     }
@@ -215,13 +222,13 @@ public class MainActivity extends AppCompatActivity {
                             queue.add(newRequest);
                         } else {
                             progressBar.setVisibility(View.GONE);
-                            simBtn.setEnabled(true);
+                            submitEnable(true);
                             BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                         }
                     },
                     error -> {
                         progressBar.setVisibility(View.GONE);
-                        simBtn.setEnabled(true);
+                        submitEnable(true);
                         error.printStackTrace();
                         BaseUtility.show_popup(R.layout.dialog_unavailable, this);
                     }
@@ -253,6 +260,22 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        requestStoragePermissions();
+    }
+
+    private void requestStoragePermissions() {
+        if(checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        } else if(checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        } else if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
     }
 
     private String getBaseUrl() {
@@ -290,5 +313,13 @@ public class MainActivity extends AppCompatActivity {
                 error -> {error.printStackTrace();}
         );
         queue.add(getRequest);
+    }
+
+    private void submitEnable(boolean value) {
+        simBtn.setEnabled(value);
+        if(value)
+            simBtn.setBackground(getDrawable(R.drawable.bg_round_gradient_1));
+        else
+            simBtn.setBackground(getDrawable(R.drawable.bg_round_gradient_2));
     }
 }

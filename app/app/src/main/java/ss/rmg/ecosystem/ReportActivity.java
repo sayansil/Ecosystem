@@ -76,9 +76,13 @@ public class ReportActivity extends AppCompatActivity {
         emptyAnim.setVisibility(View.GONE);
 
         Intent intent = getIntent();
-        String data = intent.getStringExtra("data");
+
+        String data_file = intent.getStringExtra("data_file");
         String kingdom = intent.getStringExtra("kingdom");
         String schema = intent.getStringExtra("schema");
+        String data = BaseUtility.readFromFile(
+                getString(R.string.directory_parent),
+                data_file);
 
         mortality_graphs = new ArrayList<>();
         demographic_graphs = new ArrayList<>();
@@ -88,10 +92,6 @@ public class ReportActivity extends AppCompatActivity {
         theoretical_graphs = new ArrayList<>();
 
         generatePlotData(data, kingdom, schema);
-
-        for (PlotData x : demographic_graphs) {
-            Log.e("TAG",  x.getTitle() + "    " + x.getY().get(0).toString());
-        }
 
         populatePlotList(mortality_graphs, mortality_listview, mortality_title);
         populatePlotList(demographic_graphs, demographic_listview, demographic_title);
@@ -118,7 +118,6 @@ public class ReportActivity extends AppCompatActivity {
         dependency_graphs.clear();
         average_graphs.clear();
         theoretical_graphs.clear();
-        Log.e(TAG, schema);
 
         List<String> plant_schema = new ArrayList<>();
         List<String> animal_schema = new ArrayList<>();

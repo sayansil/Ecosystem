@@ -10,4 +10,7 @@
 
     <string name="error_network">No internet access!</string>
     <string name="error_server">Could not connect to server!</string>
+
+    <string name="file_fetched_data">tmp-data</string>
+    <string name="directory_parent">EcosystemSimulator</string>
 </resources>

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Build;
+import android.os.Environment;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -16,6 +17,12 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
@@ -68,5 +75,55 @@ public class BaseUtility {
         int b = rand.nextInt(255);
 
         return Color.rgb(r,g,b);
+    }
+
+    public static String saveToFile(String data, String directory, String prefix) {
+        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + directory;
+        File dir = new File(file_path);
+        if(!dir.exists())
+            dir.mkdirs();
+
+        String timeStamp = new SimpleDateFormat(
+                "yyyy-MM-dd HH.mm.ss",
+                Locale.getDefault()).format(new Date());
+
+        String complete_filename = prefix + "_" + timeStamp + ".txt";
+
+        File file = new File(dir, complete_filename);
+
+        try {
+            FileOutputStream stream = new FileOutputStream(file);
+            stream.write(data.getBytes());
+            stream.close();
+        } catch (Exception e){
+            complete_filename = "";
+        }
+
+        return complete_filename;
+    }
+
+    public static String readFromFile(String directory, String filename) {
+        String data;
+
+        String file_path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + directory;
+        File dir = new File(file_path);
+        if(!dir.exists())
+            dir.mkdirs();
+
+        File file = new File(dir, filename);
+
+        int length = (int) file.length();
+        byte[] bytes = new byte[length];
+
+        try {
+            FileInputStream in = new FileInputStream(file);
+            in.read(bytes);
+            in.close();
+            data = new String(bytes);
+        } catch (Exception e){
+            data = "";
+        }
+
+        return data;
     }
 }
