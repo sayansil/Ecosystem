@@ -1,14 +1,19 @@
 package ss.rmg.ecosystem;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
     List<String> kingdom;
     List<String> plant;
     List<String> animal;
+
+    String API_KEY;
+    String default_localIP;
+
+    ImageButton apiBtn;
 
     MaterialBetterSpinner spinnerK;
     MaterialBetterSpinner spinnerS;
@@ -83,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
         yearsText = findViewById(R.id.textYears);
         ipText = findViewById(R.id.textIP);
 
+        apiBtn = findViewById(R.id.changeAPIbtn);
+
         switchLocal = findViewById(R.id.switchLocal);
 
         simBtn = findViewById(R.id.simBtn);
@@ -101,6 +114,37 @@ public class MainActivity extends AppCompatActivity {
 
         text_species = "";
         text_kingdom = "";
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        API_KEY = settings.getString("api-key", getString(R.string.api_key));
+        default_localIP = settings.getString("def-ip", "");
+        ipText.setText(default_localIP);
+
+        apiBtn.setOnClickListener(view -> {
+            BaseUtility.vibrate(this);
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.dialog_updateapi, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setView(promptsView);
+
+            final MaterialEditText newAPItxt = promptsView.findViewById(R.id.newApi);
+
+            alertDialogBuilder
+                    .setCancelable(true)
+                    .setPositiveButton("OK",
+                            (DialogInterface dialog, int d_id) -> {
+                                API_KEY = newAPItxt.getText().toString().trim();
+                                SharedPreferences.Editor editor = settings.edit();
+                                editor.putString("api-key", newAPItxt.getText().toString().trim());
+                                editor.apply();
+                            })
+                    .setNegativeButton("Cancel",
+                            (DialogInterface dialog,int d_id) -> {
+                                dialog.cancel();
+                            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
 
         Intent intent = getIntent();
         try {
@@ -139,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_dropdown_item_1line, tmp);
         spinnerS.setAdapter(adapter);
 
-
         spinnerK.setOnItemClickListener((parent, view, position, id) -> {
             text_kingdom = kingdom.get(position);
             if (text_kingdom.equalsIgnoreCase("plant")) {
@@ -177,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
                                     "&years=" + yearsText.getText().toString() +
                                     "&kingdom=" + text_kingdom +
                                     "&species=" + text_species +
-                                    "&api-key=" + getString(R.string.api_key);
+                                    "&api-key=" + API_KEY;
 
                             JsonObjectRequest newRequest = new JsonObjectRequest(Request.Method.GET, query_url, null,
                                     newResponse -> {
@@ -185,21 +228,25 @@ public class MainActivity extends AppCompatActivity {
                                         submitEnable(true);
                                         try {
                                             String status = newResponse.getString("status");
-                                            if (status.equals("0")) {
-                                                String data = newResponse.getString("data");
+                                            switch (status) {
+                                                case "0":
+                                                    String data = newResponse.getString("data");
 
-                                                Intent newIntent = new Intent(MainActivity.this, ReportActivity.class);
-                                                String data_file = BaseUtility.saveToFile(data,
-                                                        getString(R.string.directory_parent),
-                                                        getString(R.string.file_fetched_data));
-                                                newIntent.putExtra("data_file", data_file);
-                                                newIntent.putExtra("kingdom", text_kingdom);
-                                                newIntent.putExtra("schema", schema);
-                                                startActivity(newIntent);
-                                            } else if (status.equals("1")) {
-                                                BaseUtility.show_popup(R.layout.dialog_invalidapi, this);
-                                            } else if (status.equals("2")) {
-                                                BaseUtility.show_popup(R.layout.dialog_unavailable, this);
+                                                    Intent newIntent = new Intent(MainActivity.this, ReportActivity.class);
+                                                    String data_file = BaseUtility.saveToFile(data,
+                                                            getString(R.string.directory_parent),
+                                                            getString(R.string.file_fetched_data));
+                                                    newIntent.putExtra("data_file", data_file);
+                                                    newIntent.putExtra("kingdom", text_kingdom);
+                                                    newIntent.putExtra("schema", schema);
+                                                    startActivity(newIntent);
+                                                    break;
+                                                case "1":
+                                                    BaseUtility.show_popup(R.layout.dialog_invalidapi, this);
+                                                    break;
+                                                case "2":
+                                                    BaseUtility.show_popup(R.layout.dialog_unavailable, this);
+                                                    break;
                                             }
 
 
@@ -254,6 +301,9 @@ public class MainActivity extends AppCompatActivity {
                             event.getAction() == KeyEvent.ACTION_DOWN &&
                             event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                 if (event == null || !event.isShiftPressed()) {
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("def-ip", ipText.getText().toString().trim());
+                    editor.apply();
                     refreshSpinners();
                     return true;
                 }
@@ -280,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getBaseUrl() {
         if (isLocal) {
-            return BaseUtility.safeURL(ipText.getText().toString() + ":" + getString(R.string.port_default));
+            return BaseUtility.safeURL(ipText.getText().toString().trim() + ":" + getString(R.string.port_default));
         } else {
             return getString(R.string.url_base);
         }
