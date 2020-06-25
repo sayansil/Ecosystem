@@ -83,6 +83,20 @@ public class PlotAdapter extends ArrayAdapter<PlotData> {
             plot.addSeries(series);
         }
 
+        double t, diffY = maxY - minY;
+
+        if (diffY == 0 && minY == 0) {
+            minY  = -1;
+            maxY  = 1;
+        } else if (diffY == 0) {
+            t = minY;
+            minY = t - (t * 0.1);
+            maxY = t + (t * 0.1);
+        } else {
+            minY = minY - (diffY * 0.1);
+            maxY = maxY + (diffY * 0.1);
+        }
+
         plot.getViewport().setXAxisBoundsManual(true);
         plot.getViewport().setMinX(minX);
         plot.getViewport().setMaxX(maxX);

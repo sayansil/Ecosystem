@@ -287,6 +287,8 @@ public class MainActivity extends AppCompatActivity {
             isLocal = b;
             if (isLocal) {
                 ipText.setVisibility(View.VISIBLE);
+                if(!ipText.getText().toString().isEmpty())
+                    refreshSpinners();
             } else {
                 ipText.setVisibility(View.INVISIBLE);
                 refreshSpinners();
