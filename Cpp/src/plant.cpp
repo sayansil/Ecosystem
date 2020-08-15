@@ -433,3 +433,8 @@ std::string Plant::get_kingdom() const
 {
     return "plant";
 }
+
+ATTRIBUTE_MAP_TYPE& Plant::get_attribute_map()
+{
+    return attribute_map;
+}

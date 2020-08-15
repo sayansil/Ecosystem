@@ -61,6 +61,11 @@ public:
     double vitality;
 
 
+    // Attribute map
+    
+    ATTRIBUTE_MAP_TYPE attribute_map;
+
+
     /******************************
      *  Constructor / Destructor  *
     *******************************/
@@ -102,6 +107,7 @@ public:
     double get_weight_multiplier() const;
     double get_max_height() const;
     double get_max_weight() const;
+    ATTRIBUTE_MAP_TYPE& get_attribute_map();
     void init_from_json(const nlohmann::json &);
     void evaluate_dynamic_fitness();
     void evaluate_static_fitness();
@@ -114,5 +120,23 @@ public:
     bool is_normal_child() const;
 
 };
+
+REFL_AUTO(
+    type(Plant, bases<Organism<Plant>>),
+    field(height_on_vitality, fixed_for_species()),
+    field(weight_on_vitality, fixed_for_species()),
+    field(theoretical_maximum_base_height, fixed_for_species()),
+    field(theoretical_maximum_base_vitality, fixed_for_species()),
+    field(theoretical_maximum_base_weight, fixed_for_species()),
+    field(theoretical_maximum_height, fixed_for_species()),
+    field(theoretical_maximum_weight, fixed_for_species()),
+    field(theoretical_maximum_height_multiplier, fixed_for_species()),
+    field(theoretical_maximum_vitality_multiplier, fixed_for_species()),
+    field(theoretical_maximum_weight_multiplier, fixed_for_species()),
+    
+    field(max_vitality_at_age, changes_every_year()),
+    
+    field(vitality, changes_every_moment())
+)
 
 #endif /* PLANT_HPP */

@@ -646,3 +646,8 @@ std::string Animal::get_kingdom() const
 {
     return "animal";
 }
+
+ATTRIBUTE_MAP_TYPE& Animal::get_attribute_map()
+{
+    return attribute_map;
+}
