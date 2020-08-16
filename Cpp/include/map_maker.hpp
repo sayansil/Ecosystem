@@ -37,4 +37,18 @@ struct map_maker
         });
         return ret_map;
     }
+
+    template <typename T>
+    ATTRIBUTE_RAW_MAP_TYPE raw_var_map_banana(T &&value)
+    {
+        ATTRIBUTE_RAW_MAP_TYPE ret_map;
+        refl::util::for_each(refl::reflect(value).members, [&](auto member) {
+            if constexpr (refl::descriptor::is_field(member))
+            {
+                std::string name = refl::descriptor::get_display_name(member);
+                ret_map[name] = PStat(member(value));
+            }
+        });
+        return ret_map;
+    }
 };

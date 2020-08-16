@@ -52,7 +52,6 @@ public:
     virtual std::string get_name() const = 0;
     virtual std::string get_chromosome() const = 0;
     virtual std::string get_kingdom() const = 0;
-    virtual STAT get_stat(const std::string &data) const = 0;
     virtual bool get_monitor_in_simulation() const = 0;
 
 

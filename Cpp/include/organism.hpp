@@ -31,6 +31,7 @@ public:
      ***************************************/
 
     std::string kind;
+    std::string kingdom;
     std::string full_species_name;
     CHROMOSOME_MAP_TYPE chromosome_structure;
     unsigned int chromosome_number;
@@ -265,10 +266,6 @@ public:
     {
         return static_cast<const T &>(*this).get_kingdom();
     }
-    STAT get_stat(const std::string &data) const
-    {
-        return static_cast<const T &>(*this).get_stat(data);
-    }
 
 
     /********************
@@ -352,8 +349,9 @@ public:
 
 REFL_AUTO(
     type(Organism<Animal>),
-    
+
     field(kind, fixed_for_species()),
+    field(kingdom, fixed_for_species()),
     field(full_species_name, fixed_for_species()),
     field(chromosome_number, fixed_for_species()),
     field(food_chain_rank, fixed_for_species()),
@@ -367,28 +365,28 @@ REFL_AUTO(
     field(max_age, fixed_for_species()),
     field(mutation_probability, fixed_for_species()),
     field(offsprings_factor, fixed_for_species()),
-    
+
     field(chromosome, fixed_for_lifetime()),
     field(gender, fixed_for_lifetime()),
     field(generation, fixed_for_lifetime()),
     field(immunity, fixed_for_lifetime()),
     field(name, fixed_for_lifetime()),
-    
+
     field(age, changes_every_year()),
     field(height, changes_every_year()),
     field(weight, changes_every_year()),
     field(static_fitness, changes_every_year()),
     field(death_factor, changes_every_year()),
-    
+
     field(X, changes_every_moment()),
     field(Y, changes_every_moment()),
-    field(dynamic_fitness, changes_every_moment())
-)
+    field(dynamic_fitness, changes_every_moment()))
 
 REFL_AUTO(
     type(Organism<Plant>),
-    
+
     field(kind, fixed_for_species()),
+    field(kingdom, fixed_for_species()),
     field(full_species_name, fixed_for_species()),
     field(chromosome_number, fixed_for_species()),
     field(food_chain_rank, fixed_for_species()),
@@ -402,22 +400,21 @@ REFL_AUTO(
     field(max_age, fixed_for_species()),
     field(mutation_probability, fixed_for_species()),
     field(offsprings_factor, fixed_for_species()),
-    
+
     field(chromosome, fixed_for_lifetime()),
     field(gender, fixed_for_lifetime()),
     field(generation, fixed_for_lifetime()),
     field(immunity, fixed_for_lifetime()),
     field(name, fixed_for_lifetime()),
-    
+
     field(age, changes_every_year()),
     field(height, changes_every_year()),
     field(weight, changes_every_year()),
     field(static_fitness, changes_every_year()),
     field(death_factor, changes_every_year()),
-    
+
     field(X, changes_every_moment()),
     field(Y, changes_every_moment()),
-    field(dynamic_fitness, changes_every_moment())
-)
+    field(dynamic_fitness, changes_every_moment()))
 
 #endif /* ORGANISM_HPP */

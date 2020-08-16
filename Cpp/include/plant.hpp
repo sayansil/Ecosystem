@@ -62,7 +62,7 @@ public:
 
 
     // Attribute map
-    
+
     ATTRIBUTE_MAP_TYPE attribute_map;
 
 
@@ -115,7 +115,6 @@ public:
     void increment_age();
     void decrement_vitality_by(const double &);
     void increment_vitality_by(const double&);
-    STAT get_stat(const std::string &) const;
     std::string get_kingdom() const;
     bool is_normal_child() const;
 
@@ -133,9 +132,9 @@ REFL_AUTO(
     field(theoretical_maximum_height_multiplier, fixed_for_species()),
     field(theoretical_maximum_vitality_multiplier, fixed_for_species()),
     field(theoretical_maximum_weight_multiplier, fixed_for_species()),
-    
+
     field(max_vitality_at_age, changes_every_year()),
-    
+
     field(vitality, changes_every_moment())
 )
 

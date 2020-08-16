@@ -84,7 +84,7 @@ public:
     bool asleep;
 
     // Attribute map
-    
+
     ATTRIBUTE_MAP_TYPE attribute_map;
 
     /******************************
@@ -146,7 +146,6 @@ public:
     void decrement_vitality_by(const double &);
     void increment_stamina_by(const double &);
     void increment_vitality_by(const double&);
-    STAT get_stat(const std::string &) const;
     std::string get_kingdom() const;
     bool is_normal_child() const;
 };
@@ -179,8 +178,8 @@ REFL_AUTO(
     field(theoretical_maximum_weight_multiplier, fixed_for_species()),
     field(vision_radius, fixed_for_species()),
     field(sleep_restore_factor, fixed_for_species()),
-    
-    
+
+
     field(max_appetite_at_age, changes_every_year()),
     field(max_speed_at_age, changes_every_year()),
     field(max_stamina_at_age, changes_every_year()),
