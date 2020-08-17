@@ -53,6 +53,7 @@ public:
 
     std::vector<ENTITY> organism_sort(bool (*comp)(const ENTITY&, const ENTITY&));
     std::unordered_map<std::string, std::vector<ENTITY>> organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&));
+    std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> statistics;
 
 protected:
     double killer_function(const double &index, const double &size) const;

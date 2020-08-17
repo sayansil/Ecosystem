@@ -330,14 +330,22 @@ namespace stat_fetcher
 
         if (kingdom == "animal")
         {
-            std::unordered_map<std::string, double> stat_db_map;
+            std::unordered_map<std::string, double> stat_db_map; // TODO : string -> DBType
 
             unsigned int count = 0;
 
+            
+            // Used in StatGroup::COUNT
+            
             stat_db_map["MALE"] = 0.0;
             stat_db_map["FEMALE"] = 0.0;
             stat_db_map["M_MALE"] = 0.0;
             stat_db_map["M_FEMALE"] = 0.0;
+            
+            
+            
+            
+            
             stat_db_map["AVG_GEN"] = 0.0;
             stat_db_map["AVG_IMM"] = 0.0;
             stat_db_map["AVG_AGE"] = 0.0;
@@ -353,10 +361,12 @@ namespace stat_fetcher
 
             for (const auto &organism: organisms)
             {
-                auto a_map = maker.raw_var_map_banana(organism.second);
+                auto a_map = maker.raw_var_map_banana(organism.second); // TODO
 
                 if (kind != a_map["kind"].getString())
                     continue;
+
+                // Use data members directly TODO
 
                 if (a_map["gender"].getUnsignedInt() == MALE)
                 {
@@ -376,6 +386,8 @@ namespace stat_fetcher
                         stat_db_map["M_FEMALE"]++;
                     }
                 }
+
+                // Used in StatGroup::FIX
 
                 stat_db_map["M_AGE_START"] = a_map["mating_age_start"].getDouble();
                 stat_db_map["M_AGE_END"] = a_map["mating_age_end"].getDouble();
@@ -412,6 +424,8 @@ namespace stat_fetcher
                 stat_db_map["TMM_WT"] = a_map["theoretical_maximum_weight_multiplier"].getDouble();
                 stat_db_map["SL_FACTOR"] = a_map["sleep_restore_factor"].getDouble();
 
+                // Used in StatGroup::MEAN
+                
                 stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (a_map["generation"].getDouble() / (count + 1));
                 stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (a_map["immunity"].getDouble() / (count + 1));
                 stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (a_map["age"].getDouble() / (count + 1));

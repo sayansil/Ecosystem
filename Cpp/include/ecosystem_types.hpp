@@ -18,6 +18,36 @@ enum Gender
     FEMALE = 1
 };
 
+enum class PStatType
+{
+    INT,
+    DOUBLE,
+    CHAR,
+    UINT,
+    STRING,
+    BOOL
+};
+
+enum class StatGroup
+{
+    FIX,
+    MEAN,
+    COUNT
+};
+
+enum class SQLType
+{
+    TEXT,
+    INT,
+    FLOAT
+};
+
+struct DBType
+{
+    SQLType dtype;
+    std::string data;
+};
+
 struct STAT
 {
     std::variant<unsigned int, double, std::string, bool> data;
@@ -51,7 +81,7 @@ struct STAT
 struct PStat
 {
     void *address;
-    uint8_t index;
+    uint8_t index; // Change to Type TODO
     PStat() = default;
     PStat(int& data) : address(&data), index(1) {}
     PStat(double& data) : address(&data), index(2) {}

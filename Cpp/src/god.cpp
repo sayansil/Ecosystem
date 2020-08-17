@@ -7,6 +7,10 @@ God::God(const bool &gods_eye)
     //context = zmq::context_t(1);
     //socket = zmq::socket_t(context, zmq::socket_type::dealer);
     //socket.bind("tcp://*:5556");
+
+    statistics["animal"][StatGroup::FIX] = {"mating_age_start", "mating_age_end"}; // TODO
+    statistics["animal"][StatGroup::MEAN] = {"height", "weight"}; // TODO
+    statistics["animal"][StatGroup::COUNT] = {"male_population", "female_population"}; // TODO
 }
 
 God::~God()
