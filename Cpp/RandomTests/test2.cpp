@@ -13,8 +13,13 @@ int main()
         auto [key, inner_map] = *it;
         std::cout << "\n\n*************** Property *************\n" << key << "\n";
         for(const auto& [name, data] : inner_map)
-            std::cout << name << ": " << data.getString() << "index: " << data.getIndex() << '\n';
+            std::cout << name << ": " << data.getString() << '\n';
 
         // *static_cast<int*>(data.address)
     }
+
+    int tmp_i = 45;
+    PStat tmp(tmp_i);
+    double x = std::stod(tmp.getString());
+    std::cout << x << '\n';
 }

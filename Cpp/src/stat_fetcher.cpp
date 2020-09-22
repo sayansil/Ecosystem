@@ -16,19 +16,28 @@ namespace stat_fetcher
     double get_gender_ratio(const ENTITY_MAP_TYPE &organisms, const std::string  &kind)
     {
         unsigned int M = 0, F = 0;
-        map_maker maker;
+        //map_maker maker;
 
         for (auto organism : organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
+            //auto a_map = maker.raw_var_map_banana(organism.second);
 
-            if (kind != "" && kind != a_map["kind"].getString())
+            if(kind != "" && kind != organism.second->get_kind())
                 continue;
+            
+            //if (kind != "" && kind != a_map["kind"].getString())
+            //    continue;
 
-            if (a_map["gender"].getUnsignedInt() == MALE)
+            
+            if(organism.second->get_gender() == MALE)
             {
                 M++;
             }
+            
+            //if (a_map["gender"].getUnsignedInt() == MALE)
+            //{
+            //    M++;
+            //}
             else
             {
                 F++;
@@ -41,13 +50,14 @@ namespace stat_fetcher
     unsigned int get_population(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int count = 0;
-        map_maker maker;
+        //map_maker maker;
 
         for (const auto &organism : organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
+            //auto a_map = maker.raw_var_map_banana(organism.second);
 
-            if (kind != "" && kind != a_map["kind"].getString())
+            //if (kind != "" && kind != a_map["kind"].getString())
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
             count++;
@@ -59,18 +69,21 @@ namespace stat_fetcher
     std::pair<unsigned int, unsigned int> get_matable_population(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int M = 0, F = 0;
-        map_maker maker;
+        //map_maker maker;
 
         for (const auto &organism : organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
+            //auto a_map = maker.raw_var_map_banana(organism.second);
 
-            if (kind != "" && kind != a_map["kind"].getString())
+            //if (kind != "" && kind != a_map["kind"].getString())
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+            //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+            if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
             {
-                if (a_map["gender"].getUnsignedInt() == MALE)
+                //if (a_map["gender"].getUnsignedInt() == MALE)
+                if (organism.second->get_gender() == MALE)
                 {
                     M++;
                 }
@@ -95,21 +108,25 @@ namespace stat_fetcher
         {
             auto a_map = maker.raw_var_map_banana(organism.second);
 
-            if (kind != "" && kind != a_map["kind"].getString())
+            //if (kind != "" && kind != a_map["kind"].getString())
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
             current_attribute = a_map[attribute];
-            if(current_attribute.getIndex() == 0)
+            if(current_attribute.getIndex() == PStatType::INT)
             {
-                value = current_attribute.getInt();
+                //value = current_attribute.getInt();
+                value = std::stoi(current_attribute.getString());
             }
-            else if(current_attribute.getIndex() == 1)
+            else if(current_attribute.getIndex() == PStatType::DOUBLE)
             {
-                value = current_attribute.getDouble();
+                //value = current_attribute.getDouble();
+                value = std::stod(current_attribute.getString());
             }
-            else if(current_attribute.getIndex() == 6)
+            else if(current_attribute.getIndex() == PStatType::UINT)
             {
-                value = current_attribute.getUnsignedInt();
+                //value = current_attribute.getUnsignedInt();
+                value = std::stoul(current_attribute.getString());
             }
             else
             {
@@ -140,18 +157,21 @@ namespace stat_fetcher
     std::unordered_map<std::string, unsigned int> get_kind_distribution(const ENTITY_MAP_TYPE &organisms)
     {
         std::unordered_map<std::string, unsigned int> kindDistribution;
-        map_maker maker;
+        //map_maker maker;
 
         for (const auto &organism: organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
-            if (kindDistribution.find(a_map["kind"].getString()) == kindDistribution.end())
+            //auto a_map = maker.raw_var_map_banana(organism.second);
+            //if (kindDistribution.find(a_map["kind"].getString()) == kindDistribution.end())
+            if (kindDistribution.find(organism.second->get_kind()) == kindDistribution.end())
             {
-                kindDistribution[a_map["kind"].getString()] = 1;
+                //kindDistribution[a_map["kind"].getString()] = 1;
+                kindDistribution[organism.second->get_kind()] = 1;
             }
             else
             {
-                kindDistribution[a_map["kind"].getString()]++;
+                //kindDistribution[a_map["kind"].getString()]++;
+                kindDistribution[organism.second->get_kind()]++;
             }
         }
 
@@ -169,10 +189,12 @@ namespace stat_fetcher
         {
             auto a_map = maker.raw_var_map_banana(organism.second);
 
-            if (kind != "" && kind != a_map["kind"].getString())
+            //if (kind != "" && kind != a_map["kind"].getString())
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            average = (n / (n + 1)) * average + (a_map[attribute].getDouble() / (n + 1));
+            //average = (n / (n + 1)) * average + (a_map[attribute].getDouble() / (n + 1));
+            average = (n / (n + 1)) * average + ((std::stod(a_map[attribute].getString())) / (n + 1));
             n++;
         }
 
@@ -199,7 +221,7 @@ namespace stat_fetcher
 
     std::string prepare_data_for_simulation(const ENTITY_MAP_TYPE &organisms)
     {
-        map_maker maker;
+        //map_maker maker;
 
         nlohmann::json response;
         response["animal"] = nlohmann::json::array();
@@ -220,36 +242,55 @@ namespace stat_fetcher
 
         for(const auto &organism : organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
-            if (a_map["monitor_in_simulation"].getBool())
+            //auto a_map = maker.raw_var_map_banana(organism.second);
+            //if (a_map["monitor_in_simulation"].getBool())
+            if (organism.second->get_monitor_in_simulation())
             {
-                if(a_map["kingdom"].getString() == "animal")
+                //if(a_map["kingdom"].getString() == "animal")
+                if(organism.second->get_kingdom() == "animal")
                 {
+                    //response["animal"].push_back({
+                    //    {"name", a_map["name"].getString()},
+                    //    {"food_chain_rank", a_map["food_chain_rank"].getUnsignedInt()},
+                    //    {"vision_radius", a_map["vision_radius"].getDouble()},
+                    //    {"max_speed_at_age", a_map["max_speed_at_age"].getDouble()},
+                    //    {"max_vitality_at_age", a_map["max_vitality_at_age"].getDouble()},
+                    //    {"max_appetite_at_age", a_map["max_appetite_at_age"].getDouble()},
+                    //    {"max_stamina_at_age", a_map["max_stamina_at_age"].getDouble()},
+                    //    {"height", a_map["height"].getDouble()},
+                    //    {"weight", a_map["weight"].getDouble()}
+                    //});
+
+                    Animal* obj = static_cast<Animal*>(organism.second.get());
+                    
                     response["animal"].push_back({
-                        {"name", a_map["name"].getString()},
-                        {"food_chain_rank", a_map["food_chain_rank"].getUnsignedInt()},
-                        {"vision_radius", a_map["vision_radius"].getDouble()},
-                        {"max_speed_at_age", a_map["max_speed_at_age"].getDouble()},
-                        {"max_vitality_at_age", a_map["max_vitality_at_age"].getDouble()},
-                        {"max_appetite_at_age", a_map["max_appetite_at_age"].getDouble()},
-                        {"max_stamina_at_age", a_map["max_stamina_at_age"].getDouble()},
-                        {"height", a_map["height"].getDouble()},
-                        {"weight", a_map["weight"].getDouble()}
+                        {"name", obj->name},
+                        {"food_chain_rank", obj->food_chain_rank},
+                        {"vision_radius", obj->vision_radius},
+                        {"max_speed_at_age", obj->max_speed_at_age},
+                        {"max_vitality_at_age", obj->max_vitality_at_age},
+                        {"max_appetite_at_age", obj->max_appetite_at_age},
+                        {"max_stamina_at_age", obj->max_stamina_at_age},
+                        {"height", obj->height},
+                        {"weight", obj->weight}
                     });
                 }
-                else if (a_map["kingdom"].getString() == "plant")
+                //else if (a_map["kingdom"].getString() == "plant")
+                else if (organism.second->get_kingdom() == "plant")
                 {
+                    Plant *obj = static_cast<Plant*>(organism.second.get());
                     response["plant"].push_back({
-                        {"name", a_map["name"].getString()},
-                        {"food_chain_rank", a_map["food_chain_rank"].getUnsignedInt()},
-                        {"max_vitality_at_age", a_map["max_vitality_at_age"].getDouble()},
-                        {"height", a_map["height"].getDouble()},
-                        {"weight", a_map["weight"].getDouble()}
+                        {"name", obj->name},
+                        {"food_chain_rank", obj->food_chain_rank},
+                        {"max_vitality_at_age", obj->max_vitality_at_age},
+                        {"height", obj->height},
+                        {"weight", obj->weight}
                     });
                 }
                 else
                 {
-                    std::cout << "Kingdom " << a_map["kingdom"].getString() << " not supported\n";
+                    //std::cout << "Kingdom " << a_map["kingdom"].getString() << " not supported\n";
+                    std::cout << "Kingdom " << organism.second->get_kingdom() << " not supported\n";
                 }
             }
         }
@@ -265,9 +306,11 @@ namespace stat_fetcher
         for (const auto &organism : organisms)
         {
             auto a_map = maker.raw_var_map_banana(organism.second);
-            if (a_map["monitor_in_simulation"].getBool())
+            //if (a_map["monitor_in_simulation"].getBool())
+            if (organism.second->get_monitor_in_simulation())
             {
-                if (a_map["kingdom"].getString() == "animal")
+                //if (a_map["kingdom"].getString() == "animal")
+                if (organism.second->get_kingdom() == "animal")
                 {
                     std::map<std::string, std::string> temp;
 
@@ -290,7 +333,8 @@ namespace stat_fetcher
 
                     representatives.push_back(temp);
                 }
-                else if (a_map["kingdom"].getString() == "plant")
+                //else if (a_map["kingdom"].getString() == "plant")
+                else if (organism.second->get_kingdom() == "plant")
                 {
                     std::map<std::string, std::string> temp;
 
@@ -368,11 +412,13 @@ namespace stat_fetcher
 
                 // Use data members directly TODO
 
-                if (a_map["gender"].getUnsignedInt() == MALE)
+                //if (a_map["gender"].getUnsignedInt() == MALE)
+                if (organism.second->get_gender() == MALE)
                 {
                     stat_db_map["MALE"]++;
 
-                    if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+                    //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+                    if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                     {
                         stat_db_map["M_MALE"]++;
                     }
@@ -381,7 +427,8 @@ namespace stat_fetcher
                 {
                     stat_db_map["FEMALE"]++;
 
-                    if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+                    //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+                    if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                     {
                         stat_db_map["M_FEMALE"]++;
                     }
@@ -389,55 +436,55 @@ namespace stat_fetcher
 
                 // Used in StatGroup::FIX
 
-                stat_db_map["M_AGE_START"] = a_map["mating_age_start"].getDouble();
-                stat_db_map["M_AGE_END"] = a_map["mating_age_end"].getDouble();
-                stat_db_map["MX_AGE"] = a_map["max_age"].getDouble();
-                stat_db_map["C_PROB"] = a_map["conceiving_probability"].getDouble();
-                stat_db_map["MT_PROB"] = a_map["mutation_probability"].getDouble();
-                stat_db_map["OF_FACTOR"] = a_map["offsprings_factor"].getDouble();
-                stat_db_map["AGE_DTH"] = a_map["age_on_death"].getDouble();
-                stat_db_map["FIT_DTH"] = a_map["fitness_on_death"].getDouble();
-                stat_db_map["AFR_DTH"] = a_map["age_fitness_on_death_ratio"].getDouble();
-                stat_db_map["HT_SP"] = a_map["height_on_speed"].getDouble();
-                stat_db_map["HT_ST"] = a_map["height_on_stamina"].getDouble();
-                stat_db_map["HT_VT"] = a_map["height_on_vitality"].getDouble();
-                stat_db_map["WT_SP"] = a_map["weight_on_speed"].getDouble();
-                stat_db_map["WT_ST"] = a_map["weight_on_stamina"].getDouble();
-                stat_db_map["WT_VT"] = a_map["weight_on_vitality"].getDouble();
-                stat_db_map["VT_AP"] = a_map["vitality_on_appetite"].getDouble();
-                stat_db_map["VT_SP"] = a_map["vitality_on_speed"].getDouble();
-                stat_db_map["ST_AP"] = a_map["stamina_on_appetite"].getDouble();
-                stat_db_map["ST_SP"] = a_map["stamina_on_speed"].getDouble();
-                stat_db_map["TMB_AP"] = a_map["theoretical_maximum_base_appetite"].getDouble();
-                stat_db_map["TMB_HT"] = a_map["theoretical_maximum_base_height"].getDouble();
-                stat_db_map["TMB_SP"] = a_map["theoretical_maximum_base_speed"].getDouble();
-                stat_db_map["TMB_ST"] = a_map["theoretical_maximum_base_stamina"].getDouble();
-                stat_db_map["TMB_VT"] = a_map["theoretical_maximum_base_vitality"].getDouble();
-                stat_db_map["TMB_WT"] = a_map["theoretical_maximum_base_weight"].getDouble();
-                stat_db_map["TM_HT"] = a_map["theoretical_maximum_height"].getDouble();
-                stat_db_map["TM_SP"] = a_map["theoretical_maximum_speed"].getDouble();
-                stat_db_map["TM_WT"] = a_map["theoretical_maximum_weight"].getDouble();
-                stat_db_map["TMM_HT"] = a_map["theoretical_maximum_height_multiplier"].getDouble();
-                stat_db_map["TMM_SP"] = a_map["theoretical_maximum_speed_multiplier"].getDouble();
-                stat_db_map["TMM_ST"] = a_map["theoretical_maximum_stamina_multiplier"].getDouble();
-                stat_db_map["TMM_VT"] = a_map["theoretical_maximum_vitality_multiplier"].getDouble();
-                stat_db_map["TMM_WT"] = a_map["theoretical_maximum_weight_multiplier"].getDouble();
-                stat_db_map["SL_FACTOR"] = a_map["sleep_restore_factor"].getDouble();
+                stat_db_map["M_AGE_START"] = std::stod(a_map["mating_age_start"].getString());
+                stat_db_map["M_AGE_END"] = std::stod(a_map["mating_age_end"].getString());
+                stat_db_map["MX_AGE"] = std::stod(a_map["max_age"].getString());
+                stat_db_map["C_PROB"] = std::stod(a_map["conceiving_probability"].getString());
+                stat_db_map["MT_PROB"] = std::stod(a_map["mutation_probability"].getString());
+                stat_db_map["OF_FACTOR"] = std::stod(a_map["offsprings_factor"].getString());
+                stat_db_map["AGE_DTH"] = std::stod(a_map["age_on_death"].getString());
+                stat_db_map["FIT_DTH"] = std::stod(a_map["fitness_on_death"].getString());
+                stat_db_map["AFR_DTH"] = std::stod(a_map["age_fitness_on_death_ratio"].getString());
+                stat_db_map["HT_SP"] = std::stod(a_map["height_on_speed"].getString());
+                stat_db_map["HT_ST"] = std::stod(a_map["height_on_stamina"].getString());
+                stat_db_map["HT_VT"] = std::stod(a_map["height_on_vitality"].getString());
+                stat_db_map["WT_SP"] = std::stod(a_map["weight_on_speed"].getString());
+                stat_db_map["WT_ST"] = std::stod(a_map["weight_on_stamina"].getString());
+                stat_db_map["WT_VT"] = std::stod(a_map["weight_on_vitality"].getString());
+                stat_db_map["VT_AP"] = std::stod(a_map["vitality_on_appetite"].getString());
+                stat_db_map["VT_SP"] = std::stod(a_map["vitality_on_speed"].getString());
+                stat_db_map["ST_AP"] = std::stod(a_map["stamina_on_appetite"].getString());
+                stat_db_map["ST_SP"] = std::stod(a_map["stamina_on_speed"].getString());
+                stat_db_map["TMB_AP"] = std::stod(a_map["theoretical_maximum_base_appetite"].getString());
+                stat_db_map["TMB_HT"] = std::stod(a_map["theoretical_maximum_base_height"].getString());
+                stat_db_map["TMB_SP"] = std::stod(a_map["theoretical_maximum_base_speed"].getString());
+                stat_db_map["TMB_ST"] = std::stod(a_map["theoretical_maximum_base_stamina"].getString());
+                stat_db_map["TMB_VT"] = std::stod(a_map["theoretical_maximum_base_vitality"].getString());
+                stat_db_map["TMB_WT"] = std::stod(a_map["theoretical_maximum_base_weight"].getString());
+                stat_db_map["TM_HT"] = std::stod(a_map["theoretical_maximum_height"].getString());
+                stat_db_map["TM_SP"] = std::stod(a_map["theoretical_maximum_speed"].getString());
+                stat_db_map["TM_WT"] = std::stod(a_map["theoretical_maximum_weight"].getString());
+                stat_db_map["TMM_HT"] = std::stod(a_map["theoretical_maximum_height_multiplier"].getString());
+                stat_db_map["TMM_SP"] = std::stod(a_map["theoretical_maximum_speed_multiplier"].getString());
+                stat_db_map["TMM_ST"] = std::stod(a_map["theoretical_maximum_stamina_multiplier"].getString());
+                stat_db_map["TMM_VT"] = std::stod(a_map["theoretical_maximum_vitality_multiplier"].getString());
+                stat_db_map["TMM_WT"] = std::stod(a_map["theoretical_maximum_weight_multiplier"].getString());
+                stat_db_map["SL_FACTOR"] = std::stod(a_map["sleep_restore_factor"].getString());
 
                 // Used in StatGroup::MEAN
                 
-                stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (a_map["generation"].getDouble() / (count + 1));
-                stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (a_map["immunity"].getDouble() / (count + 1));
-                stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (a_map["age"].getDouble() / (count + 1));
-                stat_db_map["AVG_HT"] = (count / (count + 1)) * stat_db_map["AVG_HT"] + (a_map["height"].getDouble() / (count + 1));
-                stat_db_map["AVG_WT"] = (count / (count + 1)) * stat_db_map["AVG_WT"] + (a_map["weight"].getDouble() / (count + 1));
-                stat_db_map["AVGMA_AP"] = (count / (count + 1)) * stat_db_map["AVGMA_AP"] + (a_map["max_appetite_at_age"].getDouble() / (count + 1));
-                stat_db_map["AVGMA_SP"] = (count / (count + 1)) * stat_db_map["AVGMA_SP"] + (a_map["max_speed_at_age"].getDouble() / (count + 1));
-                stat_db_map["AVGMA_ST"] = (count / (count + 1)) * stat_db_map["AVGMA_ST"] + (a_map["max_stamina_at_age"].getDouble() / (count + 1));
-                stat_db_map["AVGMA_VT"] = (count / (count + 1)) * stat_db_map["AVGMA_VT"] + (a_map["max_vitality_at_age"].getDouble() / (count + 1));
-                stat_db_map["AVG_SFIT"] = (count / (count + 1)) * stat_db_map["AVG_SFIT"] + (a_map["static_fitness"].getDouble() / (count + 1));
-                stat_db_map["AVG_DTHF"] = (count / (count + 1)) * stat_db_map["AVG_DTHF"] + (a_map["death_factor"].getDouble() / (count + 1));
-                stat_db_map["AVG_VIS"] = (count / (count + 1)) * stat_db_map["AVG_VIS"] + (a_map["vision_radius"].getDouble() / (count + 1));
+                stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (std::stod(a_map["generation"].getString()) / (count + 1));
+                stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (std::stod(a_map["immunity"].getString()) / (count + 1));
+                stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (std::stod(a_map["age"].getString()) / (count + 1));
+                stat_db_map["AVG_HT"] = (count / (count + 1)) * stat_db_map["AVG_HT"] + (std::stod(a_map["height"].getString()) / (count + 1));
+                stat_db_map["AVG_WT"] = (count / (count + 1)) * stat_db_map["AVG_WT"] + (std::stod(a_map["weight"].getString()) / (count + 1));
+                stat_db_map["AVGMA_AP"] = (count / (count + 1)) * stat_db_map["AVGMA_AP"] + (std::stod(a_map["max_appetite_at_age"].getString()) / (count + 1));
+                stat_db_map["AVGMA_SP"] = (count / (count + 1)) * stat_db_map["AVGMA_SP"] + (std::stod(a_map["max_speed_at_age"].getString()) / (count + 1));
+                stat_db_map["AVGMA_ST"] = (count / (count + 1)) * stat_db_map["AVGMA_ST"] + (std::stod(a_map["max_stamina_at_age"].getString()) / (count + 1));
+                stat_db_map["AVGMA_VT"] = (count / (count + 1)) * stat_db_map["AVGMA_VT"] + (std::stod(a_map["max_vitality_at_age"].getString()) / (count + 1));
+                stat_db_map["AVG_SFIT"] = (count / (count + 1)) * stat_db_map["AVG_SFIT"] + (std::stod(a_map["static_fitness"].getString()) / (count + 1));
+                stat_db_map["AVG_DTHF"] = (count / (count + 1)) * stat_db_map["AVG_DTHF"] + (std::stod(a_map["death_factor"].getString()) / (count + 1));
+                stat_db_map["AVG_VIS"] = (count / (count + 1)) * stat_db_map["AVG_VIS"] + (std::stod(a_map["vision_radius"].getString()) / (count + 1));
 
                 count++;
             }
@@ -520,39 +567,40 @@ namespace stat_fetcher
 
                 stat_db_map["POP"]++;
 
-                if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+                //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
+                if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                 {
                     stat_db_map["M_POP"]++;
                 }
 
-                stat_db_map["C_PROB"] = a_map["conceiving_probability"].getDouble();
-                stat_db_map["M_AGE_START"] = a_map["mating_age_start"].getDouble();
-                stat_db_map["M_AGE_END"] = a_map["mating_age_end"].getDouble();
-                stat_db_map["MX_AGE"] = a_map["max_age"].getDouble();
-                stat_db_map["MT_PROB"] = a_map["mutation_probability"].getDouble();
-                stat_db_map["OF_FACTOR"] = a_map["offsprings_factor"].getDouble();
-                stat_db_map["AGE_DTH"] = a_map["age_on_death"].getDouble();
-                stat_db_map["FIT_DTH"] = a_map["fitness_on_death"].getDouble();
-                stat_db_map["AFR_DTH"] = a_map["age_fitness_on_death_ratio"].getDouble();
-                stat_db_map["HT_VT"] = a_map["height_on_vitality"].getDouble();
-                stat_db_map["WT_VT"] = a_map["weight_on_vitality"].getDouble();
-                stat_db_map["TMB_HT"] = a_map["theoretical_maximum_base_height"].getDouble();
-                stat_db_map["TMB_VT"] = a_map["theoretical_maximum_base_vitality"].getDouble();
-                stat_db_map["TMB_WT"] = a_map["theoretical_maximum_base_weight"].getDouble();
-                stat_db_map["TM_HT"] = a_map["theoretical_maximum_height"].getDouble();
-                stat_db_map["TM_WT"] = a_map["theoretical_maximum_weight"].getDouble();
-                stat_db_map["TMM_HT"] = a_map["theoretical_maximum_height_multiplier"].getDouble();
-                stat_db_map["TMM_VT"] = a_map["theoretical_maximum_vitality_multiplier"].getDouble();
-                stat_db_map["TMM_WT"] = a_map["theoretical_maximum_weight_multiplier"].getDouble();
+                stat_db_map["C_PROB"] = std::stod(a_map["conceiving_probability"].getString());
+                stat_db_map["M_AGE_START"] = std::stod(a_map["mating_age_start"].getString());
+                stat_db_map["M_AGE_END"] = std::stod(a_map["mating_age_end"].getString());
+                stat_db_map["MX_AGE"] = std::stod(a_map["max_age"].getString());
+                stat_db_map["MT_PROB"] = std::stod(a_map["mutation_probability"].getString());
+                stat_db_map["OF_FACTOR"] = std::stod(a_map["offsprings_factor"].getString());
+                stat_db_map["AGE_DTH"] = std::stod(a_map["age_on_death"].getString());
+                stat_db_map["FIT_DTH"] = std::stod(a_map["fitness_on_death"].getString());
+                stat_db_map["AFR_DTH"] = std::stod(a_map["age_fitness_on_death_ratio"].getString());
+                stat_db_map["HT_VT"] = std::stod(a_map["height_on_vitality"].getString());
+                stat_db_map["WT_VT"] = std::stod(a_map["weight_on_vitality"].getString());
+                stat_db_map["TMB_HT"] = std::stod(a_map["theoretical_maximum_base_height"].getString());
+                stat_db_map["TMB_VT"] = std::stod(a_map["theoretical_maximum_base_vitality"].getString());
+                stat_db_map["TMB_WT"] = std::stod(a_map["theoretical_maximum_base_weight"].getString());
+                stat_db_map["TM_HT"] = std::stod(a_map["theoretical_maximum_height"].getString());
+                stat_db_map["TM_WT"] = std::stod(a_map["theoretical_maximum_weight"].getString());
+                stat_db_map["TMM_HT"] = std::stod(a_map["theoretical_maximum_height_multiplier"].getString());
+                stat_db_map["TMM_VT"] = std::stod(a_map["theoretical_maximum_vitality_multiplier"].getString());
+                stat_db_map["TMM_WT"] = std::stod(a_map["theoretical_maximum_weight_multiplier"].getString());
 
-                stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (a_map["generation"].getDouble() / (count + 1));
-                stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (a_map["immunity"].getDouble() / (count + 1));
-                stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (a_map["age"].getDouble() / (count + 1));
-                stat_db_map["AVG_HT"] = (count / (count + 1)) * stat_db_map["AVG_HT"] + (a_map["height"].getDouble() / (count + 1));
-                stat_db_map["AVG_WT"] = (count / (count + 1)) * stat_db_map["AVG_WT"] + (a_map["weight"].getDouble() / (count + 1));
-                stat_db_map["AVGMA_VT"] = (count / (count + 1)) * stat_db_map["AVGMA_VT"] + (a_map["max_vitality_at_age"].getDouble() / (count + 1));
-                stat_db_map["AVG_SFIT"] = (count / (count + 1)) * stat_db_map["AVG_SFIT"] + (a_map["static_fitness"].getDouble() / (count + 1));
-                stat_db_map["AVG_DTHF"] = (count / (count + 1)) * stat_db_map["AVG_DTHF"] + (a_map["death_factor"].getDouble() / (count + 1));
+                stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (std::stod(a_map["generation"].getString()) / (count + 1));
+                stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (std::stod(a_map["immunity"].getString()) / (count + 1));
+                stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (std::stod(a_map["age"].getString()) / (count + 1));
+                stat_db_map["AVG_HT"] = (count / (count + 1)) * stat_db_map["AVG_HT"] + (std::stod(a_map["height"].getString()) / (count + 1));
+                stat_db_map["AVG_WT"] = (count / (count + 1)) * stat_db_map["AVG_WT"] + (std::stod(a_map["weight"].getString()) / (count + 1));
+                stat_db_map["AVGMA_VT"] = (count / (count + 1)) * stat_db_map["AVGMA_VT"] + (std::stod(a_map["max_vitality_at_age"].getString()) / (count + 1));
+                stat_db_map["AVG_SFIT"] = (count / (count + 1)) * stat_db_map["AVG_SFIT"] + (std::stod(a_map["static_fitness"].getString()) / (count + 1));
+                stat_db_map["AVG_DTHF"] = (count / (count + 1)) * stat_db_map["AVG_DTHF"] + (std::stod(a_map["death_factor"].getString()) / (count + 1));
 
                 count++;
             }

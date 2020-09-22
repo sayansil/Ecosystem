@@ -20,6 +20,7 @@ enum Gender
 
 enum class PStatType
 {
+    DEFAULT,
     INT,
     DOUBLE,
     CHAR,
@@ -81,99 +82,99 @@ struct STAT
 struct PStat
 {
     void *address;
-    uint8_t index; // Change to Type TODO
+    PStatType index = PStatType::DEFAULT;
     PStat() = default;
-    PStat(int& data) : address(&data), index(1) {}
-    PStat(double& data) : address(&data), index(2) {}
-    PStat(std::string& data) : address(&data), index(3) {}
-    PStat(bool& data) : address(&data), index(4) {}
-    PStat(char& data) : address(&data), index(5) {}
-    PStat(unsigned int& data) : address(&data), index(6) {}
+    PStat(int& data) : address(&data), index(PStatType::INT) {}
+    PStat(double& data) : address(&data), index(PStatType::DOUBLE) {}
+    PStat(std::string& data) : address(&data), index(PStatType::STRING) {}
+    PStat(bool& data) : address(&data), index(PStatType::BOOL) {}
+    PStat(char& data) : address(&data), index(PStatType::CHAR) {}
+    PStat(unsigned int& data) : address(&data), index(PStatType::UINT) {}
 
     std::string getString() const
     {
-        if(index == 1)
+        if(index == PStatType::INT)
             return std::to_string(*static_cast<int*>(address));
-        else if(index == 2)
+        else if(index == PStatType::DOUBLE)
             return std::to_string(*static_cast<double*>(address));
-        else if(index == 3)
+        else if(index == PStatType::STRING)
             return std::string(*static_cast<std::string*>(address));
-        else if(index == 4)
+        else if(index == PStatType::BOOL)
             return std::to_string(*static_cast<bool*>(address));
-        else if(index == 5)
+        else if(index == PStatType::CHAR)
             return std::string(1, *static_cast<char*>(address));
-        else if(index == 6)
+        else if(index == PStatType::UINT)
             return std::to_string(*static_cast<unsigned int*>(address));
         else
             throw std::runtime_error("getString() : index not initialized in PStat");
     }
 
-    int getInt() const
-    {
-        if (index == 1)
-            return *static_cast<int *>(address);
-        else if (index == 2)
-            return (int)(*static_cast<double *>(address));
-        else if (index == 6)
-            return (int)(*static_cast<unsigned int *>(address));
-        else
-            throw std::runtime_error("getInt() : Could not convert to specified data type");
-    }
+    //int getInt() const
+    //{
+    //    if (index == 1)
+    //        return *static_cast<int *>(address);
+    //    else if (index == 2)
+    //        return (int)(*static_cast<double *>(address));
+    //    else if (index == 6)
+    //        return (int)(*static_cast<unsigned int *>(address));
+    //    else
+    //        throw std::runtime_error("getInt() : Could not convert to specified data type");
+    //}
 
-    double getDouble() const
-    {
-        if (index == 1)
-            return (double)(*static_cast<int *>(address));
-        else if (index == 2)
-            return *static_cast<double *>(address);
-        else if (index == 6)
-            return (double)(*static_cast<unsigned int *>(address));
-        else
-            throw std::runtime_error("getDouble() : Could not convert to specified data type");
-    }
+    //double getDouble() const
+    //{
+    //    if (index == 1)
+    //        return (double)(*static_cast<int *>(address));
+    //    else if (index == 2)
+    //        return *static_cast<double *>(address);
+    //    else if (index == 6)
+    //        return (double)(*static_cast<unsigned int *>(address));
+    //    else
+    //        throw std::runtime_error("getDouble() : Could not convert to specified data type");
+    //}
 
-    bool getBool() const
-    {
-        if (index == 4)
-            return *static_cast<bool *>(address);
-        else
-            throw std::runtime_error("getBool() : Could not convert to specified data type");
-    }
+    //bool getBool() const
+    //{
+    //    if (index == 4)
+    //        return *static_cast<bool *>(address);
+    //    else
+    //        throw std::runtime_error("getBool() : Could not convert to specified data type");
+    //}
 
-    char getChar() const
-    {
-        if (index == 5)
-            return *static_cast<char *>(address);
-        else
-            throw std::runtime_error("getChar() : Could not convert to specified data type");
-    }
+    //char getChar() const
+    //{
+    //    if (index == 5)
+    //        return *static_cast<char *>(address);
+    //    else
+    //        throw std::runtime_error("getChar() : Could not convert to specified data type");
+    //}
 
-    unsigned int getUnsignedInt() const
-    {
-        if (index == 1)
-            return (unsigned int)(*static_cast<int *>(address));
-        else if (index == 2)
-            return (unsigned int)(*static_cast<double *>(address));
-        else if (index == 6)
-            return *static_cast<unsigned int *>(address);
-        else
-            throw std::runtime_error("getUnsignedInt() : Could not convert to specified data type");
-    }
+    //unsigned int getUnsignedInt() const
+    //{
+    //    if (index == 1)
+    //        return (unsigned int)(*static_cast<int *>(address));
+    //    else if (index == 2)
+    //        return (unsigned int)(*static_cast<double *>(address));
+    //    else if (index == 6)
+    //        return *static_cast<unsigned int *>(address);
+    //    else
+    //        throw std::runtime_error("getUnsignedInt() : Could not convert to specified data type");
+    //}
 
-    int getIndex() const
+    PStatType getIndex() const
     {
-        return (int)index;
+        return index;
     }
 
     void assign(const std::string &val)
     {
-        if(index == 1)
+        if(index == PStatType::INT)
             *static_cast<int*>(address) = std::stoi(val);
-        else if(index == 2)
+        else if(index == PStatType::DOUBLE)
             *static_cast<double*>(address) = std::stod(val);
-        else if(index == 3)
+        else if(index == PStatType::STRING)
             *static_cast<std::string*>(address) = val;
-        else if(index == 4)
+        else if(index == PStatType::BOOL)
         {
             if(val == "true")
                 *static_cast<bool*>(address) = true;
@@ -182,13 +183,13 @@ struct PStat
             else
                 throw std::invalid_argument("assign() : bool value neither true nor false");
         }
-        else if(index == 5)
+        else if(index == PStatType::CHAR)
         {
             if(val.length() != 1)
                 throw std::length_error("assign() : length of string not equal to 1");
             *static_cast<char*>(address) = val[0];
         }
-        if(index == 6)
+        if(index == PStatType::UINT)
             *static_cast<unsigned int*>(address) = std::stoul(val);
         else
             throw std::runtime_error("assign() : index not initialized");
