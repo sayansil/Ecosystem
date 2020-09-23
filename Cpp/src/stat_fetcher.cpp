@@ -405,9 +405,10 @@ namespace stat_fetcher
 
             for (const auto &organism: organisms)
             {
-                auto a_map = maker.raw_var_map_banana(organism.second); // TODO
+                auto a_map = maker.raw_var_map_banana(*static_cast<Animal*>(organism.second.get())); // TODO
 
-                if (kind != a_map["kind"].getString())
+                //if (kind != a_map["kind"].getString())
+                if (kind != organism.second->get_kind())
                     continue;
 
                 // Use data members directly TODO
@@ -560,11 +561,11 @@ namespace stat_fetcher
 
             for (const auto &organism: organisms)
             {
-                auto a_map = maker.raw_var_map_banana(organism.second);
+                auto a_map = maker.raw_var_map_banana(*static_cast<Plant*>(organism.second.get()));
 
-                if (kind != a_map["kind"].getString())
+                if (kind != organism.second->get_kind())
                     continue;
-
+                
                 stat_db_map["POP"]++;
 
                 //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
