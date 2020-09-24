@@ -5,6 +5,7 @@ set(ECOSYSTEM_SOURCES
     god.cpp
     database_manager.cpp
     plant.cpp
+    schema.cpp
     )
 
 add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES} ${SQLITE_SOURCES})

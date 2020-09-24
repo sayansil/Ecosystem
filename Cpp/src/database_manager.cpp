@@ -153,7 +153,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_rows_master(const std::st
 
     sqlite3_exec(db, sql_command.c_str(), callback_read_master, 0, nullptr);
     std::vector<std::vector<DBType>> rows;
-    for(const auto &gRow : gRowsMaster)
+    for(auto &gRow : gRowsMaster)
     {
         std::vector<DBType> row;
 
@@ -174,7 +174,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_all_rows_master()
 
     sqlite3_exec(db, sql_command.c_str(), callback_read_master, 0, nullptr);
     std::vector<std::vector<DBType>> rows;
-    for(const auto &gRow : gRowsMaster)
+    for(auto &gRow : gRowsMaster)
     {
         std::vector<DBType> row;
 
@@ -206,7 +206,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_all_rows_stats(const std:
         std::string sql_command = "SELECT * FROM " + table_name;
         sqlite3_exec(db, sql_command.c_str(), callback_read_animal, 0, nullptr);
 
-        for (const auto &gRow : gRowsAnimal)
+        for (auto &gRow : gRowsAnimal)
         {
             std::vector<DBType> row;
 
@@ -225,7 +225,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_all_rows_stats(const std:
         std::string sql_command = "SELECT * FROM " + table_name;
         sqlite3_exec(db, sql_command.c_str(), callback_read_plant, 0, nullptr);
 
-        for (const auto &gRow : gRowsPlant)
+        for (auto &gRow : gRowsPlant)
         {
             std::vector<DBType> row;
 
