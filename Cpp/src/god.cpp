@@ -149,6 +149,7 @@ bool God::spawn_organism(const ENTITY &current_organism)
 
             map_maker maker;
             auto a_map = maker.raw_var_map_banana(*static_cast<Organism<Plant>*>(current_organism.get())); // TODO - use a generic type like Organism
+            
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
                 tmp.emplace_back(DBType(colType, a_map[colName].getString()));

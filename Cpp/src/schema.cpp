@@ -12,7 +12,7 @@ namespace schema
         {"age", SQLType::INT},
         {"height", SQLType::FLOAT},
         {"weight", SQLType::FLOAT},
-        {"fitness", SQLType::FLOAT}};
+        {"static_fitness", SQLType::FLOAT}};
 
     extern std::vector<std::pair<std::string, SQLType>> schemaAnimal{
         {"year", SQLType::INT},

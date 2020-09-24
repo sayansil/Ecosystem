@@ -17,16 +17,16 @@ static void create_master_table()
     int rc;
 
     sql_command = "CREATE TABLE ECOSYSTEM_MASTER("
-                  "name         TEXT        PRIMARY KEY     NOT NULL,"
-                  "kind         TEXT                        NOT NULL,"
-                  "chromosome   TEXT                        NOT NULL,"
-                  "generation   INT                         NOT NULL,"
-                  "immunity     FLOAT                       NOT NULL,"
-                  "gender       INT                         NOT NULL,"
-                  "age          INT                         NOT NULL,"
-                  "height       FLOAT                       NOT NULL,"
-                  "weight       FLOAT                       NOT NULL,"
-                  "fitness      FLOAT                       NOT NULL);";
+                  "name                TEXT        PRIMARY KEY     NOT NULL,"
+                  "kind                TEXT                        NOT NULL,"
+                  "chromosome          TEXT                        NOT NULL,"
+                  "generation          INT                         NOT NULL,"
+                  "immunity            FLOAT                       NOT NULL,"
+                  "gender              INT                         NOT NULL,"
+                  "age                 INT                         NOT NULL,"
+                  "height              FLOAT                       NOT NULL,"
+                  "weight              FLOAT                       NOT NULL,"
+                  "static_fitness      FLOAT                       NOT NULL);";
     rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
     if (rc != SQLITE_OK)
     {
