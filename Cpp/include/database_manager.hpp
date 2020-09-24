@@ -9,6 +9,7 @@
 #include <vector>
 #include <ecosystem_types.hpp>
 #include <animal.hpp>
+#include <schema.hpp>
 
 struct DatabaseManager
 {

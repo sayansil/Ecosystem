@@ -77,18 +77,6 @@ namespace helper
         return num / den;
     }
 
-    void display_stat(const STAT &var)
-    {
-        if(var.data.index() == 0)
-            std::cout << "uint: " << static_cast<unsigned int>(var) << ' ';
-        if(var.data.index() == 1)
-            std::cout << "double: " << static_cast<double>(var) << ' ';
-        if(var.data.index() == 2)
-            std::cout << "string: " << static_cast<std::string>(var) << ' ';
-        if(var.data.index() == 3)
-            std::cout << "bool: " << static_cast<bool>(var) << ' ';
-    }
-
     std::string get_random_mixture(const std::string &str1, const std::string &str2)
     {
         std::string str3;

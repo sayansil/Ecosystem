@@ -367,7 +367,7 @@ namespace stat_fetcher
         return representatives;
     }
 
-    std::vector<DBType> get_db_row(const ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year, const std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &statistics)
+    std::vector<DBType> get_db_row(const ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year, std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &statistics)
     {
         std::vector<DBType> db_row;
         map_maker maker;
@@ -378,168 +378,77 @@ namespace stat_fetcher
 
             unsigned int count = 0;
 
-
             // Used in StatGroup::MISC
 
-            for (const auto& var_name: statistics[kingdom][StatGroup::MISC])
+            for (const auto& var_name : statistics[kingdom][StatGroup::MISC])
             {
-
+                stat_db_map[var_name] = 0.0;
             }
-
 
             // Used in StatGroup::MEAN
 
-            stat_db_map["AVG_GEN"] = 0.0;
-            stat_db_map["AVG_IMM"] = 0.0;
-            stat_db_map["AVG_AGE"] = 0.0;
-            stat_db_map["AVG_HT"] = 0.0;
-            stat_db_map["AVG_WT"] = 0.0;
-            stat_db_map["AVGMA_AP"] = 0.0;
-            stat_db_map["AVGMA_SP"] = 0.0;
-            stat_db_map["AVGMA_ST"] = 0.0;
-            stat_db_map["AVGMA_VT"] = 0.0;
-            stat_db_map["AVG_SFIT"] = 0.0;
-            stat_db_map["AVG_DTHF"] = 0.0;
-            stat_db_map["AVG_VIS"] = 0.0;
+            for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
+            {
+                stat_db_map[var_name] = 0.0;
+            }
 
             for (const auto &organism: organisms)
             {
-                auto a_map = maker.raw_var_map_banana(*static_cast<Animal*>(organism.second.get())); // TODO
+                auto a_map = maker.raw_var_map_banana(*static_cast<Animal*>(organism.second.get()));
 
-                //if (kind != a_map["kind"].getString())
                 if (kind != organism.second->get_kind())
                     continue;
 
-                // Use data members directly TODO
-
-                //if (a_map["gender"].getUnsignedInt() == MALE)
                 if (organism.second->get_gender() == MALE)
                 {
-                    stat_db_map["MALE"]++;
+                    stat_db_map["male_population"]++;
 
                     //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
                     if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                     {
-                        stat_db_map["M_MALE"]++;
+                        stat_db_map["matable_male_population"]++;
                     }
                 }
                 else
                 {
-                    stat_db_map["FEMALE"]++;
+                    stat_db_map["female_population"]++;
 
                     //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
                     if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                     {
-                        stat_db_map["M_FEMALE"]++;
+                        stat_db_map["matable_female_population"]++;
                     }
                 }
 
                 // Used in StatGroup::FIX
 
-                stat_db_map["M_AGE_START"] = std::stod(a_map["mating_age_start"].getString());
-                stat_db_map["M_AGE_END"] = std::stod(a_map["mating_age_end"].getString());
-                stat_db_map["MX_AGE"] = std::stod(a_map["max_age"].getString());
-                stat_db_map["C_PROB"] = std::stod(a_map["conceiving_probability"].getString());
-                stat_db_map["MT_PROB"] = std::stod(a_map["mutation_probability"].getString());
-                stat_db_map["OF_FACTOR"] = std::stod(a_map["offsprings_factor"].getString());
-                stat_db_map["AGE_DTH"] = std::stod(a_map["age_on_death"].getString());
-                stat_db_map["FIT_DTH"] = std::stod(a_map["fitness_on_death"].getString());
-                stat_db_map["AFR_DTH"] = std::stod(a_map["age_fitness_on_death_ratio"].getString());
-                stat_db_map["HT_SP"] = std::stod(a_map["height_on_speed"].getString());
-                stat_db_map["HT_ST"] = std::stod(a_map["height_on_stamina"].getString());
-                stat_db_map["HT_VT"] = std::stod(a_map["height_on_vitality"].getString());
-                stat_db_map["WT_SP"] = std::stod(a_map["weight_on_speed"].getString());
-                stat_db_map["WT_ST"] = std::stod(a_map["weight_on_stamina"].getString());
-                stat_db_map["WT_VT"] = std::stod(a_map["weight_on_vitality"].getString());
-                stat_db_map["VT_AP"] = std::stod(a_map["vitality_on_appetite"].getString());
-                stat_db_map["VT_SP"] = std::stod(a_map["vitality_on_speed"].getString());
-                stat_db_map["ST_AP"] = std::stod(a_map["stamina_on_appetite"].getString());
-                stat_db_map["ST_SP"] = std::stod(a_map["stamina_on_speed"].getString());
-                stat_db_map["TMB_AP"] = std::stod(a_map["theoretical_maximum_base_appetite"].getString());
-                stat_db_map["TMB_HT"] = std::stod(a_map["theoretical_maximum_base_height"].getString());
-                stat_db_map["TMB_SP"] = std::stod(a_map["theoretical_maximum_base_speed"].getString());
-                stat_db_map["TMB_ST"] = std::stod(a_map["theoretical_maximum_base_stamina"].getString());
-                stat_db_map["TMB_VT"] = std::stod(a_map["theoretical_maximum_base_vitality"].getString());
-                stat_db_map["TMB_WT"] = std::stod(a_map["theoretical_maximum_base_weight"].getString());
-                stat_db_map["TM_HT"] = std::stod(a_map["theoretical_maximum_height"].getString());
-                stat_db_map["TM_SP"] = std::stod(a_map["theoretical_maximum_speed"].getString());
-                stat_db_map["TM_WT"] = std::stod(a_map["theoretical_maximum_weight"].getString());
-                stat_db_map["TMM_HT"] = std::stod(a_map["theoretical_maximum_height_multiplier"].getString());
-                stat_db_map["TMM_SP"] = std::stod(a_map["theoretical_maximum_speed_multiplier"].getString());
-                stat_db_map["TMM_ST"] = std::stod(a_map["theoretical_maximum_stamina_multiplier"].getString());
-                stat_db_map["TMM_VT"] = std::stod(a_map["theoretical_maximum_vitality_multiplier"].getString());
-                stat_db_map["TMM_WT"] = std::stod(a_map["theoretical_maximum_weight_multiplier"].getString());
-                stat_db_map["SL_FACTOR"] = std::stod(a_map["sleep_restore_factor"].getString());
+                for (const auto &var_name : statistics[kingdom][StatGroup::FIX])
+                {
+                    stat_db_map[var_name] = std::stod(a_map[var_name].getString());
+                }
 
                 // Used in StatGroup::MEAN
 
-                stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (std::stod(a_map["generation"].getString()) / (count + 1));
-                stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (std::stod(a_map["immunity"].getString()) / (count + 1));
-                stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (std::stod(a_map["age"].getString()) / (count + 1));
-                stat_db_map["AVG_HT"] = (count / (count + 1)) * stat_db_map["AVG_HT"] + (std::stod(a_map["height"].getString()) / (count + 1));
-                stat_db_map["AVG_WT"] = (count / (count + 1)) * stat_db_map["AVG_WT"] + (std::stod(a_map["weight"].getString()) / (count + 1));
-                stat_db_map["AVGMA_AP"] = (count / (count + 1)) * stat_db_map["AVGMA_AP"] + (std::stod(a_map["max_appetite_at_age"].getString()) / (count + 1));
-                stat_db_map["AVGMA_SP"] = (count / (count + 1)) * stat_db_map["AVGMA_SP"] + (std::stod(a_map["max_speed_at_age"].getString()) / (count + 1));
-                stat_db_map["AVGMA_ST"] = (count / (count + 1)) * stat_db_map["AVGMA_ST"] + (std::stod(a_map["max_stamina_at_age"].getString()) / (count + 1));
-                stat_db_map["AVGMA_VT"] = (count / (count + 1)) * stat_db_map["AVGMA_VT"] + (std::stod(a_map["max_vitality_at_age"].getString()) / (count + 1));
-                stat_db_map["AVG_SFIT"] = (count / (count + 1)) * stat_db_map["AVG_SFIT"] + (std::stod(a_map["static_fitness"].getString()) / (count + 1));
-                stat_db_map["AVG_DTHF"] = (count / (count + 1)) * stat_db_map["AVG_DTHF"] + (std::stod(a_map["death_factor"].getString()) / (count + 1));
-                stat_db_map["AVG_VIS"] = (count / (count + 1)) * stat_db_map["AVG_VIS"] + (std::stod(a_map["vision_radius"].getString()) / (count + 1));
+                for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
+                {
+                    stat_db_map[var_name] = (count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
+                }
 
                 count++;
             }
 
-            db_row.push_back((STAT)year); // year
-            db_row.push_back((STAT)stat_db_map["MALE"]); // male
-            db_row.push_back((STAT)stat_db_map["FEMALE"]); // female
-            db_row.push_back((STAT)stat_db_map["M_MALE"]); // matable_male
-            db_row.push_back((STAT)stat_db_map["M_FEMALE"]); // matable_female
-            db_row.push_back((STAT)stat_db_map["C_PROB"]); // conceiving_probability
-            db_row.push_back((STAT)stat_db_map["M_AGE_START"]); // mating_age_start
-            db_row.push_back((STAT)stat_db_map["M_AGE_END"]); // mating_age_end
-            db_row.push_back((STAT)stat_db_map["MX_AGE"]); // max_age
-            db_row.push_back((STAT)stat_db_map["MT_PROB"]); // mutation_probability
-            db_row.push_back((STAT)stat_db_map["OF_FACTOR"]); // offsprings_factor
-            db_row.push_back((STAT)stat_db_map["AGE_DTH"]); // age_on_death
-            db_row.push_back((STAT)stat_db_map["FIT_DTH"]); // fitness_on_death
-            db_row.push_back((STAT)stat_db_map["AFR_DTH"]); // age_fitness_on_death_ratio
-            db_row.push_back((STAT)stat_db_map["HT_SP"]); // height_on_speed
-            db_row.push_back((STAT)stat_db_map["HT_ST"]); // height_on_stamina
-            db_row.push_back((STAT)stat_db_map["HT_VT"]); // height_on_vitality
-            db_row.push_back((STAT)stat_db_map["WT_SP"]); // weight_on_speed
-            db_row.push_back((STAT)stat_db_map["WT_ST"]); // weight_on_stamina
-            db_row.push_back((STAT)stat_db_map["WT_VT"]); // weight_on_vitality
-            db_row.push_back((STAT)stat_db_map["VT_AP"]); // vitality_on_appetite
-            db_row.push_back((STAT)stat_db_map["VT_SP"]); // vitality_on_speed
-            db_row.push_back((STAT)stat_db_map["ST_AP"]); // stamina_on_appetite
-            db_row.push_back((STAT)stat_db_map["ST_SP"]); // stamina_on_speed
-            db_row.push_back((STAT)stat_db_map["TMB_AP"]); // theoretical_maximum_base_appetite
-            db_row.push_back((STAT)stat_db_map["TMB_HT"]); // theoretical_maximum_base_height
-            db_row.push_back((STAT)stat_db_map["TMB_SP"]); // theoretical_maximum_base_speed
-            db_row.push_back((STAT)stat_db_map["TMB_ST"]); // theoretical_maximum_base_stamina
-            db_row.push_back((STAT)stat_db_map["TMB_VT"]); // theoretical_maximum_base_vitality
-            db_row.push_back((STAT)stat_db_map["TMB_WT"]); // theoretical_maximum_base_weight
-            db_row.push_back((STAT)stat_db_map["TM_HT"]); // theoretical_maximum_height
-            db_row.push_back((STAT)stat_db_map["TM_SP"]); // theoretical_maximum_speed
-            db_row.push_back((STAT)stat_db_map["TM_WT"]); // theoretical_maximum_weight
-            db_row.push_back((STAT)stat_db_map["TMM_HT"]); // theoretical_maximum_height_multiplier
-            db_row.push_back((STAT)stat_db_map["TMM_SP"]); // theoretical_maximum_speed_multiplier
-            db_row.push_back((STAT)stat_db_map["TMM_ST"]); // theoretical_maximum_stamina_multiplier
-            db_row.push_back((STAT)stat_db_map["TMM_VT"]); // theoretical_maximum_vitality_multiplier
-            db_row.push_back((STAT)stat_db_map["TMM_WT"]); // theoretical_maximum_weight_multiplier
-            db_row.push_back((STAT)stat_db_map["SL_FACTOR"]); // sleep_restore_factor
-            db_row.push_back((STAT)stat_db_map["AVG_GEN"]); // average_generation
-            db_row.push_back((STAT)stat_db_map["AVG_IMM"]); // average_immunity
-            db_row.push_back((STAT)stat_db_map["AVG_AGE"]); // average_age
-            db_row.push_back((STAT)stat_db_map["AVG_HT"]); // average_height
-            db_row.push_back((STAT)stat_db_map["AVG_WT"]); // average_weight
-            db_row.push_back((STAT)stat_db_map["AVGMA_AP"]); // average_max_appetite_at_age
-            db_row.push_back((STAT)stat_db_map["AVGMA_SP"]); // average_max_speed_at_age
-            db_row.push_back((STAT)stat_db_map["AVGMA_ST"]); // average_max_stamina_at_age
-            db_row.push_back((STAT)stat_db_map["AVGMA_VT"]); // average_max_vitality_at_age
-            db_row.push_back((STAT)stat_db_map["AVG_SFIT"]); // average_static_fitness
-            db_row.push_back((STAT)stat_db_map["AVG_DTHF"]); // average_death_factor
-            db_row.push_back((STAT)stat_db_map["AVG_VIS"]); // average_vision_radius
+            for (const auto &[colName, colType] : schema::schemaAnimal)
+            {
+                if (colName == "year")
+                {
+                    db_row.emplace_back(DBType(SQLType::INT, std::to_string(year)));
+                }
+                else
+                {
+                    db_row.emplace_back(DBType(SQLType::FLOAT, std::to_string(stat_db_map[colName])));
+                }
+            }
+
         }
         else if (kingdom == "plant")
         {
@@ -547,16 +456,19 @@ namespace stat_fetcher
 
             unsigned int count = 0;
 
-            stat_db_map["POP"] = 0.0;
-            stat_db_map["M_POP"] = 0.0;
-            stat_db_map["AVG_GEN"] = 0.0;
-            stat_db_map["AVG_IMM"] = 0.0;
-            stat_db_map["AVG_AGE"] = 0.0;
-            stat_db_map["AVG_HT"] = 0.0;
-            stat_db_map["AVG_WT"] = 0.0;
-            stat_db_map["AVGMA_VT"] = 0.0;
-            stat_db_map["AVG_SFIT"] = 0.0;
-            stat_db_map["AVG_DTHF"] = 0.0;
+            // Used in StatGroup::MISC
+
+            for (const auto &var_name : statistics[kingdom][StatGroup::MISC])
+            {
+                stat_db_map[var_name] = 0.0;
+            }
+
+            // Used in StatGroup::MEAN
+
+            for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
+            {
+                stat_db_map[var_name] = 0.0;
+            }
 
             for (const auto &organism: organisms)
             {
@@ -565,76 +477,42 @@ namespace stat_fetcher
                 if (kind != organism.second->get_kind())
                     continue;
 
-                stat_db_map["POP"]++;
+                stat_db_map["population"]++;
 
                 //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
                 if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                 {
-                    stat_db_map["M_POP"]++;
+                    stat_db_map["matable_population"]++;
                 }
 
-                stat_db_map["C_PROB"] = std::stod(a_map["conceiving_probability"].getString());
-                stat_db_map["M_AGE_START"] = std::stod(a_map["mating_age_start"].getString());
-                stat_db_map["M_AGE_END"] = std::stod(a_map["mating_age_end"].getString());
-                stat_db_map["MX_AGE"] = std::stod(a_map["max_age"].getString());
-                stat_db_map["MT_PROB"] = std::stod(a_map["mutation_probability"].getString());
-                stat_db_map["OF_FACTOR"] = std::stod(a_map["offsprings_factor"].getString());
-                stat_db_map["AGE_DTH"] = std::stod(a_map["age_on_death"].getString());
-                stat_db_map["FIT_DTH"] = std::stod(a_map["fitness_on_death"].getString());
-                stat_db_map["AFR_DTH"] = std::stod(a_map["age_fitness_on_death_ratio"].getString());
-                stat_db_map["HT_VT"] = std::stod(a_map["height_on_vitality"].getString());
-                stat_db_map["WT_VT"] = std::stod(a_map["weight_on_vitality"].getString());
-                stat_db_map["TMB_HT"] = std::stod(a_map["theoretical_maximum_base_height"].getString());
-                stat_db_map["TMB_VT"] = std::stod(a_map["theoretical_maximum_base_vitality"].getString());
-                stat_db_map["TMB_WT"] = std::stod(a_map["theoretical_maximum_base_weight"].getString());
-                stat_db_map["TM_HT"] = std::stod(a_map["theoretical_maximum_height"].getString());
-                stat_db_map["TM_WT"] = std::stod(a_map["theoretical_maximum_weight"].getString());
-                stat_db_map["TMM_HT"] = std::stod(a_map["theoretical_maximum_height_multiplier"].getString());
-                stat_db_map["TMM_VT"] = std::stod(a_map["theoretical_maximum_vitality_multiplier"].getString());
-                stat_db_map["TMM_WT"] = std::stod(a_map["theoretical_maximum_weight_multiplier"].getString());
+                // Used in StatGroup::FIX
 
-                stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (std::stod(a_map["generation"].getString()) / (count + 1));
-                stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (std::stod(a_map["immunity"].getString()) / (count + 1));
-                stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (std::stod(a_map["age"].getString()) / (count + 1));
-                stat_db_map["AVG_HT"] = (count / (count + 1)) * stat_db_map["AVG_HT"] + (std::stod(a_map["height"].getString()) / (count + 1));
-                stat_db_map["AVG_WT"] = (count / (count + 1)) * stat_db_map["AVG_WT"] + (std::stod(a_map["weight"].getString()) / (count + 1));
-                stat_db_map["AVGMA_VT"] = (count / (count + 1)) * stat_db_map["AVGMA_VT"] + (std::stod(a_map["max_vitality_at_age"].getString()) / (count + 1));
-                stat_db_map["AVG_SFIT"] = (count / (count + 1)) * stat_db_map["AVG_SFIT"] + (std::stod(a_map["static_fitness"].getString()) / (count + 1));
-                stat_db_map["AVG_DTHF"] = (count / (count + 1)) * stat_db_map["AVG_DTHF"] + (std::stod(a_map["death_factor"].getString()) / (count + 1));
+                for (const auto &var_name : statistics[kingdom][StatGroup::FIX])
+                {
+                    stat_db_map[var_name] = std::stod(a_map[var_name].getString());
+                }
+
+                // Used in StatGroup::MEAN
+
+                for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
+                {
+                    stat_db_map[var_name] = (count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
+                }
 
                 count++;
             }
 
-            db_row.push_back((STAT)year); // year
-            db_row.push_back((STAT)stat_db_map["POP"]); // population
-            db_row.push_back((STAT)stat_db_map["M_POP"]); // matable_population
-            db_row.push_back((STAT)stat_db_map["C_PROB"]); // conceiving_probability
-            db_row.push_back((STAT)stat_db_map["M_AGE_START"]); // mating_age_start
-            db_row.push_back((STAT)stat_db_map["M_AGE_END"]); // mating_age_end
-            db_row.push_back((STAT)stat_db_map["MX_AGE"]); // max_age
-            db_row.push_back((STAT)stat_db_map["MT_PROB"]); // mutation_probability
-            db_row.push_back((STAT)stat_db_map["OF_FACTOR"]); // offsprings_factor
-            db_row.push_back((STAT)stat_db_map["AGE_DTH"]); // age_on_death
-            db_row.push_back((STAT)stat_db_map["FIT_DTH"]); // fitness_on_death
-            db_row.push_back((STAT)stat_db_map["AFR_DTH"]); // age_fitness_on_death_ratio
-            db_row.push_back((STAT)stat_db_map["HT_VT"]); // height_on_vitality
-            db_row.push_back((STAT)stat_db_map["WT_VT"]); // weight_on_vitality
-            db_row.push_back((STAT)stat_db_map["TMB_HT"]); // theoretical_maximum_base_height
-            db_row.push_back((STAT)stat_db_map["TMB_VT"]); // theoretical_maximum_base_vitality
-            db_row.push_back((STAT)stat_db_map["TMB_WT"]); // theoretical_maximum_base_weight
-            db_row.push_back((STAT)stat_db_map["TM_HT"]); // theoretical_maximum_height
-            db_row.push_back((STAT)stat_db_map["TM_WT"]); // theoretical_maximum_weight
-            db_row.push_back((STAT)stat_db_map["TMM_HT"]); // theoretical_maximum_height_multiplier
-            db_row.push_back((STAT)stat_db_map["TMM_VT"]); // theoretical_maximum_vitality_multiplier
-            db_row.push_back((STAT)stat_db_map["TMM_WT"]); // theoretical_maximum_weight_multiplier
-            db_row.push_back((STAT)stat_db_map["AVG_GEN"]); // average_generation
-            db_row.push_back((STAT)stat_db_map["AVG_IMM"]); // average_immunity
-            db_row.push_back((STAT)stat_db_map["AVG_AGE"]); // average_age
-            db_row.push_back((STAT)stat_db_map["AVG_HT"]); // average_height
-            db_row.push_back((STAT)stat_db_map["AVG_WT"]); // average_weight
-            db_row.push_back((STAT)stat_db_map["AVGMA_VT"]); // average_max_vitality_at_age
-            db_row.push_back((STAT)stat_db_map["AVG_SFIT"]); // average_static_fitness
-            db_row.push_back((STAT)stat_db_map["AVG_DTHF"]); // average_death_factor
+            for (const auto &[colName, colType] : schema::schemaPlant)
+            {
+                if (colName == "year")
+                {
+                    db_row.emplace_back(DBType(SQLType::INT, std::to_string(year)));
+                }
+                else
+                {
+                    db_row.emplace_back(DBType(SQLType::FLOAT, std::to_string(stat_db_map[colName])));
+                }
+            }
         }
 
         return db_row;

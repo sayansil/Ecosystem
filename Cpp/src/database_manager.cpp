@@ -1,106 +1,6 @@
 #include <database_manager.hpp>
 #include <utility>
 
-static const std::vector<std::pair<std::string, SQLType>> schemaMaster {
-    {"name", SQLType::TEXT},
-    {"kind", SQLType::TEXT},
-    {"chromosome", SQLType::TEXT},
-    {"generation", SQLType::INT},
-    {"immunity", SQLType::FLOAT},
-    {"gender", SQLType::INT},
-    {"age", SQLType::INT},
-    {"height", SQLType::FLOAT},
-    {"weight", SQLType::FLOAT},
-    {"fitness", SQLType::FLOAT}
-};
-
-static const std::vector<std::pair<std::string, SQLType>> schemaAnimal {
-    {"year", SQLType::INT},
-    {"male_population", SQLType::FLOAT},
-    {"female_population", SQLType::FLOAT},
-    {"matable_male_population", SQLType::FLOAT},
-    {"matable_female_population", SQLType::FLOAT},
-    {"conceiving_probability", SQLType::FLOAT},
-    {"mating_age_start", SQLType::FLOAT},
-    {"mating_age_end", SQLType::FLOAT},
-    {"max_age", SQLType::FLOAT},
-    {"mutation_probability", SQLType::FLOAT},
-    {"offsprings_factor", SQLType::FLOAT},
-    {"age_on_death", SQLType::FLOAT},
-    {"fitness_on_death", SQLType::FLOAT},
-    {"age_fitness_on_death_ratio", SQLType::FLOAT},
-    {"height_on_speed", SQLType::FLOAT},
-    {"height_on_stamina", SQLType::FLOAT},
-    {"height_on_vitality", SQLType::FLOAT},
-    {"weight_on_speed", SQLType::FLOAT},
-    {"weight_on_stamina", SQLType::FLOAT},
-    {"weight_on_vitality", SQLType::FLOAT},
-    {"vitality_on_appetite", SQLType::FLOAT},
-    {"vitality_on_speed", SQLType::FLOAT},
-    {"stamina_on_appetite", SQLType::FLOAT},
-    {"stamina_on_speed", SQLType::FLOAT},
-    {"theoretical_maximum_base_appetite", SQLType::FLOAT},
-    {"theoretical_maximum_base_height", SQLType::FLOAT},
-    {"theoretical_maximum_base_speed", SQLType::FLOAT},
-    {"theoretical_maximum_base_stamina", SQLType::FLOAT},
-    {"theoretical_maximum_base_vitality", SQLType::FLOAT},
-    {"theoretical_maximum_base_weight", SQLType::FLOAT},
-    {"theoretical_maximum_height", SQLType::FLOAT},
-    {"theoretical_maximum_speed", SQLType::FLOAT},
-    {"theoretical_maximum_weight", SQLType::FLOAT},
-    {"theoretical_maximum_height_multiplier", SQLType::FLOAT},
-    {"theoretical_maximum_speed_multiplier", SQLType::FLOAT},
-    {"theoretical_maximum_stamina_multiplier", SQLType::FLOAT},
-    {"theoretical_maximum_vitality_multiplier", SQLType::FLOAT},
-    {"theoretical_maximum_weight_multiplier", SQLType::FLOAT},
-    {"sleep_restore_factor", SQLType::FLOAT},
-    {"average_generation", SQLType::FLOAT},
-    {"average_immunity", SQLType::FLOAT},
-    {"average_age", SQLType::FLOAT},
-    {"average_height", SQLType::FLOAT},
-    {"average_weight", SQLType::FLOAT},
-    {"average_max_appetite_at_age", SQLType::FLOAT},
-    {"average_max_speed_at_age", SQLType::FLOAT},
-    {"average_max_stamina_at_age", SQLType::FLOAT},
-    {"average_max_vitality_at_age", SQLType::FLOAT},
-    {"average_static_fitness", SQLType::FLOAT},
-    {"average_dynamic_fitness", SQLType::FLOAT},
-    {"average_vision_radius", SQLType::FLOAT}
-};
-
-static const std::vector<std::pair<std::string, SQLType>> schemaPlant {
-    {"year", SQLType::INT},
-    {"population", SQLType::FLOAT},
-    {"matable_population", SQLType::FLOAT},
-    {"conceiving_probability", SQLType::FLOAT},
-    {"mating_age_start", SQLType::FLOAT},
-    {"mating_age_end", SQLType::FLOAT},
-    {"max_age", SQLType::FLOAT},
-    {"mutation_probability", SQLType::FLOAT},
-    {"offsprings_factor", SQLType::FLOAT},
-    {"age_on_death", SQLType::FLOAT},
-    {"fitness_on_death", SQLType::FLOAT},
-    {"age_fitness_on_death_ratio", SQLType::FLOAT},
-    {"height_on_vitality", SQLType::FLOAT},
-    {"weight_on_vitality", SQLType::FLOAT},
-    {"theoretical_maximum_base_height", SQLType::FLOAT},
-    {"theoretical_maximum_base_vitality", SQLType::FLOAT},
-    {"theoretical_maximum_base_weight", SQLType::FLOAT},
-    {"theoretical_maximum_height", SQLType::FLOAT},
-    {"theoretical_maximum_weight", SQLType::FLOAT},
-    {"theoretical_maximum_height_multiplier", SQLType::FLOAT},
-    {"theoretical_maximum_vitality_multiplier", SQLType::FLOAT},
-    {"theoretical_maximum_weight_multiplier", SQLType::FLOAT},
-    {"average_generation", SQLType::FLOAT},
-    {"average_immunity", SQLType::FLOAT},
-    {"average_age", SQLType::FLOAT},
-    {"average_height", SQLType::FLOAT},
-    {"average_weight", SQLType::FLOAT},
-    {"average_max_vitality_at_age", SQLType::FLOAT},
-    {"average_static_fitness", SQLType::FLOAT},
-    {"average_dynamic_fitness", SQLType::FLOAT},
-};
-
 static std::vector<std::unordered_map<std::string, DBType>> gRowsMaster;
 static std::vector<std::unordered_map<std::string, DBType>> gRowsAnimal;
 static std::vector<std::unordered_map<std::string, DBType>> gRowsPlant;
@@ -111,7 +11,7 @@ static int callback_read_master(void *data, int argc, char **argv, char **colNam
 {
     std::unordered_map<std::string, DBType> gRow;
     int i = 0;
-    for (const auto &[colName, colType] : schemaMaster)
+    for (const auto &[colName, colType] : schema::schemaMaster)
     {
         gRow[colName] = DBType(colType, argv[i++]);
     }
@@ -125,7 +25,7 @@ static int callback_read_animal(void *data, int argc, char **argv, char **colNam
 {
     std::unordered_map<std::string, DBType> gRow;
     int i = 0;
-    for (const auto &[colName, colType] : schemaAnimal)
+    for (const auto &[colName, colType] : schema::schemaAnimal)
     {
         gRow[colName] = DBType(colType, argv[i++]);
     }
@@ -139,7 +39,7 @@ static int callback_read_plant(void *data, int argc, char **argv, char **colName
 {
     std::unordered_map<std::string, DBType> gRow;
     int i = 0;
-    for (const auto &[colName, colType] : schemaPlant)
+    for (const auto &[colName, colType] : schema::schemaPlant)
     {
         gRow[colName] = DBType(colType, argv[i++]);
     }
@@ -257,7 +157,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_rows_master(const std::st
     {
         std::vector<DBType> row;
 
-        for (const auto &[colName, columnType] : schemaMaster)
+        for (const auto &[colName, columnType] : schema::schemaMaster)
         {
             row.push_back(gRow[colName]);
         }
@@ -278,7 +178,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_all_rows_master()
     {
         std::vector<DBType> row;
 
-        for (const auto &[colName, colType] : schemaMaster)
+        for (const auto &[colName, colType] : schema::schemaMaster)
         {
             row.push_back(gRow[colName]);
         }
@@ -310,7 +210,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_all_rows_stats(const std:
         {
             std::vector<DBType> row;
 
-            for (const auto &[colName, colType] : schemaAnimal)
+            for (const auto &[colName, colType] : schema::schemaAnimal)
             {
                 row.push_back(gRow[colName]);
             }
@@ -329,7 +229,7 @@ std::vector<std::vector<DBType>> DatabaseManager::read_all_rows_stats(const std:
         {
             std::vector<DBType> row;
 
-            for (const auto &[colName, colType] : schemaPlant)
+            for (const auto &[colName, colType] : schema::schemaPlant)
             {
                 row.push_back(gRow[colName]);
             }
@@ -346,9 +246,9 @@ void DatabaseManager::update_rows(const std::vector<std::vector<DBType>> &rows)
     {
         std::string values = "";
 
-        for (int i = 1; i < schemaMaster.size(); i++)
+        for (int i = 1; i < schema::schemaMaster.size(); i++)
         {
-            auto &[colName, colType] = schemaMaster[i];
+            auto &[colName, colType] = schema::schemaMaster[i];
 
             if (colType == SQLType::TEXT)
             {

@@ -145,21 +145,17 @@ bool God::spawn_organism(const ENTITY &current_organism)
 
         if(gods_eye)
         {
-            std::vector<std::vector<STAT>> tmp;
-            tmp.emplace_back(std::vector<STAT>{
-                STAT(current_organism->get_name()),
-                STAT(current_organism->get_kind()),
-                STAT(current_organism->get_chromosome()),
-                STAT(current_organism->get_generation()),
-                STAT(current_organism->get_immunity()),
-                STAT(current_organism->get_gender()),
-                STAT(current_organism->get_age()),
-                STAT(current_organism->get_height()),
-                STAT(current_organism->get_weight()),
-                STAT(current_organism->get_static_fitness())});
+            std::vector<DBType> tmp;
+
+            map_maker maker;
+            auto a_map = maker.raw_var_map_banana(organism.second.get());
+            for (const auto &[colName, colType] : schema::schemaMaster)
+            {
+                tmp.emplace_back(DBType(colType, a_map[colName].getString()));
+            }
 
             // Add to database
-            db.insert_rows(tmp);
+            db.insert_rows(std::vector<std::vector<DBType>>{tmp});
         }
         return true;
     }
@@ -202,15 +198,16 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
         if (monitor_offsprings && (parent1->get_monitor_in_simulation() || parent2->get_monitor_in_simulation()))
             monitor_in_simulation = true;
 
-        return spawn_organism(parent1->clone(parent1->get_kind(),
-                                            1,
-                                            monitor_in_simulation,
-                                            child_chromosome,
-                                            std::max(parent1->get_generation(), parent2->get_generation()) + 1,
-                                            "",
-                                            {(parent1->get_X() + parent2->get_X()) / 2,
-                                             (parent1->get_Y() + parent2->get_Y()) / 2},
-                                            species_constants));
+        return spawn_organism(parent1->clone(
+            parent1->get_kind(),
+            1,
+            monitor_in_simulation,
+            child_chromosome,
+            std::max(parent1->get_generation(), parent2->get_generation()) + 1,
+            "",
+            {(parent1->get_X() + parent2->get_X()) / 2,
+                (parent1->get_Y() + parent2->get_Y()) / 2},
+            species_constants));
     }
 
     return false;
@@ -472,7 +469,7 @@ void God::remember_species(const std::string &full_species_name)
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
 
-    std::vector<STAT> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year, statistics);
+    std::vector<DBType> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year, statistics);
     db.insert_stat_row(db_row, kind);
 }
 
@@ -486,7 +483,7 @@ std::string God::get_annual_data(const std::string &full_species_name)
     {
         for(const auto& item: row)
         {
-            final_data += item.getString() + ",";
+            final_data += item.data + ",";
         }
         if (final_data.length() > 0)
             final_data = final_data.substr(0, final_data.length() - 1);

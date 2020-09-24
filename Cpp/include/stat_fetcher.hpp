@@ -12,6 +12,7 @@
 #include <animal.hpp>
 #include <plant.hpp>
 #include <map_maker.hpp>
+#include <schema.hpp>
 
 using ENTITY_MAP_TYPE = std::unordered_map<std::string, ENTITY>;
 
@@ -26,7 +27,7 @@ namespace stat_fetcher
     extern unsigned int get_population(const ENTITY_MAP_TYPE &, const std::string & = "");
     extern double get_stat_average(const ENTITY_MAP_TYPE &, const std::string &, const std::string & = "");
     extern double get_gender_ratio(const ENTITY_MAP_TYPE &, const std::string & = "");
-    extern std::vector<DBType> get_db_row(const ENTITY_MAP_TYPE &, const std::string &, const std::string &, const unsigned int &, const std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &);
+    extern std::vector<DBType> get_db_row(const ENTITY_MAP_TYPE &, const std::string &, const std::string &, const unsigned int &, std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &);
 }; // namespace stat_fetcher
 
 #endif // STAT_FETCHER_HPP

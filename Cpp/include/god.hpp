@@ -8,7 +8,7 @@
 #include <utility>
 #include <vector>
 #include <string>
-
+#include <schema.hpp>
 #include <database_manager.hpp>
 //#include <zmq.hpp>
 #include <organism.hpp>

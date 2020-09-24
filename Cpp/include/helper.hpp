@@ -25,7 +25,6 @@ namespace helper
      *  Helper methods *
      *******************/
 
-    extern void display_stat(const STAT &);
     extern void save_CSV(const std::string &, const std::string &);
     extern void append_CSV(const std::string &, const std::string &);
     extern int weighted_prob(const double &);
