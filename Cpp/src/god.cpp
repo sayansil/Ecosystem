@@ -8,9 +8,100 @@ God::God(const bool &gods_eye)
     //socket = zmq::socket_t(context, zmq::socket_type::dealer);
     //socket.bind("tcp://*:5556");
 
-    statistics["animal"][StatGroup::FIX] = {"mating_age_start", "mating_age_end"}; // TODO
-    statistics["animal"][StatGroup::MEAN] = {"height", "weight"}; // TODO
-    statistics["animal"][StatGroup::COUNT] = {"male_population", "female_population"}; // TODO
+    statistics["animal"][StatGroup::FIX] = {
+        "conceiving_probability",
+        "mating_age_start",
+        "mating_age_end",
+        "max_age",
+        "mutation_probability",
+        "offsprings_factor",
+        "age_on_death",
+        "fitness_on_death",
+        "age_fitness_on_death_ratio",
+        "height_on_speed",
+        "height_on_stamina",
+        "height_on_vitality",
+        "weight_on_speed",
+        "weight_on_stamina",
+        "weight_on_vitality",
+        "vitality_on_appetite",
+        "vitality_on_speed",
+        "stamina_on_appetite",
+        "stamina_on_speed",
+        "theoretical_maximum_base_appetite",
+        "theoretical_maximum_base_height",
+        "theoretical_maximum_base_speed",
+        "theoretical_maximum_base_stamina",
+        "theoretical_maximum_base_vitality",
+        "theoretical_maximum_base_weight",
+        "theoretical_maximum_height",
+        "theoretical_maximum_speed",
+        "theoretical_maximum_weight",
+        "theoretical_maximum_height_multiplier",
+        "theoretical_maximum_speed_multiplier",
+        "theoretical_maximum_stamina_multiplier",
+        "theoretical_maximum_vitality_multiplier",
+        "theoretical_maximum_weight_multiplier",
+        "sleep_restore_factor"
+    };
+    statistics["animal"][StatGroup::MEAN] = {
+        "generation",
+        "immunity",
+        "age",
+        "height",
+        "weight",
+        "max_appetite_at_age",
+        "max_speed_at_age",
+        "max_stamina_at_age",
+        "max_vitality_at_age",
+        "static_fitness",
+        "dynamic_fitness",
+        "vision_radius"
+    };
+    statistics["animal"][StatGroup::MISC] = {
+        "year",
+        "male_population",
+        "female_population",
+        "matable_male_population",
+        "matable_female_population"
+    };
+
+    statistics["plant"][StatGroup::FIX] = {
+        "conceiving_probability",
+        "mating_age_start",
+        "mating_age_end",
+        "max_age",
+        "mutation_probability",
+        "offsprings_factor",
+        "age_on_death",
+        "fitness_on_death",
+        "age_fitness_on_death_ratio",
+        "height_on_vitality",
+        "weight_on_vitality",
+        "theoretical_maximum_base_height",
+        "theoretical_maximum_base_vitality",
+        "theoretical_maximum_base_weight",
+        "theoretical_maximum_height",
+        "theoretical_maximum_weight",
+        "theoretical_maximum_height_multiplier",
+        "theoretical_maximum_vitality_multiplier",
+        "theoretical_maximum_weight_multiplier"
+    };
+    statistics["plant"][StatGroup::MEAN] = {
+        "generation",
+        "immunity",
+        "age",
+        "height",
+        "weight",
+        "max_vitality_at_age",
+        "static_fitness",
+        "dynamic_fitness"
+    };
+    statistics["plant"][StatGroup::MISC] = {
+        "year",
+        "population",
+        "matable_population"
+    };
 }
 
 God::~God()
@@ -381,8 +472,8 @@ void God::remember_species(const std::string &full_species_name)
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
 
-    std::vector<STAT> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year);
-    db.insert_stat_row(db_row, kind, kingdom);
+    std::vector<STAT> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year, statistics);
+    db.insert_stat_row(db_row, kind);
 }
 
 std::string God::get_annual_data(const std::string &full_species_name)

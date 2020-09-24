@@ -24,16 +24,16 @@ namespace stat_fetcher
 
             if(kind != "" && kind != organism.second->get_kind())
                 continue;
-            
+
             //if (kind != "" && kind != a_map["kind"].getString())
             //    continue;
 
-            
+
             if(organism.second->get_gender() == MALE)
             {
                 M++;
             }
-            
+
             //if (a_map["gender"].getUnsignedInt() == MALE)
             //{
             //    M++;
@@ -262,7 +262,7 @@ namespace stat_fetcher
                     //});
 
                     Animal* obj = static_cast<Animal*>(organism.second.get());
-                    
+
                     response["animal"].push_back({
                         {"name", obj->name},
                         {"food_chain_rank", obj->food_chain_rank},
@@ -367,9 +367,9 @@ namespace stat_fetcher
         return representatives;
     }
 
-    std::vector<STAT> get_db_row(const ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year)
+    std::vector<DBType> get_db_row(const ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year, const std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &statistics)
     {
-        std::vector<STAT> db_row;
+        std::vector<DBType> db_row;
         map_maker maker;
 
         if (kingdom == "animal")
@@ -378,18 +378,17 @@ namespace stat_fetcher
 
             unsigned int count = 0;
 
-            
-            // Used in StatGroup::COUNT
-            
-            stat_db_map["MALE"] = 0.0;
-            stat_db_map["FEMALE"] = 0.0;
-            stat_db_map["M_MALE"] = 0.0;
-            stat_db_map["M_FEMALE"] = 0.0;
-            
-            
-            
-            
-            
+
+            // Used in StatGroup::MISC
+
+            for (const auto& var_name: statistics[kingdom][StatGroup::MISC])
+            {
+
+            }
+
+
+            // Used in StatGroup::MEAN
+
             stat_db_map["AVG_GEN"] = 0.0;
             stat_db_map["AVG_IMM"] = 0.0;
             stat_db_map["AVG_AGE"] = 0.0;
@@ -473,7 +472,7 @@ namespace stat_fetcher
                 stat_db_map["SL_FACTOR"] = std::stod(a_map["sleep_restore_factor"].getString());
 
                 // Used in StatGroup::MEAN
-                
+
                 stat_db_map["AVG_GEN"] = (count / (count + 1)) * stat_db_map["AVG_GEN"] + (std::stod(a_map["generation"].getString()) / (count + 1));
                 stat_db_map["AVG_IMM"] = (count / (count + 1)) * stat_db_map["AVG_IMM"] + (std::stod(a_map["immunity"].getString()) / (count + 1));
                 stat_db_map["AVG_AGE"] = (count / (count + 1)) * stat_db_map["AVG_AGE"] + (std::stod(a_map["age"].getString()) / (count + 1));
@@ -565,7 +564,7 @@ namespace stat_fetcher
 
                 if (kind != organism.second->get_kind())
                     continue;
-                
+
                 stat_db_map["POP"]++;
 
                 //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())

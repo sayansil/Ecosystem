@@ -33,7 +33,7 @@ enum class StatGroup
 {
     FIX,
     MEAN,
-    COUNT
+    MISC
 };
 
 enum class SQLType
