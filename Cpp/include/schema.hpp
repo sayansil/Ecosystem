@@ -6,9 +6,9 @@
 
 namespace schema
 {
-    extern std::vector<std::pair<std::string, SQLType>> schemaMaster;
-    extern std::vector<std::pair<std::string, SQLType>> schemaAnimal;
-    extern std::vector<std::pair<std::string, SQLType>> schemaPlant;
+    extern const std::vector<std::pair<std::string, SQLType>> schemaMaster;
+    extern const std::vector<std::pair<std::string, SQLType>> schemaAnimal;
+    extern const std::vector<std::pair<std::string, SQLType>> schemaPlant;
 }; // namespace schema
 
 #endif // SCHEMA_HPP

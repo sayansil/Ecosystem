@@ -2,7 +2,7 @@
 
 namespace schema
 {
-    extern std::vector<std::pair<std::string, SQLType>> schemaMaster{
+    extern const std::vector<std::pair<std::string, SQLType>> schemaMaster{
         {"name", SQLType::TEXT},
         {"kind", SQLType::TEXT},
         {"chromosome", SQLType::TEXT},
@@ -14,7 +14,7 @@ namespace schema
         {"weight", SQLType::FLOAT},
         {"static_fitness", SQLType::FLOAT}};
 
-    extern std::vector<std::pair<std::string, SQLType>> schemaAnimal{
+    extern const std::vector<std::pair<std::string, SQLType>> schemaAnimal{
         {"year", SQLType::INT},
         {"male_population", SQLType::FLOAT},
         {"female_population", SQLType::FLOAT},
@@ -67,7 +67,7 @@ namespace schema
         {"average_dynamic_fitness", SQLType::FLOAT},
         {"average_vision_radius", SQLType::FLOAT}};
 
-    extern std::vector<std::pair<std::string, SQLType>> schemaPlant{
+    extern const std::vector<std::pair<std::string, SQLType>> schemaPlant{
         {"year", SQLType::INT},
         {"population", SQLType::FLOAT},
         {"matable_population", SQLType::FLOAT},
