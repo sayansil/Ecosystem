@@ -85,7 +85,7 @@ public:
 
     // Attribute map
 
-    ATTRIBUTE_MAP_TYPE attribute_map;
+    ATTRIBUTE_RAW_MAP attribute_raw_map;
 
     /******************************
      *  Constructor / Destructor  *
@@ -134,7 +134,7 @@ public:
     double get_weight_multiplier() const;
     double get_max_height() const;
     double get_max_weight() const;
-    ATTRIBUTE_MAP_TYPE& get_attribute_map();
+    ATTRIBUTE_RAW_MAP& get_attribute_raw_map();
     void init_from_json(const nlohmann::json &);
     void evaluate_dynamic_fitness();
     void evaluate_static_fitness();

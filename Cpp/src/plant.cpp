@@ -281,7 +281,7 @@ std::string Plant::get_kingdom() const
     return kingdom;
 }
 
-ATTRIBUTE_MAP_TYPE& Plant::get_attribute_map()
+ATTRIBUTE_RAW_MAP& Plant::get_attribute_raw_map()
 {
-    return attribute_map;
+    return attribute_raw_map;
 }

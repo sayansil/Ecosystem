@@ -53,6 +53,7 @@ public:
     virtual std::string get_chromosome() const = 0;
     virtual std::string get_kingdom() const = 0;
     virtual bool get_monitor_in_simulation() const = 0;
+    virtual ATTRIBUTE_RAW_MAP& get_attribute_raw_map() = 0;
 
 
     /**************************

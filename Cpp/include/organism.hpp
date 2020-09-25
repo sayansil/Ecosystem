@@ -266,7 +266,10 @@ public:
     {
         return static_cast<const T &>(*this).get_kingdom();
     }
-
+    ATTRIBUTE_RAW_MAP& get_attribute_raw_map()
+    {
+        return static_cast<T&>(*this).get_attribute_raw_map();
+    }
 
     /********************
      *  Clone function  *

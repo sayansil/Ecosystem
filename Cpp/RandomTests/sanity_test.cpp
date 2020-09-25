@@ -3,8 +3,8 @@
 
 int main()
 {
-    unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 100;
+    unsigned int initial_organism_count = 2000;
+    unsigned int years_to_simulate = 500;
 
     God allah(true);
     allah.reset_species("animal/deer");
@@ -12,7 +12,7 @@ int main()
     {
         allah.spawn_organism(std::make_shared<Animal>("deer", 10));
     }
-    
+   
     while (years_to_simulate--)
     {
         allah.happy_new_year(true);

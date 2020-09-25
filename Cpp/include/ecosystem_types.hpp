@@ -8,9 +8,10 @@
 #include <refl.hpp>
 
 struct PStat;
+struct ATTRIBUTE_RAW_MAP;
+
 using CHROMOSOME_MAP_TYPE = std::map<std::string, std::map<std::string, unsigned int>>;
 using ATTRIBUTE_MAP_TYPE = std::unordered_map<std::string, std::unordered_map<std::string, PStat>>;
-using ATTRIBUTE_RAW_MAP_TYPE = std::unordered_map<std::string, PStat>;
 
 enum Gender
 {
@@ -154,18 +155,18 @@ struct PStat
             else if(val == "false")
                 *static_cast<bool*>(address) = false;
             else
-                throw std::invalid_argument("assign() : bool value neither true nor false");
+                throw std::invalid_argument("assign() : bool value neither true nor false for val=" + val);
         }
         else if(index == PStatType::CHAR)
         {
             if(val.length() != 1)
-                throw std::length_error("assign() : length of string not equal to 1");
+                throw std::length_error("assign() : length of string not equal to 1 for val=" + val);
             *static_cast<char*>(address) = val[0];
         }
-        if(index == PStatType::UINT)
+        else if(index == PStatType::UINT)
             *static_cast<unsigned int*>(address) = std::stoul(val);
         else
-            throw std::runtime_error("assign() : index not initialized");
+            throw std::runtime_error("assign() : index not initialized for val=" + val);
     }
 
     template <typename T>
@@ -175,6 +176,26 @@ struct PStat
     }
 
 };
+
+struct ATTRIBUTE_RAW_MAP
+{
+    ATTRIBUTE_RAW_MAP() = default;
+    ATTRIBUTE_RAW_MAP(const std::unordered_map<std::string, PStat> &x) : map(x) {}
+    
+    const PStat& operator[] (const std::string& key) const
+    {
+        auto it = map.find(key);
+        if(it == map.end())
+        {
+            std::string msg = "key " + key + " not found in map";
+            throw std::runtime_error(msg);
+        }
+        return it->second;
+    }
+    
+    std::unordered_map<std::string, PStat> map;
+};
+
 
 /*
  * Stat properties :

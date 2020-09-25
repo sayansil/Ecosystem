@@ -136,8 +136,23 @@ void God::reset_species(const std::string &full_species_name)
     db.clear_table(kind);
 }
 
-bool God::spawn_organism(const ENTITY &current_organism)
+bool God::spawn_organism(ENTITY &&current_organism)
 {
+    const std::string kingdom = current_organism->get_kingdom();
+    if(kingdom == "animal")
+    {
+        Animal *obj = static_cast<Animal*>(current_organism.get());
+        init(*obj);
+    }
+    else if(kingdom == "plant")
+    {
+        Plant *obj = static_cast<Plant*>(current_organism.get());
+        init(*obj);
+    }
+    else
+    {
+        throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
+    }
     if (current_organism->is_normal_child())
     {
         // Add to memory
@@ -148,7 +163,7 @@ bool God::spawn_organism(const ENTITY &current_organism)
             std::vector<DBType> tmp;
 
             map_maker maker;
-            auto a_map = maker.raw_var_map_banana(*static_cast<Organism<Plant>*>(current_organism.get())); // TODO - use a generic type like Organism
+            const auto &a_map = current_organism->get_attribute_raw_map(); // TODO - use a generic type like Organism
             
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
@@ -319,7 +334,6 @@ void God::happy_new_year(const bool &log)
 
     organisms_vec.clear(); organisms_vec.shrink_to_fit();
     organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
-
 
     /***********************************
      *       Annual Mating Begins      *

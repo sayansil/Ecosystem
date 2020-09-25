@@ -402,7 +402,7 @@ std::string Animal::get_kingdom() const
     return kingdom;
 }
 
-ATTRIBUTE_MAP_TYPE& Animal::get_attribute_map()
+ATTRIBUTE_RAW_MAP& Animal::get_attribute_raw_map()
 {
-    return attribute_map;
+    return attribute_raw_map;
 }

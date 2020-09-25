@@ -43,13 +43,20 @@ public:
     void reset_species(const std::string&);
     void happy_new_year(const bool &log = false);
     void kill_organisms(const std::vector<std::string>&);
-    bool spawn_organism(const ENTITY&);
+    bool spawn_organism(ENTITY&&);
     void remember_species(const std::string&);
     std::string get_annual_data(const std::string&);
     std::vector<std::map<std::string, std::string>> get_live_data();
     //void send_data_to_simulation();
     //bool listen_for_simulation_once();
     //void start_listening_for_simulation();
+
+    template <typename T>
+    void init(T &&obj)
+    {
+        auto map = map_maker().raw_var_map_banana(obj);
+        obj.attribute_raw_map = map;
+    }
 
     std::vector<ENTITY> organism_sort(bool (*comp)(const ENTITY&, const ENTITY&));
     std::unordered_map<std::string, std::vector<ENTITY>> organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&));

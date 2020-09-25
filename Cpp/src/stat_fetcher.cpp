@@ -16,28 +16,16 @@ namespace stat_fetcher
     double get_gender_ratio(const ENTITY_MAP_TYPE &organisms, const std::string  &kind)
     {
         unsigned int M = 0, F = 0;
-        //map_maker maker;
 
         for (auto organism : organisms)
         {
-            //auto a_map = maker.raw_var_map_banana(organism.second);
-
             if(kind != "" && kind != organism.second->get_kind())
                 continue;
-
-            //if (kind != "" && kind != a_map["kind"].getString())
-            //    continue;
-
 
             if(organism.second->get_gender() == MALE)
             {
                 M++;
             }
-
-            //if (a_map["gender"].getUnsignedInt() == MALE)
-            //{
-            //    M++;
-            //}
             else
             {
                 F++;
@@ -50,13 +38,9 @@ namespace stat_fetcher
     unsigned int get_population(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int count = 0;
-        //map_maker maker;
 
         for (const auto &organism : organisms)
         {
-            //auto a_map = maker.raw_var_map_banana(organism.second);
-
-            //if (kind != "" && kind != a_map["kind"].getString())
             if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
@@ -69,20 +53,14 @@ namespace stat_fetcher
     std::pair<unsigned int, unsigned int> get_matable_population(const ENTITY_MAP_TYPE &organisms, const std::string &kind)
     {
         unsigned int M = 0, F = 0;
-        //map_maker maker;
 
         for (const auto &organism : organisms)
         {
-            //auto a_map = maker.raw_var_map_banana(organism.second);
-
-            //if (kind != "" && kind != a_map["kind"].getString())
             if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
             if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
             {
-                //if (a_map["gender"].getUnsignedInt() == MALE)
                 if (organism.second->get_gender() == MALE)
                 {
                     M++;
@@ -101,18 +79,16 @@ namespace stat_fetcher
     {
         double low = 0.0, high = 0.0, value;
         map_maker maker;
-        PStat current_attribute;
         bool uninitialized = true;
 
         for (const auto &organism : organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
+            const auto& a_map = organism.second->get_attribute_raw_map();
 
-            //if (kind != "" && kind != a_map["kind"].getString())
             if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            current_attribute = a_map[attribute];
+            const auto& current_attribute = a_map[attribute];
             if(current_attribute.getIndex() == PStatType::INT)
             {
                 //value = current_attribute.getInt();
@@ -157,20 +133,15 @@ namespace stat_fetcher
     std::unordered_map<std::string, unsigned int> get_kind_distribution(const ENTITY_MAP_TYPE &organisms)
     {
         std::unordered_map<std::string, unsigned int> kindDistribution;
-        //map_maker maker;
 
         for (const auto &organism: organisms)
         {
-            //auto a_map = maker.raw_var_map_banana(organism.second);
-            //if (kindDistribution.find(a_map["kind"].getString()) == kindDistribution.end())
             if (kindDistribution.find(organism.second->get_kind()) == kindDistribution.end())
             {
-                //kindDistribution[a_map["kind"].getString()] = 1;
                 kindDistribution[organism.second->get_kind()] = 1;
             }
             else
             {
-                //kindDistribution[a_map["kind"].getString()]++;
                 kindDistribution[organism.second->get_kind()]++;
             }
         }
@@ -187,13 +158,11 @@ namespace stat_fetcher
 
         for (const auto &organism: organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
+            const auto& a_map = organism.second->get_attribute_raw_map();
 
-            //if (kind != "" && kind != a_map["kind"].getString())
             if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
-            //average = (n / (n + 1)) * average + (a_map[attribute].getDouble() / (n + 1));
             average = (n / (n + 1)) * average + ((std::stod(a_map[attribute].getString())) / (n + 1));
             n++;
         }
@@ -208,7 +177,7 @@ namespace stat_fetcher
 
         for (const auto &organism : organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
+            const auto& a_map = organism.second->get_attribute_raw_map();
 
             if (kind != "" && kind != a_map["kind"].getString())
                 continue;
@@ -242,24 +211,10 @@ namespace stat_fetcher
 
         for(const auto &organism : organisms)
         {
-            //auto a_map = maker.raw_var_map_banana(organism.second);
-            //if (a_map["monitor_in_simulation"].getBool())
             if (organism.second->get_monitor_in_simulation())
             {
-                //if(a_map["kingdom"].getString() == "animal")
                 if(organism.second->get_kingdom() == "animal")
                 {
-                    //response["animal"].push_back({
-                    //    {"name", a_map["name"].getString()},
-                    //    {"food_chain_rank", a_map["food_chain_rank"].getUnsignedInt()},
-                    //    {"vision_radius", a_map["vision_radius"].getDouble()},
-                    //    {"max_speed_at_age", a_map["max_speed_at_age"].getDouble()},
-                    //    {"max_vitality_at_age", a_map["max_vitality_at_age"].getDouble()},
-                    //    {"max_appetite_at_age", a_map["max_appetite_at_age"].getDouble()},
-                    //    {"max_stamina_at_age", a_map["max_stamina_at_age"].getDouble()},
-                    //    {"height", a_map["height"].getDouble()},
-                    //    {"weight", a_map["weight"].getDouble()}
-                    //});
 
                     Animal* obj = static_cast<Animal*>(organism.second.get());
 
@@ -275,7 +230,6 @@ namespace stat_fetcher
                         {"weight", obj->weight}
                     });
                 }
-                //else if (a_map["kingdom"].getString() == "plant")
                 else if (organism.second->get_kingdom() == "plant")
                 {
                     Plant *obj = static_cast<Plant*>(organism.second.get());
@@ -289,7 +243,6 @@ namespace stat_fetcher
                 }
                 else
                 {
-                    //std::cout << "Kingdom " << a_map["kingdom"].getString() << " not supported\n";
                     std::cout << "Kingdom " << organism.second->get_kingdom() << " not supported\n";
                 }
             }
@@ -305,11 +258,9 @@ namespace stat_fetcher
 
         for (const auto &organism : organisms)
         {
-            auto a_map = maker.raw_var_map_banana(organism.second);
-            //if (a_map["monitor_in_simulation"].getBool())
+            const auto& a_map = organism.second->get_attribute_raw_map();
             if (organism.second->get_monitor_in_simulation())
             {
-                //if (a_map["kingdom"].getString() == "animal")
                 if (organism.second->get_kingdom() == "animal")
                 {
                     std::map<std::string, std::string> temp;
@@ -333,7 +284,6 @@ namespace stat_fetcher
 
                     representatives.push_back(temp);
                 }
-                //else if (a_map["kingdom"].getString() == "plant")
                 else if (organism.second->get_kingdom() == "plant")
                 {
                     std::map<std::string, std::string> temp;
@@ -394,7 +344,7 @@ namespace stat_fetcher
 
             for (const auto &organism: organisms)
             {
-                auto a_map = maker.raw_var_map_banana(*static_cast<Animal*>(organism.second.get()));
+                const auto& a_map = organism.second->get_attribute_raw_map();
 
                 if (kind != organism.second->get_kind())
                     continue;
@@ -403,7 +353,6 @@ namespace stat_fetcher
                 {
                     stat_db_map["male_population"]++;
 
-                    //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
                     if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                     {
                         stat_db_map["matable_male_population"]++;
@@ -413,7 +362,6 @@ namespace stat_fetcher
                 {
                     stat_db_map["female_population"]++;
 
-                    //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
                     if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                     {
                         stat_db_map["matable_female_population"]++;
@@ -472,14 +420,13 @@ namespace stat_fetcher
 
             for (const auto &organism: organisms)
             {
-                auto a_map = maker.raw_var_map_banana(*static_cast<Plant*>(organism.second.get()));
+                const auto& a_map = organism.second->get_attribute_raw_map();
 
                 if (kind != organism.second->get_kind())
                     continue;
 
                 stat_db_map["population"]++;
 
-                //if (a_map["age"].getUnsignedInt() >= a_map["mating_age_start"].getUnsignedInt() && a_map["age"].getUnsignedInt() <= a_map["mating_age_end"].getUnsignedInt())
                 if (organism.second->get_age() >= organism.second->get_mating_age_start() && organism.second->get_age() <= organism.second->get_mating_age_end())
                 {
                     stat_db_map["matable_population"]++;
