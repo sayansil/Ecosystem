@@ -4,9 +4,6 @@ God::God(const bool &gods_eye)
 {
     this->gods_eye = gods_eye;
     helper::rng.seed(std::random_device()());
-    //context = zmq::context_t(1);
-    //socket = zmq::socket_t(context, zmq::socket_type::dealer);
-    //socket.bind("tcp://*:5556");
 
     statistics["animal"][StatGroup::FIX] = {
         "conceiving_probability",
@@ -102,6 +99,8 @@ God::God(const bool &gods_eye)
         "population",
         "matable_population"
     };
+
+    catastrophe();
 }
 
 God::~God()
@@ -431,8 +430,6 @@ void God::happy_new_year(const bool &log)
      *       Annual Ageing Begins      *
      ************************************/
 
-    // todo: parallel v sequential performance test
-
     __gnu_parallel::for_each(organisms.begin(), organisms.end(), [](auto &x){
         x.second->increment_age();
     });
@@ -512,38 +509,3 @@ std::vector<std::map<std::string, std::string>> God::get_live_data()
     return stat_fetcher::prepare_data_for_simulation_2(organisms);
 }
 
-//void God::send_data_to_simulation()
-//{
-//    socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);
-//}
-
-//bool God::listen_for_simulation_once()
-//{
-//    std::string positive = "SEND";
-//    std::string negative = "STOP";
-//    zmq::message_t response;
-//    socket.recv(response);
-//    std::string response_str = response.to_string();
-//    if(response_str == positive)
-//    {
-//        send_data_to_simulation();
-//        happy_new_year(true);
-//        return true;
-//    }
-//    else if(response_str == negative)
-//    {
-//        return false;
-//    }
-//    else
-//    {
-//        std::cout << "Error: " << response_str << " received\n";
-//        return false;
-//    }
-//}
-
-//void God::start_listening_for_simulation()
-//{
-//    std::cout << "God starts listening...\n";
-//    while(listen_for_simulation_once());
-//    std::cout << "Alas! God stopped listening.\n";
-//}

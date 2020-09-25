@@ -1,5 +1,4 @@
 #include <database_manager.hpp>
-#include <utility>
 
 static std::vector<std::unordered_map<std::string, DBType>> gRowsMaster;
 static std::vector<std::unordered_map<std::string, DBType>> gRowsAnimal;

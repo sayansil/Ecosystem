@@ -10,6 +10,7 @@
 #include <ecosystem_types.hpp>
 #include <animal.hpp>
 #include <schema.hpp>
+#include <utility>
 
 struct DatabaseManager
 {

@@ -90,21 +90,19 @@ namespace stat_fetcher
             const auto& current_attribute = a_map[attribute];
             if(current_attribute.getIndex() == PStatType::INT)
             {
-                //value = current_attribute.getInt();
                 value = std::stoi(current_attribute.getString());
             }
             else if(current_attribute.getIndex() == PStatType::DOUBLE)
             {
-                //value = current_attribute.getDouble();
                 value = std::stod(current_attribute.getString());
             }
             else if(current_attribute.getIndex() == PStatType::UINT)
             {
-                //value = current_attribute.getUnsignedInt();
+                value = std::stoul(current_attribute.getString());
             }
             else
             {
-                break;
+                throw std::runtime_error(__func__ + std::string(" : PStatType not defined\n"));
             }
             if (uninitialized)
             {
@@ -291,7 +289,7 @@ namespace stat_fetcher
 
         if (kingdom == "animal")
         {
-            std::unordered_map<std::string, double> stat_db_map; // TODO : string -> DBType
+            std::unordered_map<std::string, double> stat_db_map;
 
             unsigned int count = 0;
 

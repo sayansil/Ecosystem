@@ -83,58 +83,6 @@ struct PStat
             throw std::runtime_error("getString() : index not initialized in PStat");
     }
 
-    //int getInt() const
-    //{
-    //    if (index == 1)
-    //        return *static_cast<int *>(address);
-    //    else if (index == 2)
-    //        return (int)(*static_cast<double *>(address));
-    //    else if (index == 6)
-    //        return (int)(*static_cast<unsigned int *>(address));
-    //    else
-    //        throw std::runtime_error("getInt() : Could not convert to specified data type");
-    //}
-
-    //double getDouble() const
-    //{
-    //    if (index == 1)
-    //        return (double)(*static_cast<int *>(address));
-    //    else if (index == 2)
-    //        return *static_cast<double *>(address);
-    //    else if (index == 6)
-    //        return (double)(*static_cast<unsigned int *>(address));
-    //    else
-    //        throw std::runtime_error("getDouble() : Could not convert to specified data type");
-    //}
-
-    //bool getBool() const
-    //{
-    //    if (index == 4)
-    //        return *static_cast<bool *>(address);
-    //    else
-    //        throw std::runtime_error("getBool() : Could not convert to specified data type");
-    //}
-
-    //char getChar() const
-    //{
-    //    if (index == 5)
-    //        return *static_cast<char *>(address);
-    //    else
-    //        throw std::runtime_error("getChar() : Could not convert to specified data type");
-    //}
-
-    //unsigned int getUnsignedInt() const
-    //{
-    //    if (index == 1)
-    //        return (unsigned int)(*static_cast<int *>(address));
-    //    else if (index == 2)
-    //        return (unsigned int)(*static_cast<double *>(address));
-    //    else if (index == 6)
-    //        return *static_cast<unsigned int *>(address);
-    //    else
-    //        throw std::runtime_error("getUnsignedInt() : Could not convert to specified data type");
-    //}
-
     PStatType getIndex() const
     {
         return index;
@@ -181,7 +129,7 @@ struct ATTRIBUTE_RAW_MAP
 {
     ATTRIBUTE_RAW_MAP() = default;
     ATTRIBUTE_RAW_MAP(const std::unordered_map<std::string, PStat> &x) : map(x) {}
-    
+
     const PStat& operator[] (const std::string& key) const
     {
         auto it = map.find(key);
@@ -192,7 +140,7 @@ struct ATTRIBUTE_RAW_MAP
         }
         return it->second;
     }
-    
+
     std::unordered_map<std::string, PStat> map;
 };
 

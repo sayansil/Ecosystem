@@ -10,7 +10,6 @@
 #include <string>
 #include <schema.hpp>
 #include <database_manager.hpp>
-//#include <zmq.hpp>
 #include <organism.hpp>
 #include <helper.hpp>
 #include <stat_fetcher.hpp>
@@ -47,9 +46,6 @@ public:
     void remember_species(const std::string&);
     std::string get_annual_data(const std::string&);
     std::vector<std::map<std::string, std::string>> get_live_data();
-    //void send_data_to_simulation();
-    //bool listen_for_simulation_once();
-    //void start_listening_for_simulation();
 
     template <typename T>
     void init(T &&obj)
@@ -71,9 +67,6 @@ private:
     DatabaseManager db;
     bool gods_eye = false;
     const int max_mate_trials = 100;
-    //zmq::context_t context;
-    //zmq::socket_t socket;
-
 
     /****************************************
      *         Unavailable to users         *
