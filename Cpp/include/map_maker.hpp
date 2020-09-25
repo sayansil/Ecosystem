@@ -1,3 +1,6 @@
+#ifndef MAP_MAKER_HPP
+#define MAP_MAKER_HPP
+
 #include <organism.hpp>
 #include <animal.hpp>
 #include <plant.hpp>
@@ -52,3 +55,5 @@ struct map_maker
         return ret_map;
     }
 };
+
+#endif /* MAP_MAKER_HPP */
