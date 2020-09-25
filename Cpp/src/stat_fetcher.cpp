@@ -78,7 +78,6 @@ namespace stat_fetcher
     std::pair<double, double> get_stat_gap(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double low = 0.0, high = 0.0, value;
-        map_maker maker;
         bool uninitialized = true;
 
         for (const auto &organism : organisms)
@@ -152,7 +151,6 @@ namespace stat_fetcher
     double get_stat_average(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double average = 0.0, n = 0.0, value = 0.0;
-        map_maker maker;
 
         // avg(n+1) = (n / (n + 1)) * avg(n) + (1 / (n + 1)) * kn
 
@@ -172,14 +170,13 @@ namespace stat_fetcher
 
     std::vector<PStat> get_one_stat(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
-        map_maker maker;
         std::vector<PStat> attributeList;
 
         for (const auto &organism : organisms)
         {
             const auto& a_map = organism.second->get_attribute_raw_map();
 
-            if (kind != "" && kind != a_map["kind"].getString())
+            if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
             attributeList.push_back(a_map[attribute]);
@@ -190,8 +187,6 @@ namespace stat_fetcher
 
     std::string prepare_data_for_simulation(const ENTITY_MAP_TYPE &organisms)
     {
-        //map_maker maker;
-
         nlohmann::json response;
         response["animal"] = nlohmann::json::array();
         response["plant"] = nlohmann::json::array();
@@ -254,7 +249,6 @@ namespace stat_fetcher
     std::vector<std::map<std::string, std::string>> prepare_data_for_simulation_2(const ENTITY_MAP_TYPE &organisms)
     {
         std::vector<std::map<std::string, std::string>> representatives;
-        map_maker maker;
 
         for (const auto &organism : organisms)
         {
@@ -320,7 +314,6 @@ namespace stat_fetcher
     std::vector<DBType> get_db_row(const ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year, std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &statistics)
     {
         std::vector<DBType> db_row;
-        map_maker maker;
 
         if (kingdom == "animal")
         {
