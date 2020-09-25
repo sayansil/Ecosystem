@@ -192,6 +192,18 @@ namespace stat_fetcher
         response["status"] = "failure";
         response["log"] = "";
 
+        std::vector<std::string> members{
+            "name",
+            "food_chain_rank",
+            "vision_radius",
+            "max_speed_at_age",
+            "max_vitality_at_age",
+            "max_appetite_at_age",
+            "max_stamina_at_age",
+            "height",
+            "weight"
+        };
+
         if(organisms.size() < 1)
         {
             response["log"] = "Underpopulation";
@@ -207,38 +219,19 @@ namespace stat_fetcher
         {
             if (organism.second->get_monitor_in_simulation())
             {
-                if(organism.second->get_kingdom() == "animal")
-                {
+                const auto &a_map = organism.second->get_attribute_raw_map();
 
-                    Animal* obj = static_cast<Animal*>(organism.second.get());
+                std::unordered_map<std::string, std::string> temp;
+                for (const auto &i : members)
+                {
+                    if (a_map.map.find(i) != a_map.map.end())
+                    {
+                        temp.insert({i, a_map[i].getString()});
+                    }
+                }
 
-                    response["animal"].push_back({
-                        {"name", obj->name},
-                        {"food_chain_rank", obj->food_chain_rank},
-                        {"vision_radius", obj->vision_radius},
-                        {"max_speed_at_age", obj->max_speed_at_age},
-                        {"max_vitality_at_age", obj->max_vitality_at_age},
-                        {"max_appetite_at_age", obj->max_appetite_at_age},
-                        {"max_stamina_at_age", obj->max_stamina_at_age},
-                        {"height", obj->height},
-                        {"weight", obj->weight}
-                    });
-                }
-                else if (organism.second->get_kingdom() == "plant")
-                {
-                    Plant *obj = static_cast<Plant*>(organism.second.get());
-                    response["plant"].push_back({
-                        {"name", obj->name},
-                        {"food_chain_rank", obj->food_chain_rank},
-                        {"max_vitality_at_age", obj->max_vitality_at_age},
-                        {"height", obj->height},
-                        {"weight", obj->weight}
-                    });
-                }
-                else
-                {
-                    std::cout << "Kingdom " << organism.second->get_kingdom() << " not supported\n";
-                }
+                response[organism.second->get_kingdom()].push_back(temp);
+
             }
         }
         response["status"] = "success";
@@ -249,61 +242,43 @@ namespace stat_fetcher
     {
         std::vector<std::map<std::string, std::string>> representatives;
 
+        std::vector<std::string> members{
+            "name",
+            "kingdom",
+            "kind",
+            "gender",
+            "age",
+            "height",
+            "weight",
+            "food_chain_rank",
+            "vision_radius",
+            "max_appetite_at_age",
+            "max_speed_at_age",
+            "max_stamina_at_age",
+            "max_vitality_at_age"
+        };
+
         for (const auto &organism : organisms)
         {
             const auto& a_map = organism.second->get_attribute_raw_map();
+
             if (organism.second->get_monitor_in_simulation())
             {
-                if (organism.second->get_kingdom() == "animal")
+                std::map<std::string, std::string> temp;
+
+                for (const auto &i : members)
                 {
-                    std::map<std::string, std::string> temp;
-
-                    temp.insert({"name", a_map["name"].getString()});
-                    temp.insert({"kingdom", a_map["kingdom"].getString()});
-                    temp.insert({"species", a_map["species"].getString()});
-
-                    temp.insert({"gender", a_map["gender"].getString()});
-                    temp.insert({"age", a_map["age"].getString()});
-                    temp.insert({"height", a_map["height"].getString()});
-                    temp.insert({"weight", a_map["weight"].getString()});
-
-                    temp.insert({"food_chain_rank", a_map["food_chain_rank"].getString()});
-                    temp.insert({"vision_radius", a_map["vision_radius"].getString()});
-
-                    temp.insert({"max_appetite_at_age", a_map["max_appetite_at_age"].getString()});
-                    temp.insert({"max_speed_at_age", a_map["max_speed_at_age"].getString()});
-                    temp.insert({"max_stamina_at_age", a_map["max_stamina_at_age"].getString()});
-                    temp.insert({"max_vitality_at_age", a_map["max_vitality_at_age"].getString()});
-
-                    representatives.push_back(temp);
+                    if (a_map.map.find(i) != a_map.map.end())
+                    {
+                        temp.insert({i, a_map[i].getString()});
+                    }
+                    else
+                    {
+                        temp.insert({i, std::to_string(0)});
+                    }
                 }
-                else if (organism.second->get_kingdom() == "plant")
-                {
-                    std::map<std::string, std::string> temp;
 
-                    temp.insert({"name", a_map["name"].getString()});
-                    temp.insert({"kingdom", a_map["kingdom"].getString()});
-                    temp.insert({"species", a_map["species"].getString()});
-
-                    temp.insert({"gender", a_map["gender"].getString()});
-                    temp.insert({"age", a_map["age"].getString()});
-                    temp.insert({"height", a_map["height"].getString()});
-                    temp.insert({"weight", a_map["weight"].getString()});
-
-                    temp.insert({"food_chain_rank", a_map["food_chain_rank"].getString()});
-                    temp.insert({"vision_radius", std::to_string(0)});
-
-                    temp.insert({"max_appetite_at_age", std::to_string(0)});
-                    temp.insert({"max_speed_at_age", std::to_string(0)});
-                    temp.insert({"max_stamina_at_age", std::to_string(0)});
-                    temp.insert({"max_vitality_at_age", a_map["max_vitality_at_age"].getString()});
-
-                    representatives.push_back(temp);
-                }
-                else
-                {
-                    std::cout << "Kingdom " << a_map["kingdom"].getString() << " not supported\n";
-                }
+                representatives.push_back(temp);
             }
         }
 

@@ -163,7 +163,7 @@ bool God::spawn_organism(ENTITY &&current_organism)
             std::vector<DBType> tmp;
 
             const auto &a_map = current_organism->get_attribute_raw_map(); // TODO - use a generic type like Organism
-            
+
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
                 tmp.emplace_back(DBType(colType, a_map[colName].getString()));

@@ -5,12 +5,35 @@
 
 int main()
 {
-    auto animal = std::make_shared<Animal>("deer");
+    unsigned int initial_organism_count = 50;
+    unsigned int years_to_simulate = 10;
+
     God allah(true);
-    allah.init(*animal);
-    ENTITY entity = animal;
-    auto &map2 = entity->get_attribute_raw_map();
-    map2.map["height"].assign("0.6969");
-    for(const auto& [i, j] : animal->get_attribute_raw_map().map)
-        std::cout << i << ": " << j.getString() << '\n';
+    allah.monitor_offsprings = true;
+    allah.reset_species("plant/bamboo");
+
+    while (initial_organism_count--)
+    {
+        allah.spawn_organism(std::make_shared<Plant>("bamboo", 10, true));
+    }
+
+    while (years_to_simulate--)
+    {
+        allah.happy_new_year(true);
+    }
+
+    auto data = allah.get_live_data();
+
+    std::cout << data.size() << "\n";
+    for (const auto &i : data)
+    {
+        std::cout << "**********************\n";
+
+        for (const auto &[j, k] : i)
+        {
+            std::cout << j << " : " << k << "\n";
+        }
+
+        std::cout << "**********************\n";
+    }
 }
