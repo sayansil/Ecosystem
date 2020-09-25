@@ -4,6 +4,7 @@
 #include <sqlite3.h>
 #include <string>
 #include <helper.hpp>
+#include <schema.hpp>
 
 const std::experimental::filesystem::path master_db_path = helper::get_ecosystem_root() / "data/ecosystem_master.db";
 const std::experimental::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
@@ -11,22 +12,42 @@ const std::experimental::filesystem::path json_template_path = helper::get_ecosy
 
 sqlite3 *db;
 
+static std::string sql_command_creator(const std::string &tableName, const std::vector<std::pair<std::string, SQLType>> &schema)
+{
+    std::string sql_command = "create table " + tableName + "(";
+
+    bool primaryKey = true;
+    for (const auto &[colName, colType] : schema)
+    {
+        sql_command += colName + " ";
+        if (colType == SQLType::TEXT)
+            sql_command += "TEXT ";
+        else if (colType == SQLType::FLOAT)
+            sql_command += "FLOAT ";
+        else if (colType == SQLType::INT)
+            sql_command += "INT ";
+
+        if (primaryKey)
+        {
+            sql_command += "PRIMARY KEY ";
+            primaryKey = false;
+        }
+
+        sql_command += "NOT NULL,";
+    }
+
+    sql_command = sql_command.substr(0, sql_command.length() - 1);
+    sql_command += ");";
+
+    return sql_command;
+}
+
 static void create_master_table()
 {
-    std::string sql_command;
     int rc;
 
-    sql_command = "CREATE TABLE ECOSYSTEM_MASTER("
-                  "name                TEXT        PRIMARY KEY     NOT NULL,"
-                  "kind                TEXT                        NOT NULL,"
-                  "chromosome          TEXT                        NOT NULL,"
-                  "generation          INT                         NOT NULL,"
-                  "immunity            FLOAT                       NOT NULL,"
-                  "gender              INT                         NOT NULL,"
-                  "age                 INT                         NOT NULL,"
-                  "height              FLOAT                       NOT NULL,"
-                  "weight              FLOAT                       NOT NULL,"
-                  "static_fitness      FLOAT                       NOT NULL);";
+    std::string sql_command = sql_command_creator("ECOSYSTEM_MASTER", schema::schemaMaster);
+
     rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
     if (rc != SQLITE_OK)
     {
@@ -51,98 +72,15 @@ static void create_species_table(const std::string &path)
     std::string table_name = "STATS_" + kind;
     for (auto & c: table_name) c = toupper(c);
 
-    // std::cout << "Creating " << table_name << " of type " << kingdom << '\n';
-
     std::string sql_command;
 
     if (kingdom == "animal")
     {
-        sql_command = "CREATE TABLE " + table_name + "("
-            "year                                          INT        PRIMARY KEY      NOT NULL,"
-            "male_population                               FLOAT                       NOT NULL,"
-            "female_population                             FLOAT                       NOT NULL,"
-            "matable_male_population                       FLOAT                       NOT NULL,"
-            "matable_female_population                     FLOAT                       NOT NULL,"
-            "conceiving_probability                        FLOAT                       NOT NULL,"
-            "mating_age_start                              FLOAT                       NOT NULL,"
-            "mating_age_end                                FLOAT                       NOT NULL,"
-            "max_age                                       FLOAT                       NOT NULL,"
-            "mutation_probability                          FLOAT                       NOT NULL,"
-            "offsprings_factor                             FLOAT                       NOT NULL,"
-            "age_on_death                                  FLOAT                       NOT NULL,"
-            "fitness_on_death                              FLOAT                       NOT NULL,"
-            "age_fitness_on_death_ratio                    FLOAT                       NOT NULL,"
-            "height_on_speed                               FLOAT                       NOT NULL,"
-            "height_on_stamina                             FLOAT                       NOT NULL,"
-            "height_on_vitality                            FLOAT                       NOT NULL,"
-            "weight_on_speed                               FLOAT                       NOT NULL,"
-            "weight_on_stamina                             FLOAT                       NOT NULL,"
-            "weight_on_vitality                            FLOAT                       NOT NULL,"
-            "vitality_on_appetite                          FLOAT                       NOT NULL,"
-            "vitality_on_speed                             FLOAT                       NOT NULL,"
-            "stamina_on_appetite                           FLOAT                       NOT NULL,"
-            "stamina_on_speed                              FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_appetite             FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_height               FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_speed                FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_stamina              FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_vitality             FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_weight               FLOAT                       NOT NULL,"
-            "theoretical_maximum_height                    FLOAT                       NOT NULL,"
-            "theoretical_maximum_speed                     FLOAT                       NOT NULL,"
-            "theoretical_maximum_weight                    FLOAT                       NOT NULL,"
-            "theoretical_maximum_height_multiplier         FLOAT                       NOT NULL,"
-            "theoretical_maximum_speed_multiplier          FLOAT                       NOT NULL,"
-            "theoretical_maximum_stamina_multiplier        FLOAT                       NOT NULL,"
-            "theoretical_maximum_vitality_multiplier       FLOAT                       NOT NULL,"
-            "theoretical_maximum_weight_multiplier         FLOAT                       NOT NULL,"
-            "sleep_restore_factor                          FLOAT                       NOT NULL,"
-            "average_generation                            FLOAT                       NOT NULL,"
-            "average_immunity                              FLOAT                       NOT NULL,"
-            "average_age                                   FLOAT                       NOT NULL,"
-            "average_height                                FLOAT                       NOT NULL,"
-            "average_weight                                FLOAT                       NOT NULL,"
-            "average_max_appetite_at_age                   FLOAT                       NOT NULL,"
-            "average_max_speed_at_age                      FLOAT                       NOT NULL,"
-            "average_max_stamina_at_age                    FLOAT                       NOT NULL,"
-            "average_max_vitality_at_age                   FLOAT                       NOT NULL,"
-            "average_static_fitness                        FLOAT                       NOT NULL,"
-            "average_dynamic_fitness                       FLOAT                       NOT NULL,"
-            "average_vision_radius                         FLOAT                       NOT NULL);";
+        sql_command = sql_command_creator(table_name, schema::schemaAnimal);
     }
     else if (kingdom == "plant")
     {
-        sql_command = "CREATE TABLE " + table_name + "("
-            "year                                          INT        PRIMARY KEY      NOT NULL,"
-            "population                                    FLOAT                       NOT NULL,"
-            "matable_population                            FLOAT                       NOT NULL,"
-            "conceiving_probability                        FLOAT                       NOT NULL,"
-            "mating_age_start                              FLOAT                       NOT NULL,"
-            "mating_age_end                                FLOAT                       NOT NULL,"
-            "max_age                                       FLOAT                       NOT NULL,"
-            "mutation_probability                          FLOAT                       NOT NULL,"
-            "offsprings_factor                             FLOAT                       NOT NULL,"
-            "age_on_death                                  FLOAT                       NOT NULL,"
-            "fitness_on_death                              FLOAT                       NOT NULL,"
-            "age_fitness_on_death_ratio                    FLOAT                       NOT NULL,"
-            "height_on_vitality                            FLOAT                       NOT NULL,"
-            "weight_on_vitality                            FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_height               FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_vitality             FLOAT                       NOT NULL,"
-            "theoretical_maximum_base_weight               FLOAT                       NOT NULL,"
-            "theoretical_maximum_height                    FLOAT                       NOT NULL,"
-            "theoretical_maximum_weight                    FLOAT                       NOT NULL,"
-            "theoretical_maximum_height_multiplier         FLOAT                       NOT NULL,"
-            "theoretical_maximum_vitality_multiplier       FLOAT                       NOT NULL,"
-            "theoretical_maximum_weight_multiplier         FLOAT                       NOT NULL,"
-            "average_generation                            FLOAT                       NOT NULL,"
-            "average_immunity                              FLOAT                       NOT NULL,"
-            "average_age                                   FLOAT                       NOT NULL,"
-            "average_height                                FLOAT                       NOT NULL,"
-            "average_weight                                FLOAT                       NOT NULL,"
-            "average_max_vitality_at_age                   FLOAT                       NOT NULL,"
-            "average_static_fitness                        FLOAT                       NOT NULL,"
-            "average_dynamic_fitness                       FLOAT                       NOT NULL);";
+        sql_command = sql_command_creator(table_name, schema::schemaPlant);
     }
 
     int rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
