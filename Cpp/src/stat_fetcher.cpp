@@ -287,32 +287,34 @@ namespace stat_fetcher
     {
         std::vector<DBType> db_row;
 
-        if (kingdom == "animal")
+        std::unordered_map<std::string, double> stat_db_map;
+
+        unsigned int count = 0;
+
+        // Used in StatGroup::MISC
+
+        for (const auto &var_name : statistics[kingdom][StatGroup::MISC])
         {
-            std::unordered_map<std::string, double> stat_db_map;
+            stat_db_map[var_name] = 0.0;
+        }
 
-            unsigned int count = 0;
+        // Used in StatGroup::MEAN
 
-            // Used in StatGroup::MISC
+        for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
+        {
+            stat_db_map[var_name] = 0.0;
+        }
 
-            for (const auto& var_name : statistics[kingdom][StatGroup::MISC])
+        for (const auto &organism: organisms)
+        {
+            const auto& a_map = organism.second->get_attribute_raw_map();
+
+            if (kind != organism.second->get_kind())
+                continue;
+
+            if (kingdom == "animal")
             {
-                stat_db_map[var_name] = 0.0;
-            }
-
-            // Used in StatGroup::MEAN
-
-            for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
-            {
-                stat_db_map["average_" + var_name] = 0.0;
-            }
-
-            for (const auto &organism: organisms)
-            {
-                const auto& a_map = organism.second->get_attribute_raw_map();
-
-                if (kind != organism.second->get_kind())
-                    continue;
+                const std::vector<std::pair<std::string, SQLType>> current_schema = schema::schemaAnimal;
 
                 if (organism.second->get_gender() == MALE)
                 {
@@ -332,63 +334,10 @@ namespace stat_fetcher
                         stat_db_map["matable_female_population"]++;
                     }
                 }
-
-                // Used in StatGroup::FIX
-
-                for (const auto &var_name : statistics[kingdom][StatGroup::FIX])
-                {
-                    stat_db_map[var_name] = std::stod(a_map[var_name].getString());
-                }
-
-                // Used in StatGroup::MEAN
-
-                for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
-                {
-                    stat_db_map["average_" + var_name] = ((double)count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
-                }
-
-                count++;
             }
-
-            for (const auto &[colName, colType] : schema::schemaAnimal)
+            else if (kingdom == "plant")
             {
-                if (colName == "year")
-                {
-                    db_row.emplace_back(DBType(SQLType::INT, std::to_string(year)));
-                }
-                else
-                {
-                    db_row.emplace_back(DBType(SQLType::FLOAT, std::to_string(stat_db_map[colName])));
-                }
-            }
-
-        }
-        else if (kingdom == "plant")
-        {
-            std::unordered_map<std::string, double> stat_db_map;
-
-            unsigned int count = 0;
-
-            // Used in StatGroup::MISC
-
-            for (const auto &var_name : statistics[kingdom][StatGroup::MISC])
-            {
-                stat_db_map[var_name] = 0.0;
-            }
-
-            // Used in StatGroup::MEAN
-
-            for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
-            {
-                stat_db_map[var_name] = 0.0;
-            }
-
-            for (const auto &organism: organisms)
-            {
-                const auto& a_map = organism.second->get_attribute_raw_map();
-
-                if (kind != organism.second->get_kind())
-                    continue;
+                const std::vector<std::pair<std::string, SQLType>> current_schema = schema::schemaPlant;
 
                 stat_db_map["population"]++;
 
@@ -396,34 +345,38 @@ namespace stat_fetcher
                 {
                     stat_db_map["matable_population"]++;
                 }
-
-                // Used in StatGroup::FIX
-
-                for (const auto &var_name : statistics[kingdom][StatGroup::FIX])
-                {
-                    stat_db_map[var_name] = std::stod(a_map[var_name].getString());
-                }
-
-                // Used in StatGroup::MEAN
-
-                for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
-                {
-                    stat_db_map[var_name] = (count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
-                }
-
-                count++;
+            }
+            else
+            {
+                throw std::runtime_error(__func__ + std::string(" : kingdom not defined\n"));
             }
 
-            for (const auto &[colName, colType] : schema::schemaPlant)
+            // Used in StatGroup::FIX
+
+            for (const auto &var_name : statistics[kingdom][StatGroup::FIX])
             {
-                if (colName == "year")
-                {
-                    db_row.emplace_back(DBType(SQLType::INT, std::to_string(year)));
-                }
-                else
-                {
-                    db_row.emplace_back(DBType(SQLType::FLOAT, std::to_string(stat_db_map[colName])));
-                }
+                stat_db_map[var_name] = std::stod(a_map[var_name].getString());
+            }
+
+            // Used in StatGroup::MEAN
+
+            for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
+            {
+                stat_db_map[var_name] = (count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
+            }
+
+            count++;
+        }
+
+        for (const auto &[colName, colType] : current_schema)
+        {
+            if (colName == "year")
+            {
+                db_row.emplace_back(DBType(SQLType::INT, std::to_string(year)));
+            }
+            else
+            {
+                db_row.emplace_back(DBType(SQLType::FLOAT, std::to_string(stat_db_map[colName])));
             }
         }
 
