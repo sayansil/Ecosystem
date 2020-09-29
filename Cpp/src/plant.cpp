@@ -275,7 +275,7 @@ bool Plant::is_normal_child() const
         get_weight_multiplier()
     };
 
-    for (const aut&i : checklist)
+    for (const auto &i : checklist)
         if (!helper::is_nonzero_nonnan(i))
             return false;
 
