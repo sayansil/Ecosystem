@@ -366,27 +366,32 @@ void Animal::generate_death_factor()
 
 bool Animal::is_normal_child() const
 {
-    if (height == 0 || height != height ||
-        weight == 0 || weight != weight ||
-        immunity == 0 || immunity != immunity ||
-        max_appetite_at_age == 0 || max_appetite_at_age != max_appetite_at_age ||
-        max_speed_at_age == 0 || max_speed_at_age != max_speed_at_age ||
-        max_stamina_at_age == 0 || max_stamina_at_age != max_stamina_at_age ||
-        max_vitality_at_age == 0 || max_vitality_at_age != max_vitality_at_age ||
-        get_base_appetite() == 0 || get_base_appetite() != get_base_appetite() ||
-        get_base_height() == 0 || get_base_height() != get_base_height() ||
-        get_base_speed() == 0 || get_base_speed() != get_base_speed() ||
-        get_base_stamina() == 0 || get_base_stamina() != get_base_stamina() ||
-        get_base_vitality() == 0 || get_base_vitality() != get_base_vitality() ||
-        get_base_weight() == 0 || get_base_weight() != get_base_weight() ||
-        get_max_height() == 0 || get_max_height() != get_max_height() ||
-        get_max_weight() == 0 || get_max_weight() != get_max_weight() ||
-        get_height_multiplier() == 0 || get_height_multiplier() != get_height_multiplier() ||
-        get_speed_multiplier() == 0 || get_speed_multiplier() != get_speed_multiplier() ||
-        get_stamina_multiplier() == 0 || get_stamina_multiplier() != get_stamina_multiplier() ||
-        get_vitality_multiplier() == 0 || get_vitality_multiplier() != get_vitality_multiplier() ||
-        get_weight_multiplier() == 0 || get_weight_multiplier() != get_weight_multiplier())
-        return false;
+    std::vector<double> checklist {
+        height,
+        weight,
+        immunity,
+        max_appetite_at_age,
+        max_speed_at_age,
+        max_stamina_at_age,
+        max_vitality_at_age,
+        get_base_appetite(),
+        get_base_height(),
+        get_base_speed(),
+        get_base_stamina(),
+        get_base_vitality(),
+        get_base_weight(),
+        get_max_height(),
+        get_max_weight(),
+        get_height_multiplier(),
+        get_speed_multiplier(),
+        get_stamina_multiplier(),
+        get_vitality_multiplier(),
+        get_weight_multiplier()
+    };
+
+    for (const aut&i : checklist)
+        if (!helper::is_nonzero_nonnan(i))
+            return false;
 
     return true;
 }

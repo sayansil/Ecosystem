@@ -129,6 +129,14 @@ namespace helper
         assert(("ECOSYSTEM_ROOT environment variable not set", ECOSYSTEM_ROOT != NULL));
         return std::experimental::filesystem::path(ECOSYSTEM_ROOT);
     }
+
+
+    bool is_nonzero_nonnan(const double &x)
+    {
+        if (x == 0 || x != x)
+            return false;
+        return true;
+    }
 };
 
 
