@@ -289,6 +289,8 @@ namespace stat_fetcher
 
         std::unordered_map<std::string, double> stat_db_map;
 
+        const std::vector<std::pair<std::string, SQLType>> current_schema;
+
         unsigned int count = 0;
 
         // Used in StatGroup::MISC
@@ -314,7 +316,7 @@ namespace stat_fetcher
 
             if (kingdom == "animal")
             {
-                const std::vector<std::pair<std::string, SQLType>> current_schema = schema::schemaAnimal;
+                current_schema = schema::schemaAnimal;
 
                 if (organism.second->get_gender() == MALE)
                 {
@@ -337,7 +339,7 @@ namespace stat_fetcher
             }
             else if (kingdom == "plant")
             {
-                const std::vector<std::pair<std::string, SQLType>> current_schema = schema::schemaPlant;
+                current_schema = schema::schemaPlant;
 
                 stat_db_map["population"]++;
 
