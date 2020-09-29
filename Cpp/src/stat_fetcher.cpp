@@ -289,7 +289,7 @@ namespace stat_fetcher
 
         std::unordered_map<std::string, double> stat_db_map;
 
-        const std::vector<std::pair<std::string, SQLType>> current_schema;
+        std::vector<std::pair<std::string, SQLType>> current_schema;
 
         unsigned int count = 0;
 
