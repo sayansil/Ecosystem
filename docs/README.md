@@ -104,38 +104,11 @@ The **final bit** in chromosome shall represent the ***gender*** of the organism
 
 <table>
   <tr>
-    <th>
-    <table>
-    <tr>
-    <th>15
-    </th>
-    </tr>
-    </table>
-    </th>
-    <th>
-    <table>
-    <tr>
-    <th>1.1
-    </th>
-    </tr>
-    </table>
-    </th>
-    <th>
-    <table>
-    <tr>
-    <th>73
-    </th>
-    </tr>
-    </table>
-    </th>
+    <th>15</th>
+    <th>1.1</th>
+    <th>73</th>
     <th>...</th>
-    <th><table>
-    <tr>
-    <th>1000
-    </th>
-    </tr>
-    </table>
-    </th>
+    <th>1000</th>
   </tr>
 </table>
 
@@ -159,38 +132,11 @@ Set of finite values which exhaustively define all non-hereditary traits (or *po
 
 <table>
   <tr>
-    <th>
-    <table>
-    <tr>
-    <th>45
-    </th>
-    </tr>
-    </table>
-    </th>
-    <th>
-    <table>
-    <tr>
-    <th>81
-    </th>
-    </tr>
-    </table>
-    </th>
-    <th>
-    <table>
-    <tr>
-    <th>27
-    </th>
-    </tr>
-    </table>
-    </th>
+    <th>45</th>
+    <th>81</th>
+    <th>27</th>
     <th>...</th>
-    <th><table>
-    <tr>
-    <th>100
-    </th>
-    </tr>
-    </table>
-    </th>
+    <th>100</th>
   </tr>
 </table>
 
@@ -360,4 +306,59 @@ The process consisting of steps **Adaptation** to **Selection** repeats itself f
 
 ![Maximum appetite dependency](https://i.ibb.co/FWsCmb2/herbivore-max-app.png)
 
+
+# Usage
+
+### Requirements
+
+- For visualization,
+
+```shell
+pip install -r visualization/requirements.txt
+```
+
+- For webapp,
+
+```shell
+pip install -r Python/requirements.txt
+```
+
+### Setup
+
+- Navigate to the root directory of the project and set the environment variable `ECOSYSTEM_ROOT`
+
+```shell
+cd Ecosystem
+export ECOSYSTEM_ROOT=`pwd`
+```
+
+- Create a **build** directory in `Cpp` and build the project using `CMake`
+
+```shell
+cd Cpp & mkdir build & cd build
+cmake ..
+make
+```
+
+- Create folders with the name of required species in the directory of their kingdom.
+
+```shell
+mkdir ../../data/json/animal/<animal-species>
+mkdir ../../data/json/plant/<plant-species>
+```
+For example,
+
+```shell
+mkdir ../../data/json/animal/deer
+mkdir ../../data/json/plant/bamboo
+mkdir ../../data/json/animal/lion
+```
+
+- Run the setup file generated in the build directory to create/populate required files and databases
+
+```shell
+./setup/setup
+```
+
+- Open and edit the pre-populated `base.json` and `modify.json` files for the species which were defined earlier. The files will be found inside the directories `data/json/<kingdom>/<species>`
 
