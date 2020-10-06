@@ -24,7 +24,7 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -fopenmp -march=native")
+set(CMAKE_CXX_FLAGS "-std=c++2a -O3 -fopenmp -march=native -ltbb")
 
 set(SQLITE_HEADERS
     ${PROJECT_SOURCE_DIR}/include/sqlite3.h
