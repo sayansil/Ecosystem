@@ -26,7 +26,7 @@ struct DatabaseManager
      *  Constructor / Destructor  *
      ******************************/
 
-    DatabaseManager(const std::experimental::filesystem::path& filename = helper::get_ecosystem_root() / "data/ecosystem_master.db");
+    DatabaseManager(const std::filesystem::path& filename = helper::get_ecosystem_root() / "data/ecosystem_master.db");
     ~DatabaseManager();
 
 
