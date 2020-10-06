@@ -298,7 +298,7 @@ void God::happy_new_year(const bool &log)
 
     // Sort organism_vec by death factor
 
-    __gnu_parallel::sort(organisms_vec.begin(),
+    std::sort(std::execution::par, organisms_vec.begin(),
         organisms_vec.end(),
         [](const std::pair<ENTITY, double> &x, const std::pair<ENTITY, double> &y){
             return x.first->get_death_factor() > y.first->get_death_factor();
@@ -307,7 +307,7 @@ void God::happy_new_year(const bool &log)
     // Mark the organisms in organism_vec for death
 
     int tmp_i = 0;
-    __gnu_parallel::for_each(organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
+    std::for_each(std::execution::par, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
         x.second = helper::weighted_prob(
             // killerFunction(x.first.get_fitness(), organisms_vec.size())
             killer_function(tmp_i++, organisms_vec.size())
@@ -430,7 +430,7 @@ void God::happy_new_year(const bool &log)
      *       Annual Ageing Begins      *
      ************************************/
 
-    __gnu_parallel::for_each(organisms.begin(), organisms.end(), [](auto &x){
+    std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto &x){
         x.second->increment_age();
     });
 

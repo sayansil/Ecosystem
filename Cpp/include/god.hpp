@@ -1,7 +1,7 @@
 #ifndef GOD_HPP
 #define GOD_HPP
 
-#include <parallel/algorithm>
+#include <algorithm>
 #include <iostream>
 #include <random>
 #include <unordered_map>
@@ -13,6 +13,7 @@
 #include <organism.hpp>
 #include <helper.hpp>
 #include <stat_fetcher.hpp>
+#include <execution>
 
 class God
 {
