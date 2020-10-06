@@ -3,25 +3,20 @@ name: test
 on:
   push:
       branches:
-      - ubuntu
+      - master
 
 jobs:
   build-ubuntu:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare
       run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 50
-        sudo update-alternatives --set gcc "/usr/bin/gcc-9"
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 50
-        sudo update-alternatives --set g++ "/usr/bin/g++-9"
-        sudo apt-get install libsqlite3-dev
-        sudo apt-get install libzmq3-dev
-        sudo apt-get install ccache
-        sudo apt-get update
+        echo "deb http://cz.archive.ubuntu.com/ubuntu eoan main universe" | sudo tee -a  /etc/apt/sources.list
+        sudo apt update
+        sudo apt install libtbb-dev
 
     - name: configure
       run: |
