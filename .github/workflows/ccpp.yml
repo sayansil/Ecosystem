@@ -15,7 +15,21 @@ jobs:
     - name: prepare
       run: |
         sudo apt update
-        sudo apt install libbtbb-dev
+        wget https://github.com/intel/tbb/archive/2019_U8.tar.gz
+        tar zxvf 2019_U8.tar.gz
+        rm 2019_U8.tar.gz
+        cd tbb-2019_U8
+        make stdver=c++17 tbb_build_prefix=my_tbb_build
+        sudo mkdir /usr/local/tbb-2019_U8
+        sudo cp -r include /usr/local/tbb-2019_U8/include
+        sudo ln -s /usr/local/tbb-2019_U8/include/tbb /usr/local/include/tbb
+        sudo cp -r build/my_tbb_build_release /usr/local/tbb-2019_U8/lib
+        sudo ln -s /usr/local/tbb-2019_U8/lib/libtbb.so.2 /usr/local/lib/libtbb.so
+        sudo ln -s /usr/local/tbb-2019_U8/lib/libtbbmalloc.so.2 /usr/local/lib/libtbbmalloc.so
+        sudo ln -s /usr/local/tbb-2019_U8/lib/libtbbmalloc_proxy.so.2 /usr/local/lib/libtbbmalloc_proxy.so
+        echo 'export LD_LIBRARY_PATH=/usr/local/tbb-2019_U8/lib:$LD_LIBRARY_PATH' >> ~/.bashrc
+        source ~/.bashrc
+        cd ..
 
     - name: configure
       run: |
