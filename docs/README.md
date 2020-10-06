@@ -329,6 +329,11 @@ pip install -r Python/requirements.txt
 cd Ecosystem
 export ECOSYSTEM_ROOT=`pwd`
 ```
+- Import all git submodules
+
+```shell
+git submodule update --recursive --remote
+```
 
 - Create a **build** directory in `Cpp` and build the project using `CMake`
 
