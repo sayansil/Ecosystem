@@ -304,7 +304,7 @@ namespace stat_fetcher
 
         for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
         {
-            stat_db_map[var_name] = 0.0;
+            stat_db_map["average_" + var_name] = 0.0;
         }
 
         for (const auto &organism: organisms)
@@ -364,7 +364,7 @@ namespace stat_fetcher
 
             for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
             {
-                stat_db_map[var_name] = (count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
+                stat_db_map["average_" + var_name] = (count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
             }
 
             count++;

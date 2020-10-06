@@ -18,6 +18,8 @@ app/.idea/
 app/app/src/test/
 Python/keys.json
 Cpp/WebApp/keys.json
+Cpp/WebApp/extern/uWebSockets
+Cpp/python/pybind11
 app/.project
 app/.settings/*
 app/app/.classpath
