@@ -16,9 +16,9 @@ jobs:
       run: |
         sudo apt update
         wget https://github.com/intel/tbb/archive/2019_U8.tar.gz
-        tar zxvf oneTBB-2019_U8.tar.gz
-        rm oneTBB-2019_U8.tar.gz
-        cd oneTBB-2019_U8
+        tar zxvf 2019_U8.tar.gz
+        rm 2019_U8.tar.gz
+        cd 2019_U8
         make stdver=c++17 tbb_build_prefix=my_tbb_build
         sudo mkdir /usr/local/tbb-2019_U8
         sudo cp -r include /usr/local/tbb-2019_U8/include
