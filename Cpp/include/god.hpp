@@ -11,7 +11,6 @@
 #include <execution>
 
 #include <database_manager.hpp>
-#include <zmq.hpp>
 #include <organism.hpp>
 #include <helper.hpp>
 #include <stat_fetcher.hpp>
@@ -46,9 +45,6 @@ public:
     void kill_organisms(const std::vector<std::string>&);
     bool spawn_organism(const ENTITY&);
     void remember_species(const std::string &);
-    void send_data_to_simulation();
-    bool listen_for_simulation_once();
-    void start_listening_for_simulation();
 
     std::vector<ENTITY> organism_sort(bool (*comp)(const ENTITY&, const ENTITY&));
     std::unordered_map<std::string, std::vector<ENTITY>> organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&));
