@@ -1,7 +1,7 @@
 function(add_code name)
     add_executable(rt_${name} ${name}.cpp ${SQLITE_SOURCES})
     target_include_directories(rt_${name} PRIVATE ${Ecosystem_SOURCE_DIR}/include)
-    target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl stdc++fs tbb)
+    target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl tbb)
 endfunction()
 
 #    add_code(generateReport)
