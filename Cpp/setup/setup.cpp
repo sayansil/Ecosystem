@@ -6,9 +6,9 @@
 #include <helper.hpp>
 #include <schema.hpp>
 
-const std::experimental::filesystem::path master_db_path = helper::get_ecosystem_root() / "data/ecosystem_master.db";
-const std::experimental::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
-const std::experimental::filesystem::path json_template_path = helper::get_ecosystem_root() / "data/templates/json";
+const std::filesystem::path master_db_path = helper::get_ecosystem_root() / "data/ecosystem_master.db";
+const std::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
+const std::filesystem::path json_template_path = helper::get_ecosystem_root() / "data/templates/json";
 
 sqlite3 *db;
 
@@ -96,10 +96,10 @@ static void create_species_table(const std::string &path)
 
 static void parse_species_directories(std::string subdirectory)
 {
-    std::experimental::filesystem::path filepath;
+    std::filesystem::path filepath;
 
-    auto copy_contents = [](const std::experimental::filesystem::path &source, const std::experimental::filesystem::path &sink) {
-        if (!std::experimental::filesystem::exists(sink))
+    auto copy_contents = [](const std::filesystem::path &source, const std::filesystem::path &sink) {
+        if (!std::filesystem::exists(sink))
         {
             std::ifstream to_read(source, std::ios::binary);
             std::ofstream to_create(sink, std::ios::binary);
@@ -111,7 +111,7 @@ static void parse_species_directories(std::string subdirectory)
         }
     };
 
-    for (const auto &entry : std::experimental::filesystem::directory_iterator(json_data_path / subdirectory))
+    for (const auto &entry : std::filesystem::directory_iterator(json_data_path / subdirectory))
     {
         // Creating base.json from template
         copy_contents(
@@ -135,7 +135,7 @@ static void parse_species_directories(std::string subdirectory)
 int main()
 {
 
-    if(!std::experimental::filesystem::exists(master_db_path))
+    if(!std::filesystem::exists(master_db_path))
     {
         sqlite3_open(master_db_path.c_str(), &db);
         create_master_table();
@@ -146,11 +146,11 @@ int main()
         std::cout << "Using existing db at " << master_db_path << '\n';
     }
 
-    if (std::experimental::filesystem::exists(json_data_path / "animal"))
+    if (std::filesystem::exists(json_data_path / "animal"))
     {
         parse_species_directories("animal");
     }
-    if (std::experimental::filesystem::exists(json_data_path / "plant"))
+    if (std::filesystem::exists(json_data_path / "plant"))
     {
         parse_species_directories("plant");
     }

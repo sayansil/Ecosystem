@@ -127,7 +127,7 @@ namespace helper
     {
         char *ECOSYSTEM_ROOT = std::getenv("ECOSYSTEM_ROOT");
         assert(("ECOSYSTEM_ROOT environment variable not set", ECOSYSTEM_ROOT != NULL));
-        return std::experimental::filesystem::path(ECOSYSTEM_ROOT);
+        return std::filesystem::path(ECOSYSTEM_ROOT);
     }
 
 
