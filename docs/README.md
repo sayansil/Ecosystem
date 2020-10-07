@@ -40,6 +40,8 @@
 
 An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control ***directly controllable*** environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.
 
+# Quick Links
+
 ### [:house: Home](https://github.com/sayansil/Ecosystem/wiki)
 
 ### [:nut_and_bolt: Framework](https://github.com/sayansil/Ecosystem/wiki/Framework-Overview)
@@ -53,3 +55,4 @@ An ecosystem simulation tool where we create some organisms and leave them be. T
 * [:paw_prints: Simulation Framework](https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework)
 
 ### [:electric_plug: Usage](https://github.com/sayansil/Ecosystem/wiki/Usage)
+
