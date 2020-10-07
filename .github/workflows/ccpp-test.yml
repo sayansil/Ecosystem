@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build-ubuntu:
+  test-ubuntu:
     runs-on: ubuntu-20.04
 
     steps:
@@ -17,21 +17,20 @@ jobs:
         echo "deb http://cz.archive.ubuntu.com/ubuntu eoan main universe" | sudo tee -a  /etc/apt/sources.list
         sudo apt update
         sudo apt install libtbb-dev
-
     - name: configure
       run: |
+        git submodule update --init --recursive
         cd Cpp
         mkdir build
         cd build
         cmake ..
-
     - name: build
       run: |
         cd Cpp/build
-        make
-        
+        cmake --build . -- -j $(nproc)
     - name: test
       run: |
-        cd Cpp/build
-        ./setup
-        ./rt_sanity_test
+        export ECOSYSTEM_ROOT=`pwd`
+        ./Cpp/build/setup/setup
+        ./Cpp/build/RandomTests/rt_sanity_test
+        ./Cpp/build/tests/tests
