@@ -1,0 +1,15 @@
+name: detox-messages
+on: [issue_comment, pull_request_review]
+
+jobs:
+  toxic_check:
+    runs-on: ubuntu-latest
+    name: Toxicity check
+    steps:
+      - uses: actions/checkout@v2
+      - name: Safe space - action step
+        uses: charliegerard/safe-space@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.DETOX_GITHUB_TOKEN }}
+          message: "Please be kind on internet. You'd be surprised how far a little kindness can take you."
+          toxicity_threshold: 0.7
