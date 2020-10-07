@@ -1,4 +1,5 @@
-on: [push, issue_comment, pull_request_review]
+name: detox-messages
+on: [issue_comment, pull_request_review]
 
 jobs:
   toxic_check:
