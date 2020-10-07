@@ -44,7 +44,7 @@
 
 <div align="center">
 <h2>Quick Navigation</h2>
-<table role="table">
+<table width="100%" style="margin: 0px;">
   <tr> <th>About</th> <th>Setup</th> <th>Framework</th> </tr>
   <tr>
     <td align="center"><img hspace="20" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/info-button.png"></td>
