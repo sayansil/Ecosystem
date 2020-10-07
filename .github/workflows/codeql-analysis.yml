@@ -36,7 +36,7 @@ jobs:
         languages: ${{ matrix.language }}
     
     - name: prepare-build
-    - run: |
+      run: |
         echo "deb http://cz.archive.ubuntu.com/ubuntu eoan main universe" | sudo tee -a  /etc/apt/sources.list
         sudo apt update
         sudo apt install libtbb-dev
