@@ -1,15 +1,5 @@
 version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "thursday"
-    commit-message:
-      prefix: "github-actions"
-      include: "scope"
-
-updates:
   - package-ecosystem: "pip"
     directory: "/Python"
     schedule:
