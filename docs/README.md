@@ -47,9 +47,9 @@
 <table role="table">
   <tr> <th>About</th> <th>Setup</th> <th>Framework</th> </tr>
   <tr>
-    <td align="center"><img hspace="20" height="64" width="64" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/info-button.png"></td>
-    <td align="center"><img hspace="20" height="64" width="64" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/settings.png"></td>
-    <td align="center"><img hspace="20" height="64" width="64" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/gear.png"></td>
+    <td align="center"><img hspace="20" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/info-button.png"></td>
+    <td align="center"><img hspace="20" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/settings.png"></td>
+    <td align="center"><img hspace="20" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/gear.png"></td>
   </tr>
   <tr>
     <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki"><b>About</b></a></td>
