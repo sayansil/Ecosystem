@@ -40,6 +40,16 @@
 
 An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control ***directly controllable*** environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.
 
-## Usage
+### [:house: Home](https://github.com/sayansil/Ecosystem/wiki)
 
-Refer to the [Usage](https://github.com/sayansil/Ecosystem/wiki/Usage) page in wiki.
+### [:nut_and_bolt: Framework](https://github.com/sayansil/Ecosystem/wiki/Framework-Overview)
+
+* [:inbox_tray: Input Framework](https://github.com/sayansil/Ecosystem/wiki/Input-Framework)
+
+* [:outbox_tray: Output Framework](https://github.com/sayansil/Ecosystem/wiki/Output-Framework)
+
+* [:floppy_disk: Database Manager](https://github.com/sayansil/Ecosystem/wiki/Database-Manager)
+
+* [:paw_prints: Simulation Framework](https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework)
+
+### [:electric_plug: Usage](https://github.com/sayansil/Ecosystem/wiki/Usage)
