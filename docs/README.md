@@ -40,20 +40,6 @@
 
 An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control ***directly controllable*** environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.
 
-# Abstract
-
->*“It is not the strongest or the most intelligent who will survive but those who can best manage change.”*
->           - **Leon C. Megginson**
-
-Environmental data collected worldwide points to **one obvious fact**: *the conditions are going to change drastically over the next 50 - 100 years.* Our world today is plagued by a variety of environmental imbalances caused by the harmful activities of humans. Issues like *global warming, gradual rising of sea levels, climatic changes, extinction of animals* are wreaking havoc. Going by the saying, change is the only aspect of life which is constant, our ability to adapt to change will be thoroughly tested, failing to do so will lead to *human extinction.*
-
-In this work, we present a novel **Ecosystem Simulator** where the user *plays the role of God*. Our toolkit helps the user **mimic a real-world ecosystem** where he can introduce new organisms with custom characteristics and also bring changes to the ecosystem and then observe their behaviour and reaction to those changes. Thus the user can be looked upon as The God of the ecosystem who has the power to bring any change with which he can **simulate the problems happening worldwide** and gain valuable insights on how the organisms try to adapt to the change to ensure their survival. Studying the overall behaviour of the ecosystem will provide us with a wealth of knowledge and be far better prepared on how we should be **equipped to handle the future.**
-
-Let us start by understanding an ecosystem, which is defined as a *complex interrelationship of living organisms and their physical habitat together in a unit of space*. The abundance of life forces necessary for the thriving of living organisms has led to a diverse range of ecosystems in our planet which have been unpredictable till now. With the passage of time ecosystems may undergo drastic changes due to climatic stimulus or artificial interference. Many have tried to predict the end results of this constant change in ecosystems among which the most notable one is **Charles Darwin** with his **theory of evolution** and survival of the fittest. By the virtue of this theory, the one who is fit to adapt to the change in its surroundings will eventually survive and the rest will be filtered off, contributing to the evolution of the species as a whole in the new ecosystem. This picture of the future is rather *ambiguous* as it does not specifically tells us about the features or traits of the organisms which will be dominant by that time, leaving much to our imagination.
-
-A system which could approximately figure out the generic trend of the traits in species given an ecosystem will not only help us study the future forms of the currently existing species but also help us distinguish rather endangered organisms among the rest. This however cannot be achieved using a single mathematical formula, rather a simulation of the organisms and their interdependence among one another and their surroundings over a period of time can help us arrive at a similar goal.
-
-
 
 # Theoretical Assumptions
 
