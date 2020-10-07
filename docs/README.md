@@ -2,7 +2,7 @@
 <p align="center">
 
 <a href="https://github.com/sayansil/Ecosystem">
-  <img src="https://i.ibb.co/PZP7XMZ/eco.png" />
+  <img src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/eco.png" />
 </a>
 
 </p>
