@@ -11,5 +11,5 @@ jobs:
         uses: charliegerard/safe-space@master
         with:
           GITHUB_TOKEN: ${{ secrets.DETOX_GITHUB_TOKEN }}
-          message: "Please be kind on internet. You'd be surprised how far a little kindness can take you."
+          message: "Hi @${commentAuthor}! Please be kind on internet. You'd be surprised how far a little kindness can take you."
           toxicity_threshold: 0.7
