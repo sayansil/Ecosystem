@@ -40,19 +40,32 @@
 
 An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control ***directly controllable*** environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.
 
-# Quick Links
 
-### [:house: Home](https://github.com/sayansil/Ecosystem/wiki)
-
-### [:nut_and_bolt: Framework](https://github.com/sayansil/Ecosystem/wiki/Framework-Overview)
-
-* [:inbox_tray: Input Framework](https://github.com/sayansil/Ecosystem/wiki/Input-Framework)
-
-* [:outbox_tray: Output Framework](https://github.com/sayansil/Ecosystem/wiki/Output-Framework)
-
-* [:floppy_disk: Database Manager](https://github.com/sayansil/Ecosystem/wiki/Database-Manager)
-
-* [:paw_prints: Simulation Framework](https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework)
-
-### [:electric_plug: Usage](https://github.com/sayansil/Ecosystem/wiki/Usage)
-
+<div align="center">
+<h2>Quick Navigation</h2>
+<table role="table">
+  <tr> <th>About</th> <th>Setup</th> <th>Framework</th> </tr>
+  <tr>
+    <td align="center"><img hspace="20" height="64" width="64" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/info-button.png"></td>
+    <td align="center"><img hspace="20" height="64" width="64" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/settings.png"></td>
+    <td align="center"><img hspace="20" height="64" width="64" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/gear.png"></td>
+  </tr>
+  <tr>
+    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki"><b>About</b></a></td>
+    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki/Usage"><b>Setup</b></a></td>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Framework-Overview"><b>Overview</b></a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Input-Framework">:inbox_tray: Input Framework</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Output-Framework">:outbox_tray: Output Framework</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Database-Manager">:floppy_disk: Database Manager</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework">:paw_prints: Simulation Framework</a></td>
+  </tr>
+</table>
+</div>
