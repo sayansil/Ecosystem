@@ -4,9 +4,6 @@ God::God(const bool &gods_eye)
 {
     this->gods_eye = gods_eye;
     helper::rng.seed(std::random_device()());
-    //context = zmq::context_t(1);
-    //socket = zmq::socket_t(context, zmq::socket_type::dealer);
-    //socket.bind("tcp://*:5556");
 
     statistics["animal"][StatGroup::FIX] = {
         "conceiving_probability",
@@ -55,7 +52,7 @@ God::God(const bool &gods_eye)
         "max_stamina_at_age",
         "max_vitality_at_age",
         "static_fitness",
-        "dynamic_fitness",
+        "death_factor",
         "vision_radius"
     };
     statistics["animal"][StatGroup::MISC] = {
@@ -95,13 +92,15 @@ God::God(const bool &gods_eye)
         "weight",
         "max_vitality_at_age",
         "static_fitness",
-        "dynamic_fitness"
+        "death_factor"
     };
     statistics["plant"][StatGroup::MISC] = {
         "year",
         "population",
         "matable_population"
     };
+
+    catastrophe();
 }
 
 God::~God()
@@ -119,8 +118,8 @@ void God::catastrophe()
 
 void God::reset_species(const std::string &full_species_name)
 {
-    const std::experimental::filesystem::path base_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "base.json";
-    const std::experimental::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
+    const std::filesystem::path base_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "base.json";
+    const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
     std::ifstream base_in(base_filepath);
     std::ofstream current_out((current_filepath));
 
@@ -238,8 +237,8 @@ double updateStat(double base, double p_range)
 
 void God::update_species(const std::string &kind)
 {
-    const std::experimental::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / kind / "current.json";
-    const std::experimental::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data/json" / kind / "modify.json";
+    const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / kind / "current.json";
+    const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data/json" / kind / "modify.json";
 
     std::ifstream current_in(current_filepath);
     std::ifstream modify_in(modify_filepath);
@@ -299,7 +298,7 @@ void God::happy_new_year(const bool &log)
 
     // Sort organism_vec by death factor
 
-    __gnu_parallel::sort(organisms_vec.begin(),
+    std::sort(std::execution::par, organisms_vec.begin(),
         organisms_vec.end(),
         [](const std::pair<ENTITY, double> &x, const std::pair<ENTITY, double> &y){
             return x.first->get_death_factor() > y.first->get_death_factor();
@@ -308,7 +307,7 @@ void God::happy_new_year(const bool &log)
     // Mark the organisms in organism_vec for death
 
     int tmp_i = 0;
-    __gnu_parallel::for_each(organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
+    std::for_each(std::execution::par, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
         x.second = helper::weighted_prob(
             // killerFunction(x.first.get_fitness(), organisms_vec.size())
             killer_function(tmp_i++, organisms_vec.size())
@@ -355,7 +354,7 @@ void God::happy_new_year(const bool &log)
 
         update_species(organism_tuple.first);
 
-        const std::experimental::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / organism_tuple.first / "current.json";
+        const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / organism_tuple.first / "current.json";
         std::ifstream current_in(current_filepath);
         nlohmann::json species_constants;
         current_in >> species_constants;
@@ -431,9 +430,7 @@ void God::happy_new_year(const bool &log)
      *       Annual Ageing Begins      *
      ************************************/
 
-    // todo: parallel v sequential performance test
-
-    __gnu_parallel::for_each(organisms.begin(), organisms.end(), [](auto &x){
+    std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto &x){
         x.second->increment_age();
     });
 
@@ -512,38 +509,3 @@ std::vector<std::map<std::string, std::string>> God::get_live_data()
     return stat_fetcher::prepare_data_for_simulation_2(organisms);
 }
 
-//void God::send_data_to_simulation()
-//{
-//    socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);
-//}
-
-//bool God::listen_for_simulation_once()
-//{
-//    std::string positive = "SEND";
-//    std::string negative = "STOP";
-//    zmq::message_t response;
-//    socket.recv(response);
-//    std::string response_str = response.to_string();
-//    if(response_str == positive)
-//    {
-//        send_data_to_simulation();
-//        happy_new_year(true);
-//        return true;
-//    }
-//    else if(response_str == negative)
-//    {
-//        return false;
-//    }
-//    else
-//    {
-//        std::cout << "Error: " << response_str << " received\n";
-//        return false;
-//    }
-//}
-
-//void God::start_listening_for_simulation()
-//{
-//    std::cout << "God starts listening...\n";
-//    while(listen_for_simulation_once());
-//    std::cout << "Alas! God stopped listening.\n";
-//}

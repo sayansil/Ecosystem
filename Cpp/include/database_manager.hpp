@@ -1,7 +1,7 @@
 #ifndef DATABASEMANAGER_HPP
 #define DATABASEMANAGER_HPP
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <iostream>
 #include <sqlite3.h>
 #include <string>
@@ -10,6 +10,7 @@
 #include <ecosystem_types.hpp>
 #include <animal.hpp>
 #include <schema.hpp>
+#include <utility>
 
 struct DatabaseManager
 {
@@ -18,14 +19,14 @@ struct DatabaseManager
      ***************/
 
     sqlite3 *db;
-    std::experimental::filesystem::path db_path;
+    std::filesystem::path db_path;
 
 
     /******************************
      *  Constructor / Destructor  *
      ******************************/
 
-    DatabaseManager(const std::experimental::filesystem::path& filename = helper::get_ecosystem_root() / "data/ecosystem_master.db");
+    DatabaseManager(const std::filesystem::path& filename = helper::get_ecosystem_root() / "data/ecosystem_master.db");
     ~DatabaseManager();
 
 

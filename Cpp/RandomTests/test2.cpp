@@ -5,11 +5,11 @@
 
 int main()
 {
-    unsigned int initial_organism_count = 50;
-    unsigned int years_to_simulate = 10;
+    unsigned int initial_organism_count = 200;
+    unsigned int years_to_simulate = 500;
 
     God allah(true);
-    allah.monitor_offsprings = true;
+//    allah.monitor_offsprings = true;
     allah.reset_species("plant/bamboo");
 
     while (initial_organism_count--)
@@ -20,20 +20,21 @@ int main()
     while (years_to_simulate--)
     {
         allah.happy_new_year(true);
+        allah.remember_species("plant/bamboo");
     }
 
-    auto data = allah.get_live_data();
+//    auto data = allah.get_live_data();
 
-    std::cout << data.size() << "\n";
-    for (const auto &i : data)
-    {
-        std::cout << "**********************\n";
-
-        for (const auto &[j, k] : i)
-        {
-            std::cout << j << " : " << k << "\n";
-        }
-
-        std::cout << "**********************\n";
-    }
+//    std::cout << data.size() << "\n";
+//    for (const auto &i : data)
+//    {
+//        std::cout << "**********************\n";
+//
+//        for (const auto &[j, k] : i)
+//        {
+//            std::cout << j << " : " << k << "\n";
+//        }
+//
+//        std::cout << "**********************\n";
+ //   }
 }

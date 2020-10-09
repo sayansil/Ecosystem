@@ -6,5 +6,5 @@ download_file(
 
 add_executable(tests tests.cpp)
 target_include_directories(tests PRIVATE ${Ecosystem_SOURCE_DIR}/include catch/)
-target_link_libraries(tests PRIVATE ${ECOSYSTEM_LIB} dl stdc++fs)
+target_link_libraries(tests PRIVATE ${ECOSYSTEM_LIB} dl)
 add_test(NAME EcosystemTest COMMAND tests)

@@ -64,7 +64,7 @@ namespace schema
         {"average_max_stamina_at_age", SQLType::FLOAT},
         {"average_max_vitality_at_age", SQLType::FLOAT},
         {"average_static_fitness", SQLType::FLOAT},
-        {"average_dynamic_fitness", SQLType::FLOAT},
+        {"average_death_factor", SQLType::FLOAT},
         {"average_vision_radius", SQLType::FLOAT}};
 
     extern const std::vector<std::pair<std::string, SQLType>> schemaPlant{
@@ -97,7 +97,7 @@ namespace schema
         {"average_weight", SQLType::FLOAT},
         {"average_max_vitality_at_age", SQLType::FLOAT},
         {"average_static_fitness", SQLType::FLOAT},
-        {"average_dynamic_fitness", SQLType::FLOAT}};
+        {"average_death_factor", SQLType::FLOAT}};
 
 }; // namespace schema
 

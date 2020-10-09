@@ -33,5 +33,5 @@
     "mutation_probability": 0.001,
     "conceiving_probability": 0.01,
     "offsprings_factor": 0.001,
-    "vision_radius" : 0.05
+    "vision_radius": 0.05
 }

@@ -12,7 +12,7 @@ int main()
     {
         allah.spawn_organism(std::make_shared<Animal>("deer", 10));
     }
-   
+
     while (years_to_simulate--)
     {
         allah.happy_new_year(true);

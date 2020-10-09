@@ -18,7 +18,7 @@ Plant::Plant(const std::string &kind, const unsigned int &age, const bool &monit
 
     if (species_constants.empty())
     {
-        const std::experimental::filesystem::path filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
+        const std::filesystem::path filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
         std::ifstream in(filepath);
         nlohmann::json json_file;
         in >> json_file;
@@ -259,19 +259,25 @@ void Plant::decrement_vitality_by(const double &units)
 
 bool Plant::is_normal_child() const
 {
-    if (height == 0 || height != height ||
-        weight == 0 || weight != weight ||
-        immunity == 0 || immunity != immunity ||
-        max_vitality_at_age == 0 || max_vitality_at_age != max_vitality_at_age ||
-        get_base_height() == 0 || get_base_height() != get_base_height() ||
-        get_base_vitality() == 0 || get_base_vitality() != get_base_vitality() ||
-        get_base_weight() == 0 || get_base_weight() != get_base_weight() ||
-        get_max_height() == 0 || get_max_height() != get_max_height() ||
-        get_max_weight() == 0 || get_max_weight() != get_max_weight() ||
-        get_height_multiplier() == 0 || get_height_multiplier() != get_height_multiplier() ||
-        get_vitality_multiplier() == 0 || get_vitality_multiplier() != get_vitality_multiplier() ||
-        get_weight_multiplier() == 0 || get_weight_multiplier() != get_weight_multiplier())
-        return false;
+
+    std::vector<double> checklist {
+        height,
+        weight,
+        immunity,
+        max_vitality_at_age,
+        get_base_height(),
+        get_base_vitality(),
+        get_base_weight(),
+        get_max_height(),
+        get_max_weight(),
+        get_height_multiplier(),
+        get_vitality_multiplier(),
+        get_weight_multiplier()
+    };
+
+    for (const auto &i : checklist)
+        if (!helper::is_nonzero_nonnan(i))
+            return false;
 
     return true;
 }

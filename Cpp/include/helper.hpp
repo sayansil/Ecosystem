@@ -8,7 +8,7 @@
 #include <iostream>
 #include <ecosystem_types.hpp>
 #include <fstream>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <cassert>
 
 namespace helper
@@ -35,8 +35,9 @@ namespace helper
     extern std::string to_binary(const unsigned int&);
     extern unsigned int to_decimal(const std::string &);
     extern double weighted_average(const std::vector<double> &values, const std::vector<double> &weights);
-    extern double get_value_from_chromosome(const std::string &, const unsigned int &, const unsigned int &, const double &offset);
-    extern std::experimental::filesystem::path get_ecosystem_root();
+    extern double get_value_from_chromosome(const std::string &, const unsigned int &, const unsigned int &, const double &);
+    extern std::filesystem::path get_ecosystem_root();
+    extern bool is_nonzero_nonnan(const double &);
 };
 
 #endif // HELPER_HPP

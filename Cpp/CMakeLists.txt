@@ -26,7 +26,7 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp -march=native")
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp -march=native -ltbb")
 
 set(CMAKE_CXX_STANDARD 17)
 
