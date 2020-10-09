@@ -16,6 +16,7 @@ endif()
 set(ECOSYSTEM_LIB "ecosystem")
 set(ECOSYSTEM_EXE "run")
 set(ECOSYSTEM_PYTHON_MODULE "pyecosystem")
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 find_program(CCACHE_PROGRAM ccache)
 
