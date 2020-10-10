@@ -38,7 +38,7 @@
 
 <br>
 
-<p align="justify">An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control <b>directly controllable</b> environmental features (like *climate* and *rainfall*, unlike *population*) from the top, and see what effect does it have on a future generation of the species.</p>
+<p align="justify">An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control <b>directly controllable</b> environmental features (like <i>climate</i> and <i>rainfall</i>, unlike <i>population</i>) from the top, and see what effect does it have on a future generation of the species.</p>
 
 <br>
 
