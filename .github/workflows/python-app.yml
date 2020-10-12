@@ -49,5 +49,5 @@ jobs:
         export ECOSYSTEM_ROOT=`pwd`
         ./Cpp/build/setup/setup
         cd Python
+        echo "{ \"API-KEYS\": [\"111\"] }" > keys.json
         python test_app.py
-
