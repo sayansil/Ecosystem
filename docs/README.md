@@ -12,31 +12,28 @@
 <!-- Badges -->
 
 <p align="center">
+<a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg?branch=master" /></a>
+        
+<a href="https://bestpractices.coreinfrastructure.org/projects/3821">
+        <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
+        
+<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/master">
+        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
+</p>
+
+<p align="center">
 <a href="https://github.com/sayansil/Ecosystem/actions">
         <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=master" /></a>
 
 <a href="https://github.com/sayansil/Ecosystem/actions">
         <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=master" /></a>
 
-
-<a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
-        <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
-        
-<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/master">
-        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
-</p>
-
-
-<p align="center">
 <a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg" /></a>
-        
-<a href="https://bestpractices.coreinfrastructure.org/projects/3821">
-        <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
-
-<a href="https://isocpp.org/files/papers/p0636r0.html">
-        <img src="https://img.shields.io/badge/C++-17-blue.svg?style=flat&logo=c%2B%2B" /></a>
-
+        <img src="https://github.com/sayansil/Ecosystem/workflows/python-test/badge.svg?branch=master" /></a>
 </p>
 
 <br>
