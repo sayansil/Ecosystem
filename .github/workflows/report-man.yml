@@ -1,9 +1,12 @@
-name: generate-report-auto
+name: generate-report-manual
 
 on:
-  push:
-      branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      filename:
+        description: 'Name of the generated file'
+        default: 'new_report'
+        required: true
 
 jobs:
   report-ubuntu:
@@ -42,10 +45,10 @@ jobs:
         cd visualization
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        python simulation_analysis.py -s animal/deer -o ../outputs/new_report.pdf
+        python simulation_analysis.py -s animal/deer -o ../outputs/${{ github.event.inputs.filename }}.pdf
 
     - name: upload-report
       uses: actions/upload-artifact@v2
       with:
         name: Simulation Report
-        path: outputs/new_report.pdf
+        path: outputs/${{ github.event.inputs.name }}.pdf
