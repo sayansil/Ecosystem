@@ -1,0 +1,21 @@
+[submodule "Cpp/pybind11"]
+	path = Cpp/python/pybind11
+	url = https://github.com/pybind/pybind11.git
+[submodule "Cpp/WebApp/extern/uWebSockets"]
+	path = Cpp/WebApp/extern/uWebSockets
+	url = https://github.com/uNetworking/uWebSockets.git
+[submodule "Cpp/extern/nlohmann"]
+	path = Cpp/extern/nlohmann
+	url = https://github.com/nlohmann/json
+[submodule "Cpp/extern/gabime"]
+	path = Cpp/extern/gabime
+	url = https://github.com/gabime/spdlog
+[submodule "Cpp/extern/sqlite3"]
+	path = Cpp/extern/sqlite3
+	url = https://github.com/DarkStar1997/AmalgamatedSQLite3
+[submodule "Cpp/extern/uWebSockets"]
+	path = Cpp/extern/uWebSockets
+	url = https://github.com/uNetworking/uWebSockets
+[submodule "Cpp/extern/catch"]
+	path = Cpp/extern/catch
+	url = https://github.com/DarkStar1997/Catch

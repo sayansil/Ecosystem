@@ -48,10 +48,10 @@ def get_start_page(kind):
 
 def get_mortality_graphs(df):
     """
-        AGE_DTH
-        FIT_DTH
-        AFR_DTH
-        MX_AGE
+        age_on_death
+        fitness_on_death
+        age_fitness_on_death_ratio
+        max_age
     """
     fig = plt.figure()
     fig.set_size_inches(8, 10)
@@ -63,7 +63,7 @@ def get_mortality_graphs(df):
     ax = fig.add_subplot(gs[0, 0])
     ax.set_title('Age affecting Death')
     x = df.index
-    y = df['AGE_DTH']
+    y = df['age_on_death']
     ax.plot(x, y, '-r')
     ax.set_ylabel("Factor")
     for tick in ax.get_yticklabels():
@@ -72,7 +72,7 @@ def get_mortality_graphs(df):
     ax = fig.add_subplot(gs[0, 1])
     ax.set_title('Fitness affecting Death')
     x = df.index
-    y = df['FIT_DTH']
+    y = df['fitness_on_death']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Factor")
     for tick in ax.get_yticklabels():
@@ -81,7 +81,7 @@ def get_mortality_graphs(df):
     ax = fig.add_subplot(gs[1, :])
     ax.set_title('Age vs. Fitness affecting Death')
     x = df.index
-    y = df['AFR_DTH']
+    y = df['age_fitness_on_death_ratio']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Ratio")
     for tick in ax.get_yticklabels():
@@ -90,7 +90,7 @@ def get_mortality_graphs(df):
     ax = fig.add_subplot(gs[2, :])
     ax.set_title('Max age with time')
     x = df.index
-    y = df['MX_AGE']
+    y = df['max_age']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Max age")
     for tick in ax.get_yticklabels():
@@ -100,7 +100,7 @@ def get_mortality_graphs(df):
 
 def get_demographic_graphs(df):
     """
-        POP
+        population
     """
     fig = plt.figure()
     fig.set_size_inches(8, 10)
@@ -112,7 +112,7 @@ def get_demographic_graphs(df):
     ax = fig.add_subplot(gs[:, :])
     ax.set_title('Population')
     x = df.index
-    y = df['POP']
+    y = df['population']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Population")
     for tick in ax.get_yticklabels():
@@ -122,12 +122,12 @@ def get_demographic_graphs(df):
 
 def get_copulation_graphs(df):
     """
-        M_POP
-        M_AGE_START
-        M_AGE_END
-        C_PROB
-        MT_PROB
-        OF_FACTOR
+        matable_population
+        mating_age_start
+        mating_age_end
+        conceiving_probability
+        mutation_probability
+        offsprings_factor
     """
     fig = plt.figure()
     fig.set_size_inches(8, 10)
@@ -139,7 +139,7 @@ def get_copulation_graphs(df):
     ax = fig.add_subplot(gs[0, :])
     ax.set_title('Matable population')
     x = df.index
-    y = df['M_POP']
+    y = df['matable_population']
     ax.plot(x, y, '-r')
     ax.set_ylabel("Matable Population")
     for tick in ax.get_yticklabels():
@@ -148,7 +148,7 @@ def get_copulation_graphs(df):
     ax = fig.add_subplot(gs[1, 0])
     ax.set_title('Mating Start')
     x = df.index
-    y = df['M_AGE_START']
+    y = df['mating_age_start']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Age")
     for tick in ax.get_yticklabels():
@@ -157,7 +157,7 @@ def get_copulation_graphs(df):
     ax = fig.add_subplot(gs[1, -1])
     ax.set_title('Mating End')
     x = df.index
-    y = df['M_AGE_END']
+    y = df['mating_age_end']
     ax.plot(x, y, '-r')
     ax.set_ylabel("Age")
     for tick in ax.get_yticklabels():
@@ -166,7 +166,7 @@ def get_copulation_graphs(df):
     ax = fig.add_subplot(gs[2, 0])
     ax.set_title('Mutation')
     x = df.index
-    y = df['MT_PROB']
+    y = df['mutation_probability']
     ax.plot(x, y, '-r')
     ax.set_ylabel("Probability")
     for tick in ax.get_yticklabels():
@@ -175,7 +175,7 @@ def get_copulation_graphs(df):
     ax = fig.add_subplot(gs[2, -1])
     ax.set_title('Conceive')
     x = df.index
-    y = df['C_PROB']
+    y = df['conceiving_probability']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Probability")
     for tick in ax.get_yticklabels():
@@ -184,7 +184,7 @@ def get_copulation_graphs(df):
     ax = fig.add_subplot(gs[3, :])
     ax.set_title('Multiple offprings')
     x = df.index
-    y = df['OF_FACTOR']
+    y = df['offsprings_factor']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Factor")
     for tick in ax.get_yticklabels():
@@ -194,8 +194,8 @@ def get_copulation_graphs(df):
 
 def get_dependency_graphs(df):
     """
-        HT_VT
-        WT_VT
+        height_on_vitality
+        weight_on_vitality
     """
     fig = plt.figure()
     fig.set_size_inches(8, 10)
@@ -207,10 +207,10 @@ def get_dependency_graphs(df):
     ax = fig.add_subplot(gs[0, 0])
     ax.set_title('Factors affecting Vitality')
     x = df.index
-    y = df['HT_VT']
+    y = df['height_on_vitality']
     ax.plot(x, y, '-r', label='Height')
     x = df.index
-    y = df['WT_VT']
+    y = df['weight_on_vitality']
     ax.plot(x, y, '-b', label='Weight')
     ax.set_ylabel("Factor")
     ax.legend(loc="upper right")
@@ -221,14 +221,14 @@ def get_dependency_graphs(df):
 
 def get_average_graphs(df):
     """
-        AVG_GEN
-        AVG_AGE
-        AVG_HT
-        AVG_WT
-        AVG_SFIT
-        AVG_IMM
-        AVG_DTHF
-        AVGMA_VT
+        average_generation
+        average_age
+        average_height
+        average_weight
+        average_static_fitness
+        average_immunity
+        average_death_factor
+        average_max_vitality_at_age
     """
     fig1 = plt.figure()
     fig1.set_size_inches(8, 10)
@@ -240,7 +240,7 @@ def get_average_graphs(df):
     ax = fig1.add_subplot(gs[0, 0])
     ax.set_title('Generation')
     x = df.index
-    y = df['AVG_GEN']
+    y = df['average_generation']
     ax.plot(x, y, '-g')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -248,7 +248,7 @@ def get_average_graphs(df):
     ax = fig1.add_subplot(gs[0, 1])
     ax.set_title('Age')
     x = df.index
-    y = df['AVG_AGE']
+    y = df['average_age']
     ax.plot(x, y, '-m')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -256,7 +256,7 @@ def get_average_graphs(df):
     ax = fig1.add_subplot(gs[1, 0])
     ax.set_title('Height')
     x = df.index
-    y = df['AVG_HT']
+    y = df['average_height']
     ax.plot(x, y, '-b')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -264,7 +264,7 @@ def get_average_graphs(df):
     ax = fig1.add_subplot(gs[1, 1])
     ax.set_title('Weight')
     x = df.index
-    y = df['AVG_WT']
+    y = df['average_weight']
     ax.plot(x, y, '-r')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -279,7 +279,7 @@ def get_average_graphs(df):
     ax = fig2.add_subplot(gs[0, 0])
     ax.set_title('Static Fitness')
     x = df.index
-    y = df['AVG_SFIT']
+    y = df['average_static_fitness']
     ax.plot(x, y, '-b')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -287,7 +287,7 @@ def get_average_graphs(df):
     ax = fig2.add_subplot(gs[0, 1])
     ax.set_title('Immunity')
     x = df.index
-    y = df['AVG_IMM']
+    y = df['average_immunity']
     ax.plot(x, y, '-r')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -295,7 +295,7 @@ def get_average_graphs(df):
     ax = fig2.add_subplot(gs[0, 2])
     ax.set_title('Death Factor')
     x = df.index
-    y = df['AVG_DTHF']
+    y = df['average_death_factor']
     ax.plot(x, y, '-m')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -303,7 +303,7 @@ def get_average_graphs(df):
     ax = fig2.add_subplot(gs[1, 0:3])
     ax.set_title('Max vitality at age')
     x = df.index
-    y = df['AVGMA_VT']
+    y = df['average_max_vitality_at_age']
     ax.plot(x, y, '-c')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -312,14 +312,14 @@ def get_average_graphs(df):
 
 def get_theoretical_graphs(df):
     """
-        TMB_HT
-        TMB_WT
-        TM_HT
-        TM_WT
-        TMB_VT
-        TMM_VT
-        TMM_HT
-        TMM_WT
+        theoretical_maximum_base_height
+        theoretical_maximum_base_weight
+        theoretical_maximum_height
+        theoretical_maximum_weight
+        theoretical_maximum_base_vitality
+        theoretical_maximum_vitality_multiplier
+        theoretical_maximum_height_multiplier
+        theoretical_maximum_weight_multiplier
     """
     fig1 = plt.figure()
     fig1.set_size_inches(8, 10)
@@ -331,7 +331,7 @@ def get_theoretical_graphs(df):
     ax = fig1.add_subplot(gs[0, 0])
     ax.set_title('Max base height')
     x = df.index
-    y = df['TMB_HT']
+    y = df['theoretical_maximum_base_height']
     ax.plot(x, y, '-b')
     ax.set_ylabel("meters")
     for tick in ax.get_yticklabels():
@@ -340,7 +340,7 @@ def get_theoretical_graphs(df):
     ax = fig1.add_subplot(gs[0, -1])
     ax.set_title('Max height')
     x = df.index
-    y = df['TM_HT']
+    y = df['theoretical_maximum_height']
     ax.plot(x, y, '-b')
     ax.set_ylabel("meters")
     for tick in ax.get_yticklabels():
@@ -349,7 +349,7 @@ def get_theoretical_graphs(df):
     ax = fig1.add_subplot(gs[1, 0])
     ax.set_title('Max base weight')
     x = df.index
-    y = df['TMB_WT']
+    y = df['theoretical_maximum_base_weight']
     ax.plot(x, y, '-r')
     ax.set_ylabel("kg")
     for tick in ax.get_yticklabels():
@@ -358,7 +358,7 @@ def get_theoretical_graphs(df):
     ax = fig1.add_subplot(gs[1, -1])
     ax.set_title('Max weight')
     x = df.index
-    y = df['TM_WT']
+    y = df['theoretical_maximum_weight']
     ax.plot(x, y, '-r')
     ax.set_ylabel("kg")
     for tick in ax.get_yticklabels():
@@ -367,7 +367,7 @@ def get_theoretical_graphs(df):
     ax = fig1.add_subplot(gs[2, 0:2])
     ax.set_title('Max base vitality')
     x = df.index
-    y = df['TMB_VT']
+    y = df['theoretical_maximum_base_vitality']
     ax.plot(x, y, '-g')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -382,7 +382,7 @@ def get_theoretical_graphs(df):
     ax = fig2.add_subplot(gs[0, 0:2])
     ax.set_title('Max vitality multiplier')
     x = df.index
-    y = df['TMM_VT']
+    y = df['theoretical_maximum_vitality_multiplier']
     ax.plot(x, y, '-m')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -390,7 +390,7 @@ def get_theoretical_graphs(df):
     ax = fig2.add_subplot(gs[1, 0])
     ax.set_title('Max height multiplier')
     x = df.index
-    y = df['TMM_HT']
+    y = df['theoretical_maximum_height_multiplier']
     ax.plot(x, y, '-r')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
@@ -398,7 +398,7 @@ def get_theoretical_graphs(df):
     ax = fig2.add_subplot(gs[1, -1])
     ax.set_title('Max weight multiplier')
     x = df.index
-    y = df['TMM_WT']
+    y = df['theoretical_maximum_weight_multiplier']
     ax.plot(x, y, '-b')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)

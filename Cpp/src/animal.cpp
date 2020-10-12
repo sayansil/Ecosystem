@@ -4,6 +4,7 @@ Animal::Animal(const std::string &kind, const unsigned int &age, const bool &mon
 {
     this->monitor_in_simulation = monitor_in_simulation;
     this->kind = kind;
+    this->kingdom = "animal";
     this->full_species_name = get_kingdom() + "/" + kind;
 
     this->generation = generation;
@@ -303,12 +304,6 @@ void Animal::increment_age()
                                                1);
     max_speed_at_age = get_speed_multiplier() * 100 * exp((-1 / (get_speed_multiplier() * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + get_base_speed();
 
-    if (max_speed_at_age != max_speed_at_age)
-    {
-        std::cout << "max_speed_at_age is Nan\n";
-        std::cout << "speed multiplier = " << get_speed_multiplier() << '\n';
-    }
-
     max_appetite_at_age = get_base_appetite() + get_base_appetite() * exp((-0.5 / pow(max_age, 1.25)) * pow(age - max_age / 3.0, 2));
 
     // change stats dependently
@@ -369,280 +364,44 @@ void Animal::generate_death_factor()
     death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 
-STAT Animal::get_stat(const std::string &attribute) const
-{
-    if (attribute == "kind")
-    {
-        return kind;
-    }
-    if (attribute == "chromosome_number")
-    {
-        return chromosome_number;
-    }
-    if (attribute == "conceiving_probability")
-    {
-        return conceiving_probability;
-    }
-    if (attribute == "mating_age_start")
-    {
-        return mating_age_start;
-    }
-    if (attribute == "mating_age_end")
-    {
-        return mating_age_end;
-    }
-    if (attribute == "max_age")
-    {
-        return max_age;
-    }
-    if (attribute == "mutation_probability")
-    {
-        return mutation_probability;
-    }
-    if (attribute == "offsprings_factor")
-    {
-        return offsprings_factor;
-    }
-    if (attribute == "age_on_death")
-    {
-        return age_on_death;
-    }
-    if (attribute == "fitness_on_death")
-    {
-        return fitness_on_death;
-    }
-    if (attribute == "age_fitness_on_death_ratio")
-    {
-        return age_fitness_on_death_ratio;
-    }
-    if (attribute == "height_on_speed")
-    {
-        return height_on_speed;
-    }
-    if (attribute == "height_on_stamina")
-    {
-        return height_on_stamina;
-    }
-    if (attribute == "height_on_vitality")
-    {
-        return height_on_vitality;
-    }
-    if (attribute == "weight_on_speed")
-    {
-        return weight_on_speed;
-    }
-    if (attribute == "weight_on_stamina")
-    {
-        return weight_on_stamina;
-    }
-    if (attribute == "weight_on_vitality")
-    {
-        return weight_on_vitality;
-    }
-    if (attribute == "vitality_on_appetite")
-    {
-        return vitality_on_appetite;
-    }
-    if (attribute == "vitality_on_speed")
-    {
-        return vitality_on_speed;
-    }
-    if (attribute == "stamina_on_appetite")
-    {
-        return stamina_on_appetite;
-    }
-    if (attribute == "stamina_on_speed")
-    {
-        return stamina_on_speed;
-    }
-    if (attribute == "theoretical_maximum_base_appetite")
-    {
-        return theoretical_maximum_base_appetite;
-    }
-    if (attribute == "theoretical_maximum_base_height")
-    {
-        return theoretical_maximum_base_height;
-    }
-    if (attribute == "theoretical_maximum_base_speed")
-    {
-        return theoretical_maximum_base_speed;
-    }
-    if (attribute == "theoretical_maximum_base_stamina")
-    {
-        return theoretical_maximum_base_stamina;
-    }
-    if (attribute == "theoretical_maximum_base_vitality")
-    {
-        return theoretical_maximum_base_vitality;
-    }
-    if (attribute == "theoretical_maximum_base_weight")
-    {
-        return theoretical_maximum_base_weight;
-    }
-    if (attribute == "theoretical_maximum_height")
-    {
-        return theoretical_maximum_height;
-    }
-    if (attribute == "theoretical_maximum_speed")
-    {
-        return theoretical_maximum_speed;
-    }
-    if (attribute == "theoretical_maximum_weight")
-    {
-        return theoretical_maximum_weight;
-    }
-    if (attribute == "theoretical_maximum_height_multiplier")
-    {
-        return theoretical_maximum_height_multiplier;
-    }
-    if (attribute == "theoretical_maximum_speed_multiplier")
-    {
-        return theoretical_maximum_speed_multiplier;
-    }
-    if (attribute == "theoretical_maximum_stamina_multiplier")
-    {
-        return theoretical_maximum_stamina_multiplier;
-    }
-    if (attribute == "theoretical_maximum_vitality_multiplier")
-    {
-        return theoretical_maximum_vitality_multiplier;
-    }
-    if (attribute == "theoretical_maximum_weight_multiplier")
-    {
-        return theoretical_maximum_weight_multiplier;
-    }
-    if (attribute == "sleep_restore_factor")
-    {
-        return sleep_restore_factor;
-    }
-    if (attribute == "food_chain_rank")
-    {
-        return food_chain_rank;
-    }
-    if (attribute == "chromosome")
-    {
-        return chromosome;
-    }
-    if (attribute == "gender")
-    {
-        return gender;
-    }
-    if (attribute == "generation")
-    {
-        return generation;
-    }
-    if (attribute == "immunity")
-    {
-        return immunity;
-    }
-    if (attribute == "name")
-    {
-        return name;
-    }
-    if (attribute == "age")
-    {
-        return age;
-    }
-    if (attribute == "height")
-    {
-        return height;
-    }
-    if (attribute == "weight")
-    {
-        return weight;
-    }
-    if (attribute == "max_appetite_at_age")
-    {
-        return max_appetite_at_age;
-    }
-    if (attribute == "max_speed_at_age")
-    {
-        return max_speed_at_age;
-    }
-    if (attribute == "max_stamina_at_age")
-    {
-        return max_stamina_at_age;
-    }
-    if (attribute == "max_vitality_at_age")
-    {
-        return max_vitality_at_age;
-    }
-    if (attribute == "static_fitness")
-    {
-        return static_fitness;
-    }
-    if (attribute == "death_factor")
-    {
-        return death_factor;
-    }
-    if (attribute == "vision_radius")
-    {
-        return vision_radius;
-    }
-    if (attribute == "appetite")
-    {
-        return appetite;
-    }
-    if (attribute == "speed")
-    {
-        return speed;
-    }
-    if (attribute == "stamina")
-    {
-        return stamina;
-    }
-    if (attribute == "vitality")
-    {
-        return vitality;
-    }
-    if (attribute == "X")
-    {
-        return X;
-    }
-    if (attribute == "Y")
-    {
-        return Y;
-    }
-    if (attribute == "dynamic_fitness")
-    {
-        return dynamic_fitness;
-    }
-    if (attribute == "asleep")
-    {
-        return asleep;
-    }
-
-    return "null";
-}
-
 bool Animal::is_normal_child() const
 {
-    if (height == 0 || height != height ||
-        weight == 0 || weight != weight ||
-        immunity == 0 || immunity != immunity ||
-        max_appetite_at_age == 0 || max_appetite_at_age != max_appetite_at_age ||
-        max_speed_at_age == 0 || max_speed_at_age != max_speed_at_age ||
-        max_stamina_at_age == 0 || max_stamina_at_age != max_stamina_at_age ||
-        max_vitality_at_age == 0 || max_vitality_at_age != max_vitality_at_age ||
-        get_base_appetite() == 0 || get_base_appetite() != get_base_appetite() ||
-        get_base_height() == 0 || get_base_height() != get_base_height() ||
-        get_base_speed() == 0 || get_base_speed() != get_base_speed() ||
-        get_base_stamina() == 0 || get_base_stamina() != get_base_stamina() ||
-        get_base_vitality() == 0 || get_base_vitality() != get_base_vitality() ||
-        get_base_weight() == 0 || get_base_weight() != get_base_weight() ||
-        get_max_height() == 0 || get_max_height() != get_max_height() ||
-        get_max_weight() == 0 || get_max_weight() != get_max_weight() ||
-        get_height_multiplier() == 0 || get_height_multiplier() != get_height_multiplier() ||
-        get_speed_multiplier() == 0 || get_speed_multiplier() != get_speed_multiplier() ||
-        get_stamina_multiplier() == 0 || get_stamina_multiplier() != get_stamina_multiplier() ||
-        get_vitality_multiplier() == 0 || get_vitality_multiplier() != get_vitality_multiplier() ||
-        get_weight_multiplier() == 0 || get_weight_multiplier() != get_weight_multiplier())
-        return false;
+    std::vector<double> checklist {
+        height,
+        weight,
+        immunity,
+        max_appetite_at_age,
+        max_speed_at_age,
+        max_stamina_at_age,
+        max_vitality_at_age,
+        get_base_appetite(),
+        get_base_height(),
+        get_base_speed(),
+        get_base_stamina(),
+        get_base_vitality(),
+        get_base_weight(),
+        get_max_height(),
+        get_max_weight(),
+        get_height_multiplier(),
+        get_speed_multiplier(),
+        get_stamina_multiplier(),
+        get_vitality_multiplier(),
+        get_weight_multiplier()
+    };
+
+    for (const auto &i : checklist)
+        if (!helper::is_nonzero_nonnan(i))
+            return false;
 
     return true;
 }
 
 std::string Animal::get_kingdom() const
 {
-    return "animal";
+    return kingdom;
+}
+
+ATTRIBUTE_RAW_MAP& Animal::get_attribute_raw_map()
+{
+    return attribute_raw_map;
 }

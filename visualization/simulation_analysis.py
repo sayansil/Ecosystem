@@ -5,7 +5,7 @@ import pandas as pd
 def get_table(table_name):
     conn = sqlite3.connect('../data/ecosystem_master.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM " + table_name)
+    cursor.execute("SELECT * FROM {}".format(table_name.replace('"', '""')))
     rows = cursor.fetchall()
     cols = list(map(lambda x: x[0], cursor.description))
     df = pd.DataFrame(rows, columns=cols).dropna()

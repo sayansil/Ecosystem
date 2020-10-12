@@ -4,6 +4,7 @@ Plant::Plant(const std::string &kind, const unsigned int &age, const bool &monit
 {
     this->monitor_in_simulation = monitor_in_simulation;
     this->kind = kind;
+    this->kingdom = "plant";
     this->full_species_name = get_kingdom() + "/" + kind;
 
     this->generation = generation;
@@ -18,7 +19,6 @@ Plant::Plant(const std::string &kind, const unsigned int &age, const bool &monit
     if (species_constants.empty())
     {
         const std::filesystem::path filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
-
         std::ifstream in(filepath);
         nlohmann::json json_file;
         in >> json_file;
@@ -257,180 +257,37 @@ void Plant::decrement_vitality_by(const double &units)
     vitality = std::max(vitality - units, 0.0);
 }
 
-STAT Plant::get_stat(const std::string &attribute) const
-{
-    if (attribute == "kind")
-    {
-        return kind;
-    }
-    if (attribute == "chromosome_number")
-    {
-        return chromosome_number;
-    }
-    if (attribute == "conceiving_probability")
-    {
-        return conceiving_probability;
-    }
-    if (attribute == "mating_age_start")
-    {
-        return mating_age_start;
-    }
-    if (attribute == "mating_age_end")
-    {
-        return mating_age_end;
-    }
-    if (attribute == "max_age")
-    {
-        return max_age;
-    }
-    if (attribute == "mutation_probability")
-    {
-        return mutation_probability;
-    }
-    if (attribute == "offsprings_factor")
-    {
-        return offsprings_factor;
-    }
-    if (attribute == "age_on_death")
-    {
-        return age_on_death;
-    }
-    if (attribute == "fitness_on_death")
-    {
-        return fitness_on_death;
-    }
-    if (attribute == "age_fitness_on_death_ratio")
-    {
-        return age_fitness_on_death_ratio;
-    }
-    if (attribute == "height_on_vitality")
-    {
-        return height_on_vitality;
-    }
-    if (attribute == "weight_on_vitality")
-    {
-        return weight_on_vitality;
-    }
-    if (attribute == "theoretical_maximum_base_height")
-    {
-        return theoretical_maximum_base_height;
-    }
-    if (attribute == "theoretical_maximum_base_vitality")
-    {
-        return theoretical_maximum_base_vitality;
-    }
-    if (attribute == "theoretical_maximum_base_weight")
-    {
-        return theoretical_maximum_base_weight;
-    }
-    if (attribute == "theoretical_maximum_height")
-    {
-        return theoretical_maximum_height;
-    }
-    if (attribute == "theoretical_maximum_weight")
-    {
-        return theoretical_maximum_weight;
-    }
-    if (attribute == "theoretical_maximum_height_multiplier")
-    {
-        return theoretical_maximum_height_multiplier;
-    }
-    if (attribute == "theoretical_maximum_vitality_multiplier")
-    {
-        return theoretical_maximum_vitality_multiplier;
-    }
-    if (attribute == "theoretical_maximum_weight_multiplier")
-    {
-        return theoretical_maximum_weight_multiplier;
-    }
-    if (attribute == "food_chain_rank")
-    {
-        return food_chain_rank;
-    }
-    if (attribute == "chromosome")
-    {
-        return chromosome;
-    }
-    if (attribute == "gender")
-    {
-        return gender;
-    }
-    if (attribute == "generation")
-    {
-        return generation;
-    }
-    if (attribute == "immunity")
-    {
-        return immunity;
-    }
-    if (attribute == "name")
-    {
-        return name;
-    }
-    if (attribute == "age")
-    {
-        return age;
-    }
-    if (attribute == "height")
-    {
-        return height;
-    }
-    if (attribute == "weight")
-    {
-        return weight;
-    }
-    if (attribute == "max_vitality_at_age")
-    {
-        return max_vitality_at_age;
-    }
-    if (attribute == "static_fitness")
-    {
-        return static_fitness;
-    }
-    if (attribute == "death_factor")
-    {
-        return death_factor;
-    }
-    if (attribute == "vitality")
-    {
-        return vitality;
-    }
-    if (attribute == "X")
-    {
-        return X;
-    }
-    if (attribute == "Y")
-    {
-        return Y;
-    }
-    if (attribute == "dynamic_fitness")
-    {
-        return dynamic_fitness;
-    }
-
-    return "null";
-}
-
 bool Plant::is_normal_child() const
 {
-    if (height == 0 || height != height ||
-        weight == 0 || weight != weight ||
-        immunity == 0 || immunity != immunity ||
-        max_vitality_at_age == 0 || max_vitality_at_age != max_vitality_at_age ||
-        get_base_height() == 0 || get_base_height() != get_base_height() ||
-        get_base_vitality() == 0 || get_base_vitality() != get_base_vitality() ||
-        get_base_weight() == 0 || get_base_weight() != get_base_weight() ||
-        get_max_height() == 0 || get_max_height() != get_max_height() ||
-        get_max_weight() == 0 || get_max_weight() != get_max_weight() ||
-        get_height_multiplier() == 0 || get_height_multiplier() != get_height_multiplier() ||
-        get_vitality_multiplier() == 0 || get_vitality_multiplier() != get_vitality_multiplier() ||
-        get_weight_multiplier() == 0 || get_weight_multiplier() != get_weight_multiplier())
-        return false;
+
+    std::vector<double> checklist {
+        height,
+        weight,
+        immunity,
+        max_vitality_at_age,
+        get_base_height(),
+        get_base_vitality(),
+        get_base_weight(),
+        get_max_height(),
+        get_max_weight(),
+        get_height_multiplier(),
+        get_vitality_multiplier(),
+        get_weight_multiplier()
+    };
+
+    for (const auto &i : checklist)
+        if (!helper::is_nonzero_nonnan(i))
+            return false;
 
     return true;
 }
 
 std::string Plant::get_kingdom() const
 {
-    return "plant";
+    return kingdom;
+}
+
+ATTRIBUTE_RAW_MAP& Plant::get_attribute_raw_map()
+{
+    return attribute_raw_map;
 }

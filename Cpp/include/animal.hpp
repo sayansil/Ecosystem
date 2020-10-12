@@ -83,6 +83,9 @@ public:
     // Miscellanous attributes
     bool asleep;
 
+    // Attribute map
+
+    ATTRIBUTE_RAW_MAP attribute_raw_map;
 
     /******************************
      *  Constructor / Destructor  *
@@ -131,6 +134,7 @@ public:
     double get_weight_multiplier() const;
     double get_max_height() const;
     double get_max_weight() const;
+    ATTRIBUTE_RAW_MAP& get_attribute_raw_map();
     void init_from_json(const nlohmann::json &);
     void evaluate_dynamic_fitness();
     void evaluate_static_fitness();
@@ -142,9 +146,51 @@ public:
     void decrement_vitality_by(const double &);
     void increment_stamina_by(const double &);
     void increment_vitality_by(const double&);
-    STAT get_stat(const std::string &) const;
     std::string get_kingdom() const;
     bool is_normal_child() const;
 };
+
+REFL_AUTO(
+    type(Animal, bases<Organism<Animal>>),
+    field(height_on_speed, fixed_for_species()),
+    field(height_on_stamina, fixed_for_species()),
+    field(height_on_vitality, fixed_for_species()),
+    field(weight_on_speed, fixed_for_species()),
+    field(weight_on_stamina, fixed_for_species()),
+    field(weight_on_vitality, fixed_for_species()),
+    field(vitality_on_appetite, fixed_for_species()),
+    field(vitality_on_speed, fixed_for_species()),
+    field(stamina_on_appetite, fixed_for_species()),
+    field(stamina_on_speed, fixed_for_species()),
+    field(theoretical_maximum_base_appetite, fixed_for_species()),
+    field(theoretical_maximum_base_height, fixed_for_species()),
+    field(theoretical_maximum_base_speed, fixed_for_species()),
+    field(theoretical_maximum_base_stamina, fixed_for_species()),
+    field(theoretical_maximum_base_vitality, fixed_for_species()),
+    field(theoretical_maximum_base_weight, fixed_for_species()),
+    field(theoretical_maximum_height, fixed_for_species()),
+    field(theoretical_maximum_speed, fixed_for_species()),
+    field(theoretical_maximum_weight, fixed_for_species()),
+    field(theoretical_maximum_height_multiplier, fixed_for_species()),
+    field(theoretical_maximum_speed_multiplier, fixed_for_species()),
+    field(theoretical_maximum_stamina_multiplier, fixed_for_species()),
+    field(theoretical_maximum_vitality_multiplier, fixed_for_species()),
+    field(theoretical_maximum_weight_multiplier, fixed_for_species()),
+    field(vision_radius, fixed_for_species()),
+    field(sleep_restore_factor, fixed_for_species()),
+
+
+    field(max_appetite_at_age, changes_every_year()),
+    field(max_speed_at_age, changes_every_year()),
+    field(max_stamina_at_age, changes_every_year()),
+    field(max_vitality_at_age, changes_every_year()),
+
+    field(appetite, changes_every_moment()),
+    field(speed, changes_every_moment()),
+    field(stamina, changes_every_moment()),
+    field(vitality, changes_every_moment()),
+    field(asleep, changes_every_moment())
+)
+
 
 #endif // ANIMAL_HPP

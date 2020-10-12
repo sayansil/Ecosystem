@@ -4,9 +4,103 @@ God::God(const bool &gods_eye)
 {
     this->gods_eye = gods_eye;
     helper::rng.seed(std::random_device()());
-    context = zmq::context_t(1);
-    socket = zmq::socket_t(context, zmq::socket_type::dealer);
-    socket.bind("tcp://*:5556");
+
+    statistics["animal"][StatGroup::FIX] = {
+        "conceiving_probability",
+        "mating_age_start",
+        "mating_age_end",
+        "max_age",
+        "mutation_probability",
+        "offsprings_factor",
+        "age_on_death",
+        "fitness_on_death",
+        "age_fitness_on_death_ratio",
+        "height_on_speed",
+        "height_on_stamina",
+        "height_on_vitality",
+        "weight_on_speed",
+        "weight_on_stamina",
+        "weight_on_vitality",
+        "vitality_on_appetite",
+        "vitality_on_speed",
+        "stamina_on_appetite",
+        "stamina_on_speed",
+        "theoretical_maximum_base_appetite",
+        "theoretical_maximum_base_height",
+        "theoretical_maximum_base_speed",
+        "theoretical_maximum_base_stamina",
+        "theoretical_maximum_base_vitality",
+        "theoretical_maximum_base_weight",
+        "theoretical_maximum_height",
+        "theoretical_maximum_speed",
+        "theoretical_maximum_weight",
+        "theoretical_maximum_height_multiplier",
+        "theoretical_maximum_speed_multiplier",
+        "theoretical_maximum_stamina_multiplier",
+        "theoretical_maximum_vitality_multiplier",
+        "theoretical_maximum_weight_multiplier",
+        "sleep_restore_factor"
+    };
+    statistics["animal"][StatGroup::MEAN] = {
+        "generation",
+        "immunity",
+        "age",
+        "height",
+        "weight",
+        "max_appetite_at_age",
+        "max_speed_at_age",
+        "max_stamina_at_age",
+        "max_vitality_at_age",
+        "static_fitness",
+        "death_factor",
+        "vision_radius"
+    };
+    statistics["animal"][StatGroup::MISC] = {
+        "year",
+        "male_population",
+        "female_population",
+        "matable_male_population",
+        "matable_female_population"
+    };
+
+    statistics["plant"][StatGroup::FIX] = {
+        "conceiving_probability",
+        "mating_age_start",
+        "mating_age_end",
+        "max_age",
+        "mutation_probability",
+        "offsprings_factor",
+        "age_on_death",
+        "fitness_on_death",
+        "age_fitness_on_death_ratio",
+        "height_on_vitality",
+        "weight_on_vitality",
+        "theoretical_maximum_base_height",
+        "theoretical_maximum_base_vitality",
+        "theoretical_maximum_base_weight",
+        "theoretical_maximum_height",
+        "theoretical_maximum_weight",
+        "theoretical_maximum_height_multiplier",
+        "theoretical_maximum_vitality_multiplier",
+        "theoretical_maximum_weight_multiplier"
+    };
+    statistics["plant"][StatGroup::MEAN] = {
+        "generation",
+        "immunity",
+        "age",
+        "height",
+        "weight",
+        "max_vitality_at_age",
+        "static_fitness",
+        "death_factor"
+    };
+    statistics["plant"][StatGroup::MISC] = {
+        "year",
+        "population",
+        "matable_population"
+    };
+
+    catastrophe();
 }
 
 God::~God()
@@ -24,12 +118,10 @@ void God::catastrophe()
 
 void God::reset_species(const std::string &full_species_name)
 {
-    
     const std::filesystem::path base_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "base.json";
     const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
-
     std::ifstream base_in(base_filepath);
-    std::ofstream current_out(current_filepath);
+    std::ofstream current_out((current_filepath));
 
     nlohmann::json base;
     base_in >> base;
@@ -38,35 +130,46 @@ void God::reset_species(const std::string &full_species_name)
 
     base_in.close();
     current_out.close();
-    
+
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     db.clear_table(kind);
 }
 
-bool God::spawn_organism(const ENTITY &current_organism)
+bool God::spawn_organism(ENTITY &&current_organism)
 {
+    const std::string kingdom = current_organism->get_kingdom();
+    if(kingdom == "animal")
+    {
+        Animal *obj = static_cast<Animal*>(current_organism.get());
+        init(*obj);
+    }
+    else if(kingdom == "plant")
+    {
+        Plant *obj = static_cast<Plant*>(current_organism.get());
+        init(*obj);
+    }
+    else
+    {
+        throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
+    }
     if (current_organism->is_normal_child())
     {
         // Add to memory
         organisms[current_organism->get_name()] = current_organism;
-        
+
         if(gods_eye)
         {
-            std::vector<std::vector<STAT>> tmp;
-            tmp.emplace_back(std::vector<STAT>{
-                STAT(current_organism->get_name()),
-                STAT(current_organism->get_kind()),
-                STAT(current_organism->get_chromosome()),
-                STAT(current_organism->get_generation()),
-                STAT(current_organism->get_immunity()),
-                STAT(current_organism->get_gender()),
-                STAT(current_organism->get_age()),
-                STAT(current_organism->get_height()),
-                STAT(current_organism->get_weight()),
-                STAT(current_organism->get_static_fitness())});
+            std::vector<DBType> tmp;
+
+            const auto &a_map = current_organism->get_attribute_raw_map(); // TODO - use a generic type like Organism
+
+            for (const auto &[colName, colType] : schema::schemaMaster)
+            {
+                tmp.emplace_back(DBType(colType, a_map[colName].getString()));
+            }
 
             // Add to database
-            db.insert_rows(tmp);
+            db.insert_rows(std::vector<std::vector<DBType>>{tmp});
         }
         return true;
     }
@@ -109,15 +212,16 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
         if (monitor_offsprings && (parent1->get_monitor_in_simulation() || parent2->get_monitor_in_simulation()))
             monitor_in_simulation = true;
 
-        return spawn_organism(parent1->clone(parent1->get_kind(),
-                                            1,
-                                            monitor_in_simulation,
-                                            child_chromosome,
-                                            std::max(parent1->get_generation(), parent2->get_generation()) + 1,
-                                            "",
-                                            {(parent1->get_X() + parent2->get_X()) / 2,
-                                             (parent1->get_Y() + parent2->get_Y()) / 2},
-                                            species_constants));
+        return spawn_organism(parent1->clone(
+            parent1->get_kind(),
+            1,
+            monitor_in_simulation,
+            child_chromosome,
+            std::max(parent1->get_generation(), parent2->get_generation()) + 1,
+            "",
+            {(parent1->get_X() + parent2->get_X()) / 2,
+                (parent1->get_Y() + parent2->get_Y()) / 2},
+            species_constants));
     }
 
     return false;
@@ -133,10 +237,9 @@ double updateStat(double base, double p_range)
 
 void God::update_species(const std::string &kind)
 {
-
     const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / kind / "current.json";
     const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data/json" / kind / "modify.json";
-    
+
     std::ifstream current_in(current_filepath);
     std::ifstream modify_in(modify_filepath);
 
@@ -229,7 +332,6 @@ void God::happy_new_year(const bool &log)
 
     organisms_vec.clear(); organisms_vec.shrink_to_fit();
     organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
-
 
     /***********************************
      *       Annual Mating Begins      *
@@ -328,8 +430,6 @@ void God::happy_new_year(const bool &log)
      *       Annual Ageing Begins      *
      ************************************/
 
-    // todo: parallel v sequential performance test
-
     std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto &x){
         x.second->increment_age();
     });
@@ -380,45 +480,32 @@ void God::remember_species(const std::string &full_species_name)
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
 
-    std::string table_name = "STATS_" + kind;
-    for (auto & c: table_name) c = toupper(c);
-
-    std::vector<STAT> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year);
-    db.insert_stat_row(db_row, kind, kingdom);
+    std::vector<DBType> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year, statistics);
+    db.insert_stat_row(db_row, kind);
 }
 
-void God::send_data_to_simulation()
+std::string God::get_annual_data(const std::string &full_species_name)
 {
-    socket.send(zmq::buffer(stat_fetcher::prepare_data_for_simulation(organisms)), zmq::send_flags::dontwait);
+    auto data = db.read_all_rows_stats(full_species_name);
+
+    std::string final_data = "";
+
+    for(const auto& row: data)
+    {
+        for(const auto& item: row)
+        {
+            final_data += item.data + ",";
+        }
+        if (final_data.length() > 0)
+            final_data = final_data.substr(0, final_data.length() - 1);
+        final_data += '\n';
+    }
+
+    return final_data;
 }
 
-bool God::listen_for_simulation_once()
+std::vector<std::map<std::string, std::string>> God::get_live_data()
 {
-    std::string positive = "SEND";
-    std::string negative = "STOP";
-    zmq::message_t response;
-    socket.recv(response);
-    std::string response_str = response.to_string();
-    if(response_str == positive)
-    {
-        send_data_to_simulation();
-        happy_new_year(true);
-        return true;
-    }
-    else if(response_str == negative)
-    {
-        return false;
-    }
-    else
-    {
-        std::cout << "Error: " << response_str << " received\n";
-        return false;
-    }
+    return stat_fetcher::prepare_data_for_simulation_2(organisms);
 }
 
-void God::start_listening_for_simulation()
-{
-    std::cout << "God starts listening...\n";
-    while(listen_for_simulation_once());
-    std::cout << "Alas! God stopped listening.\n";
-}

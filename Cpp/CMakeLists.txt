@@ -15,6 +15,8 @@ endif()
 
 set(ECOSYSTEM_LIB "ecosystem")
 set(ECOSYSTEM_EXE "run")
+set(ECOSYSTEM_PYTHON_MODULE "pyecosystem")
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 find_program(CCACHE_PROGRAM ccache)
 
@@ -24,21 +26,25 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++20 -O3 -fopenmp -march=native")
+set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp -march=native -ltbb")
+
+set(CMAKE_CXX_STANDARD 17)
 
 set(SQLITE_HEADERS
-    ${PROJECT_SOURCE_DIR}/include/sqlite3.h
-    ${PROJECT_SOURCE_DIR}/include/sqlite3ext.h
+    ${PROJECT_SOURCE_DIR}/extern/sqlite3/include/sqlite3.h
+    ${PROJECT_SOURCE_DIR}/extern/sqlite3/include/sqlite3ext.h
     )
 
 set(SQLITE_SOURCES
-    ${PROJECT_SOURCE_DIR}/src/sqlite3.c
+    ${PROJECT_SOURCE_DIR}/extern/sqlite3/src/sqlite3.c
     )
 
 add_subdirectory(src)
 add_subdirectory(RandomTests)
 add_subdirectory(setup)
 add_subdirectory(run)
+add_subdirectory(python)
+add_subdirectory(WebApp)
 
 include(CTest)
 add_subdirectory(tests)

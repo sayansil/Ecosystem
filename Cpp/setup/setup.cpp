@@ -4,6 +4,7 @@
 #include <sqlite3.h>
 #include <string>
 #include <helper.hpp>
+#include <schema.hpp>
 
 const std::filesystem::path master_db_path = helper::get_ecosystem_root() / "data/ecosystem_master.db";
 const std::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
@@ -11,22 +12,42 @@ const std::filesystem::path json_template_path = helper::get_ecosystem_root() / 
 
 sqlite3 *db;
 
+static std::string sql_command_creator(const std::string &tableName, const std::vector<std::pair<std::string, SQLType>> &schema)
+{
+    std::string sql_command = "create table " + tableName + "(";
+
+    bool primaryKey = true;
+    for (const auto &[colName, colType] : schema)
+    {
+        sql_command += colName + " ";
+        if (colType == SQLType::TEXT)
+            sql_command += "TEXT ";
+        else if (colType == SQLType::FLOAT)
+            sql_command += "FLOAT ";
+        else if (colType == SQLType::INT)
+            sql_command += "INT ";
+
+        if (primaryKey)
+        {
+            sql_command += "PRIMARY KEY ";
+            primaryKey = false;
+        }
+
+        sql_command += "NOT NULL,";
+    }
+
+    sql_command = sql_command.substr(0, sql_command.length() - 1);
+    sql_command += ");";
+
+    return sql_command;
+}
+
 static void create_master_table()
 {
-    std::string sql_command;
     int rc;
 
-    sql_command = "CREATE TABLE ECOSYSTEM_MASTER("
-                  "NAME         TEXT        PRIMARY KEY     NOT NULL,"
-                  "KIND         TEXT                        NOT NULL,"
-                  "CHROMOSOME   TEXT                        NOT NULL,"
-                  "GENERATION   INT                         NOT NULL,"
-                  "IMMUNITY     FLOAT                       NOT NULL,"
-                  "GENDER       INT                         NOT NULL,"
-                  "AGE          INT                         NOT NULL,"
-                  "HEIGHT       FLOAT                       NOT NULL,"
-                  "WEIGHT       FLOAT                       NOT NULL,"
-                  "FITNESS      FLOAT                       NOT NULL);";
+    std::string sql_command = sql_command_creator("ECOSYSTEM_MASTER", schema::schemaMaster);
+
     rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
     if (rc != SQLITE_OK)
     {
@@ -51,98 +72,15 @@ static void create_species_table(const std::string &path)
     std::string table_name = "STATS_" + kind;
     for (auto & c: table_name) c = toupper(c);
 
-    // std::cout << "Creating " << table_name << " of type " << kingdom << '\n';
-
     std::string sql_command;
 
     if (kingdom == "animal")
     {
-        sql_command = "CREATE TABLE " + table_name + "("
-                      "YEAR             INT        PRIMARY KEY      NOT NULL,"
-                      "MALE             FLOAT                       NOT NULL,"
-                      "FEMALE           FLOAT                       NOT NULL,"
-                      "M_MALE           FLOAT                       NOT NULL,"
-                      "M_FEMALE         FLOAT                       NOT NULL,"
-                      "C_PROB           FLOAT                       NOT NULL,"
-                      "M_AGE_START      FLOAT                       NOT NULL,"
-                      "M_AGE_END        FLOAT                       NOT NULL,"
-                      "MX_AGE           FLOAT                       NOT NULL,"
-                      "MT_PROB          FLOAT                       NOT NULL,"
-                      "OF_FACTOR        FLOAT                       NOT NULL,"
-                      "AGE_DTH          FLOAT                       NOT NULL,"
-                      "FIT_DTH          FLOAT                       NOT NULL,"
-                      "AFR_DTH          FLOAT                       NOT NULL,"
-                      "HT_SP            FLOAT                       NOT NULL,"
-                      "HT_ST            FLOAT                       NOT NULL,"
-                      "HT_VT            FLOAT                       NOT NULL,"
-                      "WT_SP            FLOAT                       NOT NULL,"
-                      "WT_ST            FLOAT                       NOT NULL,"
-                      "WT_VT            FLOAT                       NOT NULL,"
-                      "VT_AP            FLOAT                       NOT NULL,"
-                      "VT_SP            FLOAT                       NOT NULL,"
-                      "ST_AP            FLOAT                       NOT NULL,"
-                      "ST_SP            FLOAT                       NOT NULL,"
-                      "TMB_AP           FLOAT                       NOT NULL,"
-                      "TMB_HT           FLOAT                       NOT NULL,"
-                      "TMB_SP           FLOAT                       NOT NULL,"
-                      "TMB_ST           FLOAT                       NOT NULL,"
-                      "TMB_VT           FLOAT                       NOT NULL,"
-                      "TMB_WT           FLOAT                       NOT NULL,"
-                      "TM_HT            FLOAT                       NOT NULL,"
-                      "TM_SP            FLOAT                       NOT NULL,"
-                      "TM_WT            FLOAT                       NOT NULL,"
-                      "TMM_HT           FLOAT                       NOT NULL,"
-                      "TMM_SP           FLOAT                       NOT NULL,"
-                      "TMM_ST           FLOAT                       NOT NULL,"
-                      "TMM_VT           FLOAT                       NOT NULL,"
-                      "TMM_WT           FLOAT                       NOT NULL,"
-                      "SL_FACTOR        FLOAT                       NOT NULL,"
-                      "AVG_GEN          FLOAT                       NOT NULL,"
-                      "AVG_IMM          FLOAT                       NOT NULL,"
-                      "AVG_AGE          FLOAT                       NOT NULL,"
-                      "AVG_HT           FLOAT                       NOT NULL,"
-                      "AVG_WT           FLOAT                       NOT NULL,"
-                      "AVGMA_AP         FLOAT                       NOT NULL,"
-                      "AVGMA_SP         FLOAT                       NOT NULL,"
-                      "AVGMA_ST         FLOAT                       NOT NULL,"
-                      "AVGMA_VT         FLOAT                       NOT NULL,"
-                      "AVG_SFIT         FLOAT                       NOT NULL,"
-                      "AVG_DTHF         FLOAT                       NOT NULL,"
-                      "AVG_VIS          FLOAT                       NOT NULL);";
+        sql_command = sql_command_creator(table_name, schema::schemaAnimal);
     }
     else if (kingdom == "plant")
     {
-        sql_command = "CREATE TABLE " + table_name + "("
-                      "YEAR             INT        PRIMARY KEY      NOT NULL,"
-                      "POP              FLOAT                       NOT NULL,"
-                      "M_POP            FLOAT                       NOT NULL,"
-                      "C_PROB           FLOAT                       NOT NULL,"
-                      "M_AGE_START      FLOAT                       NOT NULL,"
-                      "M_AGE_END        FLOAT                       NOT NULL,"
-                      "MX_AGE           FLOAT                       NOT NULL,"
-                      "MT_PROB          FLOAT                       NOT NULL,"
-                      "OF_FACTOR        FLOAT                       NOT NULL,"
-                      "AGE_DTH          FLOAT                       NOT NULL,"
-                      "FIT_DTH          FLOAT                       NOT NULL,"
-                      "AFR_DTH          FLOAT                       NOT NULL,"
-                      "HT_VT            FLOAT                       NOT NULL,"
-                      "WT_VT            FLOAT                       NOT NULL,"
-                      "TMB_HT           FLOAT                       NOT NULL,"
-                      "TMB_VT           FLOAT                       NOT NULL,"
-                      "TMB_WT           FLOAT                       NOT NULL,"
-                      "TM_HT            FLOAT                       NOT NULL,"
-                      "TM_WT            FLOAT                       NOT NULL,"
-                      "TMM_HT           FLOAT                       NOT NULL,"
-                      "TMM_VT           FLOAT                       NOT NULL,"
-                      "TMM_WT           FLOAT                       NOT NULL,"
-                      "AVG_GEN          FLOAT                       NOT NULL,"
-                      "AVG_IMM          FLOAT                       NOT NULL,"
-                      "AVG_AGE          FLOAT                       NOT NULL,"
-                      "AVG_HT           FLOAT                       NOT NULL,"
-                      "AVG_WT           FLOAT                       NOT NULL,"
-                      "AVGMA_VT         FLOAT                       NOT NULL,"
-                      "AVG_SFIT         FLOAT                       NOT NULL,"
-                      "AVG_DTHF         FLOAT                       NOT NULL);";
+        sql_command = sql_command_creator(table_name, schema::schemaPlant);
     }
 
     int rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
