@@ -38,12 +38,7 @@ jobs:
         cd Cpp/build
         cmake --build . -- -j $(nproc)
 
-    - name: setup
-      run: |
-        export ECOSYSTEM_ROOT=`pwd`
-        ./Cpp/build/setup/setup
-
-    - name: Install dependencies
+    - name: install-dependencies
       run: |
         cd Python
         python -m pip install --upgrade pip
@@ -51,6 +46,8 @@ jobs:
 
     - name: run
       run: |
+        export ECOSYSTEM_ROOT=`pwd`
+        ./Cpp/build/setup/setup
         cd Python
         python test_app.py
 
