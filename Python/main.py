@@ -6,7 +6,7 @@ ECOSYSTEM_ROOT = os.environ['ECOSYSTEM_ROOT']
 sys.path.insert(1, os.path.join(ECOSYSTEM_ROOT, 'Cpp/build/python'))
 import pyecosystem as pyeco
 
-app = Flask('app')
+app = Flask(__name__)
 
 available = True
 
@@ -14,13 +14,20 @@ with open('keys.json') as config_file:
     configs = json.load(config_file)
     keys = configs['API-KEYS']
 
-@app.route('/query')
-def main():
+@app.route('/query', methods=['GET', 'POST'])
+def query():
+    """
+    STATUS CODES
+
+    0 - Success / Data fetched
+    1 - Failure / Data not fetched / API auth failure
+    2 - Failure / Data not fetched / Server busy
+    """
     global available
     global keys
 
     if available:
-        key = request.values.get('api-key', '')
+        key = request.values.get('api_key', '')
         if key not in keys:
             return jsonify({
                 "status": "1",
@@ -34,11 +41,13 @@ def main():
         years_to_simulate = int(request.values.get('years', '100'))
         kingdom = request.values.get('kingdom', 'plant')
         species = request.values.get('species', 'bamboo')
+        silent = request.values.get('silent', 'False') == 'True'
 
         full_species_name = kingdom + '/' + species
 
-        print("Simulating " + str(years_to_simulate) + " years with " + \
-        str(initial_organism_count) + " " + species + "(s) of kingdom " + kingdom + ".")
+        if not silent:
+            print("Simulating " + str(years_to_simulate) + " years with " + \
+            str(initial_organism_count) + " " + species + "(s) of kingdom " + kingdom + ".")
 
         obj = pyeco.pyecosystem(True)
 
@@ -49,7 +58,7 @@ def main():
             initial_organism_count-=1
 
         while years_to_simulate > 0:
-            obj.happy_new_year(True)
+            obj.happy_new_year(not silent)
             obj.remember_species(full_species_name)
             years_to_simulate-=1
 
@@ -69,18 +78,18 @@ def main():
         "data": ""
     })
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def ok():
     return "Ok."
 
-@app.route('/help/menu')
+@app.route('/help/menu', methods=['GET'])
 def menu():
     return jsonify({
         "animal":["deer", "lion"],
         "plant": ["bamboo"]
     })
 
-@app.route('/help/schema')
+@app.route('/help/schema', methods=['GET'])
 def schema():
     return jsonify({
         "animal": ["YEAR", "MALE", "FEMALE", "M_MALE", "M_FEMALE", "C_PROB", \
@@ -102,5 +111,5 @@ def status():
     global available
     return str(available)
 
-
-app.run(host='127.0.0.1', port=8080)
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=8080, debug=True)
