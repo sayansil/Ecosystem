@@ -34,13 +34,13 @@ jobs:
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ matrix.language }}
-    
+
     - name: prepare-build
       run: |
         echo "deb http://cz.archive.ubuntu.com/ubuntu eoan main universe" | sudo tee -a  /etc/apt/sources.list
         sudo apt update
         sudo apt install libtbb-dev
-        
+
     - name: configure-build
       run: |
         git submodule update --init --recursive
@@ -48,7 +48,7 @@ jobs:
         mkdir build
         cd build
         cmake ..
-        
+
     - name: build
       run: |
         cd Cpp/build
