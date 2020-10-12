@@ -22,7 +22,7 @@
 <a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
         
-<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/ubuntu">
+<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/master">
         <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
 </p>
 
