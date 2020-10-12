@@ -1,0 +1,54 @@
+name: python-test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: prepare-build
+      run: |
+        echo "deb http://cz.archive.ubuntu.com/ubuntu eoan main universe" | sudo tee -a  /etc/apt/sources.list
+        sudo apt update
+        sudo apt install libtbb-dev
+
+    - name: configure-build
+      run: |
+        git submodule update --init --recursive
+        cd Cpp
+        mkdir build
+        cd build
+        cmake ..
+
+    - name: build
+      run: |
+        cd Cpp/build
+        cmake --build . -- -j $(nproc)
+
+    - name: setup
+      run: |
+        export ECOSYSTEM_ROOT=`pwd`
+        ./Cpp/build/setup/setup
+
+    - name: Install dependencies
+      run: |
+        cd Python
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: run
+      run: |
+        python test_app.py
+
