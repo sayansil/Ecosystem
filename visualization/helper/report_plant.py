@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 
-def generate_pdf(df, kind, savepath='../outputs/'):
+def generate_pdf(df, kind, savepath):
     figs = []
     fig = get_start_page(kind)
     figs.append(fig)
@@ -25,8 +25,10 @@ def generate_pdf(df, kind, savepath='../outputs/'):
     figs.append(fig1)
     figs.append(fig2)
 
-    timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S%p")
-    savepath += 'report_' + kind + ' ' + timestamp + '.pdf'
+    if not savepath:
+        timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S%p")
+        savepath = '../outputs/report_' + kind + ' ' + timestamp + '.pdf'
+
     with PdfPages(savepath) as pdf:
         for fig in figs:
             plt.figure(fig.number)

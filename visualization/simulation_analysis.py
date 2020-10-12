@@ -1,6 +1,7 @@
 import sys
 import sqlite3
 import pandas as pd
+import argparse
 
 def get_table(table_name):
     conn = sqlite3.connect('../data/ecosystem_master.db')
@@ -11,7 +12,7 @@ def get_table(table_name):
     df = pd.DataFrame(rows, columns=cols).dropna()
     return df
 
-def generate_report(full_species_name: str):
+def generate_report(full_species_name: str, output_file: str):
     kind = full_species_name[full_species_name.find('/') + 1 :]
     kingdom = full_species_name[0: full_species_name.find('/')]
     table_name = 'STATS_' + kind.upper()
@@ -20,11 +21,18 @@ def generate_report(full_species_name: str):
 
     if kingdom == 'animal':
         import helper.report_animal as rep
-        rep.generate_pdf(df, kind)
     elif kingdom == 'plant':
         import helper.report_plant as rep
-        rep.generate_pdf(df, kind)
+    else:
+        raise Exception("kingdom not defined")
+
+    rep.generate_pdf(df, kind, output_file)
 
 
 if __name__ == '__main__':
-    generate_report(sys.argv[1])
+    parser = argparse.ArgumentParser(description="Visualise reports for last simulation")
+    parser.add_argument('-s', '--species', help='Full name of the species (kingdom/species)', required=True)
+    parser.add_argument('-o', '--output', help='Output filename', default='')
+    args = parser.parse_args()
+
+    generate_report(args.species, args.output)
