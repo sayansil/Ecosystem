@@ -1,6 +1,6 @@
 function(add_code name)
     add_executable(rt_${name} ${name}.cpp ${SQLITE_SOURCES})
-    target_include_directories(rt_${name} PRIVATE ${Ecosystem_SOURCE_DIR}/include)
+    target_include_directories(rt_${name} PRIVATE ${Ecosystem_SOURCE_DIR}/include ${Ecosystem_SOURCE_DIR}/extern/nlohmann/include)
     target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl tbb)
 endfunction()
 

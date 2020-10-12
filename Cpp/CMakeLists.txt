@@ -31,12 +31,12 @@ set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp -march=native -ltbb")
 set(CMAKE_CXX_STANDARD 17)
 
 set(SQLITE_HEADERS
-    ${PROJECT_SOURCE_DIR}/include/sqlite3.h
-    ${PROJECT_SOURCE_DIR}/include/sqlite3ext.h
+    ${PROJECT_SOURCE_DIR}/extern/sqlite3/include/sqlite3.h
+    ${PROJECT_SOURCE_DIR}/extern/sqlite3/include/sqlite3ext.h
     )
 
 set(SQLITE_SOURCES
-    ${PROJECT_SOURCE_DIR}/src/sqlite3.c
+    ${PROJECT_SOURCE_DIR}/extern/sqlite3/src/sqlite3.c
     )
 
 add_subdirectory(src)
