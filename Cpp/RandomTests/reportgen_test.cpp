@@ -19,5 +19,5 @@ int main()
         allah.remember_species("animal/deer");
     }
 
-    print("Simulation complete. Ready to generate report.")
+    std::cout << "Simulation complete. Ready to generate report.\n";
 }
