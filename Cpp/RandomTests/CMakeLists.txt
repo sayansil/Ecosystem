@@ -4,7 +4,7 @@ function(add_code name)
     target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl tbb)
 endfunction()
 
-#    add_code(generateReport)
+add_code(reportgen_test)
 add_code(sanity_test)
 #    add_code(unit_tests)
 #    add_code(test1)
