@@ -3,7 +3,7 @@ name: build
 on:
   push:
       branches:
-      - ubuntu
+      - master
 
 jobs:
   build-ubuntu:
@@ -12,20 +12,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: prepare
+    - name: prepare-build
       run: |
         echo "deb http://cz.archive.ubuntu.com/ubuntu eoan main universe" | sudo tee -a  /etc/apt/sources.list
         sudo apt update
         sudo apt install libtbb-dev
-
-    - name: configure
+    - name: configure-build
       run: |
         git submodule update --init --recursive
         cd Cpp
         mkdir build
         cd build
         cmake ..
-
     - name: build
       run: |
         cd Cpp/build

@@ -21,6 +21,4 @@ int main()
     {
         allah.spawn_organism(std::make_shared<Plant>("bamboo", 10, false));
     }
-
-    //allah.start_listening_for_simulation();
 }
