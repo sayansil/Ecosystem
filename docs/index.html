@@ -1,125 +1,70 @@
-
 <!DOCTYPE html>
-<html lang="en-US">
-  <head>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
-
-    <!-- Begin Jekyll SEO tag v2.6.1 -->
-
     <title>Ecosystem Simulator | You play God</title>
-    <meta name="generator" content="Jekyll v3.9.0" />
+    <link rel="stylesheet" type="text/css" href="assets/css/vendor/jquery.fullPage.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="keywords" content="sayan sil, data scientist, portfolio, machine learning, mobile, android, data" />
+    <meta name="viewport" content="width=device-width">
+    <link rel="shortcut icon" href="favicon.ico">
     <meta property="og:title" content="Ecosystem Simulator" />
     <meta property="og:locale" content="en_US" />
     <meta name="description" content="You play God" />
     <meta property="og:description" content="You play God" />
-    <link rel="canonical" href="https://sayansil.github.io/Ecosystem/" />
-    <meta property="og:url" content="https://sayansil.github.io/Ecosystem/" />
+    <meta property="og:url" content="https://ecosystem-simulation.web.app/" />
     <meta property="og:site_name" content="Ecosystem Simulator" />
     <script type="application/ld+json">
-    {"@type":"WebSite","headline":"Ecosystem Simulator","url":"https://sayansil.github.io/Ecosystem/","description":"You play God","name":"Ecosystem Simulator","@context":"https://schema.org"}</script>
+    {"@type":"WebSite","headline":"Ecosystem Simulator","url":"https://ecosystem-simulation.web.app/","description":"You play God","name":"Ecosystem Simulator"}</script>
 
-    <!-- End Jekyll SEO tag -->
+</head>
+<body>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#157878">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="stylesheet" href="/Ecosystem/assets/css/style.css?v=de76d72d59421499aef46c243dcbf75e552fc07e">
-  </head>
+    <nav class="main-nav">
+        <a href="#about">About</a>
+        <a href="#contribute">Contribute</a>
+    </nav>
 
-  <body>
+    <div class="root">
+        <section class="full-section -hello" data-anchor="hello">
+            <article>
+                <h1>Ecosystem</h1>
+                <h1>Simulator.</h1>
+                <p>You play God.</p>
+            </article>
+        </section>
 
-    <main id="content" class="main-content" role="main">
+        <section class="full-section -about" data-anchor="about">
+            <article>
+                <h1>about.</h1>
+                <p><b>Environmental data collected worldwide points to one obvious fact: the conditions are going to change drastically over the next 50 - 100 years.</b> Our world today is plagued by a variety of environmental imbalances caused by the harmful activities of humans. Issues like global warming, gradual rising of sea levels, climatic changes, extinction of animals are wreaking havoc. Going by the saying, <b>change is the only aspect of life which is constant</b>, our ability to adapt to change will be thoroughly tested, failing to do so will lead to human extinction.</p>
+                <p>In this work, the <b>user plays the role of God</b>. This toolkit helps the user mimic a real-world ecosystem where he can introduce new organisms with custom characteristics and also bring changes to the ecosystem and then observe their behavior and reaction to those changes. Thus the user can be looked upon as The God of the ecosystem who has the power to bring any change with which he can simulate the problems happening worldwide and gain valuable insights on how the organisms try to adapt to the change to ensure their survival. Studying the overall behavior of the ecosystem will provide us with a wealth of knowledge and be far better prepared for how we should be equipped to handle the future.</p>
+                <br />
+                <img src="assets/img/arrow.svg" />
+            </article>
+            <a href="https://github.com/sayansil/Ecosystem/wiki" class="full-link"></a>
+        </section>
 
+        <section class="full-section -contribute" data-anchor="contribute">
+            <article>
+                <h1>open source.</h1>
 
-<p align="center">
+                <p>Think your skills can help improve the software?</p>
+                <br />
+                <p>You are more than welcome to send us a pull request on GitHub.</p>
+                <img src="assets/img/arrow.svg" />
+            </article>
+            <a href="https://github.com/sayansil/Ecosystem" class="full-link"></a>
+        </section>
 
-<a href="https://github.com/sayansil/Ecosystem">
-  <img src="res/eco.png" />
-</a>
+    </div>
 
-</p>
+    <script src="assets/js/vendor/jquery-2.1.4.min.js"></script>
+    <script src="assets/js/vendor/jquery.fullPage.min.js"></script>
+    <script src="assets/js/vendor/parallax.min.js"></script>
+    <script src="assets/js/home.js"></script>
+</body>
 
-<!-- Badges -->
-
-<p align="center">
-<a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
-        <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
-
-<a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg?branch=master" /></a>
-
-<a href="https://bestpractices.coreinfrastructure.org/projects/3821">
-        <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
-
-<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/master">
-        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
-</p>
-
-<p align="center">
-<a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=master" /></a>
-
-<a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=master" /></a>
-
-<a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/python-test/badge.svg?branch=master" /></a>
-</p>
-
-<p><br /></p>
-
-<p align="justify">An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control <b>directly controllable</b> environmental features (like <i>climate</i> and <i>rainfall</i>, unlike <i>population</i>) from the top, and see what effect does it have on a future generation of the species.</p>
-
-<p><br /></p>
-
-<div align="center">
-<h2>Quick Navigation</h2>
-<table width="100%" style="margin: 0px;">
-  <tr> <th>About</th> <th>Setup</th> <th>Framework</th> </tr>
-  <tr>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/info-button.png" /></td>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/settings.png" /></td>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/gear.png" /></td>
-  </tr>
-  <tr>
-    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki"><b>About</b></a></td>
-    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki/Usage"><b>Setup</b></a></td>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Framework-Overview"><b>Overview</b></a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Input-Framework">:inbox_tray: Input Framework</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Output-Framework">:outbox_tray: Output Framework</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Database-Manager">:floppy_disk: Database Manager</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework">:paw_prints: Simulation Framework</a></td>
-  </tr>
-</table>
-</div>
-
-
-      <footer class="site-footer">
-          <span class="site-footer-owner">
-            The <a href="https://github.com/sayansil/Ecosystem">Ecosystem Simulator</a> is maintained by <a href="https://github.com/sayansil">senpai</a> and <a href="https://github.com/DarkStar1997">RMG</a>.
-          </span>
-
-          <br />
-
-          <p align="center">
-            <a href="https://steamcommunity.com/id/sexysanta227">
-              <img src="https://img.shields.io/badge/senpai-%23000?logo=steam" />
-            </a>
-
-            <a href="https://steamcommunity.com/profiles/76561198818175482">
-              <img src="https://img.shields.io/badge/RMG-%23000?logo=steam" />
-            </a>
-          </p>
-      </footer>
-    </main>
-  </body>
 </html>
-
