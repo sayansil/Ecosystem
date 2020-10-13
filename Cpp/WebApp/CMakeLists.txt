@@ -20,7 +20,8 @@ target_include_directories(app PRIVATE
     ${Ecosystem_SOURCE_DIR}/include
     ${Ecosystem_SOURCE_DIR}/extern/uWebSockets/src
     ${Ecosystem_SOURCE_DIR}/extern/uWebSockets/uSockets/src
-    ${Ecosystem_SOURCE_DIR}/extern/nlohmann/include)
+    ${Ecosystem_SOURCE_DIR}/extern/nlohmann/include
+    ${Ecosystem_SOURCE_DIR}/extern/argh)
 
 target_link_libraries(app PRIVATE ${ECOSYSTEM_LIB} dl stdc++fs pthread
     ${Ecosystem_SOURCE_DIR}/extern/uWebSockets/uSockets/uSockets.a

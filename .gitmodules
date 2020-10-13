@@ -19,3 +19,9 @@
 [submodule "Cpp/extern/catch"]
 	path = Cpp/extern/catch
 	url = https://github.com/DarkStar1997/Catch
+[submodule "Cpp/extern/argh"]
+	path = Cpp/extern/argh
+	url = https://github.com/adishavit/argh
+[submodule "Cpp/extern/refl-cpp"]
+	path = Cpp/extern/refl-cpp
+	url = https://github.com/veselink1/refl-cpp
