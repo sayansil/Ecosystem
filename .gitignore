@@ -29,8 +29,6 @@ release/
 .firebase/*
 .firebaserc
 firebase.json
-storage.rules
-remoteconfig.template.json
 app/*.iml
 app/.gradle
 app/local.properties
