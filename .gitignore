@@ -28,7 +28,6 @@ compile_commands.json
 release/
 .firebase/*
 .firebaserc
-firebase.json
 app/*.iml
 app/.gradle
 app/local.properties
