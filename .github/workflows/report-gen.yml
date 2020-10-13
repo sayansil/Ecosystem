@@ -1,4 +1,4 @@
-name: generate-report-auto
+name: generate-report
 
 on:
   push:
