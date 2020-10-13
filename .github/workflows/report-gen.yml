@@ -5,6 +5,13 @@ on:
       branches:
       - master
 
+  workflow_dispatch:
+    inputs:
+      filename:
+        description: 'Name of the generated file'
+        default: 'new_report'
+        required: true
+
 jobs:
   report-ubuntu:
     runs-on: ubuntu-20.04
