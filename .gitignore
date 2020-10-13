@@ -26,6 +26,7 @@ app/app/.project
 app/app/.settings/*
 compile_commands.json
 release/
+.firebase/*
 .firebaserc
 firebase.json
 storage.rules
