@@ -26,7 +26,10 @@ app/app/.project
 app/app/.settings/*
 compile_commands.json
 release/
-
+.firebaserc
+firebase.json
+storage.rules
+remoteconfig.template.json
 app/*.iml
 app/.gradle
 app/local.properties
