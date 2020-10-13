@@ -1,2 +1,0 @@
-language = "bash"
-run = "export ECOSYSTEM_ROOT=`pwd`;cd Python;python main.py; echo Started"
