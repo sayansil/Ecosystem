@@ -1,80 +1,125 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+
+    <!-- Begin Jekyll SEO tag v2.6.1 -->
+
+    <title>Ecosystem Simulator | You play God</title>
+    <meta name="generator" content="Jekyll v3.9.0" />
+    <meta property="og:title" content="Ecosystem Simulator" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="description" content="You play God" />
+    <meta property="og:description" content="You play God" />
+    <link rel="canonical" href="https://sayansil.github.io/Ecosystem/" />
+    <meta property="og:url" content="https://sayansil.github.io/Ecosystem/" />
+    <meta property="og:site_name" content="Ecosystem Simulator" />
+    <script type="application/ld+json">
+    {"@type":"WebSite","headline":"Ecosystem Simulator","url":"https://sayansil.github.io/Ecosystem/","description":"You play God","name":"Ecosystem Simulator","@context":"https://schema.org"}</script>
+
+    <!-- End Jekyll SEO tag -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
-
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/7.23.0/firebase-app.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/7.23.0/firebase-auth.js"></script>
-    <script defer src="/__/firebase/7.23.0/firebase-database.js"></script>
-    <script defer src="/__/firebase/7.23.0/firebase-messaging.js"></script>
-    <script defer src="/__/firebase/7.23.0/firebase-storage.js"></script>
-    <script defer src="/__/firebase/7.23.0/firebase-analytics.js"></script>
-    <script defer src="/__/firebase/7.23.0/firebase-remote-config.js"></script>
-    <script defer src="/__/firebase/7.23.0/firebase-performance.js"></script>
-    <!-- initialize the SDK after all desired features are loaded -->
-    <script defer src="/__/firebase/init.js"></script>
-
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
-      }
-    </style>
+    <meta name="theme-color" content="#157878">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="/Ecosystem/assets/css/style.css?v=de76d72d59421499aef46c243dcbf75e552fc07e">
   </head>
+
   <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
-    </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
 
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    <main id="content" class="main-content" role="main">
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
+
+<p align="center">
+
+<a href="https://github.com/sayansil/Ecosystem">
+  <img src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/eco.png" />
+</a>
+
+</p>
+
+<!-- Badges -->
+
+<p align="center">
+<a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg?branch=master" /></a>
+
+<a href="https://bestpractices.coreinfrastructure.org/projects/3821">
+        <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
+
+<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/master">
+        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
+</p>
+
+<p align="center">
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=master" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=master" /></a>
+
+<a href="https://github.com/sayansil/Ecosystem/actions">
+        <img src="https://github.com/sayansil/Ecosystem/workflows/python-test/badge.svg?branch=master" /></a>
+</p>
+
+<p><br /></p>
+
+<p align="justify">An ecosystem simulation tool where we create some organisms and leave them be. They adapt and improve every generation on their own. We, users can control <b>directly controllable</b> environmental features (like <i>climate</i> and <i>rainfall</i>, unlike <i>population</i>) from the top, and see what effect does it have on a future generation of the species.</p>
+
+<p><br /></p>
+
+<div align="center">
+<h2>Quick Navigation</h2>
+<table width="100%" style="margin: 0px;">
+  <tr> <th>About</th> <th>Setup</th> <th>Framework</th> </tr>
+  <tr>
+    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/info-button.png" /></td>
+    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/settings.png" /></td>
+    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/gear.png" /></td>
+  </tr>
+  <tr>
+    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki"><b>About</b></a></td>
+    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki/Usage"><b>Setup</b></a></td>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Framework-Overview"><b>Overview</b></a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Input-Framework">:inbox_tray: Input Framework</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Output-Framework">:outbox_tray: Output Framework</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Database-Manager">:floppy_disk: Database Manager</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework">:paw_prints: Simulation Framework</a></td>
+  </tr>
+</table>
+</div>
+
+
+      <footer class="site-footer">
+          <span class="site-footer-owner">
+            The <a href="https://github.com/sayansil/Ecosystem">Ecosystem Simulator</a> is maintained by <a href="https://github.com/sayansil">senpai</a> and <a href="https://github.com/DarkStar1997">RMG</a>.
+          </span>
+
+          <br />
+
+          <p align="center">
+            <a href="https://steamcommunity.com/id/sexysanta227">
+              <img src="https://img.shields.io/badge/senpai-%23000?logo=steam" />
+            </a>
+
+            <a href="https://steamcommunity.com/profiles/76561198818175482">
+              <img src="https://img.shields.io/badge/RMG-%23000?logo=steam" />
+            </a>
+          </p>
+      </footer>
+    </main>
   </body>
 </html>
+
