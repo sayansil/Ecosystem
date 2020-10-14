@@ -44,29 +44,68 @@
 
 <div align="center">
 <h2>Quick Navigation</h2>
-<table width="100%" style="margin: 0px;">
-  <tr> <th>About</th> <th>Setup</th> <th>Framework</th> </tr>
+ 
+  
+<table align="center">
   <tr>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://ecosystem-simulation.web.app/assets/img/info-button.png"></td>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://ecosystem-simulation.web.app/assets/img/settings.png"></td>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://ecosystem-simulation.web.app/assets/img/gear.png"></td>
+  ` <td colspan="2">
+      <div align="center">
+        <a href="https://github.com/sayansil/Ecosystem/wiki">
+        <img src="https://ecosystem-simulation.web.app/assets/img/lion.svg" height="128" width="128" hspace="10"/>
+        <h2>About</h2>
+        </a>
+      </div>
+    </td>
+    <td>
+      <div align="center">
+        <a href="https://github.com/sayansil/Ecosystem/wiki/Usage">
+        <img src="https://ecosystem-simulation.web.app/assets/img/squirrel.svg" height="128" width="128" hspace="10"/>
+        <h2>Setup</h2>
+        </a>
+      </div>
+    </td>
+    <td rowspan="2">
+      <div align="center">
+        <a href="https://github.com/sayansil/Ecosystem/wiki/Framework-Overview">
+        <img src="https://ecosystem-simulation.web.app/assets/img/giraffe.svg" height="128" width="128" hspace="10"/>
+        <h2>Framework</h2>
+        </a>
+        <ul>
+          <li align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Input-Framework">:inbox_tray: Input Framework</a></li>
+          <li align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Output-Framework">:outbox_tray: Output Framework</a></li>
+          <li align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Database-Manager">:floppy_disk: Database Manager</a></li>
+          <li align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework">:paw_prints: Simulation Framework</a></li>
+        </ul>
+      </div>
+    </td>
   </tr>
+  
   <tr>
-    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki"><b>About</b></a></td>
-    <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki/Usage"><b>Setup</b></a></td>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Framework-Overview"><b>Overview</b></a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Input-Framework">:inbox_tray: Input Framework</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Output-Framework">:outbox_tray: Output Framework</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Database-Manager">:floppy_disk: Database Manager</a></td>
-  </tr>
-  <tr>
-    <td align="center"><a href="https://github.com/sayansil/Ecosystem/wiki/Simulation-Framework">:paw_prints: Simulation Framework</a></td>
+    <td>
+      <div align="center">
+        <a href="https://github.com/sayansil/Ecosystem/wiki#motivation">
+        <img src="https://ecosystem-simulation.web.app/assets/img/bird.svg" height="128" width="128" hspace="10"/>
+        <h2>Motivation</h2>
+        </a>
+      </div>
+    </td>
+    <td>
+      <div align="center">
+        <a href="https://github.com/sayansil/Ecosystem/releases">
+        <img src="https://ecosystem-simulation.web.app/assets/img/polar-bear.svg" height="128" width="128" hspace="10"/>
+        <h2>Download</h2>
+        </a>
+      </div>
+    </td>
+    <td>
+      <div align="center">
+        <a href="mailto:sayan227sil@ymail.com">
+        <img src="https://ecosystem-simulation.web.app/assets/img/owl.svg" height="128" width="128" hspace="10"/>
+        <h2>Contact</h2>
+        </a>
+      </div>
+    </td>
   </tr>
 </table>
+  
 </div>
