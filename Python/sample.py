@@ -1,7 +1,10 @@
 import sys
 import os
-ECOSYSTEM_ROOT = os.environ['ECOSYSTEM_ROOT']
-sys.path.insert(1, os.path.join(ECOSYSTEM_ROOT, 'Cpp/build/python'))
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.join(current_dir, '..')
+sys.path.insert(1, os.path.join(root_dir, 'Cpp', 'build', 'python'))
+
 import pyecosystem as pyeco
 from helper import SpeciesModel
 
