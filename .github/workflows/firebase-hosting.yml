@@ -1,11 +1,13 @@
-name: Deploy to Firebase Hosting on merge
+name: firebase-deploy
+
 'on':
   push:
     branches:
       - master
+
 jobs:
-  build_and_deploy:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - uses: FirebaseExtended/action-hosting-deploy@v0

@@ -1,13 +1,15 @@
 name: detox-messages
+
 on: [issue_comment, pull_request_review]
 
 jobs:
-  toxic_check:
-    runs-on: ubuntu-latest
+  toxic-check:
+    runs-on: ubuntu-20.04
     name: Toxicity check
     steps:
       - uses: actions/checkout@v2
-      - name: Safe space - action step
+
+      - name: safe-space
         uses: charliegerard/safe-space@master
         with:
           GITHUB_TOKEN: ${{ secrets.DETOX_GITHUB_TOKEN }}

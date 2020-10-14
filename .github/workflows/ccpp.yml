@@ -6,9 +6,8 @@ on:
       - master
 
 jobs:
-  build-ubuntu:
+  build-linux:
     runs-on: ubuntu-20.04
-
     steps:
     - uses: actions/checkout@v2
 
@@ -17,6 +16,7 @@ jobs:
         echo "deb http://cz.archive.ubuntu.com/ubuntu eoan main universe" | sudo tee -a  /etc/apt/sources.list
         sudo apt update
         sudo apt install libtbb-dev
+
     - name: configure-build
       run: |
         git submodule update --init --recursive
@@ -24,6 +24,7 @@ jobs:
         mkdir build
         cd build
         cmake ..
+
     - name: build
       run: |
         cd Cpp/build
