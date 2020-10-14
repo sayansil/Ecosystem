@@ -5,12 +5,7 @@ on:
       branches:
       - master
 
-  workflow_dispatch:
-    inputs:
-      filename:
-        description: 'Name of the generated file'
-        default: 'new_report'
-        required: true
+  workflow_dispatch
 
 jobs:
   report-linux:
