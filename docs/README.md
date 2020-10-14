@@ -2,7 +2,7 @@
 <p align="center">
 
 <a href="https://github.com/sayansil/Ecosystem">
-  <img src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/eco.png" />
+  <img src="https://ecosystem-simulation.web.app/assets/img/eco.png" />
 </a>
 
 </p>
@@ -47,9 +47,9 @@
 <table width="100%" style="margin: 0px;">
   <tr> <th>About</th> <th>Setup</th> <th>Framework</th> </tr>
   <tr>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/info-button.png"></td>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/settings.png"></td>
-    <td align="center"><img hspace="10" height="48" width="48" src="https://raw.githubusercontent.com/sayansil/Ecosystem/master/docs/res/gear.png"></td>
+    <td align="center"><img hspace="10" height="48" width="48" src="https://ecosystem-simulation.web.app/assets/img/info-button.png"></td>
+    <td align="center"><img hspace="10" height="48" width="48" src="https://ecosystem-simulation.web.app/assets/img/settings.png"></td>
+    <td align="center"><img hspace="10" height="48" width="48" src="https://ecosystem-simulation.web.app/assets/img/gear.png"></td>
   </tr>
   <tr>
     <td align="center" rowspan="5"><a href="https://github.com/sayansil/Ecosystem/wiki"><b>About</b></a></td>
