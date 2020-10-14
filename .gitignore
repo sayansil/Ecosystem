@@ -40,4 +40,4 @@ app/.cxx
 app/app/src/main/res/values/secret.xml
 app/app/google-services.json
 app/app/build
-
+ecosystem-*
