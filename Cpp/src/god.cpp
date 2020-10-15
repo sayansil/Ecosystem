@@ -333,6 +333,18 @@ void God::happy_new_year(const bool &log)
     organisms_vec.clear(); organisms_vec.shrink_to_fit();
     organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
 
+
+    /************************************
+     *       Annual Ageing Begins      *
+     ************************************/
+
+    std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto &x){
+        x.second->increment_age();
+    });
+
+    year++;
+
+
     /***********************************
      *       Annual Mating Begins      *
      ***********************************/
@@ -425,16 +437,6 @@ void God::happy_new_year(const bool &log)
         }
     }
 
-
-    /************************************
-     *       Annual Ageing Begins      *
-     ************************************/
-
-    std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto &x){
-        x.second->increment_age();
-    });
-
-    year++;
 
     /*********************
      *       Logging     *

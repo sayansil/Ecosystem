@@ -38,6 +38,7 @@ namespace helper
     extern double get_value_from_chromosome(const std::string &, const unsigned int &, const unsigned int &, const double &);
     extern std::filesystem::path get_ecosystem_root();
     extern bool is_nonzero_nonnan(const double &);
+    extern std::string generate_full_species_name(const std::string &, const std::string &);
 };
 
 #endif // HELPER_HPP
