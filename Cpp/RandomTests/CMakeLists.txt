@@ -4,10 +4,19 @@ function(add_code name)
     target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl tbb)
 endfunction()
 
+
+#######################################
+# Do not comment the following tests: #
+#                                     #
+# - reportgen_test                    #
+# - sanity_test                       #
+#                                     #
+#######################################
+
 add_code(reportgen_test)
 add_code(sanity_test)
 #    add_code(unit_tests)
-#    add_code(test1)
+add_code(test1)
 add_code(test2)
 #    add_code(test3)
 #    add_code(client)

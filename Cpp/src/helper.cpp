@@ -135,6 +135,11 @@ namespace helper
             return false;
         return true;
     }
+
+    std::string generate_full_species_name(const std::string &kingdom, const std::string &kind)
+    {
+        return kingdom + "/" + kind;
+    }
 };
 
 

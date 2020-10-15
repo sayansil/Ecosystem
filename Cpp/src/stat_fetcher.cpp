@@ -291,7 +291,7 @@ namespace stat_fetcher
 
         std::vector<std::pair<std::string, SQLType>> current_schema;
 
-        unsigned int count = 0;
+        double count = 0;
 
         // Used in StatGroup::MISC
 
@@ -364,7 +364,9 @@ namespace stat_fetcher
 
             for (const auto &var_name : statistics[kingdom][StatGroup::MEAN])
             {
-                stat_db_map["average_" + var_name] = (count / (count + 1)) * stat_db_map[var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
+                // avg(n+1) = (n / (n + 1)) * avg(n) + (1 / (n + 1)) * kn
+
+                stat_db_map["average_" + var_name] = (count / (count + 1)) * stat_db_map["average_" + var_name] + (std::stod(a_map[var_name].getString()) / (count + 1));
             }
 
             count++;
