@@ -3,7 +3,8 @@
     "public": "docs",
     "ignore": [
       "firebase.json",
-      "**/.*"
+      "**/.*",
+      "README.md"
     ]
   }
 }
