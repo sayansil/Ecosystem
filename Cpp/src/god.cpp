@@ -306,13 +306,29 @@ void God::happy_new_year(const bool &log)
 
     // Mark the organisms in organism_vec for death
 
-    int tmp_i = 0;
-    std::for_each(std::execution::par, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
-        x.second = helper::weighted_prob(
-            // killerFunction(x.first.get_fitness(), organisms_vec.size())
-            killer_function(tmp_i++, organisms_vec.size())
-        );
+    //int tmp_i = 0;
+    //std::for_each(std::execution::seq, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
+    //    x.second = helper::weighted_prob(
+    //        // killerFunction(x.first.get_fitness(), organisms_vec.size())
+    //        killer_function(tmp_i++, organisms_vec.size())
+    //    );
+    //});
+
+    std::vector<size_t> indices(organisms_vec.size()); std::iota(indices.begin(), indices.end(), 0);
+    std::vector<double> death_factors(indices.size());
+    std::transform(std::execution::par, indices.begin(), indices.end(), death_factors.begin(), [this, &organisms_vec](const size_t& index){
+        static thread_local std::uniform_real_distribution<double> par_dis(0.0, 1.0);
+        static thread_local std::mt19937_64 par_rng{std::random_device()()};
+        const double x = par_dis(par_rng);
+        return (x <= killer_function(index, organisms_vec.size()) ? 1 : 0);
     });
+
+    std::for_each(std::execution::par, indices.begin(), indices.end(), [&death_factors, &organisms_vec](const size_t& index){
+        organisms_vec[index].second = death_factors[index];
+    });
+
+    indices.clear(); indices.shrink_to_fit();
+    death_factors.clear(); death_factors.shrink_to_fit();
 
     // Remove the above marked organisms from the f****** universe
 
