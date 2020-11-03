@@ -15,6 +15,8 @@
 #include <stat_fetcher.hpp>
 #include <execution>
 
+#include <StopWatch.hpp>
+
 class God
 {
 public:
@@ -60,8 +62,8 @@ public:
     std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> statistics;
 
 protected:
-    double killer_function(const double &index, const double &size) const;
-    int creator_function(const double &value, const double &factor) const;
+    double killer_function(const double &, const double &) const;
+    int creator_function(const double &) const;
 
 private:
 
@@ -75,6 +77,8 @@ private:
 
     bool mate(const std::string&, const std::string&, const nlohmann::json & = nlohmann::json());
     void update_species(const std::string&);
+    timer::StopWatch hny_timer;
+    timer::StopWatch rs_timer;
 };
 
 #endif // GOD_HPP

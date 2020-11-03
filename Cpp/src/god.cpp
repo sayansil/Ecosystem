@@ -137,6 +137,9 @@ void God::reset_species(const std::string &full_species_name)
 
 bool God::spawn_organism(ENTITY &&current_organism)
 {
+    timer::StopWatch atm_timer;
+    timer::StopWatch spawn_timer;
+    spawn_timer.start();
     const std::string kingdom = current_organism->get_kingdom();
     if(kingdom == "animal")
     {
@@ -155,13 +158,14 @@ bool God::spawn_organism(ENTITY &&current_organism)
     if (current_organism->is_normal_child())
     {
         // Add to memory
+        atm_timer.start();
         organisms[current_organism->get_name()] = current_organism;
 
         if(gods_eye)
         {
             std::vector<DBType> tmp;
 
-            const auto &a_map = current_organism->get_attribute_raw_map(); // TODO - use a generic type like Organism
+            const auto &a_map = current_organism->get_attribute_raw_map(); 
 
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
@@ -171,9 +175,13 @@ bool God::spawn_organism(ENTITY &&current_organism)
             // Add to database
             db.insert_rows(std::vector<std::vector<DBType>>{tmp});
         }
+        atm_timer.stop();
+        spawn_timer.stop();
+        std::cout << "atm_timer : " << atm_timer.cur_time / 1e6 << '\n';
+        std::cout << "spawn_timer : " << spawn_timer.cur_time / 1e6 << '\n';
         return true;
     }
-
+    
     return false;
 }
 
@@ -223,7 +231,6 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
                 (parent1->get_Y() + parent2->get_Y()) / 2},
             species_constants));
     }
-
     return false;
 }
 
@@ -271,9 +278,10 @@ double God::killer_function(const double &index, const double &size) const
     return 1 - (1 / (1 + exp((ratio * size - index) / (ratio * pow(size, 0.5)))));
 }
 
-int God::creator_function(const double &value, const double &factor) const
+int God::creator_function(const double &o_factor) const
 {
-    return floor(1 - 1 / (factor * (value - 1)));
+    std::gamma_distribution<double> dis(1.5, o_factor);
+    return std::round(dis(helper::rng));
 }
 
 void God::happy_new_year(const bool &log)
@@ -305,14 +313,6 @@ void God::happy_new_year(const bool &log)
     });
 
     // Mark the organisms in organism_vec for death
-
-    //int tmp_i = 0;
-    //std::for_each(std::execution::seq, organisms_vec.begin(), organisms_vec.end(), [this, &tmp_i, &organisms_vec](std::pair<ENTITY, double> &x) {
-    //    x.second = helper::weighted_prob(
-    //        // killerFunction(x.first.get_fitness(), organisms_vec.size())
-    //        killer_function(tmp_i++, organisms_vec.size())
-    //    );
-    //});
 
     std::vector<size_t> indices(organisms_vec.size()); std::iota(indices.begin(), indices.end(), 0);
     std::vector<double> death_factors(indices.size());
@@ -369,7 +369,7 @@ void God::happy_new_year(const bool &log)
     for(const auto &organism : organisms)
         organismsByKind[organism.second->get_full_species_name()].push_back(organism.second);
 
-    int index_parent1, index_parent2;
+    int index_parent;
     for(auto &organism_tuple : organismsByKind)
     {
         // Mating organisms of species organism_tuple.first
@@ -389,9 +389,6 @@ void God::happy_new_year(const bool &log)
         current_in.close();
 
         std::vector<ENTITY> mating_list1, mating_list2;
-
-        if(organism_list.empty())
-            continue;
 
         bool current_kind_asexual = organism_list[0]->get_is_asexual();
 
@@ -427,32 +424,31 @@ void God::happy_new_year(const bool &log)
 
             }
         }
+        
+        static thread_local std::mt19937_64 rng{std::random_device()()};
+        std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
+        std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
+        index_parent = 0;
 
-        while (mating_list1.size() > 0 && mating_list2.size() > 0)
+        while (mating_list1.size() > index_parent && mating_list2.size() > index_parent)
         {
-            std::uniform_int_distribution<int> dis_parent(0, std::min(mating_list2.size(), mating_list1.size()) - 1);
-            index_parent1 = dis_parent(helper::rng);
-            index_parent2 = dis_parent(helper::rng);
-            const auto &parent1 = mating_list1[index_parent1];
-            const auto &parent2 = mating_list2[index_parent2];
+            const auto &parent1 = mating_list1[index_parent];
+            const auto &parent2 = mating_list2[index_parent];
 
-            std::uniform_real_distribution<double> dis_children(0.0, 1.0);
-            int n_children = creator_function(dis_children(helper::rng), parent1->get_offsprings_factor());
+            int n_children = creator_function(parent1->get_offsprings_factor());
             while(n_children--)
             {
+                hny_timer.start();
                 if (mate(parent1->get_name(), parent2->get_name(), species_constants))
                 {
                     recent_births++;
                 }
+                hny_timer.stop();
             }
 
-            mating_list1.erase(mating_list1.begin() + index_parent1);
-            mating_list2.erase(mating_list2.begin() + index_parent2);
-            mating_list1.shrink_to_fit();
-            mating_list2.shrink_to_fit();
+            index_parent++;
         }
     }
-
 
     /*********************
      *       Logging     *
@@ -463,8 +459,11 @@ void God::happy_new_year(const bool &log)
         std::cout << "Year: " << year << " - ";
         std::cout << "Recent births: " << recent_births << ' ';
         std::cout << "Recent deaths: " << recent_deaths << ' ';
-        std::cout << "Population: " << organisms.size() << '\n';
+        std::cout << "Population: " << organisms.size() << ' ';
+        std::cout << "avg hny_timer = " << hny_timer.avg_time / 1e6 << "ms\n";
     }
+
+    hny_timer.reset();
 }
 
 std::vector<ENTITY> God::organism_sort(bool (*comp)(const ENTITY&, const ENTITY&))
@@ -495,11 +494,17 @@ std::unordered_map<std::string, std::vector<ENTITY>> God::organism_sort_by_kind(
 
 void God::remember_species(const std::string &full_species_name)
 {
+    rs_timer.start();
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
 
     std::vector<DBType> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year, statistics);
+    
     db.insert_stat_row(db_row, kind);
+
+    rs_timer.stop();
+    std::cout << "rs_timer = " << rs_timer.cur_time / 1e6 << "ms\n";
+    rs_timer.reset();
 }
 
 std::string God::get_annual_data(const std::string &full_species_name)

@@ -30,7 +30,7 @@
     "mating_age_end": 90,
     "mutation_probability": 0.01,
     "conceiving_probability": 0.25,
-    "offsprings_factor": 100.0,
+    "offsprings_factor": 10.0,
     "food_chain_rank": 0,
     "is_asexual": 1
 }

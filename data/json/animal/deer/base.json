@@ -50,7 +50,7 @@
     "mating_age_end": 25,
     "mutation_probability": 0.01,
     "conceiving_probability": 0.95,
-    "offsprings_factor": 10.0,
+    "offsprings_factor": 2.0,
     "food_chain_rank": 1,
     "vision_radius" : 100,
     "is_asexual": 0
