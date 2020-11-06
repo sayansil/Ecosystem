@@ -67,7 +67,7 @@ TEST_CASE("Test with master database", "[test_masterdb]")
         auto rows = db->read_all_rows_stats("plant/bamboo");
 
         flag = true;
-        
+
         delete db;
     }
     catch (const std::exception &e)

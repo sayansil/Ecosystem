@@ -41,9 +41,9 @@ def query():
         available = False
 
         initial_organism_count = int(request.values.get('initial_count', '200'))
-        years_to_simulate = int(request.values.get('years', '100'))
-        kingdom = request.values.get('kingdom', 'plant')
-        species = request.values.get('species', 'bamboo')
+        years_to_simulate = int(request.values.get('years', '50'))
+        kingdom = request.values.get('kingdom', 'animal')
+        species = request.values.get('species', 'deer')
         silent = request.values.get('silent', 'False') == 'True'
 
         full_species_name = kingdom + '/' + species

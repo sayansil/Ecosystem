@@ -33,7 +33,6 @@ jobs:
 
     - name: run-simulation
       run: |
-        export ECOSYSTEM_ROOT=`pwd`
         ./Cpp/build/setup/setup
         ./Cpp/build/RandomTests/rt_reportgen_test
 
