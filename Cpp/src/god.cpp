@@ -430,12 +430,10 @@ void God::happy_new_year(const bool &log)
             int n_children = creator_function(parent1->get_offsprings_factor());
             while(n_children--)
             {
-                hny_timer.start();
                 if (mate(parent1->get_name(), parent2->get_name(), species_constants))
                 {
                     recent_births++;
                 }
-                hny_timer.stop();
             }
 
             index_parent++;
@@ -451,11 +449,9 @@ void God::happy_new_year(const bool &log)
         std::cout << "Year: " << year << " - ";
         std::cout << "Recent births: " << recent_births << ' ';
         std::cout << "Recent deaths: " << recent_deaths << ' ';
-        std::cout << "Population: " << organisms.size() << ' ';
-        std::cout << "avg hny_timer = " << hny_timer.avg_time / 1e6 << "ms\n";
+        std::cout << "Population: " << organisms.size() << '\n';
     }
 
-    hny_timer.reset();
 }
 
 std::vector<ENTITY> God::organism_sort(bool (*comp)(const ENTITY&, const ENTITY&))

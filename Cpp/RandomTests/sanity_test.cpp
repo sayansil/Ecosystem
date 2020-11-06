@@ -4,9 +4,9 @@
 int main()
 {
     unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 100;
+    unsigned int years_to_simulate = 20;
 
-    God allah(true);
+    God allah(false);
     allah.reset_species("animal/deer");
     while (initial_organism_count--)
     {
@@ -16,6 +16,5 @@ int main()
     while (years_to_simulate--)
     {
         allah.happy_new_year(true);
-        allah.remember_species("animal/deer");
     }
 }
