@@ -137,9 +137,6 @@ void God::reset_species(const std::string &full_species_name)
 
 bool God::spawn_organism(ENTITY &&current_organism)
 {
-    timer::StopWatch atm_timer;
-    timer::StopWatch spawn_timer;
-    spawn_timer.start();
     const std::string kingdom = current_organism->get_kingdom();
     if(kingdom == "animal")
     {
@@ -158,7 +155,6 @@ bool God::spawn_organism(ENTITY &&current_organism)
     if (current_organism->is_normal_child())
     {
         // Add to memory
-        atm_timer.start();
         organisms[current_organism->get_name()] = current_organism;
 
         if(gods_eye)
@@ -175,10 +171,6 @@ bool God::spawn_organism(ENTITY &&current_organism)
             // Add to database
             db.insert_rows(std::vector<std::vector<DBType>>{tmp});
         }
-        atm_timer.stop();
-        spawn_timer.stop();
-        std::cout << "atm_timer : " << atm_timer.cur_time / 1e6 << '\n';
-        std::cout << "spawn_timer : " << spawn_timer.cur_time / 1e6 << '\n';
         return true;
     }
     
@@ -424,7 +416,7 @@ void God::happy_new_year(const bool &log)
 
             }
         }
-        
+
         static thread_local std::mt19937_64 rng{std::random_device()()};
         std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
         std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
@@ -494,17 +486,11 @@ std::unordered_map<std::string, std::vector<ENTITY>> God::organism_sort_by_kind(
 
 void God::remember_species(const std::string &full_species_name)
 {
-    rs_timer.start();
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
 
     std::vector<DBType> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year, statistics);
-    
     db.insert_stat_row(db_row, kind);
-
-    rs_timer.stop();
-    std::cout << "rs_timer = " << rs_timer.cur_time / 1e6 << "ms\n";
-    rs_timer.reset();
 }
 
 std::string God::get_annual_data(const std::string &full_species_name)
