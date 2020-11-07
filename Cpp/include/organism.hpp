@@ -15,6 +15,7 @@
 #include <helper.hpp>
 #include <nlohmann/json.hpp>
 #include <entity.hpp>
+#include <species_constants.hpp>
 
 class Plant;
 class Animal;

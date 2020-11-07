@@ -2,6 +2,8 @@
 
 God::God(const bool &gods_eye)
 {
+
+    constants::init();
     this->gods_eye = gods_eye;
     helper::rng.seed(std::random_device()());
 
@@ -118,21 +120,15 @@ void God::catastrophe()
 
 void God::reset_species(const std::string &full_species_name)
 {
-    const std::filesystem::path base_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "base.json";
-    const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
-    std::ifstream base_in(base_filepath);
-    std::ofstream current_out((current_filepath));
-
-    nlohmann::json base;
-    base_in >> base;
-
-    current_out << base;
-
-    base_in.close();
-    current_out.close();
-
-    std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
-    db.clear_table(kind);
+    std::string species_name = full_species_name.substr(full_species_name.find('/') + 1);
+    std::string kingdom_name = full_species_name.substr(0, full_species_name.find('/'));
+    std::ifstream in( helper::get_ecosystem_root() / "data" / "json" / kingdom_name / species_name / "base.json");
+    nlohmann::json tmp;
+    in >> tmp;
+    in.close();
+    constants::species_constants_map[species_name] = tmp;
+    
+    db.clear_table(species_name);
 }
 
 bool God::spawn_organism(ENTITY &&current_organism)
@@ -234,31 +230,24 @@ double updateStat(double base, double p_range)
     return base * (1 + x);
 }
 
-void God::update_species(const std::string &kind)
+void God::update_species(const std::string &full_species_name)
 {
-    const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / kind / "current.json";
-    const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data/json" / kind / "modify.json";
+    std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
+    std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
+    
+    const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data" / "json" / kingdom / kind / "modify.json";
 
-    std::ifstream current_in(current_filepath);
     std::ifstream modify_in(modify_filepath);
 
-    nlohmann::json current, modify;
-    current_in >> current;
+    nlohmann::json modify;
     modify_in >> modify;
 
     for (const auto [key, value]: modify.items())
     {
-        current[key] = updateStat((double)current[key], (double)value);
+        constants::species_constants_map[kind][key] = updateStat((double)constants::species_constants_map[kind][key], (double)value);
     }
 
-    current_in.close();
     modify_in.close();
-
-    std::ofstream current_out(current_filepath);
-
-    current_out << current;
-
-    current_out.close();
 }
 
 double God::killer_function(const double &index, const double &size) const
@@ -374,11 +363,8 @@ void God::happy_new_year(const bool &log)
 
         update_species(organism_tuple.first);
 
-        const std::filesystem::path current_filepath = helper::get_ecosystem_root() / "data/json" / organism_tuple.first / "current.json";
-        std::ifstream current_in(current_filepath);
-        nlohmann::json species_constants;
-        current_in >> species_constants;
-        current_in.close();
+        std::string species_name = organism_tuple.first.substr(organism_tuple.first.find('/') + 1);
+        const auto& species_constants = constants::species_constants_map[species_name];
 
         std::vector<ENTITY> mating_list1, mating_list2;
 

@@ -7,6 +7,7 @@ set(ECOSYSTEM_SOURCES
     plant.cpp
     schema.cpp
     StopWatch.cpp
+    species_constants.cpp
     )
 
 add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES} ${SQLITE_SOURCES})

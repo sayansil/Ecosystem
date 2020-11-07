@@ -18,14 +18,8 @@ Plant::Plant(const std::string &kind, const unsigned int &age, const bool &monit
 
     if (species_constants.empty())
     {
-        const std::filesystem::path filepath = helper::get_ecosystem_root() / "data/json" / full_species_name / "current.json";
-        std::ifstream in(filepath);
-        nlohmann::json json_file;
-        in >> json_file;
-
-        init_from_json(json_file);
-
-        in.close();
+        nlohmann::json tmp = constants::species_constants_map[kind];
+        init_from_json(tmp);
     }
     else
     {

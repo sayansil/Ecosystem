@@ -123,11 +123,6 @@ static void parse_species_directories(std::string subdirectory)
             json_template_path / subdirectory / "modify.json",
             entry.path() / "modify.json");
 
-        // Creating current.json from base.json
-        copy_contents(
-            entry.path() / "base.json",
-            entry.path() / "current.json");
-
         create_species_table(entry.path());
     }
 }
