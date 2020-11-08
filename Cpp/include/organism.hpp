@@ -46,6 +46,7 @@ public:
 
     // Attributes related to Mating
     double conceiving_probability;
+    double mating_probability;
     unsigned int mating_age_start;
     unsigned int mating_age_end;
     unsigned int max_age;
@@ -215,6 +216,10 @@ public:
     {
         return conceiving_probability;
     }
+    double get_mating_probability() const
+    {
+        return mating_probability;
+    }
     double get_death_factor() const
     {
         return death_factor;
@@ -362,6 +367,7 @@ public:
     field(fitness_on_death, fixed_for_species()), \
     field(age_fitness_on_death_ratio, fixed_for_species()), \
     field(conceiving_probability, fixed_for_species()), \
+    field(mating_probability, fixed_for_species()), \
     field(mating_age_start, fixed_for_species()), \
     field(mating_age_end, fixed_for_species()), \
     field(max_age, fixed_for_species()), \

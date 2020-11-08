@@ -29,6 +29,7 @@
     "mating_age_start": 1,
     "mating_age_end": 10,
     "mutation_probability": 0.01,
+    "mating_probability": 0.2,
     "conceiving_probability": 0.80,
     "offsprings_factor": 8.0,
     "food_chain_rank": 0,

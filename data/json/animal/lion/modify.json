@@ -31,6 +31,7 @@
     "mating_age_start": 0,
     "mating_age_end": 0,
     "mutation_probability": 0,
+    "mating_probability": 0.0,
     "conceiving_probability": 0,
     "offsprings_factor": 0,
     "vision_radius": 0

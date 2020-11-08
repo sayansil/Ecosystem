@@ -9,6 +9,7 @@ God::God(const bool &gods_eye)
 
     statistics["animal"][StatGroup::FIX] = {
         "conceiving_probability",
+        "mating_probability",
         "mating_age_start",
         "mating_age_end",
         "max_age",
@@ -67,6 +68,7 @@ God::God(const bool &gods_eye)
 
     statistics["plant"][StatGroup::FIX] = {
         "conceiving_probability",
+        "mating_probability",
         "mating_age_start",
         "mating_age_end",
         "max_age",
@@ -201,7 +203,7 @@ bool God::mate(const std::string &name1, const std::string &name2, const nlohman
             bit = (bit == '1')?'0':'1';
 
     // Spawn child (if probable)
-    if(helper::weighted_prob(parent1->get_conceiving_probability()))
+    if(helper::weighted_prob(std::min(parent1->get_conceiving_probability(), parent2->get_conceiving_probability())))
     {
         bool monitor_in_simulation = false;
 
@@ -413,15 +415,17 @@ void God::happy_new_year(const bool &log)
             const auto &parent1 = mating_list1[index_parent];
             const auto &parent2 = mating_list2[index_parent];
 
-            int n_children = creator_function(parent1->get_offsprings_factor());
-            while(n_children--)
+            if(helper::weighted_prob(std::min(parent1->get_mating_probability(), parent2->get_mating_probability())))
             {
-                if (mate(parent1->get_name(), parent2->get_name(), species_constants))
+                int n_children = creator_function(parent1->get_offsprings_factor());
+                while(n_children--)
                 {
-                    recent_births++;
+                    if (mate(parent1->get_name(), parent2->get_name(), species_constants))
+                    {
+                        recent_births++;
+                    }
                 }
             }
-
             index_parent++;
         }
     }

@@ -16,6 +16,7 @@
     "mating_age_start": 0,
     "mating_age_end": 0,
     "mutation_probability": 0.001,
+    "mating_probability": 0.01,
     "conceiving_probability": 0.01,
     "offsprings_factor": 0.001
 }

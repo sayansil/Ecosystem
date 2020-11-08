@@ -72,6 +72,7 @@ void Plant::init_from_json(const nlohmann::json &json_file)
 
     this->mutation_probability = json_file["mutation_probability"];
     this->conceiving_probability = json_file["conceiving_probability"];
+    this->mating_probability = json_file["mating_probability"];
 
     this->age_on_death = json_file["species_age_on_death"];
     this->fitness_on_death = json_file["species_fitness_on_death"];

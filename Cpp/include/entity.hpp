@@ -36,6 +36,7 @@ public:
     virtual double get_static_fitness() const = 0;
     virtual double get_mutation_probability() const = 0;
     virtual double get_conceiving_probability() const = 0;
+    virtual double get_mating_probability() const = 0;
     virtual double get_death_factor() const = 0;
     virtual double get_offsprings_factor() const = 0;
     virtual unsigned int get_gender() const = 0;
