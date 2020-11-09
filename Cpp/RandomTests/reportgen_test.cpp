@@ -5,7 +5,7 @@
 int main()
 {
     unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 100;
+    unsigned int years_to_simulate = 50;
     std::string kingdom = "animal";
     std::string kind = "deer";
 
@@ -18,7 +18,7 @@ int main()
 
     while (years_to_simulate--)
     {
-        allah.happy_new_year();
+        allah.happy_new_year(true);
         allah.remember_species(helper::generate_full_species_name(kingdom, kind));
     }
 

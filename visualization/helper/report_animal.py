@@ -90,7 +90,7 @@ def get_mortality_graphs(df):
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    ax = fig1.add_subplot(gs[1, 1])
+    ax = fig.add_subplot(gs[1, 1])
     ax.set_title('Final Death Factor')
     x = df.index
     y = df['average_death_factor']
