@@ -210,7 +210,7 @@ void Plant::evaluate_static_fitness()
 
 void Plant::generate_death_factor()
 {
-    const double tmp = std::exp((std::log(1 / 199) / max_age) * age);
+    const double tmp = std::exp((std::log(1.0 / 199) / max_age) * age);
     age_death_factor = (1 - tmp) / (1 + tmp);
 
     fitness_death_factor = 1.0 / get_fitness();
