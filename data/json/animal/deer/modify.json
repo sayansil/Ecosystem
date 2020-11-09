@@ -1,7 +1,5 @@
 {
     "species_max_age": 0.1,
-    "species_age_on_death": 0.01,
-    "species_fitness_on_death": 0.01,
     "species_age_fitness_on_death_ratio": 0.001,
     "species_height_on_vitality": 0.01,
     "species_weight_on_vitality": 0.01,

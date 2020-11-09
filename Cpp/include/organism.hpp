@@ -40,8 +40,6 @@ public:
     unsigned int is_asexual;
 
     // Attributes related to death
-    double age_on_death;
-    double fitness_on_death;
     double age_fitness_on_death_ratio;
 
     // Attributes related to Mating
@@ -186,11 +184,12 @@ public:
     }
     double get_die_of_age_factor() const
     {
-        return std::min(1.0, exp(age_on_death * (static_cast<double>(age) / max_age - 1)));
+        const double tmp = std::exp((std::log(1 / 199) / max_age) * age);
+        return (1 - tmp) / (1 + tmp);
     }
     double get_die_of_fitness_factor() const
     {
-        return std::min(1.0, exp(-fitness_on_death * get_fitness()));
+        return 1.0 / get_fitness();
     }
     double get_fitness() const
     {
@@ -363,8 +362,6 @@ public:
     field(chromosome_number, fixed_for_species()), \
     field(food_chain_rank, fixed_for_species()), \
     field(is_asexual, fixed_for_species()), \
-    field(age_on_death, fixed_for_species()), \
-    field(fitness_on_death, fixed_for_species()), \
     field(age_fitness_on_death_ratio, fixed_for_species()), \
     field(conceiving_probability, fixed_for_species()), \
     field(mating_probability, fixed_for_species()), \

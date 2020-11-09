@@ -1,9 +1,7 @@
 {
     "species_max_age": 30,
     "species_chromosome_number": 131,
-    "species_age_on_death": 3,
-    "species_fitness_on_death": 70,
-    "species_age_fitness_on_death_ratio": 9,
+    "species_age_fitness_on_death_ratio": 1,
     "species_height_on_vitality": 0.1,
     "species_weight_on_vitality": 0.25,
     "species_height_on_stamina": -0.05,

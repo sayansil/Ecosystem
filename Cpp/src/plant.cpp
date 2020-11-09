@@ -74,8 +74,6 @@ void Plant::init_from_json(const nlohmann::json &json_file)
     this->conceiving_probability = json_file["conceiving_probability"];
     this->mating_probability = json_file["mating_probability"];
 
-    this->age_on_death = json_file["species_age_on_death"];
-    this->fitness_on_death = json_file["species_fitness_on_death"];
     this->age_fitness_on_death_ratio = json_file["species_age_fitness_on_death_ratio"];
 
     this->height_on_vitality = json_file["species_height_on_vitality"];
@@ -212,7 +210,6 @@ void Plant::evaluate_static_fitness()
 
 void Plant::generate_death_factor()
 {
-    age_fitness_on_death_ratio = age_fitness_on_death_ratio * (2 - get_die_of_age_factor());
     death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
 }
 

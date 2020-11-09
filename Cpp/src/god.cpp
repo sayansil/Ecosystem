@@ -15,8 +15,6 @@ God::God(const bool &gods_eye)
         "max_age",
         "mutation_probability",
         "offsprings_factor",
-        "age_on_death",
-        "fitness_on_death",
         "age_fitness_on_death_ratio",
         "height_on_speed",
         "height_on_stamina",
@@ -74,8 +72,6 @@ God::God(const bool &gods_eye)
         "max_age",
         "mutation_probability",
         "offsprings_factor",
-        "age_on_death",
-        "fitness_on_death",
         "age_fitness_on_death_ratio",
         "height_on_vitality",
         "weight_on_vitality",
@@ -129,7 +125,7 @@ void God::reset_species(const std::string &full_species_name)
     in >> tmp;
     in.close();
     constants::species_constants_map[species_name] = tmp;
-    
+
     db.clear_table(species_name);
 }
 
@@ -159,7 +155,7 @@ bool God::spawn_organism(ENTITY &&current_organism)
         {
             std::vector<DBType> tmp;
 
-            const auto &a_map = current_organism->get_attribute_raw_map(); 
+            const auto &a_map = current_organism->get_attribute_raw_map();
 
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
@@ -171,7 +167,7 @@ bool God::spawn_organism(ENTITY &&current_organism)
         }
         return true;
     }
-    
+
     return false;
 }
 
@@ -236,7 +232,7 @@ void God::update_species(const std::string &full_species_name)
 {
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
-    
+
     const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data" / "json" / kingdom / kind / "modify.json";
 
     std::ifstream modify_in(modify_filepath);
