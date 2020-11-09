@@ -50,9 +50,10 @@ def get_start_page(kind):
 
 def get_mortality_graphs(df):
     """
-        age_on_death
-        fitness_on_death
+        age_death_factor
+        fitness_death_factor
         age_fitness_on_death_ratio
+        death_factor
         max_age
     """
     fig = plt.figure()
@@ -63,29 +64,37 @@ def get_mortality_graphs(df):
     gs = GridSpec(3, 2, figure=fig)
 
     ax = fig.add_subplot(gs[0, 0])
-    ax.set_title('Age affecting Death')
+    ax.set_title('Death factor (by age)')
     x = df.index
-    y = df['age_on_death']
+    y = df['average_age_death_factor']
     ax.plot(x, y, '-r')
     ax.set_ylabel("Factor")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig.add_subplot(gs[0, 1])
-    ax.set_title('Fitness affecting Death')
+    ax.set_title('Death factor (by fitness)')
     x = df.index
-    y = df['fitness_on_death']
+    y = df['average_fitness_death_factor']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Factor")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    ax = fig.add_subplot(gs[1, :])
-    ax.set_title('Age vs. Fitness affecting Death')
+    ax = fig.add_subplot(gs[1, 0])
+    ax.set_title('Age vs. Fitness')
     x = df.index
     y = df['age_fitness_on_death_ratio']
     ax.plot(x, y, '-b')
     ax.set_ylabel("Ratio")
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
+
+    ax = fig1.add_subplot(gs[1, 1])
+    ax.set_title('Final Death Factor')
+    x = df.index
+    y = df['average_death_factor']
+    ax.plot(x, y, '-m')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
@@ -292,7 +301,6 @@ def get_average_graphs(df):
         average_weight
         average_static_fitness
         average_immunity
-        average_death_factor
         average_max_speed_at_age
         average_max_appetite_at_age
         average_max_stamina_at_age
@@ -338,7 +346,7 @@ def get_average_graphs(df):
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    ax = fig1.add_subplot(gs[2, 0:2])
+    ax = fig1.add_subplot(gs[2, 0:3])
     ax.set_title('Static Fitness')
     x = df.index
     y = df['average_static_fitness']
@@ -346,19 +354,11 @@ def get_average_graphs(df):
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    ax = fig1.add_subplot(gs[2, 2:4])
+    ax = fig1.add_subplot(gs[2, 3:6])
     ax.set_title('Immunity')
     x = df.index
     y = df['average_immunity']
     ax.plot(x, y, '-r')
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig1.add_subplot(gs[2, 4:6])
-    ax.set_title('Death Factor')
-    x = df.index
-    y = df['average_death_factor']
-    ax.plot(x, y, '-m')
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
