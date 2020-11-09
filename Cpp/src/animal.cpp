@@ -353,7 +353,12 @@ void Animal::eat(const double &nutrition)
 
 void Animal::generate_death_factor()
 {
-    death_factor = helper::weighted_average({get_die_of_age_factor(), get_die_of_fitness_factor()}, {age_fitness_on_death_ratio, 1.0});
+    const double tmp = std::exp((std::log(1 / 199) / max_age) * age);
+    age_death_factor = (1 - tmp) / (1 + tmp);
+
+    fitness_death_factor = 1.0 / get_fitness();
+
+    death_factor = helper::weighted_average({age_death_factor, fitness_death_factor}, {age_fitness_on_death_ratio, 1.0});
 }
 
 bool Animal::is_normal_child() const

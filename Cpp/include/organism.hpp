@@ -79,8 +79,9 @@ public:
     double static_fitness;
 
     // Death factor determined by present age and fitness
+    double age_death_factor;
+    double fitness_death_factor;
     double death_factor;
-
 
     /**************************************
      *  Changes dynamically every moment  *
@@ -181,15 +182,6 @@ public:
     double get_immunity() const
     {
         return immunity;
-    }
-    double get_die_of_age_factor() const
-    {
-        const double tmp = std::exp((std::log(1 / 199) / max_age) * age);
-        return (1 - tmp) / (1 + tmp);
-    }
-    double get_die_of_fitness_factor() const
-    {
-        return 1.0 / get_fitness();
     }
     double get_fitness() const
     {
@@ -381,6 +373,8 @@ public:
     field(height, changes_every_year()), \
     field(weight, changes_every_year()), \
     field(static_fitness, changes_every_year()), \
+    field(age_death_factor, changes_every_year()), \
+    field(fitness_death_factor, changes_every_year()), \
     field(death_factor, changes_every_year()), \
  \
     field(X, changes_every_moment()), \

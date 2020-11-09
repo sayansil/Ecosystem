@@ -63,6 +63,8 @@ namespace schema
         {"average_max_stamina_at_age", SQLType::FLOAT},
         {"average_max_vitality_at_age", SQLType::FLOAT},
         {"average_static_fitness", SQLType::FLOAT},
+        {"average_age_death_factor", SQLType::FLOAT},
+        {"average_fitness_death_factor", SQLType::FLOAT},
         {"average_death_factor", SQLType::FLOAT},
         {"average_vision_radius", SQLType::FLOAT}};
 
@@ -95,6 +97,8 @@ namespace schema
         {"average_weight", SQLType::FLOAT},
         {"average_max_vitality_at_age", SQLType::FLOAT},
         {"average_static_fitness", SQLType::FLOAT},
+        {"average_age_death_factor", SQLType::FLOAT},
+        {"average_fitness_death_factor", SQLType::FLOAT},
         {"average_death_factor", SQLType::FLOAT}};
 
 }; // namespace schema

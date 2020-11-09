@@ -53,6 +53,8 @@ God::God(const bool &gods_eye)
         "max_stamina_at_age",
         "max_vitality_at_age",
         "static_fitness",
+        "age_death_factor",
+        "fitness_death_factor",
         "death_factor",
         "vision_radius"
     };
@@ -92,6 +94,8 @@ God::God(const bool &gods_eye)
         "weight",
         "max_vitality_at_age",
         "static_fitness",
+        "age_death_factor",
+        "fitness_death_factor",
         "death_factor"
     };
     statistics["plant"][StatGroup::MISC] = {

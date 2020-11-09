@@ -27,8 +27,6 @@ public:
     virtual double get_weight_multiplier() const = 0;
     virtual double get_max_height() const = 0;
     virtual double get_max_weight() const = 0;
-    virtual double get_die_of_age_factor() const = 0;
-    virtual double get_die_of_fitness_factor() const = 0;
     virtual double get_fitness() const = 0;
     virtual double get_immunity() const = 0;
     virtual double get_height() const = 0;
