@@ -150,6 +150,9 @@ bool God::spawn_organism(ENTITY &&current_organism)
     {
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
     }
+
+    current_organism->generate_death_factor();
+
     if (current_organism->is_normal_child())
     {
         // Add to memory
