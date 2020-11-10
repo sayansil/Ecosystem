@@ -150,6 +150,9 @@ bool God::spawn_organism(ENTITY &&current_organism)
     {
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
     }
+
+    current_organism->generate_death_factor();
+
     if (current_organism->is_normal_child())
     {
         // Add to memory
@@ -188,7 +191,7 @@ void God::kill_organisms(const std::vector<std::string> &names)
         organisms.erase(lamb_to_slaughter);
 }
 
-bool God::mate(const std::string &name1, const std::string &name2, const nlohmann::json &species_constants)
+bool God::mate(const std::string &name1, const std::string &name2, std::vector<std::pair<std::string, ENTITY>>& organisms_buffer, const nlohmann::json &species_constants)
 {
     // ORGANISM objects of 2 parents
     const auto &parent1 = organisms[name1];
@@ -418,9 +421,11 @@ void God::happy_new_year(const bool &log)
             if(helper::weighted_prob(std::min(parent1->get_mating_probability(), parent2->get_mating_probability())))
             {
                 int n_children = creator_function(parent1->get_offsprings_factor());
+                std::vector<std::pair<std::string, ENTITY>> organisms_buffer;
+                organisms_buffer.reserve(n_children);
                 while(n_children--)
                 {
-                    if (mate(parent1->get_name(), parent2->get_name(), species_constants))
+                    if (mate(parent1->get_name(), parent2->get_name(), organisms_buffer, species_constants))
                     {
                         recent_births++;
                     }

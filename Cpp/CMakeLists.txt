@@ -26,9 +26,16 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++17 -O3 -fopenmp -march=native -ltbb")
-
+set(CMAKE_BUILD_TYPE "RELEASE")
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_POSITION_INDEPENDENT_CODE 1)
+
+find_package(Boost REQUIRED)
+find_package(folly REQUIRED)
+find_package(gflags REQUIRED)
+
+include_directories(${BOOST_INCLUDE_DIRS})
+include_directories(${FOLLY_INCLUDE_DIRS})
 
 set(SQLITE_HEADERS
     ${PROJECT_SOURCE_DIR}/extern/sqlite3/include/sqlite3.h

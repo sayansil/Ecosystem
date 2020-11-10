@@ -75,7 +75,7 @@ private:
      *         Unavailable to users         *
      ****************************************/
 
-    bool mate(const std::string&, const std::string&, const nlohmann::json & = nlohmann::json());
+    bool mate(const std::string&, const std::string&, std::vector<std::pair<std::string, ENTITY>>&, const nlohmann::json & = nlohmann::json());
     void update_species(const std::string&);
 };
 
