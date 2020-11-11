@@ -1,9 +1,11 @@
-#include <StopWatch.hpp>
+#include <god.hpp>
 #include <iostream>
 
 int main()
 {
-    timer::StopWatch obj;
-    obj = timer::StopWatch();
-    std::cout << obj.status << '\n';
+    std::vector<std::string> vars {"height", "weight"};
+    God allah;
+    allah.reset_species("animal/deer");
+
+    allah.test_organism(std::make_shared<Animal>("deer", 10), vars, 20);
 }

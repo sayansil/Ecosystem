@@ -275,66 +275,68 @@ void God::happy_new_year(const bool &log)
     recent_births = 0;
     recent_deaths = 0;
 
-
-    /************************************
-     *       Annual Killing Begins      *
-     ************************************/
-
-    // Vector for [ (ORGANISM, death_factor) ]
-    std::vector<std::pair<ENTITY, double>>
-        organisms_vec;
-
-    for(auto &organism : organisms)
+    if (!disable_deaths)
     {
-        organism.second->generate_death_factor();
-        organisms_vec.push_back({organism.second, 0.0});
-    }
+        /************************************
+         *       Annual Killing Begins      *
+         ************************************/
 
-    // Sort organism_vec by death factor
+        // Vector for [ (ORGANISM, death_factor) ]
+        std::vector<std::pair<ENTITY, double>>
+            organisms_vec;
 
-    std::sort(std::execution::par, organisms_vec.begin(),
-        organisms_vec.end(),
-        [](const std::pair<ENTITY, double> &x, const std::pair<ENTITY, double> &y){
-            return x.first->get_death_factor() > y.first->get_death_factor();
-    });
-
-    // Mark the organisms in organism_vec for death
-
-    std::vector<size_t> indices(organisms_vec.size()); std::iota(indices.begin(), indices.end(), 0);
-    std::vector<double> death_factors(indices.size());
-    std::transform(std::execution::par, indices.begin(), indices.end(), death_factors.begin(), [this, &organisms_vec](const size_t& index){
-        static thread_local std::uniform_real_distribution<double> par_dis(0.0, 1.0);
-        static thread_local std::mt19937_64 par_rng{std::random_device()()};
-        const double x = par_dis(par_rng);
-        return (x <= killer_function(index, organisms_vec.size()) ? 1 : 0);
-    });
-
-    std::for_each(std::execution::par, indices.begin(), indices.end(), [&death_factors, &organisms_vec](const size_t& index){
-        organisms_vec[index].second = death_factors[index];
-    });
-
-    indices.clear(); indices.shrink_to_fit();
-    death_factors.clear(); death_factors.shrink_to_fit();
-
-    // Remove the above marked organisms from the f****** universe
-
-    std::vector<std::string> organisms_to_be_slaughtered;
-
-    for(const auto &organism_tuple : organisms_vec)
-    {
-        if(organism_tuple.second == 1)
+        for(auto &organism : organisms)
         {
-            // Being dragged to the slaughterhouse
-            organisms_to_be_slaughtered.push_back(organism_tuple.first->get_name());
+            organism.second->generate_death_factor();
+            organisms_vec.push_back({organism.second, 0.0});
         }
+
+        // Sort organism_vec by death factor
+
+        std::sort(std::execution::par, organisms_vec.begin(),
+            organisms_vec.end(),
+            [](const std::pair<ENTITY, double> &x, const std::pair<ENTITY, double> &y){
+                return x.first->get_death_factor() > y.first->get_death_factor();
+        });
+
+        // Mark the organisms in organism_vec for death
+
+        std::vector<size_t> indices(organisms_vec.size()); std::iota(indices.begin(), indices.end(), 0);
+        std::vector<double> death_factors(indices.size());
+        std::transform(std::execution::par, indices.begin(), indices.end(), death_factors.begin(), [this, &organisms_vec](const size_t& index){
+            static thread_local std::uniform_real_distribution<double> par_dis(0.0, 1.0);
+            static thread_local std::mt19937_64 par_rng{std::random_device()()};
+            const double x = par_dis(par_rng);
+            return (x <= killer_function(index, organisms_vec.size()) ? 1 : 0);
+        });
+
+        std::for_each(std::execution::par, indices.begin(), indices.end(), [&death_factors, &organisms_vec](const size_t& index){
+            organisms_vec[index].second = death_factors[index];
+        });
+
+        indices.clear(); indices.shrink_to_fit();
+        death_factors.clear(); death_factors.shrink_to_fit();
+
+        // Remove the above marked organisms from the f****** universe
+
+        std::vector<std::string> organisms_to_be_slaughtered;
+
+        for(const auto &organism_tuple : organisms_vec)
+        {
+            if(organism_tuple.second == 1)
+            {
+                // Being dragged to the slaughterhouse
+                organisms_to_be_slaughtered.push_back(organism_tuple.first->get_name());
+            }
+        }
+
+        recent_deaths = organisms_to_be_slaughtered.size();
+        kill_organisms(organisms_to_be_slaughtered);
+
+        organisms_vec.clear(); organisms_vec.shrink_to_fit();
+        organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
+
     }
-
-    recent_deaths = organisms_to_be_slaughtered.size();
-    kill_organisms(organisms_to_be_slaughtered);
-
-    organisms_vec.clear(); organisms_vec.shrink_to_fit();
-    organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
-
 
     /************************************
      *       Annual Ageing Begins      *
@@ -509,3 +511,42 @@ std::vector<std::map<std::string, std::string>> God::get_live_data()
     return stat_fetcher::prepare_data_for_simulation_2(organisms);
 }
 
+std::unordered_map<std::string, std::vector<double>> God::test_organism(ENTITY &&current_organism, const std::vector<std::string>& vars, const int &years)
+{
+    std::unordered_map<std::string, std::vector<double>> res;
+    for (const std::string &var : vars)
+    {
+        res[var] = {};
+    }
+
+    std::string name = helper::random_name(10);
+    spawn_organism(current_organism->clone(
+        current_organism->get_kind(),
+        1,
+        false,
+        current_organism->get_chromosome(),
+        current_organism->get_generation(),
+        name));
+
+    if (organisms.find(name) == organisms.end())
+    {
+        std::cout << "Could not create organism. Population 0.\n";
+        return res;
+    }
+
+    const auto &a_map = organisms[name]->get_attribute_raw_map();
+
+    int i = 0;
+    while (organisms.find(name) != organisms.end() && i++ < years)
+    {
+
+        for (const std::string &var : vars)
+        {
+            res[var].push_back(std::stod(a_map[var].getString()));
+        }
+
+        happy_new_year();
+    }
+
+    return res;
+}
