@@ -18,7 +18,7 @@ int main()
 
     while (years_to_simulate--)
     {
-        allah.happy_new_year();
+        allah.happy_new_year(true);
         allah.remember_species(helper::generate_full_species_name(kingdom, kind));
     }
 

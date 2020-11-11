@@ -28,6 +28,7 @@ public:
     unsigned int recent_births = 0;
 
     bool monitor_offsprings = false;
+    bool disable_deaths = false;
 
     /******************************
      *  Constructor / Destructor  *
@@ -49,6 +50,8 @@ public:
     void remember_species(const std::string&);
     std::string get_annual_data(const std::string&);
     std::vector<std::map<std::string, std::string>> get_live_data();
+
+    std::unordered_map<std::string, std::vector<double>> test_organism(ENTITY &&, const std::vector<std::string>&, const int&);
 
     template <typename T>
     void init(T &&obj)
