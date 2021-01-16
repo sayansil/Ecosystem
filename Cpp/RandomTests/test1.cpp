@@ -40,7 +40,6 @@ int main()
     God allah(true);
     allah.reset_species("animal/deer");
 
-    std::cout << "Reset done.\n";
     while (initial_organism_count--)
     {
         allah.spawn_organism(std::make_shared<Animal>("deer", 10, true));
