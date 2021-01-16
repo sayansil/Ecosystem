@@ -146,6 +146,8 @@ bool God::spawn_organism(ENTITY &&current_organism)
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
     }
 
+    std::cout<< __LINE__  << " " << kingdom << "\n";
+
     current_organism->generate_death_factor();
 
     if (current_organism->is_normal_child())
@@ -157,7 +159,9 @@ bool God::spawn_organism(ENTITY &&current_organism)
         {
             std::vector<DBType> tmp;
 
-            const auto &a_map = current_organism->get_attribute_raw_map();
+            const auto &a_map = stat_fetcher::get_var_map(current_organism);
+            std::cout<< __LINE__  << " reached " << "\n";
+            std::cout<< __LINE__  << " " << a_map.map.size() << "\n";
 
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
@@ -176,6 +180,7 @@ bool God::spawn_organism(ENTITY &&current_organism)
 bool God::spawn_organism(ENTITY &&current_organism, std::vector<std::pair<std::string, ENTITY>>& organisms_buffer)
 {
     const std::string kingdom = current_organism->get_kingdom();
+    std::cout<< __LINE__  << " " << kingdom << "\n";
     if(kingdom != "animal" && kingdom != "plant")
     {
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
@@ -192,7 +197,7 @@ bool God::spawn_organism(ENTITY &&current_organism, std::vector<std::pair<std::s
         {
             std::vector<DBType> tmp;
 
-            const auto &a_map = current_organism->get_attribute_raw_map();
+            const auto &a_map = stat_fetcher::get_var_map(current_organism);
 
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
@@ -602,7 +607,7 @@ std::unordered_map<std::string, std::vector<double>> God::test_organism(ENTITY &
         return res;
     }
 
-    const auto &a_map = organisms[name]->get_attribute_raw_map();
+    const auto &a_map = stat_fetcher::get_var_map(organisms[name]); //organisms[name]->get_attribute_raw_map();
 
     int i = 0;
     while (organisms.find(name) != organisms.end() && i++ < years)
