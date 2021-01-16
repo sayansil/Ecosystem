@@ -31,6 +31,22 @@ Animal::Animal(const std::string &kind, const unsigned int &age, const bool &mon
     this->appetite = this->max_appetite_at_age;
     this->speed = this->max_speed_at_age;
 
+    this->base_appetite = this->get_base_appetite();
+    this->base_height = this->get_base_height();
+    this->base_speed = this->get_base_speed();
+    this->base_stamina = this->get_base_stamina();
+    this->base_vitality = this->get_base_vitality();
+    this->base_weight = this->get_base_weight();
+    this->immunity_from_chromosome = this->get_immunity_from_chromosome();
+    this->gender_from_chromosome = this->get_gender_from_chromosome();
+    this->height_multiplier = this->get_height_multiplier();
+    this->speed_multiplier = this->get_speed_multiplier();
+    this->stamina_multiplier = this->get_stamina_multiplier();
+    this->vitality_multiplier = this->get_vitality_multiplier();
+    this->weight_multiplier = this->get_weight_multiplier();
+    this->max_height = this->get_max_height();
+    this->max_weight = this->get_max_weight();
+    
     std::tie(this->X, this->Y) = helper::random_location();
     this->asleep = false;
 
@@ -130,16 +146,16 @@ void Animal::init_from_json(const nlohmann::json &json_file)
         this->chromosome = chromosome;
     }
 
-    this->immunity = get_immunity_from_chromosome();
-    this->gender = get_gender_from_chromosome();
+    this->immunity = immunity_from_chromosome;
+    this->gender = gender_from_chromosome;
 
-    this->max_vitality_at_age = get_base_vitality();
-    this->max_stamina_at_age = get_base_stamina();
-    this->max_speed_at_age = get_base_speed();
-    this->max_appetite_at_age = get_base_appetite();
+    this->max_vitality_at_age = base_vitality;
+    this->max_stamina_at_age = base_stamina;
+    this->max_speed_at_age = base_speed;
+    this->max_appetite_at_age = base_appetite;
 
-    this->height = get_base_height();
-    this->weight = get_base_weight();
+    this->height = base_height;
+    this->weight = base_weight;
 }
 
 unsigned int Animal::get_gender_from_chromosome() const
@@ -280,36 +296,36 @@ void Animal::increment_age()
 
     // change height and weight independently
 
-    height = std::min(std::max(0.5 * (1 + get_height_multiplier()) * log(age + 1) - pow(static_cast<double>(age) / max_age, 2) + get_base_height(),
-                               get_base_height()),
-                      get_max_height());
-    weight = std::min(std::max(get_weight_multiplier() * max_age * log(age + 1) - (0.5 / max_age) * pow(age, 2 * (get_weight_multiplier() + 0.75)) + get_base_weight(),
-                               get_base_weight()),
-                      get_max_weight());
+    height = std::min(std::max(0.5 * (1 + height_multiplier) * log(age + 1) - pow(static_cast<double>(age) / max_age, 2) + base_height,
+                               base_height),
+                      max_height);
+    weight = std::min(std::max(weight_multiplier * max_age * log(age + 1) - (0.5 / max_age) * pow(age, 2 * (weight_multiplier + 0.75)) + base_weight,
+                               base_weight),
+                      max_weight);
 
     // change stats independently
 
-    max_vitality_at_age = get_base_vitality() * (get_vitality_multiplier() * 0.5 * pow(max_age, 0.5) *
-                                                     exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_vitality())) +
+    max_vitality_at_age = base_vitality * (vitality_multiplier * 0.5 * pow(max_age, 0.5) *
+                                                     exp(-pow(age - max_age * 0.5, 2) / (max_age * base_vitality)) +
                                                  1);
-    max_stamina_at_age = get_base_stamina() * (get_stamina_multiplier() * 0.5 * pow(max_age, 0.5) *
-                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_stamina())) +
+    max_stamina_at_age = base_stamina * (stamina_multiplier * 0.5 * pow(max_age, 0.5) *
+                                                   exp(-pow(age - max_age * 0.5, 2) / (max_age * base_stamina)) +
                                                1);
-    max_speed_at_age = get_speed_multiplier() * 100 * exp((-1 / (get_speed_multiplier() * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + get_base_speed();
+    max_speed_at_age = speed_multiplier * 100 * exp((-1 / (speed_multiplier * pow(max_age, 1.5))) * pow(age - max_age / 2.5, 2)) + base_speed;
 
-    max_appetite_at_age = get_base_appetite() + get_base_appetite() * exp((-0.5 / pow(max_age, 1.25)) * pow(age - max_age / 3.0, 2));
+    max_appetite_at_age = base_appetite + base_appetite * exp((-0.5 / pow(max_age, 1.25)) * pow(age - max_age / 3.0, 2));
 
     // change stats dependently
 
     max_vitality_at_age = max_vitality_at_age * (1 +
-                                                 height_on_vitality * height / get_max_height() +
-                                                 weight_on_vitality * weight / get_max_weight());
+                                                 height_on_vitality * height / max_height +
+                                                 weight_on_vitality * weight / max_weight);
     max_stamina_at_age = max_stamina_at_age * (1 +
-                                               height_on_stamina * height / get_max_height() +
-                                               weight_on_stamina * weight / get_max_weight());
+                                               height_on_stamina * height / max_height +
+                                               weight_on_stamina * weight / max_weight);
     max_speed_at_age = max_speed_at_age * (1 +
-                                           height_on_speed * height / get_max_height() +
-                                           weight_on_speed * weight / get_max_weight());
+                                           height_on_speed * height / max_height +
+                                           weight_on_speed * weight / max_weight);
     evaluate_static_fitness();
 }
 
@@ -371,19 +387,19 @@ bool Animal::is_normal_child() const
         max_speed_at_age,
         max_stamina_at_age,
         max_vitality_at_age,
-        get_base_appetite(),
-        get_base_height(),
-        get_base_speed(),
-        get_base_stamina(),
-        get_base_vitality(),
-        get_base_weight(),
-        get_max_height(),
-        get_max_weight(),
-        get_height_multiplier(),
-        get_speed_multiplier(),
-        get_stamina_multiplier(),
-        get_vitality_multiplier(),
-        get_weight_multiplier()
+        base_appetite,
+        base_height,
+        base_speed,
+        base_stamina,
+        base_vitality,
+        base_weight,
+        max_height,
+        max_weight,
+        height_multiplier,
+        speed_multiplier,
+        stamina_multiplier,
+        vitality_multiplier,
+        weight_multiplier
     };
 
     for (const auto &i : checklist)

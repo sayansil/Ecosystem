@@ -58,7 +58,27 @@ public:
     double vision_radius;
     double sleep_restore_factor;
 
-
+    
+    /***************************
+     *  Fixed for an organism  *
+     ***************************/
+    
+    double base_appetite;
+    double base_height;
+    double base_speed;
+    double base_stamina;
+    double base_vitality;
+    double base_weight;
+    double immunity_from_chromosome;
+    unsigned int gender_from_chromosome;
+    double height_multiplier;
+    double speed_multiplier;
+    double stamina_multiplier;
+    double vitality_multiplier;
+    double weight_multiplier;
+    double max_height;
+    double max_weight;
+    
     /*************************************************************
      *  Changes slowly - once every year (during mating season)  *
      *************************************************************/

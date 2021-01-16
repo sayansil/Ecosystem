@@ -128,7 +128,7 @@ struct PStat
 struct ATTRIBUTE_RAW_MAP
 {
     ATTRIBUTE_RAW_MAP() = default;
-    ATTRIBUTE_RAW_MAP(const std::unordered_map<std::string, PStat> &x) : map(x) {}
+    ATTRIBUTE_RAW_MAP(const std::unordered_map<std::string, PStat> &x) : map(x) , is_initialized(true) {}
 
     const PStat& operator[] (const std::string& key) const
     {
@@ -142,6 +142,7 @@ struct ATTRIBUTE_RAW_MAP
     }
 
     std::unordered_map<std::string, PStat> map;
+    bool is_initialized = false;
 };
 
 

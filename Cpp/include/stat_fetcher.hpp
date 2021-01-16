@@ -15,7 +15,7 @@
 #include <schema.hpp>
 #include <folly/container/F14Map.h>
 
-using ENTITY_MAP_TYPE = folly::F14FastMap<std::string, ENTITY>;
+using ENTITY_MAP_TYPE = std::unordered_map<std::string, ENTITY>;
 
 namespace stat_fetcher
 {

@@ -28,6 +28,17 @@ Plant::Plant(const std::string &kind, const unsigned int &age, const bool &monit
 
     this->vitality = this->max_vitality_at_age;
 
+    this->base_height = this->get_base_height();
+    this->base_vitality = this->get_base_vitality();
+    this->base_weight = this->get_base_weight();
+    this->immunity_from_chromosome = this->get_immunity_from_chromosome();
+    this->gender_from_chromosome = this->get_gender_from_chromosome();
+    this->height_multiplier = this->get_height_multiplier();
+    this->vitality_multiplier = this->get_vitality_multiplier();
+    this->weight_multiplier = this->get_weight_multiplier();
+    this->max_height = this->get_max_height();
+    this->max_weight = this->get_max_weight();
+    
     std::tie(this->X, this->Y) = helper::random_location();
 
     this->age = age - 1;
@@ -109,13 +120,13 @@ void Plant::init_from_json(const nlohmann::json &json_file)
         this->chromosome = chromosome;
     }
 
-    this->immunity = get_immunity_from_chromosome();
-    this->gender = get_gender_from_chromosome();
+    this->immunity = immunity_from_chromosome;
+    this->gender = gender_from_chromosome;
 
-    this->max_vitality_at_age = get_base_vitality();
+    this->max_vitality_at_age = base_vitality;
 
-    this->height = get_base_height();
-    this->weight = get_base_weight();
+    this->height = base_height;
+    this->weight = base_weight;
 }
 
 unsigned int Plant::get_gender_from_chromosome() const
@@ -224,23 +235,23 @@ void Plant::increment_age()
 
     // change height and weight independently
 
-    height = std::min(std::max(0.5 * (1 + get_height_multiplier()) * log(age + 1) - pow(static_cast<double>(age) / max_age, 2) + get_base_height(),
-                               get_base_height()),
-                      get_max_height());
-    weight = std::min(std::max(get_weight_multiplier() * max_age * log(age + 1) - (0.5 / max_age) * pow(age, 2 * (get_weight_multiplier() + 0.75)) + get_base_weight(),
-                               get_base_weight()),
-                      get_max_weight());
+    height = std::min(std::max(0.5 * (1 + height_multiplier) * log(age + 1) - pow(static_cast<double>(age) / max_age, 2) + base_height,
+                               base_height),
+                      max_height);
+    weight = std::min(std::max(weight_multiplier * max_age * log(age + 1) - (0.5 / max_age) * pow(age, 2 * (weight_multiplier + 0.75)) + base_weight,
+                               base_weight),
+                      max_weight);
 
     // change stats independently
 
-    max_vitality_at_age = get_base_vitality() * ( get_vitality_multiplier() * 0.5 * pow(max_age, 0.5) *
-                                                  exp(-pow(age - max_age * 0.5, 2) / (max_age * get_base_vitality())) + 1);
+    max_vitality_at_age = base_vitality * ( vitality_multiplier * 0.5 * pow(max_age, 0.5) *
+                                                  exp(-pow(age - max_age * 0.5, 2) / (max_age * base_vitality)) + 1);
 
     // change stats dependently
 
     max_vitality_at_age = max_vitality_at_age * (1 +
-                                                 height_on_vitality * height / get_max_height() +
-                                                 weight_on_vitality * weight / get_max_weight());
+                                                 height_on_vitality * height / max_height +
+                                                 weight_on_vitality * weight / max_weight);
     evaluate_static_fitness();
 }
 
@@ -262,14 +273,14 @@ bool Plant::is_normal_child() const
         weight,
         immunity,
         max_vitality_at_age,
-        get_base_height(),
-        get_base_vitality(),
-        get_base_weight(),
-        get_max_height(),
-        get_max_weight(),
-        get_height_multiplier(),
-        get_vitality_multiplier(),
-        get_weight_multiplier()
+        base_height,
+        base_vitality,
+        base_weight,
+        max_height,
+        max_weight,
+        height_multiplier,
+        vitality_multiplier,
+        weight_multiplier
     };
 
     for (const auto &i : checklist)

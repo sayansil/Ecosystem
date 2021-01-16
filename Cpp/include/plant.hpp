@@ -44,6 +44,20 @@ public:
     double theoretical_maximum_vitality_multiplier;
     double theoretical_maximum_weight_multiplier;
 
+    /***************************
+     *  Fixed for an organism  *
+     ***************************/
+    
+    double base_height;
+    double base_vitality;
+    double base_weight;
+    double immunity_from_chromosome;
+    unsigned int gender_from_chromosome;
+    double height_multiplier;
+    double vitality_multiplier;
+    double weight_multiplier;
+    double max_height;
+    double max_weight;
 
     /*************************************************************
      *  Changes slowly - once every year (during mating season)  *
