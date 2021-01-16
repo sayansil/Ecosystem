@@ -6,7 +6,7 @@ int main()
     unsigned int initial_organism_count = 200;
     unsigned int years_to_simulate = 500;
 
-    God allah(false);
+    God allah(true);
     allah.reset_species("animal/deer");
     while (initial_organism_count--)
     {

@@ -8,7 +8,6 @@ timer::StopWatch t_mate1;
 
 God::God(const bool &gods_eye)
 {
-
     constants::init();
     this->gods_eye = gods_eye;
     helper::rng.seed(std::random_device()());
@@ -142,17 +141,7 @@ void God::reset_species(const std::string &full_species_name)
 bool God::spawn_organism(ENTITY &&current_organism)
 {
     const std::string kingdom = current_organism->get_kingdom();
-    if(kingdom == "animal")
-    {
-        Animal *obj = static_cast<Animal*>(current_organism.get());
-        init(*obj);
-    }
-    else if(kingdom == "plant")
-    {
-        Plant *obj = static_cast<Plant*>(current_organism.get());
-        init(*obj);
-    }
-    else
+    if(kingdom != "animal" && kingdom != "plant")
     {
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
     }
@@ -187,23 +176,7 @@ bool God::spawn_organism(ENTITY &&current_organism)
 bool God::spawn_organism(ENTITY &&current_organism, std::vector<std::pair<std::string, ENTITY>>& organisms_buffer)
 {
     const std::string kingdom = current_organism->get_kingdom();
-    if(kingdom == "animal")
-    {
-        Animal *obj = static_cast<Animal*>(current_organism.get());
-        if(gods_eye)
-        {
-            init(*obj);
-        }
-    }
-    else if(kingdom == "plant")
-    {
-        Plant *obj = static_cast<Plant*>(current_organism.get());
-        if(gods_eye)
-        {
-            init(*obj);
-        }
-    }
-    else
+    if(kingdom != "animal" && kingdom != "plant")
     {
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
     }

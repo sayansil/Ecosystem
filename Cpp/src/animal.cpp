@@ -46,7 +46,7 @@ Animal::Animal(const std::string &kind, const unsigned int &age, const bool &mon
     this->weight_multiplier = this->get_weight_multiplier();
     this->max_height = this->get_max_height();
     this->max_weight = this->get_max_weight();
-    
+
     std::tie(this->X, this->Y) = helper::random_location();
     this->asleep = false;
 

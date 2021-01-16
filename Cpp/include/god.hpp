@@ -54,13 +54,6 @@ public:
 
     std::unordered_map<std::string, std::vector<double>> test_organism(ENTITY &&, const std::vector<std::string>&, const int&);
 
-    template <typename T>
-    void init(T &&obj)
-    {
-        auto map = map_maker().raw_var_map_banana(obj);
-        obj.attribute_raw_map = map;
-    }
-
     std::vector<ENTITY> organism_sort(bool (*comp)(const ENTITY&, const ENTITY&));
     std::unordered_map<std::string, std::vector<ENTITY>> organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&));
     std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> statistics;

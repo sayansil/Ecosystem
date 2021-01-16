@@ -75,15 +75,14 @@ namespace stat_fetcher
         return {M, F};
     }
 
-    std::pair<double, double> get_stat_gap(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    std::pair<double, double> get_stat_gap(ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double low = 0.0, high = 0.0, value;
         bool uninitialized = true;
 
-        for (const auto &organism : organisms)
+        for (auto &organism : organisms)
         {
-            const auto& a_map = organism.second->get_attribute_raw_map();
-
+            const auto& a_map = get_var_map(organism.second);
             if (kind != "" && kind != organism.second->get_kind())
                 continue;
 
@@ -145,15 +144,15 @@ namespace stat_fetcher
         return kindDistribution;
     }
 
-    double get_stat_average(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    double get_stat_average(ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         double average = 0.0, n = 0.0, value = 0.0;
 
         // avg(n+1) = (n / (n + 1)) * avg(n) + (1 / (n + 1)) * kn
 
-        for (const auto &organism: organisms)
+        for (auto &organism: organisms)
         {
-            const auto& a_map = organism.second->get_attribute_raw_map();
+            const auto& a_map = get_var_map(organism.second);
 
             if (kind != "" && kind != organism.second->get_kind())
                 continue;
@@ -165,13 +164,13 @@ namespace stat_fetcher
         return average;
     }
 
-    std::vector<PStat> get_one_stat(const ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
+    std::vector<PStat> get_one_stat(ENTITY_MAP_TYPE &organisms, const std::string &attribute, const std::string &kind)
     {
         std::vector<PStat> attributeList;
 
-        for (const auto &organism : organisms)
+        for (auto &organism : organisms)
         {
-            const auto& a_map = organism.second->get_attribute_raw_map();
+            const auto& a_map = get_var_map(organism.second);
 
             if (kind != "" && kind != organism.second->get_kind())
                 continue;
@@ -182,7 +181,7 @@ namespace stat_fetcher
         return attributeList;
     }
 
-    std::string prepare_data_for_simulation(const ENTITY_MAP_TYPE &organisms)
+    std::string prepare_data_for_simulation(ENTITY_MAP_TYPE &organisms)
     {
         nlohmann::json response;
         response["animal"] = nlohmann::json::array();
@@ -213,11 +212,11 @@ namespace stat_fetcher
             return response.dump();
         }
 
-        for(const auto &organism : organisms)
+        for(auto &organism : organisms)
         {
             if (organism.second->get_monitor_in_simulation())
             {
-                const auto &a_map = organism.second->get_attribute_raw_map();
+                const auto &a_map = get_var_map(organism.second);
 
                 std::unordered_map<std::string, std::string> temp;
                 for (const auto &i : members)
@@ -236,7 +235,7 @@ namespace stat_fetcher
         return response.dump();
     }
 
-    std::vector<std::map<std::string, std::string>> prepare_data_for_simulation_2(const ENTITY_MAP_TYPE &organisms)
+    std::vector<std::map<std::string, std::string>> prepare_data_for_simulation_2(ENTITY_MAP_TYPE &organisms)
     {
         std::vector<std::map<std::string, std::string>> representatives;
 
@@ -256,9 +255,9 @@ namespace stat_fetcher
             "max_vitality_at_age"
         };
 
-        for (const auto &organism : organisms)
+        for (auto &organism : organisms)
         {
-            const auto& a_map = organism.second->get_attribute_raw_map();
+            const auto& a_map = get_var_map(organism.second);
 
             if (organism.second->get_monitor_in_simulation())
             {
@@ -283,7 +282,7 @@ namespace stat_fetcher
         return representatives;
     }
 
-    std::vector<DBType> get_db_row(const ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year, std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &statistics)
+    std::vector<DBType> get_db_row(ENTITY_MAP_TYPE &organisms, const std::string &kind, const std::string &kingdom, const unsigned int &year, std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> &statistics)
     {
         std::vector<DBType> db_row;
 
@@ -307,9 +306,9 @@ namespace stat_fetcher
             stat_db_map["average_" + var_name] = 0.0;
         }
 
-        for (const auto &organism: organisms)
+        for (auto &organism: organisms)
         {
-            const auto& a_map = organism.second->get_attribute_raw_map();
+            const auto& a_map = get_var_map(organism.second);
 
             if (kind != organism.second->get_kind())
                 continue;
@@ -385,5 +384,27 @@ namespace stat_fetcher
         }
 
         return db_row;
+    }
+    ATTRIBUTE_RAW_MAP get_var_map(ENTITY& current_organism)
+    {
+        auto& a_map = current_organism->get_attribute_raw_map();
+        if(a_map.is_initialized)
+            return a_map;
+        const std::string kingdom = current_organism->get_kingdom();
+        if(kingdom == "animal")
+        {
+            Animal *obj = static_cast<Animal*>(current_organism.get());
+            a_map = map_maker().raw_var_map_banana(obj);
+        }
+        else if(kingdom == "plant")
+        {
+            Plant *obj = static_cast<Plant*>(current_organism.get());
+            a_map = map_maker().raw_var_map_banana(obj);
+        }
+        else
+        {
+            throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
+        }
+        return a_map;
     }
 };

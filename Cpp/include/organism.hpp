@@ -94,7 +94,7 @@ public:
     // Dynamic fitness value
     double dynamic_fitness;
 
-
+ 
     /********************
      *      Getters     *
      ********************/
