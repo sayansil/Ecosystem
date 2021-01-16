@@ -1,11 +1,5 @@
 #include <god.hpp>
 
-timer::StopWatch t_hny;
-timer::StopWatch t_dth;
-timer::StopWatch t_age;
-timer::StopWatch t_mate;
-timer::StopWatch t_mate1;
-
 God::God(const bool &gods_eye)
 {
     constants::init();
@@ -146,7 +140,6 @@ bool God::spawn_organism(ENTITY &&current_organism)
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
     }
 
-    std::cout<< __LINE__  << " " << kingdom << "\n";
 
     current_organism->generate_death_factor();
 
@@ -160,8 +153,6 @@ bool God::spawn_organism(ENTITY &&current_organism)
             std::vector<DBType> tmp;
 
             const auto &a_map = stat_fetcher::get_var_map(current_organism);
-            std::cout<< __LINE__  << " reached " << "\n";
-            std::cout<< __LINE__  << " " << a_map.map.size() << "\n";
 
             for (const auto &[colName, colType] : schema::schemaMaster)
             {
@@ -180,7 +171,6 @@ bool God::spawn_organism(ENTITY &&current_organism)
 bool God::spawn_organism(ENTITY &&current_organism, std::vector<std::pair<std::string, ENTITY>>& organisms_buffer)
 {
     const std::string kingdom = current_organism->get_kingdom();
-    std::cout<< __LINE__  << " " << kingdom << "\n";
     if(kingdom != "animal" && kingdom != "plant")
     {
         throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
@@ -307,8 +297,6 @@ int God::creator_function(const double &o_factor) const
 
 void God::happy_new_year(const bool &log)
 {
-    t_hny.start();
-    t_dth.start();
     recent_births = 0;
     recent_deaths = 0;
 
@@ -375,8 +363,6 @@ void God::happy_new_year(const bool &log)
 
     }
 
-    t_dth.stop();
-    t_age.start();
 
     /************************************
      *       Annual Ageing Begins      *
@@ -388,13 +374,11 @@ void God::happy_new_year(const bool &log)
 
     year++;
 
-    t_age.stop();
 
     /***********************************
      *       Annual Mating Begins      *
      ***********************************/
 
-    t_mate.start();
     std::unordered_map<std::string, std::vector<ENTITY>> organismsByKind;
     for(const auto &organism : organisms)
         organismsByKind[organism.second->get_full_species_name()].push_back(organism.second);
@@ -459,7 +443,6 @@ void God::happy_new_year(const bool &log)
 
         // Atmost number of births = [std::min(mating_list1.size(), mating_list2.size()) * n_children]
 
-        //t_mate1.start();
 
         std::vector<std::pair<std::string, ENTITY>> organisms_buffer;
 
@@ -475,9 +458,7 @@ void God::happy_new_year(const bool &log)
                 organisms_buffer.reserve(organisms_buffer.size() + n_children);
                 while(n_children--)
                 {
-                    t_mate1.start();
                     bool tmp = mate(parent1->get_name(), parent2->get_name(), organisms_buffer, species_constants);
-                    t_mate1.stop();
                     if (tmp)
                     {
                         recent_births++;
@@ -489,7 +470,6 @@ void God::happy_new_year(const bool &log)
  
         organisms_buffer.shrink_to_fit();
 
-        //t_mate1.stop();
         //organisms.reserve(organisms.size() + organisms_buffer.size());
         
         for(int i = 0; i < organisms_buffer.size(); i++)
@@ -500,27 +480,19 @@ void God::happy_new_year(const bool &log)
         organisms_buffer.clear(); organisms_buffer.shrink_to_fit();
     }
 
-    t_mate.stop();
 
     /*********************
      *       Logging     *
      *********************/
 
-    t_hny.stop();
     if (log)
     {
         std::cout << "Year: " << year << " - ";
         std::cout << "Recent births: " << recent_births << ' ';
         std::cout << "Recent deaths: " << recent_deaths << ' ';
-        std::cout << "Population: " << organisms.size() << ' ';
-        std::cout << "t_hny: " << t_hny.cur_time / 1e6 << ' ';
-        //std::cout << "t_dth: " << t_dth.cur_time / 1e6 << ' ';
-        //std::cout << "t_age: " << t_age.cur_time / 1e6 << ' ';
-        std::cout << "t_mate: " << t_mate.cur_time / 1e6 << ' ';
-        std::cout << "t_mate1: " << (t_mate1.avg_time * t_mate1.count) / 1e6 << '\n';
+        std::cout << "Population: " << organisms.size() << '\n';
     }
 
-    t_mate1.reset();
 
 }
 

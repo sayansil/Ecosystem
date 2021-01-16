@@ -389,17 +389,19 @@ namespace stat_fetcher
     {
         auto& a_map = current_organism->get_attribute_raw_map();
         if(a_map.is_initialized)
+        {
             return a_map;
+        }
         const std::string kingdom = current_organism->get_kingdom();
         if(kingdom == "animal")
         {
             Animal *obj = static_cast<Animal*>(current_organism.get());
-            a_map = map_maker().raw_var_map_banana(obj);
+            a_map = map_maker().raw_var_map_banana(*obj);
         }
         else if(kingdom == "plant")
         {
             Plant *obj = static_cast<Plant*>(current_organism.get());
-            a_map = map_maker().raw_var_map_banana(obj);
+            a_map = map_maker().raw_var_map_banana(*obj);
         }
         else
         {

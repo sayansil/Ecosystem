@@ -35,7 +35,7 @@ void evaluation(God &god)
 int main()
 {
     unsigned int initial_organism_count = 500;
-    unsigned int years_to_simulate = 1000;
+    unsigned int years_to_simulate = 50;
 
     God allah(true);
     allah.reset_species("animal/deer");
