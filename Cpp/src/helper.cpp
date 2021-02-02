@@ -4,7 +4,7 @@ namespace helper
 {
     unsigned int map_height = 1000;
     unsigned int map_width = 1000;
-    std::mt19937_64 rng;
+    XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
 
     std::string to_binary(const unsigned int &x)
     {

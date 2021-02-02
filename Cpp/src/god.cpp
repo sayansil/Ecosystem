@@ -4,7 +4,6 @@ God::God(const bool &gods_eye)
 {
     constants::init();
     this->gods_eye = gods_eye;
-    helper::rng.seed(std::random_device()());
 
     statistics["animal"][StatGroup::FIX] = {
         "conceiving_probability",

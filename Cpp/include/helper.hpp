@@ -10,6 +10,7 @@
 #include <fstream>
 #include <filesystem>
 #include <cassert>
+#include "../extern/Xoshiro-cpp/XoshiroCpp.hpp"
 
 namespace helper
 {
@@ -19,7 +20,7 @@ namespace helper
 
     extern unsigned int map_height;
     extern unsigned int map_width;
-    extern std::mt19937_64 rng;
+    extern XoshiroCpp::Xoshiro128PlusPlus rng;
 
     /*******************
      *  Helper methods *
