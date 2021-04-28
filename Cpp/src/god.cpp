@@ -2,6 +2,7 @@
 
 God::God(const bool &gods_eye)
 {
+    e_logger::init_loggers();
     constants::init();
     this->gods_eye = gods_eye;
 
@@ -486,10 +487,7 @@ void God::happy_new_year(const bool &log)
 
     if (log)
     {
-        std::cout << "Year: " << year << " - ";
-        std::cout << "Recent births: " << recent_births << ' ';
-        std::cout << "Recent deaths: " << recent_deaths << ' ';
-        std::cout << "Population: " << organisms.size() << '\n';
+        e_logger::logger.info("Year: {} - Recent births: {} - Recent deaths: {} - Population: {}", year, recent_births, recent_deaths, organisms.size());
     }
 
 
@@ -574,7 +572,7 @@ std::unordered_map<std::string, std::vector<double>> God::test_organism(ENTITY &
 
     if (organisms.find(name) == organisms.end())
     {
-        std::cout << "Could not create organism. Population 0.\n";
+        e_logger::logger.error("Could not create organism. Population 0.");
         return res;
     }
 

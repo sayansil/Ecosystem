@@ -39,6 +39,8 @@ set(SQLITE_SOURCES
     ${PROJECT_SOURCE_DIR}/extern/sqlite3/src/sqlite3.c
     )
 
+include_directories(extern/gabime/include)
+
 add_subdirectory(src)
 add_subdirectory(RandomTests)
 add_subdirectory(setup)

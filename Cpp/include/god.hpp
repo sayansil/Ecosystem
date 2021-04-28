@@ -16,6 +16,7 @@
 #include <execution>
 #include <StopWatch.hpp>
 #include <species_constants.hpp>
+#include <logger.hpp>
 
 class God
 {
