@@ -5,7 +5,7 @@
 int main()
 {
     unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 500;
+    unsigned int years_to_simulate = 200;
     std::string kingdom = "animal";
     std::string kind = "deer";
 
