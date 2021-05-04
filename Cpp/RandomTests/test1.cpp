@@ -42,7 +42,7 @@ int main()
 
     while (initial_organism_count--)
     {
-        allah.spawn_organism(std::make_shared<Animal>("deer", 10, true));
+        allah.spawn_organism(std::make_shared<Animal>("deer", "OG-" + std::to_string(initial_organism_count), 10, true));
     }
 
     std::cout << "\n\nINITIAL EVALUATION:\n\n";

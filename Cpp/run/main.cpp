@@ -10,15 +10,6 @@ int main()
 
     God allah(false);
     allah.monitor_offsprings = true;
-
-    allah.reset_species("plant/bamboo");
-
-    while (initial_organism_count_m--)
-    {
-        allah.spawn_organism(std::make_shared<Plant>("bamboo", 10, true));
-    }
-    while (initial_organism_count_nm--)
-    {
-        allah.spawn_organism(std::make_shared<Plant>("bamboo", 10, false));
-    }
+    
+    std::cout << "God is there now RIP\n";
 }

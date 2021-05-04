@@ -16,7 +16,7 @@ bool test_nodb()
 
         while (initial_organism_count--)
         {
-            allah->spawn_organism(std::make_shared<Plant>("bamboo", 10));
+            allah->spawn_organism(std::make_shared<Plant>("bamboo", "OG-" + std::to_string(initial_organism_count), 10));
         }
 
         while (years_to_simulate--)
@@ -52,7 +52,7 @@ bool test_masterdb()
 
         while (initial_organism_count--)
         {
-            allah->spawn_organism(std::make_shared<Plant>("bamboo", 10));
+            allah->spawn_organism(std::make_shared<Plant>("bamboo", "OG-" + std::to_string(initial_organism_count), 10));
         }
 
         while (years_to_simulate--)
@@ -92,7 +92,7 @@ bool test_statsdb()
 
         while (initial_organism_count--)
         {
-            allah->spawn_organism(std::make_shared<Plant>("bamboo", 10));
+            allah->spawn_organism(std::make_shared<Plant>("bamboo", "OG-" + std::to_string(initial_organism_count), 10));
         }
 
         unsigned int yts = years_to_simulate;

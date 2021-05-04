@@ -129,9 +129,9 @@ namespace helper
     }
 
 
-    bool is_nonzero_nonnan(const double &x)
+    bool is_nonzero_nonnegative_nonnan(const double &x)
     {
-        if (x == 0 || x != x)
+        if (x <= 0 || x != x)
             return false;
         return true;
     }

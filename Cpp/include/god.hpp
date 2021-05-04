@@ -69,6 +69,9 @@ private:
     bool gods_eye = false;
     const int max_mate_trials = 100;
 
+    unsigned int planet_age = 0;
+    unsigned int spawn_count = 0;
+
     /****************************************
      *         Unavailable to users         *
      ****************************************/
