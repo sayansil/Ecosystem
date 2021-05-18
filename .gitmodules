@@ -28,3 +28,6 @@
 [submodule "Cpp/extern/Xoshiro-cpp"]
 	path = Cpp/extern/Xoshiro-cpp
 	url = https://github.com/Reputeless/Xoshiro-cpp
+[submodule "Cpp/extern/imgui"]
+	path = Cpp/extern/imgui
+	url = https://github.com/ocornut/imgui
