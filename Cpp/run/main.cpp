@@ -2,6 +2,10 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <stdio.h>
+#include <implot.h>
+#include <vector>
+#include <algorithm>
+#include <random>
 
 #include <GL/glew.h>            // Initialize with glewInit()
 #include <GLFW/glfw3.h>
@@ -37,6 +41,7 @@ int main(int, char**)
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     
     ImGui::StyleColorsDark();
@@ -84,9 +89,28 @@ int main(int, char**)
         if (show_another_window)
         {
             ImGui::Begin("Another Ecosystem Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
+            
+            int size = 100;
+            std::uniform_int_distribution<int> dis(1, size);
+            std::mt19937_64 rng{std::random_device()()};
+            std::vector<int> bar_data(size);
+            std::generate(bar_data.begin(), bar_data.end(), [&size, &rng](){
+                    std::uniform_int_distribution<int> dis(1, size / 10);
+                    return dis(rng);
+            });
+
+            std::vector<int> x(size), y(size);
+            std::iota(x.begin(), x.end(), 1);
+            std::generate(y.begin(), y.end(), [&size, &dis, &rng](){
+                return dis(rng);
+            });
+
+            if(ImPlot::BeginPlot("My Plot"))
+            {
+                ImPlot::PlotBars("Bar Plot", bar_data.data(), bar_data.size());
+                ImPlot::PlotLine("Line Plot", x.data(), y.data(), x.size());
+                ImPlot::EndPlot();
+            }
             ImGui::End();
         }
 
