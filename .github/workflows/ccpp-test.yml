@@ -18,7 +18,6 @@ jobs:
 
     - name: configure
       run: |
-        git submodule update --init --recursive
         cd Cpp
         mkdir build
         cd build

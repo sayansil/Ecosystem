@@ -10,7 +10,7 @@
 #include <fstream>
 #include <filesystem>
 #include <cassert>
-#include "../extern/Xoshiro-cpp/XoshiroCpp.hpp"
+#include <../build/_deps/customrng-src/XoshiroCpp.hpp>
 
 namespace helper
 {

@@ -5,7 +5,7 @@
 #include <variant>
 #include <string>
 #include <unordered_map>
-#include <../extern/refl-cpp/refl.hpp>
+#include <refl.hpp>
 
 struct PStat;
 struct ATTRIBUTE_RAW_MAP;
