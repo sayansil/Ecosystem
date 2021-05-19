@@ -15,7 +15,7 @@ jobs:
     - name: prepare
       run: |
         sudo apt update
-        sudo apt install libtbb-dev
+        sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev
 
     - name: configure
       run: |
