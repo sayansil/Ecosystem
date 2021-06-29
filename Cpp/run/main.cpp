@@ -105,9 +105,15 @@ int main(int, char**)
                 return dis(rng);
             });
 
-            if(ImPlot::BeginPlot("My Plot"))
+            if(ImPlot::BeginPlot("My first Plot"))
             {
                 ImPlot::PlotBars("Bar Plot", bar_data.data(), bar_data.size());
+                ImPlot::EndPlot();
+            }
+
+            if(ImPlot::BeginPlot("My Second Plot"))
+            {
+                ImPlot::PushColormap(ImPlotColormap_Twilight);
                 ImPlot::PlotLine("Line Plot", x.data(), y.data(), x.size());
                 ImPlot::EndPlot();
             }
