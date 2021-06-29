@@ -2,6 +2,7 @@ __pycache__/*
 *.pyc
 .vscode/*
 .clangd/*
+Cpp/.ccls-cache/*
 .ccls-cache/*
 **.swp
 build-Cpp-Desktop-Release/
