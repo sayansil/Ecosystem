@@ -10,6 +10,9 @@
 #include <GL/glew.h>            // Initialize with glewInit()
 #include <GLFW/glfw3.h>
 
+#include <god.hpp>
+#include <iostream>
+
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -17,6 +20,32 @@ static void glfw_error_callback(int error, const char* description)
 
 int main(int, char**)
 {
+    // ------------------ Window creation and handling starts  ------------------
+
+    int size_X = 1400;
+    int size_Y = 720;
+
+    unsigned int initial_organism_count = 200;
+    unsigned int years_to_simulate = 20;
+    std::string kingdom = "animal";
+    std::string species = "deer";
+
+    God allah;
+    allah.reset_species(kingdom + "/" + species);
+
+    for (int i = 0; i < initial_organism_count; i++)
+    {
+        allah.spawn_organism(std::make_shared<Animal>(
+                    species, "OG-" + std::to_string(i), 10));
+    }
+
+    int k = years_to_simulate;
+
+    std::vector<int> population;
+    std::vector<int> avg_age;
+    std::vector<double> avg_height;
+    std::vector<double> avg_weight;
+
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
@@ -25,33 +54,35 @@ int main(int, char**)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Ecosystem", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(size_X, size_Y, "Ecosystem", NULL, NULL);
     if (window == NULL)
         return 1;
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
     bool err = glewInit() != GLEW_OK;
-    
+
     if (err)
     {
         fprintf(stderr, "Failed to initialize OpenGL loader!\n");
         return 1;
     }
 
+    // ------------------ Window creation and handling starts  ------------------
+
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
-    
+
     ImGui::StyleColorsDark();
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    bool started = false;
+    ImVec4 clear_color = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -61,64 +92,42 @@ int main(int, char**)
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
+        const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y));
+        ImGui::SetWindowSize(ImVec2(size_X, size_Y));
+        ImGuiStyle& style = ImGui::GetStyle();
+        style.WindowMenuButtonPosition = ImGuiDir_None;
 
+
+        ImGui::Begin("Ecosystem Health");
+
+        ImGui::Text("The Ecosystem will start with the following characteristics:");
+        ImGui::Dummy(ImVec2(0.0f, 5.0f));
+        ImGui::Text("Species: %s", species.c_str());
+        ImGui::Text("Initial Population: %d", initial_organism_count);
+        ImGui::Text("Years to simulate: %d", years_to_simulate);
+        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+
+        if (started)
         {
-            static float f = 0.0f;
-            static int counter = 0;
-
-            ImGui::Begin("Ecosystem Example");
-
-            ImGui::Text("This is some useful text.");
-            ImGui::Checkbox("Demo Window", &show_demo_window);
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); 
-
-            if (ImGui::Button("Button"))
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Ecosystem Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            
-            int size = 100;
-            std::uniform_int_distribution<int> dis(1, size);
-            std::mt19937_64 rng{std::random_device()()};
-            std::vector<int> bar_data(size);
-            std::generate(bar_data.begin(), bar_data.end(), [&size, &rng](){
-                    std::uniform_int_distribution<int> dis(1, size / 10);
-                    return dis(rng);
-            });
-
-            std::vector<int> x(size), y(size);
+            std::vector<int> x(years_to_simulate - k);
             std::iota(x.begin(), x.end(), 1);
-            std::generate(y.begin(), y.end(), [&size, &dis, &rng](){
-                return dis(rng);
-            });
 
-            if(ImPlot::BeginPlot("My first Plot"))
-            {
-                ImPlot::PlotBars("Bar Plot", bar_data.data(), bar_data.size());
-                ImPlot::EndPlot();
-            }
-
-            if(ImPlot::BeginPlot("My Second Plot"))
+            if(ImPlot::BeginPlot("Population"))
             {
                 ImPlot::PushColormap(ImPlotColormap_Twilight);
-                ImPlot::PlotLine("Line Plot", x.data(), y.data(), x.size());
+                ImPlot::PlotLine("Line Plot", x.data(), population.data(), years_to_simulate);
                 ImPlot::EndPlot();
             }
-            ImGui::End();
         }
+        else
+        {
+            started = ImGui::Button("Start");
+        }
+
+        ImGui::Dummy(ImVec2(0.0f, 10.0f));
+        ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
+        ImGui::End();
 
         // Rendering
         ImGui::Render();
@@ -130,6 +139,17 @@ int main(int, char**)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
+
+
+        if (k && started)
+        {
+            allah.happy_new_year(false);
+            population.push_back(stat_fetcher::get_population(allah.organisms));
+            avg_age.push_back(stat_fetcher::get_population(allah.organisms));
+            avg_height.push_back(stat_fetcher::get_stat_average(allah.organisms, "height"));
+            avg_weight.push_back(stat_fetcher::get_stat_average(allah.organisms, "weight"));
+            k--;
+        }
     }
 
     // Cleanup
