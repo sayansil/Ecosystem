@@ -26,7 +26,7 @@ int main(int, char**)
     int size_Y = 720;
 
     unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 20;
+    unsigned int years_to_simulate = 200;
     std::string kingdom = "animal";
     std::string species = "deer";
 
@@ -42,6 +42,7 @@ int main(int, char**)
     int k = years_to_simulate;
 
     std::vector<int> population;
+    int max_population = 0;
     std::vector<int> avg_age;
     std::vector<double> avg_height;
     std::vector<double> avg_weight;
@@ -113,10 +114,11 @@ int main(int, char**)
             std::vector<int> x(years_to_simulate - k);
             std::iota(x.begin(), x.end(), 1);
 
+            ImPlot::SetNextPlotLimits(1, years_to_simulate, 0, max_population, ImGuiCond_Always);
             if(ImPlot::BeginPlot("Population"))
             {
                 ImPlot::PushColormap(ImPlotColormap_Twilight);
-                ImPlot::PlotLine("Line Plot", x.data(), population.data(), years_to_simulate);
+                ImPlot::PlotLine("Line Plot", x.data(), population.data(), x.size());
                 ImPlot::EndPlot();
             }
         }
@@ -145,6 +147,7 @@ int main(int, char**)
         {
             allah.happy_new_year(false);
             population.push_back(stat_fetcher::get_population(allah.organisms));
+            max_population = population.back() > max_population ? population.back() : max_population;
             avg_age.push_back(stat_fetcher::get_population(allah.organisms));
             avg_height.push_back(stat_fetcher::get_stat_average(allah.organisms, "height"));
             avg_weight.push_back(stat_fetcher::get_stat_average(allah.organisms, "weight"));
