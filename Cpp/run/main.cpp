@@ -6,12 +6,39 @@
 #include <vector>
 #include <algorithm>
 #include <random>
+#include <limits>
 
 #include <GL/glew.h>            // Initialize with glewInit()
 #include <GLFW/glfw3.h>
 
 #include <god.hpp>
 #include <iostream>
+
+struct PlotAttribute
+{
+    std::vector<double> data;
+    std::string name;
+    std::pair<double, double> limits;
+    std::string query_name;
+    double padding;
+
+    PlotAttribute(const std::string& name, const std::string& query_name, const size_t& data_size)
+    {
+        this->name = name;
+        this->query_name = query_name;
+        this->data.reserve(data_size);
+        this->limits = {std::numeric_limits<double>::max(), std::numeric_limits<double>::min()};
+        this->padding = 0.0;
+    }
+
+    void fetchNextValue(ENTITY_MAP_TYPE& organisms)
+    {
+        if(query_name == "population")
+            data.push_back(stat_fetcher::get_population(organisms));
+        else    
+            data.push_back(stat_fetcher::get_stat_average(organisms, query_name));
+    }
+};
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -40,19 +67,13 @@ int main(int, char**)
     }
 
     int k = years_to_simulate;
+    std::vector<std::pair<double, double>> limits(4, {std::numeric_limits<double>::max(), std::numeric_limits<double>::min()});
 
-    std::vector<int> population;
-    std::vector<int> avg_age;
-    std::vector<double> avg_height;
-    std::vector<double> avg_weight;
-    int max_population = 0;
-    int max_age = 0;
-    double max_height = 0;
-    double max_weight = 0;
-    int min_population = 0;
-    int min_age = 0;
-    double min_height = 0;
-    double min_weight = 0;
+    std::vector<PlotAttribute> all_plots;
+    all_plots.emplace_back("Population", "population", years_to_simulate);
+    all_plots.emplace_back("Average Age", "age", years_to_simulate);
+    all_plots.emplace_back("Average Height", "height", years_to_simulate);
+    all_plots.emplace_back("Average Weight", "weight", years_to_simulate);
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -121,55 +142,29 @@ int main(int, char**)
             ImGui::Text("Current Year of Simulation: %d", years_to_simulate - k);
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
-            std::vector<int> x(years_to_simulate - k);
+            std::vector<double> x(years_to_simulate - k);
             std::iota(x.begin(), x.end(), 1);
 
-            if (ImGui::BeginTable("Plots", 2))
+            const int max_cols = 2;
+
+            if (ImGui::BeginTable("Plots", max_cols))
             {
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-
-                // Table -(0, 0)
-                ImPlot::SetNextPlotLimits(1, years_to_simulate, min_population, max_population, ImGuiCond_Always);
-                if(ImPlot::BeginPlot("Population"))
+                for(int index = 0, cols = 0; index < all_plots.size(); index++, cols++)
                 {
-                    ImPlot::PushColormap(ImPlotColormap_Twilight);
-                    ImPlot::PlotLine("", x.data(), population.data(), x.size());
-                    ImPlot::EndPlot();
-                }
-
-                ImGui::TableSetColumnIndex(1);
-
-                // Table -(0, 1)
-                ImPlot::SetNextPlotLimits(1, years_to_simulate, min_age, max_age, ImGuiCond_Always);
-                if(ImPlot::BeginPlot("Average Age"))
-                {
-                    ImPlot::PushColormap(ImPlotColormap_Twilight);
-                    ImPlot::PlotLine("", x.data(), avg_age.data(), x.size());
-                    ImPlot::EndPlot();
-                }
-
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-
-                // Table -(1, 0)
-                ImPlot::SetNextPlotLimits(1, years_to_simulate, min_height, max_height, ImGuiCond_Always);
-                if(ImPlot::BeginPlot("Average Height"))
-                {
-                    ImPlot::PushColormap(ImPlotColormap_Twilight);
-                    ImPlot::PlotLine("", (double*)x.data(), avg_height.data(), x.size());
-                    ImPlot::EndPlot();
-                }
-
-                ImGui::TableSetColumnIndex(1);
-
-                // Table -(1, 1)
-                ImPlot::SetNextPlotLimits(1, years_to_simulate, min_weight, max_weight, ImGuiCond_Always);
-                if(ImPlot::BeginPlot("Average Weight"))
-                {
-                    ImPlot::PushColormap(ImPlotColormap_Twilight);
-                    ImPlot::PlotLine("", (double*)x.data(), avg_weight.data(), x.size());
-                    ImPlot::EndPlot();
+                    if(index % max_cols == 0)
+                    {
+                        ImGui::TableNextRow();
+                        cols = 0;
+                    }
+                    
+                    ImGui::TableSetColumnIndex(cols);
+                    ImPlot::SetNextPlotLimits(1, years_to_simulate, all_plots[index].limits.first - all_plots[index].padding, all_plots[index].limits.second + all_plots[index].padding, ImGuiCond_Always);
+                    if(ImPlot::BeginPlot(all_plots[index].name.c_str()))
+                    {
+                        ImPlot::PushColormap(ImPlotColormap_Twilight);
+                        ImPlot::PlotLine("", x.data(), all_plots[index].data.data(), x.size());
+                        ImPlot::EndPlot();
+                    }
                 }
 
                 ImGui::EndTable();
@@ -199,18 +194,13 @@ int main(int, char**)
         if (k && started)
         {
             allah.happy_new_year(false);
-            population.push_back(stat_fetcher::get_population(allah.organisms));
-            avg_age.push_back(stat_fetcher::get_stat_average(allah.organisms, "age"));
-            avg_height.push_back(stat_fetcher::get_stat_average(allah.organisms, "height"));
-            avg_weight.push_back(stat_fetcher::get_stat_average(allah.organisms, "weight"));
-            max_population = population.back() > max_population ? population.back() : max_population;
-            max_age = avg_age.back() > max_age ? avg_age.back() : max_age;
-            max_height = avg_height.back() > max_height ? avg_height.back() : max_height;
-            max_weight = avg_weight.back() > max_weight ? avg_weight.back() : max_weight;
-            min_population = population.back() < min_population || k == years_to_simulate ? population.back() : min_population;
-            min_age = avg_age.back() < min_age || k == years_to_simulate ? avg_age.back() : min_age;
-            min_height = avg_height.back() > min_height || k == years_to_simulate ? avg_height.back() : min_height;
-            min_weight = avg_weight.back() > min_weight || k == years_to_simulate ? avg_weight.back() : min_weight;
+            for(auto& i : all_plots)
+            {
+                i.fetchNextValue(allah.organisms);
+                i.limits = {std::min(i.data.back(), i.limits.first), std::max(i.data.back(), i.limits.second)};
+                double tmp = (i.limits.second - i.limits.first) * 0.1;
+                i.padding = tmp == 0.0 ? 1.0 : tmp;
+            }
             k--;
         }
     }
