@@ -37,4 +37,4 @@ target_include_directories(${ECOSYSTEM_EXE} PRIVATE
                            ${implot_SOURCE_DIR}
                            )
 
-target_link_libraries(${ECOSYSTEM_EXE} PRIVATE ${ECOSYSTEM_LIB} dl glfw OpenGL::GL GLEW::GLEW)
+target_link_libraries(${ECOSYSTEM_EXE} PRIVATE ${ECOSYSTEM_LIB} pthread dl glfw OpenGL::GL GLEW::GLEW)
