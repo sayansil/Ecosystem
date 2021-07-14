@@ -36,7 +36,7 @@ struct PlotAttribute
     {
         if(query_name == "population")
             data.push_back(stat_fetcher::get_population(organisms));
-        else    
+        else
             data.push_back(stat_fetcher::get_stat_average(organisms, query_name));
     }
 };
@@ -48,7 +48,8 @@ const unsigned int years_to_simulate = 200;
 const std::string kingdom = "animal";
 const std::string species = "deer";
 
-int k; bool started;
+int k;
+bool started, stopped;
 
 God allah;
 
@@ -60,7 +61,7 @@ static void glfw_error_callback(int error, const char* description)
 void run_ecosystem_simulation()
 {
     while(!started);
-    while(k)
+    while(k && !stopped)
     {
         allah.happy_new_year(false);
         for(auto& i : all_plots)
@@ -174,6 +175,8 @@ int main(int, char**)
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     started = false;
+    stopped = false;
+
     ImVec4 clear_color = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
 
     std::thread runner(run_ecosystem_simulation);
@@ -204,6 +207,13 @@ int main(int, char**)
 
         if (started)
         {
+            if (!stopped) {
+                stopped = ImGui::Button("Stop");
+            } else {
+                ImGui::Text("Stopped the Simulation.");
+            }
+            ImGui::Dummy(ImVec2(0.0f, 20.0f));
+
             ImGui::Text("Current Year of Simulation: %d", years_to_simulate - k);
             ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
@@ -221,7 +231,7 @@ int main(int, char**)
                         ImGui::TableNextRow();
                         cols = 0;
                     }
-                    
+
                     ImGui::TableSetColumnIndex(cols);
                     ImPlot::SetNextPlotLimits(1, years_to_simulate, all_plots[index].limits.first - all_plots[index].padding, all_plots[index].limits.second + all_plots[index].padding, ImGuiCond_Always);
                     if(ImPlot::BeginPlot(all_plots[index].name.c_str()))
