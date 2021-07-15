@@ -14,6 +14,7 @@
 #include <god.hpp>
 #include <iostream>
 #include <thread>
+#include <mutex>
 
 struct PlotAttribute
 {
@@ -50,8 +51,10 @@ const std::string species = "deer";
 
 int k;
 
-volatile bool started; // To prevent compiler optimization of empty loop in run_ecosystem_simulation()
-bool stopped;
+bool started, stopped;
+
+std::mutex mu;
+std::condition_variable cond;
 
 int countloop = 0;
 God allah;
@@ -63,7 +66,9 @@ static void glfw_error_callback(int error, const char* description)
 
 void run_ecosystem_simulation()
 {
-    while(!started);
+    std::unique_lock<std::mutex> locker(mu);
+    cond.wait(locker, [](){return started;});
+    locker.unlock();
 
     while(k && !stopped)
     {
@@ -190,6 +195,8 @@ int main(int, char**)
 
     std::thread runner(run_ecosystem_simulation);
 
+    std::unique_lock<std::mutex> locker(mu);
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -257,6 +264,11 @@ int main(int, char**)
         else
         {
             started = ImGui::Button("Start");
+            if(started)
+            {
+                locker.unlock();
+                cond.notify_one();
+            }
         }
 
         ImGui::Dummy(ImVec2(0.0f, 10.0f));
