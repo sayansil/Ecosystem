@@ -22,17 +22,6 @@ Plant::Plant(const std::string &kind, const std::string &name, const unsigned in
 
     this->vitality = this->max_vitality_at_age;
 
-    this->base_height = this->get_base_height();
-    this->base_vitality = this->get_base_vitality();
-    this->base_weight = this->get_base_weight();
-    this->immunity_from_chromosome = this->get_immunity_from_chromosome();
-    this->gender_from_chromosome = this->get_gender_from_chromosome();
-    this->height_multiplier = this->get_height_multiplier();
-    this->vitality_multiplier = this->get_vitality_multiplier();
-    this->weight_multiplier = this->get_weight_multiplier();
-    this->max_height = this->get_max_height();
-    this->max_weight = this->get_max_weight();
-
     std::tie(this->X, this->Y) = helper::random_location();
 
     this->age = age - 1;
@@ -113,6 +102,18 @@ void Plant::init_from_json(const nlohmann::json &json_file)
     {
         this->chromosome = chromosome;
     }
+
+
+    this->base_height = this->get_base_height();
+    this->base_vitality = this->get_base_vitality();
+    this->base_weight = this->get_base_weight();
+    this->immunity_from_chromosome = this->get_immunity_from_chromosome();
+    this->gender_from_chromosome = this->get_gender_from_chromosome();
+    this->height_multiplier = this->get_height_multiplier();
+    this->vitality_multiplier = this->get_vitality_multiplier();
+    this->weight_multiplier = this->get_weight_multiplier();
+    this->max_height = this->get_max_height();
+    this->max_weight = this->get_max_weight();
 
     this->immunity = immunity_from_chromosome;
     this->gender = gender_from_chromosome;

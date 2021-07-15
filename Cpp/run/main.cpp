@@ -28,7 +28,7 @@ struct PlotAttribute
         this->name = name;
         this->query_name = query_name;
         this->data.reserve(data_size);
-        this->limits = {std::numeric_limits<double>::max(), std::numeric_limits<double>::min()};
+        this->limits = {std::numeric_limits<double>::max(), -std::numeric_limits<double>::max()};
         this->padding = 0.0;
     }
 
@@ -49,8 +49,11 @@ const std::string kingdom = "animal";
 const std::string species = "deer";
 
 int k;
-bool started, stopped;
 
+volatile bool started; // To prevent compiler optimization of empty loop in run_ecosystem_simulation()
+bool stopped;
+
+int countloop = 0;
 God allah;
 
 static void glfw_error_callback(int error, const char* description)
@@ -61,6 +64,7 @@ static void glfw_error_callback(int error, const char* description)
 void run_ecosystem_simulation()
 {
     while(!started);
+
     while(k && !stopped)
     {
         allah.happy_new_year(false);
@@ -69,7 +73,8 @@ void run_ecosystem_simulation()
             i.fetchNextValue(allah.organisms);
             i.limits = {std::min(i.data.back(), i.limits.first), std::max(i.data.back(), i.limits.second)};
             double tmp = (i.limits.second - i.limits.first) * 0.1;
-            i.padding = tmp == 0.0 ? 1.0 : tmp;
+            i.padding = tmp == 0.0 ? 1.0 : fabs(tmp);
+
         }
         k--;
     }
@@ -86,7 +91,11 @@ int main(int, char**)
 
     for (int i = 0; i < initial_organism_count; i++)
     {
-        allah.spawn_organism(std::make_shared<Animal>(
+        if (kingdom == "animal")
+            allah.spawn_organism(std::make_shared<Animal>(
+                    species, "OG-" + std::to_string(i), 10));
+        else if (kingdom == "plant")
+            allah.spawn_organism(std::make_shared<Plant>(
                     species, "OG-" + std::to_string(i), 10));
     }
 
@@ -94,24 +103,26 @@ int main(int, char**)
     std::vector<std::pair<double, double>> limits(4, {std::numeric_limits<double>::max(), std::numeric_limits<double>::min()});
 
     all_plots.emplace_back("Population", "population", years_to_simulate);
-    all_plots.emplace_back("Age", "age", years_to_simulate);
-    all_plots.emplace_back("Height", "height", years_to_simulate);
-    all_plots.emplace_back("Weight", "weight", years_to_simulate);
-    all_plots.emplace_back("Vision Radius", "vision_radius", years_to_simulate);
-    all_plots.emplace_back("Speed at Age", "max_speed_at_age", years_to_simulate);
-    all_plots.emplace_back("Appetite at Age", "max_appetite_at_age", years_to_simulate);
-    all_plots.emplace_back("Vitality at Age", "max_vitality_at_age", years_to_simulate);
-    all_plots.emplace_back("Stamina at Age", "max_stamina_at_age", years_to_simulate);
-    all_plots.emplace_back("Mutation Probability", "mutation_probability", years_to_simulate);
-    all_plots.emplace_back("Conceiving Probability", "conceiving_probability", years_to_simulate);
-    all_plots.emplace_back("Death Factor By Age", "age_death_factor", years_to_simulate);
-    all_plots.emplace_back("Death Factor By Fitness", "fitness_death_factor", years_to_simulate);
-    all_plots.emplace_back("Age v Fitness", "age_fitness_on_death_ratio", years_to_simulate);
-    all_plots.emplace_back("Death Factor", "death_factor", years_to_simulate);
-    all_plots.emplace_back("Max Age", "max_age", years_to_simulate);
+    all_plots.emplace_back("Average Age", "age", years_to_simulate);
+    all_plots.emplace_back("Average Height", "height", years_to_simulate);
+    all_plots.emplace_back("Average Weight", "weight", years_to_simulate);
+    all_plots.emplace_back("Average Maximum Vision Radius", "vision_radius", years_to_simulate);
+    all_plots.emplace_back("Average Maximum Speed", "max_speed_at_age", years_to_simulate);
+    all_plots.emplace_back("Average Maximum Appetite", "max_appetite_at_age", years_to_simulate);
+    all_plots.emplace_back("Average Maximum Vitality", "max_vitality_at_age", years_to_simulate);
+    all_plots.emplace_back("Average Maximum Stamina", "max_stamina_at_age", years_to_simulate);
+    all_plots.emplace_back("Average Mutation Probability", "mutation_probability", years_to_simulate);
+    all_plots.emplace_back("Average Conceiving Probability", "conceiving_probability", years_to_simulate);
+    all_plots.emplace_back("Average Death Factor By Age", "age_death_factor", years_to_simulate);
+    all_plots.emplace_back("Average Death Factor By Fitness", "fitness_death_factor", years_to_simulate);
+    all_plots.emplace_back("Average Age v Fitness", "age_fitness_on_death_ratio", years_to_simulate);
+    all_plots.emplace_back("Average Death Factor", "death_factor", years_to_simulate);
+    all_plots.emplace_back("Average Generation", "generation", years_to_simulate);
+    all_plots.emplace_back("Average Static Fitness", "static_fitness", years_to_simulate);
+    all_plots.emplace_back("Average Immunity", "immunity", years_to_simulate);
     all_plots.emplace_back("Start of Mating Age", "mating_age_start", years_to_simulate);
     all_plots.emplace_back("End of Mating Age", "mating_age_end", years_to_simulate);
-    all_plots.emplace_back("Offsprings Factor", "offsprings_factor", years_to_simulate);
+    all_plots.emplace_back("Average Offsprings Factor", "offsprings_factor", years_to_simulate);
     all_plots.emplace_back("Height On Stamina Dependancy", "height_on_stamina", years_to_simulate);
     all_plots.emplace_back("Weight On Stamina Dependancy", "weight_on_stamina", years_to_simulate);
     all_plots.emplace_back("Height On Vitality Dependancy", "height_on_vitality", years_to_simulate);
@@ -121,23 +132,21 @@ int main(int, char**)
     all_plots.emplace_back("Vitality On Speed Dependancy", "vitality_on_speed", years_to_simulate);
     all_plots.emplace_back("Vitality On Appetite Dependancy", "vitality_on_appetite", years_to_simulate);
     all_plots.emplace_back("Stamina On Appetite Dependancy", "stamina_on_appetite", years_to_simulate);
-    all_plots.emplace_back("Generation", "generation", years_to_simulate);
-    all_plots.emplace_back("Static Fitness", "static_fitness", years_to_simulate);
-    all_plots.emplace_back("Immunity", "immunity", years_to_simulate);
-    all_plots.emplace_back("Maximum Base Height", "theoretical_maximum_base_height", years_to_simulate);
-    all_plots.emplace_back("Maximum Base Weight", "theoretical_maximum_base_weight", years_to_simulate);
-    all_plots.emplace_back("Maximum Height", "theoretical_maximum_height", years_to_simulate);
-    all_plots.emplace_back("Maximum Weight", "theoretical_maximum_weight", years_to_simulate);
-    all_plots.emplace_back("Maximum Base Speed", "theoretical_maximum_base_speed", years_to_simulate);
-    all_plots.emplace_back("Maximum Base Appetite", "theoretical_maximum_base_appetite", years_to_simulate);
-    all_plots.emplace_back("Maximum Base Stamina", "theoretical_maximum_base_stamina", years_to_simulate);
-    all_plots.emplace_back("Maximum Base Vitality", "theoretical_maximum_base_vitality", years_to_simulate);
-    all_plots.emplace_back("Maximum Speed", "theoretical_maximum_speed", years_to_simulate);
-    all_plots.emplace_back("Maximum Speed Multiplier", "theoretical_maximum_speed_multiplier", years_to_simulate);
-    all_plots.emplace_back("Maximum Stamina Multiplier", "theoretical_maximum_stamina_multiplier", years_to_simulate);
-    all_plots.emplace_back("Maximum Vitality Multiplier", "theoretical_maximum_vitality_multiplier", years_to_simulate);
-    all_plots.emplace_back("Maximum Height Multiplier", "theoretical_maximum_height_multiplier", years_to_simulate);
-    all_plots.emplace_back("Maximum Weight Multiplier", "theoretical_maximum_weight_multiplier", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Age", "max_age", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Base Height", "theoretical_maximum_base_height", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Base Weight", "theoretical_maximum_base_weight", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Height", "theoretical_maximum_height", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Weight", "theoretical_maximum_weight", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Base Speed", "theoretical_maximum_base_speed", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Base Appetite", "theoretical_maximum_base_appetite", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Base Stamina", "theoretical_maximum_base_stamina", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Base Vitality", "theoretical_maximum_base_vitality", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Speed", "theoretical_maximum_speed", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Speed Multiplier", "theoretical_maximum_speed_multiplier", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Stamina Multiplier", "theoretical_maximum_stamina_multiplier", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Vitality Multiplier", "theoretical_maximum_vitality_multiplier", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Height Multiplier", "theoretical_maximum_height_multiplier", years_to_simulate);
+    all_plots.emplace_back("Theoretical Maximum Weight Multiplier", "theoretical_maximum_weight_multiplier", years_to_simulate);
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
