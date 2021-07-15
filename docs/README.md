@@ -17,10 +17,7 @@
 
 <a href="https://github.com/sayansil/Ecosystem/actions">
         <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg?branch=master" /></a>
-        
-<a href="https://bestpractices.coreinfrastructure.org/projects/3821">
-        <img src="https://bestpractices.coreinfrastructure.org/projects/3821/badge" /></a>
-        
+ 
 <a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/master">
         <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
 </p>
