@@ -233,7 +233,7 @@ int main(int, char**)
                     }
 
                     ImGui::TableSetColumnIndex(cols);
-                    ImPlot::SetNextPlotLimits(1, years_to_simulate, all_plots[index].limits.first - all_plots[index].padding, all_plots[index].limits.second + all_plots[index].padding, ImGuiCond_Always);
+                    ImPlot::SetNextPlotLimits(1, years_to_simulate - ( stopped ? k : 0 ), all_plots[index].limits.first - all_plots[index].padding, all_plots[index].limits.second + all_plots[index].padding, ImGuiCond_Always);
                     if(ImPlot::BeginPlot(all_plots[index].name.c_str()))
                     {
                         ImPlot::PushColormap(ImPlotColormap_Twilight);
