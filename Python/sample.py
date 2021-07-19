@@ -30,7 +30,7 @@ species_models.append(SpeciesModel(
     initial_organism_count=150,
     monitoring_ratio=0.50))
 
-for species_model in species_models: 
+for species_model in species_models:
     species_model.spawn(obj)
 
 while years_to_simulate > 0:

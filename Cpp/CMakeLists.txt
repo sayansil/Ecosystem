@@ -82,7 +82,7 @@ add_subdirectory(src)
 add_subdirectory(RandomTests)
 add_subdirectory(setup)
 add_subdirectory(run)
-#add_subdirectory(python)
+add_subdirectory(python)
 #add_subdirectory(WebApp)
 
 include(CTest)
