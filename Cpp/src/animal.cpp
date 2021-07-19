@@ -1,6 +1,6 @@
 #include <animal.hpp>
 
-Animal::Animal(const std::string &kind, const std::string &name, const unsigned int &age, const bool &monitor_in_simulation, const std::string &chromosome, const unsigned int &generation, const std::pair<unsigned int, unsigned int> &XY, const nlohmann::json &species_constants)
+Animal::Animal(const std::string &kind, const unsigned int &age, const bool &monitor_in_simulation, const std::string &name, const std::string &chromosome, const unsigned int &generation, const std::pair<unsigned int, unsigned int> &XY, const nlohmann::json &species_constants)
 {
     this->monitor_in_simulation = monitor_in_simulation;
     this->kind = kind;
@@ -9,6 +9,11 @@ Animal::Animal(const std::string &kind, const std::string &name, const unsigned 
 
     this->generation = generation;
     this->name = name;
+
+    if (this->name.length() == 0)
+    {
+        this->name = kind + "-orphan-" + helper::random_name(16);
+    }
 
     if (species_constants.empty())
     {
@@ -47,15 +52,15 @@ std::shared_ptr<Entity> Animal::clone() const
 
 std::shared_ptr<Entity> Animal::clone(
                 const std::string &kind,
-                const std::string &name,
                 const unsigned int &age,
                 const bool &monitor_in_simulation,
+                const std::string &name,
                 const std::string &chromosome,
                 const unsigned int &generation,
                 const std::pair<unsigned int, unsigned int> &XY,
                 const nlohmann::json &species_constants) const
 {
-    return std::make_shared<Animal>(kind, name, age, monitor_in_simulation, chromosome, generation, XY, species_constants);
+    return std::make_shared<Animal>(kind, age, monitor_in_simulation, name, chromosome, generation, XY, species_constants);
 }
 
 void Animal::init_from_json(const nlohmann::json &json_file)
@@ -400,9 +405,6 @@ bool Animal::is_normal_child() const
     for (const auto &i : checklist)
         if (!helper::is_nonzero_nonnegative_nonnan(i))
             return false;
-
-    if(name.length() == 0)
-        return false;
 
     return true;
 }

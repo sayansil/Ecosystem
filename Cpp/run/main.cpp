@@ -98,10 +98,10 @@ int main(int, char**)
     {
         if (kingdom == "animal")
             allah.spawn_organism(std::make_shared<Animal>(
-                    species, "OG-" + std::to_string(i), 10));
+                    species, 10, false, "OG-" + std::to_string(i)));
         else if (kingdom == "plant")
             allah.spawn_organism(std::make_shared<Plant>(
-                    species, "OG-" + std::to_string(i), 10));
+                    species, 10, false, "OG-" + std::to_string(i)));
     }
 
     k = years_to_simulate;

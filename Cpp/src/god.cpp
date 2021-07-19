@@ -240,9 +240,9 @@ bool God::mate(const std::string &name1, const std::string &name2, std::vector<s
 
         return spawn_organism(parent1->clone(
             parent1->get_kind(),
-            std::to_string(planet_age) + "-" + std::to_string(spawn_count++),
             1,
             monitor_in_simulation,
+            std::to_string(planet_age) + "-" + std::to_string(spawn_count++),
             child_chromosome,
             std::max(parent1->get_generation(), parent2->get_generation()) + 1,
             {(parent1->get_X() + parent2->get_X()) / 2,
@@ -566,9 +566,9 @@ std::unordered_map<std::string, std::vector<double>> God::test_organism(ENTITY &
     std::string name = std::to_string(planet_age) + "-" + std::to_string(spawn_count++);
     spawn_organism(current_organism->clone(
         current_organism->get_kind(),
-        name,
         1,
         false,
+        name,
         current_organism->get_chromosome(),
         current_organism->get_generation()
         ));

@@ -30,15 +30,15 @@ struct pyecosystem
         guru_nanak->disable_deaths = val;
     }
 
-    void spawn_organism(const std::string &full_species_name, const int &age, const bool &monitor)
+    void spawn_organism(const std::string &full_species_name, const int &age, const bool &monitor, const std::string &name)
     {
         const std::string &kingdom = full_species_name.substr(0, full_species_name.find('/'));
         const std::string &species = full_species_name.substr(full_species_name.find('/') + 1);
 
         if (kingdom == "animal")
-            guru_nanak->spawn_organism(std::make_shared<Animal>(species, age, monitor));
+            guru_nanak->spawn_organism(std::make_shared<Animal>(species, age, monitor, name));
         else if (kingdom == "plant")
-            guru_nanak->spawn_organism(std::make_shared<Plant>(species, age, monitor));
+            guru_nanak->spawn_organism(std::make_shared<Plant>(species, age, monitor, name));
     }
 
     std::unordered_map<std::string, std::vector<double>> test_organism(const std::string &full_species_name, const int &age, const std::vector<std::string> &vars, const int &years)

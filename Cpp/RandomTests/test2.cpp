@@ -10,7 +10,7 @@ int main()
     allah.reset_species("animal/deer");
     while (initial_organism_count--)
     {
-        allah.spawn_organism(std::make_shared<Animal>("deer", "OG-" + std::to_string(initial_organism_count), 10));
+        allah.spawn_organism(std::make_shared<Animal>("deer", 10, false, "OG-" + std::to_string(initial_organism_count)));
     }
 
     while (years_to_simulate--)

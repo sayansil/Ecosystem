@@ -47,7 +47,7 @@ public:
     /***************************
      *  Fixed for an organism  *
      ***************************/
-    
+
     double base_height;
     double base_vitality;
     double base_weight;
@@ -87,9 +87,9 @@ public:
     Plant() = default;
     Plant(
         const std::string &kind,
-        const std::string &name = "",
         const unsigned int &age = 0,
         const bool &monitor_in_simulation = false,
+        const std::string &name = "",
         const std::string &chromosome = "",
         const unsigned int &generation = 1,
         const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),
@@ -103,9 +103,9 @@ public:
     std::shared_ptr<Entity> clone() const;
     std::shared_ptr<Entity> clone(
                 const std::string &kind,
-                const std::string &name = "",
                 const unsigned int &age = 0,
                 const bool &monitor_in_simulation = false,
+                const std::string &name = "",
                 const std::string &chromosome = "",
                 const unsigned int &generation = 1,
                 const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),

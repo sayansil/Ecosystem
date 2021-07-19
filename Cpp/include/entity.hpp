@@ -66,9 +66,9 @@ public:
     virtual std::shared_ptr<Entity> clone() const = 0;
     virtual std::shared_ptr<Entity> clone(
                 const std::string &kind,
-                const std::string &name = "",
                 const unsigned int &age = 0,
                 const bool &monitor_in_simulation = false,
+                const std::string &name = "",
                 const std::string &chromosome = "",
                 const unsigned int &generation = 1,
                 const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),

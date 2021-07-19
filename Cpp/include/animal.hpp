@@ -58,11 +58,11 @@ public:
     double vision_radius;
     double sleep_restore_factor;
 
-    
+
     /***************************
      *  Fixed for an organism  *
      ***************************/
-    
+
     double base_appetite;
     double base_height;
     double base_speed;
@@ -78,7 +78,7 @@ public:
     double weight_multiplier;
     double max_height;
     double max_weight;
-    
+
     /*************************************************************
      *  Changes slowly - once every year (during mating season)  *
      *************************************************************/
@@ -114,9 +114,9 @@ public:
     Animal() = default;
     Animal(
         const std::string &kind,
-        const std::string &name = "",
         const unsigned int &age = 0,
         const bool &monitor_in_simulation = false,
+        const std::string &name = "",
         const std::string &chromosome = "",
         const unsigned int &generation = 1,
         const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),
@@ -131,9 +131,9 @@ public:
     std::shared_ptr<Entity> clone() const;
     std::shared_ptr<Entity> clone(
                 const std::string &kind,
-                const std::string &name = "",
                 const unsigned int &age = 0,
                 const bool &monitor_in_simulation = false,
+                const std::string &name = "",
                 const std::string &chromosome = "",
                 const unsigned int &generation = 1,
                 const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),

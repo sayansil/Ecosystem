@@ -278,16 +278,16 @@ public:
     }
     std::shared_ptr<Entity> clone(
                 const std::string &kind,
-                const std::string &name = "",
                 const unsigned int &age = 0,
                 const bool &monitor_in_simulation = false,
+                const std::string &name = "",
                 const std::string &chromosome = "",
                 const unsigned int &generation = 1,
                 const std::pair<unsigned int, unsigned int> &XY = helper::random_location(),
                 const nlohmann::json &species_constants = nlohmann::json()
             ) const
     {
-        return static_cast<const T&>(*this).clone(kind, name, age, monitor_in_simulation, chromosome, generation, XY, species_constants);
+        return static_cast<const T&>(*this).clone(kind, age, monitor_in_simulation, name, chromosome, generation, XY, species_constants);
     }
 
 
