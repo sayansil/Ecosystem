@@ -11,11 +11,16 @@ from helper import SpeciesModel
 
 monitor_variables = ["height", "weight"]
 
+years_to_simulate = 20
+
 obj = pyeco.pyecosystem(False)
 obj.set_disable_deaths(True)
 full_species_name = 'animal/deer'
 obj.reset_species(full_species_name)
 
-res = obj.test_organism(full_species_name, 10, monitor_variables, 20)
+res = obj.test_organism(full_species_name, 10, monitor_variables, years_to_simulate)
+
+for var in monitor_variables:
+    assert(len(res[var]) == years_to_simulate)
 
 print(res)

@@ -44,6 +44,5 @@ jobs:
     - name: run
       run: |
         ./Cpp/build/setup/setup
-        cd Python
-        echo "{ \"API-KEYS\": [\"111\"] }" > keys.json
-        python test_app.py
+        cd Python/Randomtests
+        python sanity_test.py
