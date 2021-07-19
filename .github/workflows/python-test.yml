@@ -44,5 +44,5 @@ jobs:
     - name: run
       run: |
         ./Cpp/build/setup/setup
-        cd Python/Randomtests
+        cd Python/RandomTests
         python sanity_test.py
