@@ -2,10 +2,15 @@ name: python-test
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+    - master
+    paths:
+    - 'Python/**'
   pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+    branches:
+    - master
+    paths:
+    - 'Python/**'
 
 jobs:
   build-and-test:
