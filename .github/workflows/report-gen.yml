@@ -4,6 +4,15 @@ on:
   push:
       branches:
       - master
+      paths:
+      - 'Cpp/**'
+      - 'visualization/**'
+  pull_request:
+      branches:
+      - master
+      paths:
+      - 'Cpp/**'
+      - 'visualization/**'
   workflow_dispatch:
 
 jobs:
