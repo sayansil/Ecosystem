@@ -187,14 +187,14 @@ int main(int, char**)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
     //ImGui::StyleColorsDark();
-    Style();
+    ImGui::SetupImGuiStyle(true, 0.5);
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     started = false;
     stopped = false;
 
-    ImVec4 clear_color = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    ImVec4 clear_color = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
 
     std::thread runner(run_ecosystem_simulation);
 
@@ -228,6 +228,8 @@ int main(int, char**)
         if (started)
         {
             if (!stopped) {
+                ImGui::Text("\t");
+                ImGui::SameLine();
                 stopped = ImGui::Button("Stop");
             } else {
                 ImGui::Text("Stopped the Simulation.");
@@ -267,6 +269,8 @@ int main(int, char**)
         }
         else
         {
+            ImGui::Text("\t");
+            ImGui::SameLine();
             started = ImGui::Button("Start");
             if(started)
             {
