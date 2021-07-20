@@ -2,7 +2,7 @@ name: "CodeQL"
 
 on:
   schedule:
-    - cron: '0 0 12 ? * FRI'
+    - cron: '30 6 ? * FRI'
   workflow_dispatch:
 
 jobs:
