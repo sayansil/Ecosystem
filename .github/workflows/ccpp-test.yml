@@ -6,6 +6,11 @@ on:
       - master
       paths:
       - 'Cpp/**'
+  pull_request:
+      branches:
+      - master
+      paths:
+      - 'Cpp/**'
 
 jobs:
   test-linux:
