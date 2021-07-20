@@ -1,6 +1,10 @@
 name: firebase-deploy
-
-'on':
+on:
+  push:
+      branches:
+      - master
+      paths:
+      - 'docs/**'
   workflow_dispatch:
 
 jobs:
