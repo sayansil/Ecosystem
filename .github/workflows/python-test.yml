@@ -6,11 +6,13 @@ on:
     - master
     paths:
     - 'Python/**'
+    - 'Cpp/**'
   pull_request:
     branches:
     - master
     paths:
     - 'Python/**'
+    - 'Cpp/**'
 
 jobs:
   build-and-test:
