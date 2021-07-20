@@ -3,7 +3,9 @@ name: build
 on:
   push:
       branches:
-      - master
+        - master
+      paths:
+        - 'Cpp/**'
 
 jobs:
   build-linux:
