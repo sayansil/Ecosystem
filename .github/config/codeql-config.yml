@@ -1,0 +1,10 @@
+name: "CodeQL config"
+
+paths:
+  - Cpp
+  - Python
+paths-ignore: 
+  - Cpp/RandomTests
+  - Cpp/cmake
+  - Cpp/tests
+  - Python/RandomTests
