@@ -3,9 +3,14 @@ name: build
 on:
   push:
       branches:
-        - master
+      - master
       paths:
-        - 'Cpp/**'
+      - 'Cpp/**'
+  pull_request:
+      branches:
+      - master
+      paths:
+      - 'Cpp/**'
 
 jobs:
   build-linux:
