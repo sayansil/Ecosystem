@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <random>
 #include <limits>
-
 #include <GL/glew.h>            // Initialize with glewInit()
 #include <GLFW/glfw3.h>
 
@@ -15,6 +14,8 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+
+#include "style.hpp"
 
 struct PlotAttribute
 {
@@ -59,11 +60,6 @@ std::condition_variable cond;
 int countloop = 0;
 God allah;
 
-static void glfw_error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-}
-
 void run_ecosystem_simulation()
 {
     std::unique_lock<std::mutex> locker(mu);
@@ -83,6 +79,13 @@ void run_ecosystem_simulation()
         }
         k--;
     }
+}
+
+
+
+static void glfw_error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
 int main(int, char**)
@@ -183,8 +186,8 @@ int main(int, char**)
     ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 
-    ImGui::StyleColorsDark();
-
+    //ImGui::StyleColorsDark();
+    Style();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
@@ -214,11 +217,12 @@ int main(int, char**)
 
         ImGui::Begin("Ecosystem Health");
 
-        ImGui::Text("The Ecosystem will start with the following characteristics:");
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
-        ImGui::Text("Species: %s", species.c_str());
-        ImGui::Text("Initial Population: %d", initial_organism_count);
-        ImGui::Text("Years to simulate: %d", years_to_simulate);
+        ImGui::Text("\tThe Ecosystem will start with the following characteristics:");
+        ImGui::Dummy(ImVec2(0.0f, 5.0f));
+        ImGui::Text("\tSpecies: %s", species.c_str());
+        ImGui::Text("\tInitial Population: %d", initial_organism_count);
+        ImGui::Text("\tYears to simulate: %d", years_to_simulate);
         ImGui::Dummy(ImVec2(0.0f, 20.0f));
 
         if (started)
