@@ -6,6 +6,7 @@ on:
       - master
       paths:
       - 'Cpp/**'
+      - '.github/workflows/ccpp.yml'
   pull_request:
       branches:
       - master
