@@ -21,7 +21,7 @@ jobs:
     - name: prepare-build
       run: |
         sudo apt update
-        sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev
+        sudo apt install libtbb-dev libsfml-dev
 
     - name: configure-build
       run: |
