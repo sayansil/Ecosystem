@@ -32,7 +32,6 @@ set(SOURCE_LIST
     ${implot_SOURCE_DIR}/implot_items.cpp
     )
 
-find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
 add_executable(${ECOSYSTEM_EXE} ${SOURCE_LIST})
