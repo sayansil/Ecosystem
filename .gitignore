@@ -14,6 +14,7 @@ data/csv/*
 data/*.db
 data/*.db-*
 Cpp/build/*
+Cpp/.vscode
 Cpp/WebApp/keys.json
 Cpp/WebApp/extern/uWebSockets
 Cpp/python/pybind11
