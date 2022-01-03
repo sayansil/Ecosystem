@@ -1,14 +1,16 @@
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/Window/Event.hpp>
+
+#include <imgui-SFML.h>
 #include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
+
 #include <stdio.h>
 #include <implot.h>
 #include <vector>
 #include <algorithm>
 #include <random>
 #include <limits>
-#include <GL/glew.h>            // Initialize with glewInit()
-#include <GLFW/glfw3.h>
 
 #include <god.hpp>
 #include <iostream>
@@ -81,20 +83,8 @@ void run_ecosystem_simulation()
     }
 }
 
-
-
-static void glfw_error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
-}
-
 int main(int, char**)
 {
-    // ------------------ Window creation and handling starts  ------------------
-
-    int size_X = 1920;
-    int size_Y = 1080;
-
     allah.reset_species(kingdom + "/" + species);
 
     for (int i = 0; i < initial_organism_count; i++)
@@ -156,40 +146,14 @@ int main(int, char**)
     all_plots.emplace_back("Theoretical Maximum Height Multiplier", "theoretical_maximum_height_multiplier", years_to_simulate);
     all_plots.emplace_back("Theoretical Maximum Weight Multiplier", "theoretical_maximum_weight_multiplier", years_to_simulate);
 
-    glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
-        return 1;
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Ecosystem", sf::Style::Fullscreen);
+    window.setFramerateLimit(60);
+    ImGui::SFML::Init(window);
 
-    const char* glsl_version = "#version 130";
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-
-    GLFWwindow* window = glfwCreateWindow(size_X, size_Y, "Ecosystem", NULL, NULL);
-    if (window == NULL)
-        return 1;
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
-
-    bool err = glewInit() != GLEW_OK;
-
-    if (err)
-    {
-        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
-        return 1;
-    }
-
-    // ------------------ Window creation and handling starts  ------------------
-
-    IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImPlot::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-    //ImGui::StyleColorsDark();
+    
     ImGui::SetupImGuiStyle(true, 0.5);
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init(glsl_version);
 
     started = false;
     stopped = false;
@@ -200,21 +164,24 @@ int main(int, char**)
 
     std::unique_lock<std::mutex> locker(mu);
 
-    while (!glfwWindowShouldClose(window))
+    sf::Clock deltaClock;
+    while (window.isOpen())
     {
-        glfwPollEvents();
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
+        sf::Event event;
+        while (window.pollEvent(event)) 
+        {
+            ImGui::SFML::ProcessEvent(event);
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+        ImGui::SFML::Update(window, deltaClock.restart());
+        
         const ImGuiViewport* main_viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(ImVec2(main_viewport->WorkPos.x, main_viewport->WorkPos.y));
-        ImGui::SetWindowSize(ImVec2(size_X, size_Y));
         ImGuiStyle& style = ImGui::GetStyle();
         style.WindowMenuButtonPosition = ImGuiDir_None;
-
-
+        
         ImGui::Begin("Ecosystem Health");
 
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
@@ -279,31 +246,19 @@ int main(int, char**)
             }
         }
 
+        
         ImGui::Dummy(ImVec2(0.0f, 10.0f));
         ImGui::Text("%.1f fps", ImGui::GetIO().Framerate);
         ImGui::End();
-
-        // Rendering
-        ImGui::Render();
+        
+        window.clear();
+        ImGui::SFML::Render(window);
+        window.display();
         int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glfwSwapBuffers(window);
     }
 
     runner.join();
-
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    ImGui::SFML::Shutdown();
 
     return 0;
 }

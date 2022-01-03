@@ -7,12 +7,14 @@ on:
       paths:
       - 'Cpp/**'
       - 'visualization/**'
+      - '.github/workflows/report-gen.yml'
   pull_request:
       branches:
       - master
       paths:
       - 'Cpp/**'
       - 'visualization/**'
+      - '.github/workflows/report-gen.yml'
   workflow_dispatch:
 
 jobs:
@@ -24,7 +26,7 @@ jobs:
     - name: prepare
       run: |
         sudo apt update
-        sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev
+        sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
 
     - name: configure
       run: |
