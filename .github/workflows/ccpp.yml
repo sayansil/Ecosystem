@@ -48,7 +48,13 @@ jobs:
         cpu: arm1176
         commands: |
             sudo apt update
-            sudo apt install -y libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev cmake=3.20
+            sudo apt install -y libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
+            wget https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1.tar.gz
+            tar -xvzf cmake-3.22.1.tar.gz
+            cd cmake-3.22.1/
+            sudo ./bootstrap
+            sudo make
+            sudo make install
             cd Cpp
             mkdir build
             cd build
