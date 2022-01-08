@@ -19,6 +19,9 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Setup debugging session
+      uses: lhotari/action-upterm@v1
 
     - name: prepare-build
       run: |
@@ -41,13 +44,17 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Setup debugging session
+      uses: lhotari/action-upterm@v1
+      
     - uses: pguyot/arm-runner-action@v1
       with:
         base_image: 'raspios_lite:2021-05-07'
         cpu: arm1176
         commands: |
             sudo apt update
-            sudo apt install -y libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev cmake
+            sudo apt install -y libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev cmake=3.20
             cd Cpp
             mkdir build
             cd build
