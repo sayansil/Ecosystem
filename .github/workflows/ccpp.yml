@@ -23,7 +23,7 @@ jobs:
     - name: prepare-build
       run: |
         sudo apt update
-        sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
+        sudo apt install -y libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
 
     - name: configure-build
       run: |
@@ -47,7 +47,7 @@ jobs:
         cpu: arm1176
         commands: |
             sudo apt update
-            sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
+            sudo apt install -y libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
             cd Cpp
             mkdir build
             cd build
