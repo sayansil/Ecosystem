@@ -19,9 +19,6 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Setup debugging session
-      uses: lhotari/action-upterm@v1
 
     - name: prepare-build
       run: |
@@ -45,9 +42,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Setup debugging session
-      uses: lhotari/action-upterm@v1
-      
     - uses: pguyot/arm-runner-action@v1
       with:
         base_image: 'raspios_lite:2021-05-07'
@@ -60,4 +54,6 @@ jobs:
             cd build
             cmake ..
             cmake --build . -- -j $(nproc)
-            
+      
+    - name: Setup debugging session
+      uses: lhotari/action-upterm@v1
