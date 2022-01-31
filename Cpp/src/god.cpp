@@ -1,597 +1,171 @@
 #include <god.hpp>
+#include <set>
+#include <fmt/core.h>
+#include <flatbuffers/minireflect.h>
+#include <nlohmann/json.hpp>
 
-God::God(const bool &gods_eye)
+static flatbuffers::Offset<Ecosystem::Organism> createOrganism(
+    flatbuffers::FlatBufferBuilder &builder,
+    Ecosystem::OrganismBuilder &organism_builder,
+    std::unordered_map<std::string, std::string> attributes);
+
+static std::string getValueAsStr(const std::unordered_map<std::string, std::string> &attributes, const std::string &key)
 {
-    e_logger::init_loggers();
-    constants::init();
-    this->gods_eye = gods_eye;
+    auto it = attributes.find(key);
+    return it != attributes.end() ? it->second : "";
+}
 
-    statistics["animal"][StatGroup::FIX] = {
-        "conceiving_probability",
-        "mating_probability",
-        "mating_age_start",
-        "mating_age_end",
-        "max_age",
-        "mutation_probability",
-        "offsprings_factor",
-        "age_fitness_on_death_ratio",
-        "height_on_speed",
-        "height_on_stamina",
-        "height_on_vitality",
-        "weight_on_speed",
-        "weight_on_stamina",
-        "weight_on_vitality",
-        "vitality_on_appetite",
-        "vitality_on_speed",
-        "stamina_on_appetite",
-        "stamina_on_speed",
-        "theoretical_maximum_base_appetite",
-        "theoretical_maximum_base_height",
-        "theoretical_maximum_base_speed",
-        "theoretical_maximum_base_stamina",
-        "theoretical_maximum_base_vitality",
-        "theoretical_maximum_base_weight",
-        "theoretical_maximum_height",
-        "theoretical_maximum_speed",
-        "theoretical_maximum_weight",
-        "theoretical_maximum_height_multiplier",
-        "theoretical_maximum_speed_multiplier",
-        "theoretical_maximum_stamina_multiplier",
-        "theoretical_maximum_vitality_multiplier",
-        "theoretical_maximum_weight_multiplier",
-        "sleep_restore_factor"
-    };
-    statistics["animal"][StatGroup::MEAN] = {
-        "generation",
-        "immunity",
-        "age",
-        "height",
-        "weight",
-        "max_appetite_at_age",
-        "max_speed_at_age",
-        "max_stamina_at_age",
-        "max_vitality_at_age",
-        "static_fitness",
-        "age_death_factor",
-        "fitness_death_factor",
-        "death_factor",
-        "vision_radius"
-    };
-    statistics["animal"][StatGroup::MISC] = {
-        "year",
-        "male_population",
-        "female_population",
-        "matable_male_population",
-        "matable_female_population"
-    };
+static uint64_t getValueAsUlong(const std::unordered_map<std::string, std::string> &attributes, const std::string &key)
+{
+    auto it = attributes.find(key);
+    return it != attributes.end() ? std::stoul(it->second) : 0;
+}
 
-    statistics["plant"][StatGroup::FIX] = {
-        "conceiving_probability",
-        "mating_probability",
-        "mating_age_start",
-        "mating_age_end",
-        "max_age",
-        "mutation_probability",
-        "offsprings_factor",
-        "age_fitness_on_death_ratio",
-        "height_on_vitality",
-        "weight_on_vitality",
-        "theoretical_maximum_base_height",
-        "theoretical_maximum_base_vitality",
-        "theoretical_maximum_base_weight",
-        "theoretical_maximum_height",
-        "theoretical_maximum_weight",
-        "theoretical_maximum_height_multiplier",
-        "theoretical_maximum_vitality_multiplier",
-        "theoretical_maximum_weight_multiplier"
-    };
-    statistics["plant"][StatGroup::MEAN] = {
-        "generation",
-        "immunity",
-        "age",
-        "height",
-        "weight",
-        "max_vitality_at_age",
-        "static_fitness",
-        "age_death_factor",
-        "fitness_death_factor",
-        "death_factor"
-    };
-    statistics["plant"][StatGroup::MISC] = {
-        "year",
-        "population",
-        "matable_population"
-    };
+static double getValueAsDouble(const std::unordered_map<std::string, std::string> &attributes, const std::string &key)
+{
+    auto it = attributes.find(key);
+    return it != attributes.end() ? std::stod(it->second) : 0.0;
+}
 
-    catastrophe();
+static int8_t getValueAsByte(const std::unordered_map<std::string, std::string> &attributes, const std::string &key)
+{
+    auto it = attributes.find(key);
+    return it != attributes.end() ? (int8_t)std::stoi(it->second) : 0;
+}
+
+God::God()
+{
+    fmt::print("God created!\n");
 }
 
 God::~God()
 {
+    fmt::print("God is dead...\n");
 }
 
-void God::catastrophe()
+void God::createWorld(const std::vector<std::unordered_map<std::string, std::string>> &organisms)
 {
-    if(gods_eye)
+    flatbuffers::FlatBufferBuilder builder;
+    Ecosystem::WorldBuilder world_builder(builder);
+
+    std::vector<flatbuffers::Offset<Ecosystem::Species>> stdvecSpecies;
+    Ecosystem::SpeciesBuilder species_builder(builder);
+
+    std::set<std::pair<std::string, std::string>> unique_species;
+    for (const auto &organism : organisms)
     {
-        db.clear_database();
-    }
-    organisms.clear();
-}
-
-void God::reset_species(const std::string &full_species_name)
-{
-    std::string species_name = full_species_name.substr(full_species_name.find('/') + 1);
-    std::string kingdom_name = full_species_name.substr(0, full_species_name.find('/'));
-    std::ifstream in( helper::get_ecosystem_root() / "data" / "json" / kingdom_name / species_name / "base.json");
-    nlohmann::json tmp;
-    in >> tmp;
-    in.close();
-    constants::species_constants_map[species_name] = tmp;
-
-    db.clear_table(species_name);
-}
-
-bool God::spawn_organism(ENTITY &&current_organism)
-{
-    const std::string kingdom = current_organism->get_kingdom();
-    if(kingdom != "animal" && kingdom != "plant")
-    {
-        throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
+        unique_species.insert({organism.find("kingdom")->second, organism.find("kind")->second});
     }
 
-
-    current_organism->generate_death_factor();
-
-    if (current_organism->is_normal_child())
+    for (const auto &[kingdom, kind] : unique_species)
     {
-        // Add to memory
-        organisms[current_organism->get_name()] = current_organism;
+        std::vector<flatbuffers::Offset<Ecosystem::Organism>> stdvecOrganisms;
+        Ecosystem::OrganismBuilder organism_builder(builder);
 
-        if(gods_eye)
+        for (const auto &organism : organisms)
         {
-            std::vector<DBType> tmp;
-
-            const auto &a_map = stat_fetcher::get_var_map(current_organism);
-
-            for (const auto &[colName, colType] : schema::schemaMaster)
+            if (organism.find("kind")->second == kind)
             {
-                tmp.emplace_back(DBType(colType, a_map[colName].getString()));
-            }
-
-            // Add to database
-            db.insert_rows(std::vector<std::vector<DBType>>{tmp});
-        }
-        return true;
-    }
-
-    return false;
-}
-
-bool God::spawn_organism(ENTITY &&current_organism, std::vector<std::pair<std::string, ENTITY>>& organisms_buffer)
-{
-    const std::string kingdom = current_organism->get_kingdom();
-    if(kingdom != "animal" && kingdom != "plant")
-    {
-        throw std::runtime_error(__func__ + std::string(": kingdom ") + kingdom + " is not supported\n");
-    }
-
-    current_organism->generate_death_factor();
-
-    if (current_organism->is_normal_child())
-    {
-        // Add to memory
-        organisms_buffer.push_back(std::pair<std::string, ENTITY>({current_organism->get_name(), current_organism}));
-
-        if(gods_eye)
-        {
-            std::vector<DBType> tmp;
-
-            const auto &a_map = stat_fetcher::get_var_map(current_organism);
-
-            for (const auto &[colName, colType] : schema::schemaMaster)
-            {
-                tmp.emplace_back(DBType(colType, a_map[colName].getString()));
-            }
-
-            // Add to database
-            db.insert_rows(std::vector<std::vector<DBType>>{tmp});
-        }
-        return true;
-    }
-
-    return false;
-}
-
-void God::kill_organisms(const std::vector<std::string> &names)
-{
-    // Remove from database
-    if(gods_eye)
-    {
-        db.delete_rows(names);
-    }
-
-    // Remove from memory
-    for (const auto &lamb_to_slaughter : names)
-        organisms.erase(lamb_to_slaughter);
-}
-
-bool God::mate(const std::string &name1, const std::string &name2, std::vector<std::pair<std::string, ENTITY>>& organisms_buffer, const nlohmann::json &species_constants)
-{
-    // ORGANISM objects of 2 parents
-    const auto &parent1 = organisms[name1];
-    const auto &parent2 = organisms[name2];
-
-    // Generate chromosomes of the child
-    auto child_chromosome = helper::get_random_mixture(parent1->get_chromosome(), parent2->get_chromosome());
-
-    // Mutate chromosomes
-    for(auto &bit : child_chromosome)
-        if(helper::weighted_prob(parent1->get_mutation_probability()))
-            bit = (bit == '1')?'0':'1';
-
-    // Spawn child (if probable)
-    if(helper::weighted_prob(std::min(parent1->get_conceiving_probability(), parent2->get_conceiving_probability())))
-    {
-        bool monitor_in_simulation = false;
-
-        if (monitor_offsprings && (parent1->get_monitor_in_simulation() || parent2->get_monitor_in_simulation()))
-            monitor_in_simulation = true;
-
-        return spawn_organism(parent1->clone(
-            parent1->get_kind(),
-            1,
-            monitor_in_simulation,
-            std::to_string(planet_age) + "-" + std::to_string(spawn_count++),
-            child_chromosome,
-            std::max(parent1->get_generation(), parent2->get_generation()) + 1,
-            {(parent1->get_X() + parent2->get_X()) / 2,
-                (parent1->get_Y() + parent2->get_Y()) / 2},
-            species_constants), organisms_buffer);
-    }
-    return false;
-}
-
-double updateStat(double base, double p_range)
-{
-    std::uniform_real_distribution<double> dis(0.0, p_range * 2);
-    const double x = p_range - dis(helper::rng);
-
-    return base * (1 + x);
-}
-
-void God::update_species(const std::string &full_species_name)
-{
-    std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
-    std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
-
-    const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / "data" / "json" / kingdom / kind / "modify.json";
-
-    std::ifstream modify_in(modify_filepath);
-
-    nlohmann::json modify;
-    modify_in >> modify;
-
-    for (const auto [key, value]: modify.items())
-    {
-        constants::species_constants_map[kind][key] = updateStat((double)constants::species_constants_map[kind][key], (double)value);
-    }
-
-    modify_in.close();
-}
-
-double God::killer_function(const double &index, const double &size) const
-{
-    // return std::exp(-x / (s / 10.0))
-    // return pow(x / s, 1 / 1.75)
-    // return 1 - (1 / (1 + exp(-(10 * index - size) / pow(size, 0.5))));
-    const double &ratio = 1.0 / 10.0;
-    return 1 - (1 / (1 + exp((ratio * size - index) / (ratio * pow(size, 0.5)))));
-}
-
-int God::creator_function(const double &o_factor) const
-{
-    std::gamma_distribution<double> dis(1.5, o_factor);
-    return std::round(dis(helper::rng));
-}
-
-void God::happy_new_year(const bool &log)
-{
-    planet_age++;
-    spawn_count = 0;
-    recent_births = 0;
-    recent_deaths = 0;
-
-    if (!disable_deaths)
-    {
-        /************************************
-         *       Annual Killing Begins      *
-         ************************************/
-
-        // Vector for [ (ORGANISM, death_factor) ]
-        std::vector<std::pair<ENTITY, double>>
-            organisms_vec;
-
-        for(auto &organism : organisms)
-        {
-            organism.second->generate_death_factor();
-            organisms_vec.push_back({organism.second, 0.0});
-        }
-
-        // Sort organism_vec by death factor
-
-        std::sort(std::execution::par, organisms_vec.begin(),
-            organisms_vec.end(),
-            [](const std::pair<ENTITY, double> &x, const std::pair<ENTITY, double> &y){
-                return x.first->get_death_factor() > y.first->get_death_factor();
-        });
-
-        // Mark the organisms in organism_vec for death
-
-        std::vector<size_t> indices(organisms_vec.size()); std::iota(indices.begin(), indices.end(), 0);
-        std::vector<double> death_factors(indices.size());
-        std::transform(std::execution::par, indices.begin(), indices.end(), death_factors.begin(), [this, &organisms_vec](const size_t& index){
-            static thread_local std::uniform_real_distribution<double> par_dis(0.0, 1.0);
-            static thread_local std::mt19937_64 par_rng{std::random_device()()};
-            const double x = par_dis(par_rng);
-            return (x <= killer_function(index, organisms_vec.size()) ? 1 : 0);
-        });
-
-        std::for_each(std::execution::par, indices.begin(), indices.end(), [&death_factors, &organisms_vec](const size_t& index){
-            organisms_vec[index].second = death_factors[index];
-        });
-
-        indices.clear(); indices.shrink_to_fit();
-        death_factors.clear(); death_factors.shrink_to_fit();
-
-        // Remove the above marked organisms from the f****** universe
-
-        std::vector<std::string> organisms_to_be_slaughtered;
-
-        for(const auto &organism_tuple : organisms_vec)
-        {
-            if(organism_tuple.second == 1)
-            {
-                // Being dragged to the slaughterhouse
-                organisms_to_be_slaughtered.push_back(organism_tuple.first->get_name());
+                stdvecOrganisms.push_back(createOrganism(builder, organism_builder, organism));
             }
         }
 
-        recent_deaths = organisms_to_be_slaughtered.size();
-        kill_organisms(organisms_to_be_slaughtered);
+        species_builder.add_kingdom(builder.CreateString(kingdom.c_str()));
+        species_builder.add_kind(builder.CreateString(kind.c_str()));
+        species_builder.add_organism(builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size()));
 
-        organisms_vec.clear(); organisms_vec.shrink_to_fit();
-        organisms_to_be_slaughtered.clear(); organisms_to_be_slaughtered.shrink_to_fit();
-
+        stdvecSpecies.push_back(species_builder.Finish());
     }
 
-
-    /************************************
-     *       Annual Ageing Begins      *
-     ************************************/
-
-    std::for_each(std::execution::par, organisms.begin(), organisms.end(), [](auto &x){
-        x.second->increment_age();
-    });
-
-    year++;
-
-
-    /***********************************
-     *       Annual Mating Begins      *
-     ***********************************/
-
-    std::unordered_map<std::string, std::vector<ENTITY>> organismsByKind;
-    for(const auto &organism : organisms)
-        organismsByKind[organism.second->get_full_species_name()].push_back(organism.second);
-
-    int index_parent;
-    for(auto &organism_tuple : organismsByKind)
-    {
-        // Mating organisms of species organism_tuple.first
-
-        auto &organism_list = organism_tuple.second;
-        if (organism_list.size() == 0)
-        {
-            continue;
-        }
-
-        update_species(organism_tuple.first);
-
-        std::string species_name = organism_tuple.first.substr(organism_tuple.first.find('/') + 1);
-        const auto& species_constants = constants::species_constants_map[species_name];
-
-        std::vector<ENTITY> mating_list1, mating_list2;
-
-        bool current_kind_asexual = organism_list[0]->get_is_asexual();
-
-        for(const auto &organism : organism_list)
-        {
-            if(current_kind_asexual)
-            {
-                if(helper::weighted_prob(0.5) == 0)
-                {
-                    mating_list1.push_back(organism);
-                }
-                else
-                {
-                    mating_list2.push_back(organism);
-                }
-            }
-            else
-            {
-                if(organism->get_gender() == MALE)
-                {
-                    if(organism->get_age() >= organism->get_mating_age_start() && organism->get_age() <= organism->get_mating_age_end())
-                    {
-                        mating_list1.push_back(organism);
-                    }
-                }
-                else
-                {
-                    if(organism->get_age() >= organism->get_mating_age_start() && organism->get_age() <= organism->get_mating_age_end())
-                    {
-                        mating_list2.push_back(organism);
-                    }
-                }
-
-            }
-        }
-
-        static thread_local std::mt19937_64 rng{std::random_device()()};
-        std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
-        std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
-        index_parent = 0;
-
-        // Atmost number of births = [std::min(mating_list1.size(), mating_list2.size()) * n_children]
-
-
-        std::vector<std::pair<std::string, ENTITY>> organisms_buffer;
-
-        while (mating_list1.size() > index_parent && mating_list2.size() > index_parent)
-        {
-            const auto &parent1 = mating_list1[index_parent];
-            const auto &parent2 = mating_list2[index_parent];
-
-            if(helper::weighted_prob(std::min(parent1->get_mating_probability(), parent2->get_mating_probability())))
-            {
-                int n_children = creator_function(parent1->get_offsprings_factor());
-                
-                organisms_buffer.reserve(organisms_buffer.size() + n_children);
-                while(n_children--)
-                {
-                    bool tmp = mate(parent1->get_name(), parent2->get_name(), organisms_buffer, species_constants);
-                    if (tmp)
-                    {
-                        recent_births++;
-                    }
-                }
-            }
-            index_parent++;
-        }
- 
-        organisms_buffer.shrink_to_fit();
-
-        //organisms.reserve(organisms.size() + organisms_buffer.size());
-        
-        for(int i = 0; i < organisms_buffer.size(); i++)
-        {
-            organisms[organisms_buffer[i].first] = std::move(organisms_buffer[i].second);
-        }
-        
-        organisms_buffer.clear(); organisms_buffer.shrink_to_fit();
-    }
-
-
-    /*********************
-     *       Logging     *
-     *********************/
-
-    if (log)
-    {
-        e_logger::logger.info("Year: {} - Recent births: {} - Recent deaths: {} - Population: {}", year, recent_births, recent_deaths, organisms.size());
-    }
-
-
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Species>>> species_vec = builder.CreateVectorOfSortedTables(stdvecSpecies.data(), stdvecSpecies.size());
+    world_builder.add_species(species_vec);
+    world_builder.add_year(builder.CreateString(std::to_string(year).c_str()));
+    builder.Finish(world_builder.Finish());
 }
 
-std::vector<ENTITY> God::organism_sort(bool (*comp)(const ENTITY&, const ENTITY&))
+void God::displayWorldMetadata()
 {
-    std::vector<ENTITY> organism_vec;
-    for (auto &i : organisms)
-    {
-        organism_vec.push_back(i.second);
-    }
-    organism_vec.shrink_to_fit();
-    std::sort(organism_vec.begin(), organism_vec.end(), comp);
-    return organism_vec;
+    fmt::print("\nBuffer Size: {} bytes \n", builder.GetSize());
+
+    flatbuffers::ToStringVisitor visitor("", true, "", true);
+    flatbuffers::IterateFlatBuffer(builder.GetBufferPointer(), Ecosystem::WorldTypeTable(), &visitor);
+    nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+    fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 }
 
-std::unordered_map<std::string, std::vector<ENTITY>> God::organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&))
+flatbuffers::Offset<Ecosystem::Organism> createOrganism(
+    flatbuffers::FlatBufferBuilder &builder,
+    Ecosystem::OrganismBuilder &organism_builder,
+    std::unordered_map<std::string, std::string> attributes)
 {
-    std::unordered_map<std::string, std::vector<ENTITY>> organism_map;
-    for (const auto &i : organisms)
-    {
-        organism_map[i.second->get_kind()].push_back(i.second);
-    }
-    for (auto &i : organism_map)
-    {
-        std::sort(i.second.begin(), i.second.end(), comp);
-    }
-    return organism_map;
-}
+    organism_builder.add_kind(builder.CreateString(getValueAsStr(attributes, "kind").c_str()));
+    organism_builder.add_kingdom(builder.CreateString(getValueAsStr(attributes, "kingdom").c_str()));
+    organism_builder.add_chromosome_number(getValueAsUlong(attributes, "chromosome_number"));
+    organism_builder.add_food_chain_rank(getValueAsUlong(attributes, "food_chain_rank"));
+    organism_builder.add_is_asexual(Ecosystem::Reproduction(getValueAsByte(attributes, "is_asexual")));
+    organism_builder.add_age_fitness_on_death_ratio(getValueAsDouble(attributes, "age_fitness_on_death_ratio"));
+    organism_builder.add_conceiving_probability(getValueAsDouble(attributes, "conceiving_probability"));
+    organism_builder.add_mating_probability(getValueAsDouble(attributes, "mating_probability"));
+    organism_builder.add_mating_age_start(getValueAsDouble(attributes, "mating_age_start"));
+    organism_builder.add_mating_age_end(getValueAsDouble(attributes, "mating_age_end"));
+    organism_builder.add_max_age(getValueAsDouble(attributes, "max_age"));
+    organism_builder.add_mutation_probability(getValueAsDouble(attributes, "mutation_probability"));
+    organism_builder.add_offsprings_factor(getValueAsDouble(attributes, "offsprings_factor"));
+    organism_builder.add_height_on_speed(getValueAsDouble(attributes, "height_on_speed"));
+    organism_builder.add_height_on_stamina(getValueAsDouble(attributes, "height_on_stamina"));
+    organism_builder.add_height_on_vitality(getValueAsDouble(attributes, "height_on_vitality"));
+    organism_builder.add_weight_on_speed(getValueAsDouble(attributes, "weight_on_speed"));
+    organism_builder.add_weight_on_stamina(getValueAsDouble(attributes, "weight_on_stamina"));
+    organism_builder.add_weight_on_vitality(getValueAsDouble(attributes, "weight_on_vitality"));
+    organism_builder.add_vitality_on_appetite(getValueAsDouble(attributes, "vitality_on_appetite"));
+    organism_builder.add_vitality_on_speed(getValueAsDouble(attributes, "vitality_on_speed"));
+    organism_builder.add_stamina_on_appetite(getValueAsDouble(attributes, "stamina_on_appetite"));
+    organism_builder.add_stamina_on_speed(getValueAsDouble(attributes, "stamina_on_speed"));
+    organism_builder.add_theoretical_maximum_base_appetite(getValueAsDouble(attributes, "theoretical_maximum_base_appetite"));
+    organism_builder.add_theoretical_maximum_base_height(getValueAsDouble(attributes, "theoretical_maximum_base_height"));
+    organism_builder.add_theoretical_maximum_base_speed(getValueAsDouble(attributes, "theoretical_maximum_base_speed"));
+    organism_builder.add_theoretical_maximum_base_stamina(getValueAsDouble(attributes, "theoretical_maximum_base_stamina"));
+    organism_builder.add_theoretical_maheximum_base_vitality(getValueAsDouble(attributes, "theoretical_maheximum_base_vitality"));
+    organism_builder.add_theoretical_maximum_base_weight(getValueAsDouble(attributes, "theoretical_maximum_base_weight"));
+    organism_builder.add_theoretical_maximum_height(getValueAsDouble(attributes, "theoretical_maximum_height"));
+    organism_builder.add_theoretical_maximum_speed(getValueAsDouble(attributes, "theoretical_maximum_speed"));
+    organism_builder.add_theoretical_maximum_weight(getValueAsDouble(attributes, "theoretical_maximum_weight"));
+    organism_builder.add_theoretical_maximum_height_multiplier(getValueAsDouble(attributes, "theoretical_maximum_height_multiplier"));
+    organism_builder.add_theoretical_maximum_speed_multiplier(getValueAsDouble(attributes, "theoretical_maximum_speed_multiplier"));
+    organism_builder.add_theoretical_maximum_stamina_multiplier(getValueAsDouble(attributes, "theoretical_maximum_stamina_multiplier"));
+    organism_builder.add_theoretical_maximum_vitality_multiplier(getValueAsDouble(attributes, "theoretical_maximum_vitality_multiplier"));
+    organism_builder.add_theoretical_maximum_weight_multiplier(getValueAsDouble(attributes, "theoretical_maximum_weight_multiplier"));
+    organism_builder.add_name(builder.CreateString(getValueAsStr(attributes, "name").c_str()));
+    organism_builder.add_chromosome(builder.CreateString(getValueAsStr(attributes, "chromosome").c_str()));
+    organism_builder.add_gender(Ecosystem::Gender(getValueAsByte(attributes, "gender")));
+    organism_builder.add_generation(getValueAsUlong(attributes, "generation"));
+    organism_builder.add_immunity(getValueAsDouble(attributes, "immunity"));
+    organism_builder.add_base_appetite(getValueAsDouble(attributes, "base_appetite"));
+    organism_builder.add_base_height(getValueAsDouble(attributes, "base_height"));
+    organism_builder.add_base_speed(getValueAsDouble(attributes, "base_speed"));
+    organism_builder.add_base_stamina(getValueAsDouble(attributes, "base_stamina"));
+    organism_builder.add_base_vitality(getValueAsDouble(attributes, "base_vitality"));
+    organism_builder.add_base_weight(getValueAsDouble(attributes, "base_weight"));
+    organism_builder.add_height_multiplier(getValueAsDouble(attributes, "height_multiplier"));
+    organism_builder.add_speed_multiplier(getValueAsDouble(attributes, "speed_multiplier"));
+    organism_builder.add_stamina_multiplier(getValueAsDouble(attributes, "stamina_multiplier"));
+    organism_builder.add_vitality_multiplier(getValueAsDouble(attributes, "vitality_multiplier"));
+    organism_builder.add_weight_multiplier(getValueAsDouble(attributes, "weight_multiplier"));
+    organism_builder.add_max_height(getValueAsDouble(attributes, "max_height"));
+    organism_builder.add_max_weight(getValueAsDouble(attributes, "max_weight"));
+    organism_builder.add_age(getValueAsUlong(attributes, "age"));
+    organism_builder.add_height(getValueAsDouble(attributes, "height"));
+    organism_builder.add_weight(getValueAsDouble(attributes, "weight"));
+    organism_builder.add_age_death_factor(getValueAsDouble(attributes, "age_death_factor"));
+    organism_builder.add_fitness_death_factor(getValueAsDouble(attributes, "fitness_death_factor"));
+    organism_builder.add_death_factor(getValueAsDouble(attributes, "death_factor"));
+    organism_builder.add_static_fitness(getValueAsDouble(attributes, "static_fitness"));
+    organism_builder.add_max_appetite_at_age(getValueAsDouble(attributes, "max_appetite_at_age"));
+    organism_builder.add_max_speed_at_age(getValueAsDouble(attributes, "max_speed_at_age"));
+    organism_builder.add_max_stamina_at_age(getValueAsDouble(attributes, "max_stamina_at_age"));
+    organism_builder.add_max_vitality_at_age(getValueAsDouble(attributes, "max_vitality_at_age"));
+    organism_builder.add_vision_radius(getValueAsDouble(attributes, "vision_radius"));
+    organism_builder.add_sleep_restore_factor(getValueAsDouble(attributes, "sleep_restore_factor"));
 
-void God::remember_species(const std::string &full_species_name)
-{
-    std::string kind = full_species_name.substr(full_species_name.find('/') + 1);
-    std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
-
-    std::vector<DBType> db_row = stat_fetcher::get_db_row(organisms, kind, kingdom, year, statistics);
-    db.insert_stat_row(db_row, kind);
-}
-
-std::string God::get_annual_data(const std::string &full_species_name)
-{
-    auto data = db.read_all_rows_stats(full_species_name);
-
-    std::string final_data = "";
-
-    for(const auto& row: data)
-    {
-        for(const auto& item: row)
-        {
-            final_data += item.data + ",";
-        }
-        if (final_data.length() > 0)
-            final_data = final_data.substr(0, final_data.length() - 1);
-        final_data += '\n';
-    }
-
-    return final_data;
-}
-
-std::vector<std::map<std::string, std::string>> God::get_live_data()
-{
-    return stat_fetcher::prepare_data_for_simulation_2(organisms);
-}
-
-std::unordered_map<std::string, std::vector<double>> God::test_organism(ENTITY &&current_organism, const std::vector<std::string>& vars, const int &years)
-{
-    std::unordered_map<std::string, std::vector<double>> res;
-    for (const std::string &var : vars)
-    {
-        res[var] = {};
-    }
-
-    std::string name = std::to_string(planet_age) + "-" + std::to_string(spawn_count++);
-    spawn_organism(current_organism->clone(
-        current_organism->get_kind(),
-        1,
-        false,
-        name,
-        current_organism->get_chromosome(),
-        current_organism->get_generation()
-        ));
-
-    if (organisms.find(name) == organisms.end())
-    {
-        e_logger::logger.error("Could not create organism. Population 0.");
-        return res;
-    }
-
-    const auto &a_map = stat_fetcher::get_var_map(organisms[name]); //organisms[name]->get_attribute_raw_map();
-
-    int i = 0;
-    while (organisms.find(name) != organisms.end() && i++ < years)
-    {
-
-        for (const std::string &var : vars)
-        {
-            res[var].push_back(std::stod(a_map[var].getString()));
-        }
-
-        happy_new_year();
-    }
-
-    return res;
+    return organism_builder.Finish();
 }

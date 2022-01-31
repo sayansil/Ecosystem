@@ -1,21 +1,30 @@
 #include <god.hpp>
 #include <iostream>
+#include <fmt/core.h>
+#include <vector>
+#include <unordered_map>
 
 int main()
 {
+    fmt::print("Hello world\n");
     unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 300;
+    std::vector<std::unordered_map<std::string, std::string>> organisms;
 
-    God allah(false);
-    allah.reset_species("animal/deer");
-    while (initial_organism_count--)
-    {
-        allah.spawn_organism(std::make_shared<Animal>("deer", 10, false, "OG-" + std::to_string(initial_organism_count)));
-    }
+    organisms.push_back({{"kingdom", "animal"},
+                         {"kind", "deer"},
+                         {"name", "deer1-sreenik"}});
+    organisms.push_back({{"kingdom", "animal"},
+                         {"kind", "deer"},
+                         {"name", "deer2-rmg"}});
+    organisms.push_back({{"kingdom", "plant"},
+                         {"kind", "bamboo"},
+                         {"name", "bamboo1-shanti"}});
+    organisms.push_back({{"kingdom", "plant"},
+                         {"kind", "bamboo"},
+                         {"name", "bamboo2-sayan"}});
 
-    while (years_to_simulate--)
-    {
-        allah.happy_new_year(true);
-        //allah.remember_species("animal/deer");
-    }
+    God allah;
+
+    allah.createWorld(organisms);
+    allah.displayWorldMetadata();
 }

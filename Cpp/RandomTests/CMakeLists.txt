@@ -1,8 +1,8 @@
 function(add_code name)
     add_executable(rt_${name} ${name}.cpp)
-    target_include_directories(rt_${name} PRIVATE 
+    target_include_directories(rt_${name} PRIVATE
                                ${Ecosystem_SOURCE_DIR}/include)
-    target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl tbb pthread)
+    target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} dl fmt::fmt)
 endfunction()
 
 
@@ -14,11 +14,11 @@ endfunction()
 #                                     #
 #######################################
 
-add_code(reportgen_test)
-add_code(sanity_test)
+# add_code(reportgen_test)
+# add_code(sanity_test)
 #    add_code(unit_tests)
-add_code(test1)
+# add_code(test1)
 add_code(test2)
-add_code(test3)
+# add_code(test3)
 #    add_code(client)
 #    add_code(server)

@@ -42,13 +42,20 @@ FetchContent_Populate(nlohmann)
 include_directories(${nlohmann_SOURCE_DIR}/include)
 
 FetchContent_Declare(
-    spdlog
-    GIT_REPOSITORY "https://github.com/gabime/spdlog"
-    GIT_TAG af0d805be43365fa03e92b5fe143e1b50e443cf7
+    flatbuffer
+    GIT_REPOSITORY "https://github.com/google/flatbuffers"
+    GIT_TAG e08da4dea29449c235096a688a361fa914868b76
     GIT_PROGRESS TRUE
 )
-FetchContent_Populate(spdlog)
-include_directories(${spdlog_SOURCE_DIR}/include)
+FetchContent_MakeAvailable(flatbuffer)
+
+FetchContent_Declare(
+    fmtlib
+    GIT_REPOSITORY "https://github.com/fmtlib/fmt"
+    GIT_TAG 1557ab764422d5087619fea3994012066644a11e
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(fmtlib)
 
 FetchContent_Declare(
     customRNG
@@ -69,21 +76,15 @@ FetchContent_Declare(
 FetchContent_Populate(sqlite3)
 include_directories(${sqlite3_SOURCE_DIR}/include)
 
-FetchContent_Declare(
-    refl-cpp
-    GIT_REPOSITORY "https://github.com/veselink1/refl-cpp"
-    GIT_TAG 4684ff412bda23db3c757307f4fa16b54a5c5788
-    GIT_PROGRESS TRUE
-)
-FetchContent_Populate(refl-cpp)
-include_directories(${refl-cpp_SOURCE_DIR}/include)
-
 add_subdirectory(src)
+add_subdirectory(schema)
+
+include_directories(schema)
 add_subdirectory(RandomTests)
-add_subdirectory(setup)
-add_subdirectory(run)
-add_subdirectory(python)
+#add_subdirectory(setup)
+#add_subdirectory(run)
+#add_subdirectory(python)
 #add_subdirectory(WebApp)
 
-include(CTest)
-add_subdirectory(tests)
+#include(CTest)
+#add_subdirectory(tests)
