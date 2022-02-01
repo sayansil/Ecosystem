@@ -48,6 +48,8 @@ FetchContent_Declare(
     GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(flatbuffer)
+set(FLATC ${FlatBuffers_BINARY_DIR}/flatc)
+message("flatc compiler at: ${FLATC}")
 
 FetchContent_Declare(
     fmtlib

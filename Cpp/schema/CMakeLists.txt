@@ -3,6 +3,6 @@ set(SCHEMAS
     )
 
 foreach(SCHEMA ${SCHEMAS})
-    execute_process(COMMAND ${FLATC} --cpp -o ${Ecosystem_SOURCE_DIR}/schema
-        --gen-mutable --reflect-names --cpp-std c++17 ${Ecosystem_SOURCE_DIR}/schema/${SCHEMA}.fbs)
+    execute_process(COMMAND ${FLATC} --cpp -o ${CMAKE_CURRENT_SOURCE_DIR}
+        --gen-mutable --reflect-names --cpp-std c++17 ${CMAKE_CURRENT_SOURCE_DIR}/${SCHEMA}.fbs)
 endforeach()

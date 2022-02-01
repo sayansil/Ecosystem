@@ -45,7 +45,6 @@ God::~God()
 
 void God::createWorld(const std::vector<std::unordered_map<std::string, std::string>> &organisms)
 {
-    flatbuffers::FlatBufferBuilder builder;
     Ecosystem::WorldBuilder world_builder(builder);
 
     std::vector<flatbuffers::Offset<Ecosystem::Species>> stdvecSpecies;
