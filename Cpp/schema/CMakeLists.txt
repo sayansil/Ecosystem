@@ -1,5 +1,7 @@
 set(SCHEMAS
     world
+    animal/deer
+    animal/lion
     )
 
 foreach(SCHEMA ${SCHEMAS})

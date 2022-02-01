@@ -124,7 +124,7 @@ flatbuffers::Offset<Ecosystem::Organism> createOrganism(
     organism_builder.add_theoretical_maximum_base_height(getValueAsDouble(attributes, "theoretical_maximum_base_height"));
     organism_builder.add_theoretical_maximum_base_speed(getValueAsDouble(attributes, "theoretical_maximum_base_speed"));
     organism_builder.add_theoretical_maximum_base_stamina(getValueAsDouble(attributes, "theoretical_maximum_base_stamina"));
-    organism_builder.add_theoretical_maheximum_base_vitality(getValueAsDouble(attributes, "theoretical_maheximum_base_vitality"));
+    organism_builder.add_theoretical_maximum_base_vitality(getValueAsDouble(attributes, "theoretical_maximum_base_vitality"));
     organism_builder.add_theoretical_maximum_base_weight(getValueAsDouble(attributes, "theoretical_maximum_base_weight"));
     organism_builder.add_theoretical_maximum_height(getValueAsDouble(attributes, "theoretical_maximum_height"));
     organism_builder.add_theoretical_maximum_speed(getValueAsDouble(attributes, "theoretical_maximum_speed"));

@@ -8,8 +8,9 @@ namespace helper
 
     std::string to_binary(const unsigned int &x)
     {
-        auto num = x; std::string str = "";
-        while(num)
+        auto num = x;
+        std::string str = "";
+        while (num)
         {
             str = std::to_string(num % 2) + str;
             num >>= 1;
@@ -19,11 +20,12 @@ namespace helper
 
     unsigned int to_decimal(const std::string &str)
     {
-        unsigned int ans = 0; auto n = str.length();
-        for(int i = n - 1; i >= 0; i--)
+        unsigned int ans = 0;
+        auto n = str.length();
+        for (int i = n - 1; i >= 0; i--)
         {
-            if(str[i] == '1')
-                ans = ans + (1 << (n - i -1));
+            if (str[i] == '1')
+                ans = ans + (1 << (n - i - 1));
         }
         return ans;
     }
@@ -32,7 +34,7 @@ namespace helper
     {
         std::string str = "";
         std::uniform_int_distribution<int> dis(0, 1);
-        for(unsigned int i = 0; i < n; i++)
+        for (unsigned int i = 0; i < n; i++)
             str += std::to_string(dis(rng));
         return str;
     }
@@ -41,10 +43,10 @@ namespace helper
     {
         std::string str = "";
         std::uniform_int_distribution<int> dis(0, 35);
-        for(int i = 0; i < inp; i++)
+        for (int i = 0; i < inp; i++)
         {
             int tmp = dis(rng);
-            if(tmp >= 0 && tmp <= 9)
+            if (tmp >= 0 && tmp <= 9)
                 str += std::to_string(tmp);
             else
                 str += static_cast<char>(tmp - 10 + 'a');
@@ -59,17 +61,10 @@ namespace helper
         return {dis_width(rng), dis_height(rng)};
     }
 
-    double get_value_from_chromosome(const std::string &chromosome, const unsigned int &start, const unsigned int &length, const double &multiplier)
-    {
-        if(length == 0)
-            return 0;
-        return (to_decimal(chromosome.substr(start, length)) / static_cast<double>(1 << length)) * multiplier;
-    }
-
     double weighted_average(const std::vector<double> &values, const std::vector<double> &weights)
     {
         double num = 0.0, den = 0.0;
-        for(size_t i = 0; i < values.size(); i++)
+        for (size_t i = 0; i < values.size(); i++)
         {
             num += (values[i] * weights[i]);
             den += weights[i];
@@ -82,17 +77,17 @@ namespace helper
         std::string str3;
         std::uniform_int_distribution<int> dis(0, 1);
         int i;
-        for(i = 0; i < std::min(str1.length(), str2.length()); i++)
+        for (i = 0; i < std::min(str1.length(), str2.length()); i++)
         {
             const int x = dis(rng);
-            if(x == 0)
+            if (x == 0)
                 str3 += str1[i];
-            else if(x == 1)
+            else if (x == 1)
                 str3 += str2[i];
         }
-        if(str3.length() < str1.length())
+        if (str3.length() < str1.length())
             str3 += str1.substr(i);
-        else if(str3.length() < str2.length())
+        else if (str3.length() < str2.length())
             str3 += str2.substr(i);
         return str3;
     }
@@ -103,31 +98,16 @@ namespace helper
     {
         std::uniform_real_distribution<double> dis(0.0, 1.0);
         const double x = dis(rng);
-        if(x <= p)
+        if (x <= p)
             return 1;
         else
             return 0;
-    }
-
-    void save_CSV(const std::string &buffer, const std::string &filename)
-    {
-        std::ofstream out; out.open(filename);
-        out << buffer;
-        out.close();
-    }
-
-    void append_CSV(const std::string &buffer, const std::string &filename)
-    {
-        std::ofstream out; out.open(filename, std::ios_base::app);
-        out << buffer;
-        out.close();
     }
 
     std::filesystem::path get_ecosystem_root()
     {
         return std::filesystem::canonical(__FILE__).parent_path().parent_path().parent_path();
     }
-
 
     bool is_nonzero_nonnegative_nonnan(const double &x)
     {
@@ -141,5 +121,3 @@ namespace helper
         return kingdom + "/" + kind;
     }
 };
-
-

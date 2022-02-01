@@ -2,6 +2,8 @@ set(ECOSYSTEM_SOURCES
     # helper.cpp
     # stat_fetcher.cpp
     god.cpp
+    organism.cpp
+    helper.cpp
     # database_manager.cpp
     # schema.cpp
     # StopWatch.cpp

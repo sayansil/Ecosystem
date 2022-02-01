@@ -8,6 +8,12 @@
 
 namespace Ecosystem {
 
+struct ChromosomeStrand;
+struct ChromosomeStrandBuilder;
+
+struct ChromosomeStructure;
+struct ChromosomeStructureBuilder;
+
 struct Organism;
 struct OrganismBuilder;
 
@@ -16,6 +22,10 @@ struct SpeciesBuilder;
 
 struct World;
 struct WorldBuilder;
+
+inline const flatbuffers::TypeTable *ChromosomeStrandTypeTable();
+
+inline const flatbuffers::TypeTable *ChromosomeStructureTypeTable();
 
 inline const flatbuffers::TypeTable *OrganismTypeTable();
 
@@ -83,6 +93,170 @@ inline const char *EnumNameReproduction(Reproduction e) {
   return EnumNamesReproduction()[index];
 }
 
+struct ChromosomeStrand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef ChromosomeStrandBuilder Builder;
+  struct Traits;
+  static const flatbuffers::TypeTable *MiniReflectTypeTable() {
+    return ChromosomeStrandTypeTable();
+  }
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_CODE = 4,
+    VT_START = 6,
+    VT_LENGTH = 8
+  };
+  const flatbuffers::String *code() const {
+    return GetPointer<const flatbuffers::String *>(VT_CODE);
+  }
+  flatbuffers::String *mutable_code() {
+    return GetPointer<flatbuffers::String *>(VT_CODE);
+  }
+  bool KeyCompareLessThan(const ChromosomeStrand *o) const {
+    return *code() < *o->code();
+  }
+  int KeyCompareWithValue(const char *val) const {
+    return strcmp(code()->c_str(), val);
+  }
+  int32_t start() const {
+    return GetField<int32_t>(VT_START, 0);
+  }
+  bool mutate_start(int32_t _start = 0) {
+    return SetField<int32_t>(VT_START, _start, 0);
+  }
+  int32_t length() const {
+    return GetField<int32_t>(VT_LENGTH, 0);
+  }
+  bool mutate_length(int32_t _length = 0) {
+    return SetField<int32_t>(VT_LENGTH, _length, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffsetRequired(verifier, VT_CODE) &&
+           verifier.VerifyString(code()) &&
+           VerifyField<int32_t>(verifier, VT_START) &&
+           VerifyField<int32_t>(verifier, VT_LENGTH) &&
+           verifier.EndTable();
+  }
+};
+
+struct ChromosomeStrandBuilder {
+  typedef ChromosomeStrand Table;
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_code(flatbuffers::Offset<flatbuffers::String> code) {
+    fbb_.AddOffset(ChromosomeStrand::VT_CODE, code);
+  }
+  void add_start(int32_t start) {
+    fbb_.AddElement<int32_t>(ChromosomeStrand::VT_START, start, 0);
+  }
+  void add_length(int32_t length) {
+    fbb_.AddElement<int32_t>(ChromosomeStrand::VT_LENGTH, length, 0);
+  }
+  explicit ChromosomeStrandBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  flatbuffers::Offset<ChromosomeStrand> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<ChromosomeStrand>(end);
+    fbb_.Required(o, ChromosomeStrand::VT_CODE);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrand(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    flatbuffers::Offset<flatbuffers::String> code = 0,
+    int32_t start = 0,
+    int32_t length = 0) {
+  ChromosomeStrandBuilder builder_(_fbb);
+  builder_.add_length(length);
+  builder_.add_start(start);
+  builder_.add_code(code);
+  return builder_.Finish();
+}
+
+struct ChromosomeStrand::Traits {
+  using type = ChromosomeStrand;
+  static auto constexpr Create = CreateChromosomeStrand;
+};
+
+inline flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrandDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    const char *code = nullptr,
+    int32_t start = 0,
+    int32_t length = 0) {
+  auto code__ = code ? _fbb.CreateString(code) : 0;
+  return Ecosystem::CreateChromosomeStrand(
+      _fbb,
+      code__,
+      start,
+      length);
+}
+
+struct ChromosomeStructure FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef ChromosomeStructureBuilder Builder;
+  struct Traits;
+  static const flatbuffers::TypeTable *MiniReflectTypeTable() {
+    return ChromosomeStructureTypeTable();
+  }
+  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
+    VT_STRUCTURE = 4
+  };
+  const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *structure() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *>(VT_STRUCTURE);
+  }
+  flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *mutable_structure() {
+    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *>(VT_STRUCTURE);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_STRUCTURE) &&
+           verifier.VerifyVector(structure()) &&
+           verifier.VerifyVectorOfTables(structure()) &&
+           verifier.EndTable();
+  }
+};
+
+struct ChromosomeStructureBuilder {
+  typedef ChromosomeStructure Table;
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_structure(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> structure) {
+    fbb_.AddOffset(ChromosomeStructure::VT_STRUCTURE, structure);
+  }
+  explicit ChromosomeStructureBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  flatbuffers::Offset<ChromosomeStructure> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<ChromosomeStructure>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<ChromosomeStructure> CreateChromosomeStructure(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> structure = 0) {
+  ChromosomeStructureBuilder builder_(_fbb);
+  builder_.add_structure(structure);
+  return builder_.Finish();
+}
+
+struct ChromosomeStructure::Traits {
+  using type = ChromosomeStructure;
+  static auto constexpr Create = CreateChromosomeStructure;
+};
+
+inline flatbuffers::Offset<ChromosomeStructure> CreateChromosomeStructureDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *structure = nullptr) {
+  auto structure__ = structure ? _fbb.CreateVectorOfSortedTables<Ecosystem::ChromosomeStrand>(structure) : 0;
+  return Ecosystem::CreateChromosomeStructure(
+      _fbb,
+      structure__);
+}
+
 struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef OrganismBuilder Builder;
   struct Traits;
@@ -93,71 +267,72 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_KIND = 4,
     VT_KINGDOM = 6,
     VT_CHROMOSOME_NUMBER = 8,
-    VT_FOOD_CHAIN_RANK = 10,
-    VT_IS_ASEXUAL = 12,
-    VT_AGE_FITNESS_ON_DEATH_RATIO = 14,
-    VT_CONCEIVING_PROBABILITY = 16,
-    VT_MATING_PROBABILITY = 18,
-    VT_MATING_AGE_START = 20,
-    VT_MATING_AGE_END = 22,
-    VT_MAX_AGE = 24,
-    VT_MUTATION_PROBABILITY = 26,
-    VT_OFFSPRINGS_FACTOR = 28,
-    VT_HEIGHT_ON_SPEED = 30,
-    VT_HEIGHT_ON_STAMINA = 32,
-    VT_HEIGHT_ON_VITALITY = 34,
-    VT_WEIGHT_ON_SPEED = 36,
-    VT_WEIGHT_ON_STAMINA = 38,
-    VT_WEIGHT_ON_VITALITY = 40,
-    VT_VITALITY_ON_APPETITE = 42,
-    VT_VITALITY_ON_SPEED = 44,
-    VT_STAMINA_ON_APPETITE = 46,
-    VT_STAMINA_ON_SPEED = 48,
-    VT_THEORETICAL_MAXIMUM_BASE_APPETITE = 50,
-    VT_THEORETICAL_MAXIMUM_BASE_HEIGHT = 52,
-    VT_THEORETICAL_MAXIMUM_BASE_SPEED = 54,
-    VT_THEORETICAL_MAXIMUM_BASE_STAMINA = 56,
-    VT_THEORETICAL_MAHEXIMUM_BASE_VITALITY = 58,
-    VT_THEORETICAL_MAXIMUM_BASE_WEIGHT = 60,
-    VT_THEORETICAL_MAXIMUM_HEIGHT = 62,
-    VT_THEORETICAL_MAXIMUM_SPEED = 64,
-    VT_THEORETICAL_MAXIMUM_WEIGHT = 66,
-    VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER = 68,
-    VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER = 70,
-    VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER = 72,
-    VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER = 74,
-    VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER = 76,
-    VT_NAME = 78,
-    VT_CHROMOSOME = 80,
-    VT_GENDER = 82,
-    VT_GENERATION = 84,
-    VT_IMMUNITY = 86,
-    VT_BASE_APPETITE = 88,
-    VT_BASE_HEIGHT = 90,
-    VT_BASE_SPEED = 92,
-    VT_BASE_STAMINA = 94,
-    VT_BASE_VITALITY = 96,
-    VT_BASE_WEIGHT = 98,
-    VT_HEIGHT_MULTIPLIER = 100,
-    VT_SPEED_MULTIPLIER = 102,
-    VT_STAMINA_MULTIPLIER = 104,
-    VT_VITALITY_MULTIPLIER = 106,
-    VT_WEIGHT_MULTIPLIER = 108,
-    VT_MAX_HEIGHT = 110,
-    VT_MAX_WEIGHT = 112,
-    VT_AGE = 114,
-    VT_HEIGHT = 116,
-    VT_WEIGHT = 118,
-    VT_AGE_DEATH_FACTOR = 120,
-    VT_FITNESS_DEATH_FACTOR = 122,
-    VT_DEATH_FACTOR = 124,
-    VT_STATIC_FITNESS = 126,
-    VT_MAX_APPETITE_AT_AGE = 128,
-    VT_MAX_SPEED_AT_AGE = 130,
-    VT_MAX_STAMINA_AT_AGE = 132,
-    VT_MAX_VITALITY_AT_AGE = 134,
-    VT_VISION_RADIUS = 136,
-    VT_SLEEP_RESTORE_FACTOR = 138
+    VT_CHROMOSOME_STRUCTURE = 10,
+    VT_FOOD_CHAIN_RANK = 12,
+    VT_IS_ASEXUAL = 14,
+    VT_AGE_FITNESS_ON_DEATH_RATIO = 16,
+    VT_CONCEIVING_PROBABILITY = 18,
+    VT_MATING_PROBABILITY = 20,
+    VT_MATING_AGE_START = 22,
+    VT_MATING_AGE_END = 24,
+    VT_MAX_AGE = 26,
+    VT_MUTATION_PROBABILITY = 28,
+    VT_OFFSPRINGS_FACTOR = 30,
+    VT_HEIGHT_ON_SPEED = 32,
+    VT_HEIGHT_ON_STAMINA = 34,
+    VT_HEIGHT_ON_VITALITY = 36,
+    VT_WEIGHT_ON_SPEED = 38,
+    VT_WEIGHT_ON_STAMINA = 40,
+    VT_WEIGHT_ON_VITALITY = 42,
+    VT_VITALITY_ON_APPETITE = 44,
+    VT_VITALITY_ON_SPEED = 46,
+    VT_STAMINA_ON_APPETITE = 48,
+    VT_STAMINA_ON_SPEED = 50,
+    VT_THEORETICAL_MAXIMUM_BASE_APPETITE = 52,
+    VT_THEORETICAL_MAXIMUM_BASE_HEIGHT = 54,
+    VT_THEORETICAL_MAXIMUM_BASE_SPEED = 56,
+    VT_THEORETICAL_MAXIMUM_BASE_STAMINA = 58,
+    VT_THEORETICAL_MAXIMUM_BASE_VITALITY = 60,
+    VT_THEORETICAL_MAXIMUM_BASE_WEIGHT = 62,
+    VT_THEORETICAL_MAXIMUM_HEIGHT = 64,
+    VT_THEORETICAL_MAXIMUM_SPEED = 66,
+    VT_THEORETICAL_MAXIMUM_WEIGHT = 68,
+    VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER = 70,
+    VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER = 72,
+    VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER = 74,
+    VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER = 76,
+    VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER = 78,
+    VT_NAME = 80,
+    VT_CHROMOSOME = 82,
+    VT_GENDER = 84,
+    VT_GENERATION = 86,
+    VT_IMMUNITY = 88,
+    VT_BASE_APPETITE = 90,
+    VT_BASE_HEIGHT = 92,
+    VT_BASE_SPEED = 94,
+    VT_BASE_STAMINA = 96,
+    VT_BASE_VITALITY = 98,
+    VT_BASE_WEIGHT = 100,
+    VT_HEIGHT_MULTIPLIER = 102,
+    VT_SPEED_MULTIPLIER = 104,
+    VT_STAMINA_MULTIPLIER = 106,
+    VT_VITALITY_MULTIPLIER = 108,
+    VT_WEIGHT_MULTIPLIER = 110,
+    VT_MAX_HEIGHT = 112,
+    VT_MAX_WEIGHT = 114,
+    VT_AGE = 116,
+    VT_HEIGHT = 118,
+    VT_WEIGHT = 120,
+    VT_AGE_DEATH_FACTOR = 122,
+    VT_FITNESS_DEATH_FACTOR = 124,
+    VT_DEATH_FACTOR = 126,
+    VT_STATIC_FITNESS = 128,
+    VT_MAX_APPETITE_AT_AGE = 130,
+    VT_MAX_SPEED_AT_AGE = 132,
+    VT_MAX_STAMINA_AT_AGE = 134,
+    VT_MAX_VITALITY_AT_AGE = 136,
+    VT_VISION_RADIUS = 138,
+    VT_SLEEP_RESTORE_FACTOR = 140
   };
   /// Fixed for a species
   const flatbuffers::String *kind() const {
@@ -177,6 +352,12 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool mutate_chromosome_number(uint64_t _chromosome_number = 0) {
     return SetField<uint64_t>(VT_CHROMOSOME_NUMBER, _chromosome_number, 0);
+  }
+  const Ecosystem::ChromosomeStructure *chromosome_structure() const {
+    return GetPointer<const Ecosystem::ChromosomeStructure *>(VT_CHROMOSOME_STRUCTURE);
+  }
+  Ecosystem::ChromosomeStructure *mutable_chromosome_structure() {
+    return GetPointer<Ecosystem::ChromosomeStructure *>(VT_CHROMOSOME_STRUCTURE);
   }
   uint64_t food_chain_rank() const {
     return GetField<uint64_t>(VT_FOOD_CHAIN_RANK, 0);
@@ -322,11 +503,11 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_theoretical_maximum_base_stamina(double _theoretical_maximum_base_stamina = 0.0) {
     return SetField<double>(VT_THEORETICAL_MAXIMUM_BASE_STAMINA, _theoretical_maximum_base_stamina, 0.0);
   }
-  double theoretical_maheximum_base_vitality() const {
-    return GetField<double>(VT_THEORETICAL_MAHEXIMUM_BASE_VITALITY, 0.0);
+  double theoretical_maximum_base_vitality() const {
+    return GetField<double>(VT_THEORETICAL_MAXIMUM_BASE_VITALITY, 0.0);
   }
-  bool mutate_theoretical_maheximum_base_vitality(double _theoretical_maheximum_base_vitality = 0.0) {
-    return SetField<double>(VT_THEORETICAL_MAHEXIMUM_BASE_VITALITY, _theoretical_maheximum_base_vitality, 0.0);
+  bool mutate_theoretical_maximum_base_vitality(double _theoretical_maximum_base_vitality = 0.0) {
+    return SetField<double>(VT_THEORETICAL_MAXIMUM_BASE_VITALITY, _theoretical_maximum_base_vitality, 0.0);
   }
   double theoretical_maximum_base_weight() const {
     return GetField<double>(VT_THEORETICAL_MAXIMUM_BASE_WEIGHT, 0.0);
@@ -584,6 +765,8 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffsetRequired(verifier, VT_KINGDOM) &&
            verifier.VerifyString(kingdom()) &&
            VerifyField<uint64_t>(verifier, VT_CHROMOSOME_NUMBER) &&
+           VerifyOffset(verifier, VT_CHROMOSOME_STRUCTURE) &&
+           verifier.VerifyTable(chromosome_structure()) &&
            VerifyField<uint64_t>(verifier, VT_FOOD_CHAIN_RANK) &&
            VerifyField<int8_t>(verifier, VT_IS_ASEXUAL) &&
            VerifyField<double>(verifier, VT_AGE_FITNESS_ON_DEATH_RATIO) &&
@@ -608,7 +791,7 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<double>(verifier, VT_THEORETICAL_MAXIMUM_BASE_HEIGHT) &&
            VerifyField<double>(verifier, VT_THEORETICAL_MAXIMUM_BASE_SPEED) &&
            VerifyField<double>(verifier, VT_THEORETICAL_MAXIMUM_BASE_STAMINA) &&
-           VerifyField<double>(verifier, VT_THEORETICAL_MAHEXIMUM_BASE_VITALITY) &&
+           VerifyField<double>(verifier, VT_THEORETICAL_MAXIMUM_BASE_VITALITY) &&
            VerifyField<double>(verifier, VT_THEORETICAL_MAXIMUM_BASE_WEIGHT) &&
            VerifyField<double>(verifier, VT_THEORETICAL_MAXIMUM_HEIGHT) &&
            VerifyField<double>(verifier, VT_THEORETICAL_MAXIMUM_SPEED) &&
@@ -667,6 +850,9 @@ struct OrganismBuilder {
   }
   void add_chromosome_number(uint64_t chromosome_number) {
     fbb_.AddElement<uint64_t>(Organism::VT_CHROMOSOME_NUMBER, chromosome_number, 0);
+  }
+  void add_chromosome_structure(flatbuffers::Offset<Ecosystem::ChromosomeStructure> chromosome_structure) {
+    fbb_.AddOffset(Organism::VT_CHROMOSOME_STRUCTURE, chromosome_structure);
   }
   void add_food_chain_rank(uint64_t food_chain_rank) {
     fbb_.AddElement<uint64_t>(Organism::VT_FOOD_CHAIN_RANK, food_chain_rank, 0);
@@ -740,8 +926,8 @@ struct OrganismBuilder {
   void add_theoretical_maximum_base_stamina(double theoretical_maximum_base_stamina) {
     fbb_.AddElement<double>(Organism::VT_THEORETICAL_MAXIMUM_BASE_STAMINA, theoretical_maximum_base_stamina, 0.0);
   }
-  void add_theoretical_maheximum_base_vitality(double theoretical_maheximum_base_vitality) {
-    fbb_.AddElement<double>(Organism::VT_THEORETICAL_MAHEXIMUM_BASE_VITALITY, theoretical_maheximum_base_vitality, 0.0);
+  void add_theoretical_maximum_base_vitality(double theoretical_maximum_base_vitality) {
+    fbb_.AddElement<double>(Organism::VT_THEORETICAL_MAXIMUM_BASE_VITALITY, theoretical_maximum_base_vitality, 0.0);
   }
   void add_theoretical_maximum_base_weight(double theoretical_maximum_base_weight) {
     fbb_.AddElement<double>(Organism::VT_THEORETICAL_MAXIMUM_BASE_WEIGHT, theoretical_maximum_base_weight, 0.0);
@@ -883,6 +1069,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     flatbuffers::Offset<flatbuffers::String> kind = 0,
     flatbuffers::Offset<flatbuffers::String> kingdom = 0,
     uint64_t chromosome_number = 0,
+    flatbuffers::Offset<Ecosystem::ChromosomeStructure> chromosome_structure = 0,
     uint64_t food_chain_rank = 0,
     Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
     double age_fitness_on_death_ratio = 0.0,
@@ -907,7 +1094,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     double theoretical_maximum_base_height = 0.0,
     double theoretical_maximum_base_speed = 0.0,
     double theoretical_maximum_base_stamina = 0.0,
-    double theoretical_maheximum_base_vitality = 0.0,
+    double theoretical_maximum_base_vitality = 0.0,
     double theoretical_maximum_base_weight = 0.0,
     double theoretical_maximum_height = 0.0,
     double theoretical_maximum_speed = 0.0,
@@ -986,7 +1173,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
   builder_.add_theoretical_maximum_speed(theoretical_maximum_speed);
   builder_.add_theoretical_maximum_height(theoretical_maximum_height);
   builder_.add_theoretical_maximum_base_weight(theoretical_maximum_base_weight);
-  builder_.add_theoretical_maheximum_base_vitality(theoretical_maheximum_base_vitality);
+  builder_.add_theoretical_maximum_base_vitality(theoretical_maximum_base_vitality);
   builder_.add_theoretical_maximum_base_stamina(theoretical_maximum_base_stamina);
   builder_.add_theoretical_maximum_base_speed(theoretical_maximum_base_speed);
   builder_.add_theoretical_maximum_base_height(theoretical_maximum_base_height);
@@ -1013,6 +1200,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
   builder_.add_chromosome_number(chromosome_number);
   builder_.add_chromosome(chromosome);
   builder_.add_name(name);
+  builder_.add_chromosome_structure(chromosome_structure);
   builder_.add_kingdom(kingdom);
   builder_.add_kind(kind);
   builder_.add_gender(gender);
@@ -1030,6 +1218,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     const char *kind = nullptr,
     const char *kingdom = nullptr,
     uint64_t chromosome_number = 0,
+    flatbuffers::Offset<Ecosystem::ChromosomeStructure> chromosome_structure = 0,
     uint64_t food_chain_rank = 0,
     Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
     double age_fitness_on_death_ratio = 0.0,
@@ -1054,7 +1243,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     double theoretical_maximum_base_height = 0.0,
     double theoretical_maximum_base_speed = 0.0,
     double theoretical_maximum_base_stamina = 0.0,
-    double theoretical_maheximum_base_vitality = 0.0,
+    double theoretical_maximum_base_vitality = 0.0,
     double theoretical_maximum_base_weight = 0.0,
     double theoretical_maximum_height = 0.0,
     double theoretical_maximum_speed = 0.0,
@@ -1104,6 +1293,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       kind__,
       kingdom__,
       chromosome_number,
+      chromosome_structure,
       food_chain_rank,
       is_asexual,
       age_fitness_on_death_ratio,
@@ -1128,7 +1318,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       theoretical_maximum_base_height,
       theoretical_maximum_base_speed,
       theoretical_maximum_base_stamina,
-      theoretical_maheximum_base_vitality,
+      theoretical_maximum_base_vitality,
       theoretical_maximum_base_weight,
       theoretical_maximum_height,
       theoretical_maximum_speed,
@@ -1401,48 +1591,82 @@ inline const flatbuffers::TypeTable *ReproductionTypeTable() {
   return &tt;
 }
 
+inline const flatbuffers::TypeTable *ChromosomeStrandTypeTable() {
+  static const flatbuffers::TypeCode type_codes[] = {
+    { flatbuffers::ET_STRING, 0, -1 },
+    { flatbuffers::ET_INT, 0, -1 },
+    { flatbuffers::ET_INT, 0, -1 }
+  };
+  static const char * const names[] = {
+    "code",
+    "start",
+    "length"
+  };
+  static const flatbuffers::TypeTable tt = {
+    flatbuffers::ST_TABLE, 3, type_codes, nullptr, nullptr, nullptr, names
+  };
+  return &tt;
+}
+
+inline const flatbuffers::TypeTable *ChromosomeStructureTypeTable() {
+  static const flatbuffers::TypeCode type_codes[] = {
+    { flatbuffers::ET_SEQUENCE, 1, 0 }
+  };
+  static const flatbuffers::TypeFunction type_refs[] = {
+    Ecosystem::ChromosomeStrandTypeTable
+  };
+  static const char * const names[] = {
+    "structure"
+  };
+  static const flatbuffers::TypeTable tt = {
+    flatbuffers::ST_TABLE, 1, type_codes, type_refs, nullptr, nullptr, names
+  };
+  return &tt;
+}
+
 inline const flatbuffers::TypeTable *OrganismTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_SEQUENCE, 0, 0 },
     { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_CHAR, 0, 0 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_STRING, 0, -1 },
-    { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_CHAR, 0, 1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_STRING, 0, -1 },
+    { flatbuffers::ET_STRING, 0, -1 },
+    { flatbuffers::ET_CHAR, 0, 2 },
     { flatbuffers::ET_ULONG, 0, -1 },
     { flatbuffers::ET_DOUBLE, 0, -1 },
     { flatbuffers::ET_DOUBLE, 0, -1 },
@@ -1473,6 +1697,7 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     { flatbuffers::ET_DOUBLE, 0, -1 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
+    Ecosystem::ChromosomeStructureTypeTable,
     Ecosystem::ReproductionTypeTable,
     Ecosystem::GenderTypeTable
   };
@@ -1480,6 +1705,7 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "kind",
     "kingdom",
     "chromosome_number",
+    "chromosome_structure",
     "food_chain_rank",
     "is_asexual",
     "age_fitness_on_death_ratio",
@@ -1504,7 +1730,7 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "theoretical_maximum_base_height",
     "theoretical_maximum_base_speed",
     "theoretical_maximum_base_stamina",
-    "theoretical_maheximum_base_vitality",
+    "theoretical_maximum_base_vitality",
     "theoretical_maximum_base_weight",
     "theoretical_maximum_height",
     "theoretical_maximum_speed",
@@ -1547,7 +1773,7 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "sleep_restore_factor"
   };
   static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 68, type_codes, type_refs, nullptr, nullptr, names
+    flatbuffers::ST_TABLE, 69, type_codes, type_refs, nullptr, nullptr, names
   };
   return &tt;
 }
