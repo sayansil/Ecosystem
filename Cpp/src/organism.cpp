@@ -6,8 +6,8 @@ namespace organism_opts
     double get_value_from_chromosome(const Ecosystem::Organism *organism, const std::string &code, const double &multiplier)
     {
         std::string chromosome = organism->chromosome()->str();
-        int start = organism->chromosome_structure()->structure()->LookupByKey(code.c_str())->start();
-        int length = organism->chromosome_structure()->structure()->LookupByKey(code.c_str())->length();
+        int start = organism->chromosome_structure()->LookupByKey(code.c_str())->start();
+        int length = organism->chromosome_structure()->LookupByKey(code.c_str())->length();
 
         if (length == 0)
             return 0;

@@ -32,7 +32,18 @@ public:
      *         Available to users         *
      **************************************/
 
-    void createWorld(const std::vector<std::unordered_map<std::string, std::string>> &organisms);
+    void createWorld(std::vector<std::unordered_map<std::string, std::string>> &organisms);
+    flatbuffers::Offset<Ecosystem::Organism> createOrganism(
+        flatbuffers::FlatBufferBuilder &builder,
+        Ecosystem::OrganismBuilder &organism_builder,
+        const std::string &kind,
+        const std::string &kingdom,
+        const uint64_t &age,
+        const std::string &name,
+        const std::string &chromosome,
+        const uint64_t &generation,
+        const std::pair<uint64_t, uint64_t> &XY,
+        const int8_t &monitor);
     void displayWorldMetadata();
 
     // void catastrophe();
@@ -71,6 +82,13 @@ private:
 
     // bool mate(const std::string&, const std::string&, std::vector<std::pair<std::string, ENTITY>>&, const nlohmann::json & = nlohmann::json());
     // void update_species(const std::string&);
+    // template <typename T>
+    // void assignBaseStats(
+    //     const std::string &kingdom,
+    //     const std::string &kind,
+    //     const T *basePtr)
+    // {
+    // }
 };
 
 #endif // GOD_HPP

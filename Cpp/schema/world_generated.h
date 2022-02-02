@@ -11,9 +11,6 @@ namespace Ecosystem {
 struct ChromosomeStrand;
 struct ChromosomeStrandBuilder;
 
-struct ChromosomeStructure;
-struct ChromosomeStructureBuilder;
-
 struct Organism;
 struct OrganismBuilder;
 
@@ -24,8 +21,6 @@ struct World;
 struct WorldBuilder;
 
 inline const flatbuffers::TypeTable *ChromosomeStrandTypeTable();
-
-inline const flatbuffers::TypeTable *ChromosomeStructureTypeTable();
 
 inline const flatbuffers::TypeTable *OrganismTypeTable();
 
@@ -91,6 +86,69 @@ inline const char *EnumNameReproduction(Reproduction e) {
   if (flatbuffers::IsOutRange(e, Reproduction::Sexual, Reproduction::Asexual)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesReproduction()[index];
+}
+
+enum class Monitor : int8_t {
+  None = 0,
+  Simulation = 1,
+  MIN = None,
+  MAX = Simulation
+};
+
+inline const Monitor (&EnumValuesMonitor())[2] {
+  static const Monitor values[] = {
+    Monitor::None,
+    Monitor::Simulation
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesMonitor() {
+  static const char * const names[3] = {
+    "None",
+    "Simulation",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameMonitor(Monitor e) {
+  if (flatbuffers::IsOutRange(e, Monitor::None, Monitor::Simulation)) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesMonitor()[index];
+}
+
+enum class Sleep : int8_t {
+  Awake = 0,
+  Drowsy = 1,
+  Asleep = 2,
+  MIN = Awake,
+  MAX = Asleep
+};
+
+inline const Sleep (&EnumValuesSleep())[3] {
+  static const Sleep values[] = {
+    Sleep::Awake,
+    Sleep::Drowsy,
+    Sleep::Asleep
+  };
+  return values;
+}
+
+inline const char * const *EnumNamesSleep() {
+  static const char * const names[4] = {
+    "Awake",
+    "Drowsy",
+    "Asleep",
+    nullptr
+  };
+  return names;
+}
+
+inline const char *EnumNameSleep(Sleep e) {
+  if (flatbuffers::IsOutRange(e, Sleep::Awake, Sleep::Asleep)) return "";
+  const size_t index = static_cast<size_t>(e);
+  return EnumNamesSleep()[index];
 }
 
 struct ChromosomeStrand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -193,70 +251,6 @@ inline flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrandDirect(
       length);
 }
 
-struct ChromosomeStructure FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
-  typedef ChromosomeStructureBuilder Builder;
-  struct Traits;
-  static const flatbuffers::TypeTable *MiniReflectTypeTable() {
-    return ChromosomeStructureTypeTable();
-  }
-  enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_STRUCTURE = 4
-  };
-  const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *structure() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *>(VT_STRUCTURE);
-  }
-  flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *mutable_structure() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *>(VT_STRUCTURE);
-  }
-  bool Verify(flatbuffers::Verifier &verifier) const {
-    return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_STRUCTURE) &&
-           verifier.VerifyVector(structure()) &&
-           verifier.VerifyVectorOfTables(structure()) &&
-           verifier.EndTable();
-  }
-};
-
-struct ChromosomeStructureBuilder {
-  typedef ChromosomeStructure Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_structure(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> structure) {
-    fbb_.AddOffset(ChromosomeStructure::VT_STRUCTURE, structure);
-  }
-  explicit ChromosomeStructureBuilder(flatbuffers::FlatBufferBuilder &_fbb)
-        : fbb_(_fbb) {
-    start_ = fbb_.StartTable();
-  }
-  flatbuffers::Offset<ChromosomeStructure> Finish() {
-    const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<ChromosomeStructure>(end);
-    return o;
-  }
-};
-
-inline flatbuffers::Offset<ChromosomeStructure> CreateChromosomeStructure(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> structure = 0) {
-  ChromosomeStructureBuilder builder_(_fbb);
-  builder_.add_structure(structure);
-  return builder_.Finish();
-}
-
-struct ChromosomeStructure::Traits {
-  using type = ChromosomeStructure;
-  static auto constexpr Create = CreateChromosomeStructure;
-};
-
-inline flatbuffers::Offset<ChromosomeStructure> CreateChromosomeStructureDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *structure = nullptr) {
-  auto structure__ = structure ? _fbb.CreateVectorOfSortedTables<Ecosystem::ChromosomeStrand>(structure) : 0;
-  return Ecosystem::CreateChromosomeStructure(
-      _fbb,
-      structure__);
-}
-
 struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   typedef OrganismBuilder Builder;
   struct Traits;
@@ -267,72 +261,80 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_KIND = 4,
     VT_KINGDOM = 6,
     VT_CHROMOSOME_NUMBER = 8,
-    VT_CHROMOSOME_STRUCTURE = 10,
-    VT_FOOD_CHAIN_RANK = 12,
-    VT_IS_ASEXUAL = 14,
-    VT_AGE_FITNESS_ON_DEATH_RATIO = 16,
-    VT_CONCEIVING_PROBABILITY = 18,
-    VT_MATING_PROBABILITY = 20,
-    VT_MATING_AGE_START = 22,
-    VT_MATING_AGE_END = 24,
-    VT_MAX_AGE = 26,
-    VT_MUTATION_PROBABILITY = 28,
-    VT_OFFSPRINGS_FACTOR = 30,
-    VT_HEIGHT_ON_SPEED = 32,
-    VT_HEIGHT_ON_STAMINA = 34,
-    VT_HEIGHT_ON_VITALITY = 36,
-    VT_WEIGHT_ON_SPEED = 38,
-    VT_WEIGHT_ON_STAMINA = 40,
-    VT_WEIGHT_ON_VITALITY = 42,
-    VT_VITALITY_ON_APPETITE = 44,
-    VT_VITALITY_ON_SPEED = 46,
-    VT_STAMINA_ON_APPETITE = 48,
-    VT_STAMINA_ON_SPEED = 50,
-    VT_THEORETICAL_MAXIMUM_BASE_APPETITE = 52,
-    VT_THEORETICAL_MAXIMUM_BASE_HEIGHT = 54,
-    VT_THEORETICAL_MAXIMUM_BASE_SPEED = 56,
-    VT_THEORETICAL_MAXIMUM_BASE_STAMINA = 58,
-    VT_THEORETICAL_MAXIMUM_BASE_VITALITY = 60,
-    VT_THEORETICAL_MAXIMUM_BASE_WEIGHT = 62,
-    VT_THEORETICAL_MAXIMUM_HEIGHT = 64,
-    VT_THEORETICAL_MAXIMUM_SPEED = 66,
-    VT_THEORETICAL_MAXIMUM_WEIGHT = 68,
-    VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER = 70,
-    VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER = 72,
-    VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER = 74,
-    VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER = 76,
-    VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER = 78,
-    VT_NAME = 80,
-    VT_CHROMOSOME = 82,
-    VT_GENDER = 84,
-    VT_GENERATION = 86,
-    VT_IMMUNITY = 88,
-    VT_BASE_APPETITE = 90,
-    VT_BASE_HEIGHT = 92,
-    VT_BASE_SPEED = 94,
-    VT_BASE_STAMINA = 96,
-    VT_BASE_VITALITY = 98,
-    VT_BASE_WEIGHT = 100,
-    VT_HEIGHT_MULTIPLIER = 102,
-    VT_SPEED_MULTIPLIER = 104,
-    VT_STAMINA_MULTIPLIER = 106,
-    VT_VITALITY_MULTIPLIER = 108,
-    VT_WEIGHT_MULTIPLIER = 110,
-    VT_MAX_HEIGHT = 112,
-    VT_MAX_WEIGHT = 114,
-    VT_AGE = 116,
-    VT_HEIGHT = 118,
-    VT_WEIGHT = 120,
-    VT_AGE_DEATH_FACTOR = 122,
-    VT_FITNESS_DEATH_FACTOR = 124,
-    VT_DEATH_FACTOR = 126,
-    VT_STATIC_FITNESS = 128,
-    VT_MAX_APPETITE_AT_AGE = 130,
-    VT_MAX_SPEED_AT_AGE = 132,
-    VT_MAX_STAMINA_AT_AGE = 134,
-    VT_MAX_VITALITY_AT_AGE = 136,
-    VT_VISION_RADIUS = 138,
-    VT_SLEEP_RESTORE_FACTOR = 140
+    VT_MONITOR = 10,
+    VT_CHROMOSOME_STRUCTURE = 12,
+    VT_FOOD_CHAIN_RANK = 14,
+    VT_IS_ASEXUAL = 16,
+    VT_AGE_FITNESS_ON_DEATH_RATIO = 18,
+    VT_CONCEIVING_PROBABILITY = 20,
+    VT_MATING_PROBABILITY = 22,
+    VT_MATING_AGE_START = 24,
+    VT_MATING_AGE_END = 26,
+    VT_MAX_AGE = 28,
+    VT_MUTATION_PROBABILITY = 30,
+    VT_OFFSPRINGS_FACTOR = 32,
+    VT_HEIGHT_ON_SPEED = 34,
+    VT_HEIGHT_ON_STAMINA = 36,
+    VT_HEIGHT_ON_VITALITY = 38,
+    VT_WEIGHT_ON_SPEED = 40,
+    VT_WEIGHT_ON_STAMINA = 42,
+    VT_WEIGHT_ON_VITALITY = 44,
+    VT_VITALITY_ON_APPETITE = 46,
+    VT_VITALITY_ON_SPEED = 48,
+    VT_STAMINA_ON_APPETITE = 50,
+    VT_STAMINA_ON_SPEED = 52,
+    VT_THEORETICAL_MAXIMUM_BASE_APPETITE = 54,
+    VT_THEORETICAL_MAXIMUM_BASE_HEIGHT = 56,
+    VT_THEORETICAL_MAXIMUM_BASE_SPEED = 58,
+    VT_THEORETICAL_MAXIMUM_BASE_STAMINA = 60,
+    VT_THEORETICAL_MAXIMUM_BASE_VITALITY = 62,
+    VT_THEORETICAL_MAXIMUM_BASE_WEIGHT = 64,
+    VT_THEORETICAL_MAXIMUM_HEIGHT = 66,
+    VT_THEORETICAL_MAXIMUM_SPEED = 68,
+    VT_THEORETICAL_MAXIMUM_WEIGHT = 70,
+    VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER = 72,
+    VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER = 74,
+    VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER = 76,
+    VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER = 78,
+    VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER = 80,
+    VT_NAME = 82,
+    VT_CHROMOSOME = 84,
+    VT_GENDER = 86,
+    VT_GENERATION = 88,
+    VT_IMMUNITY = 90,
+    VT_BASE_APPETITE = 92,
+    VT_BASE_HEIGHT = 94,
+    VT_BASE_SPEED = 96,
+    VT_BASE_STAMINA = 98,
+    VT_BASE_VITALITY = 100,
+    VT_BASE_WEIGHT = 102,
+    VT_HEIGHT_MULTIPLIER = 104,
+    VT_SPEED_MULTIPLIER = 106,
+    VT_STAMINA_MULTIPLIER = 108,
+    VT_VITALITY_MULTIPLIER = 110,
+    VT_WEIGHT_MULTIPLIER = 112,
+    VT_MAX_HEIGHT = 114,
+    VT_MAX_WEIGHT = 116,
+    VT_AGE = 118,
+    VT_HEIGHT = 120,
+    VT_WEIGHT = 122,
+    VT_AGE_DEATH_FACTOR = 124,
+    VT_FITNESS_DEATH_FACTOR = 126,
+    VT_DEATH_FACTOR = 128,
+    VT_STATIC_FITNESS = 130,
+    VT_MAX_APPETITE_AT_AGE = 132,
+    VT_MAX_SPEED_AT_AGE = 134,
+    VT_MAX_STAMINA_AT_AGE = 136,
+    VT_MAX_VITALITY_AT_AGE = 138,
+    VT_APPETITE = 140,
+    VT_SPEED = 142,
+    VT_STAMINA = 144,
+    VT_VITALITY = 146,
+    VT_X = 148,
+    VT_Y = 150,
+    VT_VISION_RADIUS = 152,
+    VT_SLEEP_RESTORE_FACTOR = 154,
+    VT_ASLEEP = 156
   };
   /// Fixed for a species
   const flatbuffers::String *kind() const {
@@ -353,11 +355,17 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_chromosome_number(uint64_t _chromosome_number = 0) {
     return SetField<uint64_t>(VT_CHROMOSOME_NUMBER, _chromosome_number, 0);
   }
-  const Ecosystem::ChromosomeStructure *chromosome_structure() const {
-    return GetPointer<const Ecosystem::ChromosomeStructure *>(VT_CHROMOSOME_STRUCTURE);
+  Ecosystem::Monitor monitor() const {
+    return static_cast<Ecosystem::Monitor>(GetField<int8_t>(VT_MONITOR, 0));
   }
-  Ecosystem::ChromosomeStructure *mutable_chromosome_structure() {
-    return GetPointer<Ecosystem::ChromosomeStructure *>(VT_CHROMOSOME_STRUCTURE);
+  bool mutate_monitor(Ecosystem::Monitor _monitor = static_cast<Ecosystem::Monitor>(0)) {
+    return SetField<int8_t>(VT_MONITOR, static_cast<int8_t>(_monitor), 0);
+  }
+  const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *chromosome_structure() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *>(VT_CHROMOSOME_STRUCTURE);
+  }
+  flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *mutable_chromosome_structure() {
+    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *>(VT_CHROMOSOME_STRUCTURE);
   }
   uint64_t food_chain_rank() const {
     return GetField<uint64_t>(VT_FOOD_CHAIN_RANK, 0);
@@ -745,6 +753,42 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_max_vitality_at_age(double _max_vitality_at_age = 0.0) {
     return SetField<double>(VT_MAX_VITALITY_AT_AGE, _max_vitality_at_age, 0.0);
   }
+  double appetite() const {
+    return GetField<double>(VT_APPETITE, 0.0);
+  }
+  bool mutate_appetite(double _appetite = 0.0) {
+    return SetField<double>(VT_APPETITE, _appetite, 0.0);
+  }
+  double speed() const {
+    return GetField<double>(VT_SPEED, 0.0);
+  }
+  bool mutate_speed(double _speed = 0.0) {
+    return SetField<double>(VT_SPEED, _speed, 0.0);
+  }
+  double stamina() const {
+    return GetField<double>(VT_STAMINA, 0.0);
+  }
+  bool mutate_stamina(double _stamina = 0.0) {
+    return SetField<double>(VT_STAMINA, _stamina, 0.0);
+  }
+  double vitality() const {
+    return GetField<double>(VT_VITALITY, 0.0);
+  }
+  bool mutate_vitality(double _vitality = 0.0) {
+    return SetField<double>(VT_VITALITY, _vitality, 0.0);
+  }
+  uint64_t X() const {
+    return GetField<uint64_t>(VT_X, 0);
+  }
+  bool mutate_X(uint64_t _X = 0) {
+    return SetField<uint64_t>(VT_X, _X, 0);
+  }
+  uint64_t Y() const {
+    return GetField<uint64_t>(VT_Y, 0);
+  }
+  bool mutate_Y(uint64_t _Y = 0) {
+    return SetField<uint64_t>(VT_Y, _Y, 0);
+  }
   /// Miscellaneous attributes
   double vision_radius() const {
     return GetField<double>(VT_VISION_RADIUS, 0.0);
@@ -758,6 +802,12 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_sleep_restore_factor(double _sleep_restore_factor = 0.0) {
     return SetField<double>(VT_SLEEP_RESTORE_FACTOR, _sleep_restore_factor, 0.0);
   }
+  Ecosystem::Sleep asleep() const {
+    return static_cast<Ecosystem::Sleep>(GetField<int8_t>(VT_ASLEEP, 0));
+  }
+  bool mutate_asleep(Ecosystem::Sleep _asleep = static_cast<Ecosystem::Sleep>(0)) {
+    return SetField<int8_t>(VT_ASLEEP, static_cast<int8_t>(_asleep), 0);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_KIND) &&
@@ -765,8 +815,10 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffsetRequired(verifier, VT_KINGDOM) &&
            verifier.VerifyString(kingdom()) &&
            VerifyField<uint64_t>(verifier, VT_CHROMOSOME_NUMBER) &&
+           VerifyField<int8_t>(verifier, VT_MONITOR) &&
            VerifyOffset(verifier, VT_CHROMOSOME_STRUCTURE) &&
-           verifier.VerifyTable(chromosome_structure()) &&
+           verifier.VerifyVector(chromosome_structure()) &&
+           verifier.VerifyVectorOfTables(chromosome_structure()) &&
            VerifyField<uint64_t>(verifier, VT_FOOD_CHAIN_RANK) &&
            VerifyField<int8_t>(verifier, VT_IS_ASEXUAL) &&
            VerifyField<double>(verifier, VT_AGE_FITNESS_ON_DEATH_RATIO) &&
@@ -832,8 +884,15 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<double>(verifier, VT_MAX_SPEED_AT_AGE) &&
            VerifyField<double>(verifier, VT_MAX_STAMINA_AT_AGE) &&
            VerifyField<double>(verifier, VT_MAX_VITALITY_AT_AGE) &&
+           VerifyField<double>(verifier, VT_APPETITE) &&
+           VerifyField<double>(verifier, VT_SPEED) &&
+           VerifyField<double>(verifier, VT_STAMINA) &&
+           VerifyField<double>(verifier, VT_VITALITY) &&
+           VerifyField<uint64_t>(verifier, VT_X) &&
+           VerifyField<uint64_t>(verifier, VT_Y) &&
            VerifyField<double>(verifier, VT_VISION_RADIUS) &&
            VerifyField<double>(verifier, VT_SLEEP_RESTORE_FACTOR) &&
+           VerifyField<int8_t>(verifier, VT_ASLEEP) &&
            verifier.EndTable();
   }
 };
@@ -851,7 +910,10 @@ struct OrganismBuilder {
   void add_chromosome_number(uint64_t chromosome_number) {
     fbb_.AddElement<uint64_t>(Organism::VT_CHROMOSOME_NUMBER, chromosome_number, 0);
   }
-  void add_chromosome_structure(flatbuffers::Offset<Ecosystem::ChromosomeStructure> chromosome_structure) {
+  void add_monitor(Ecosystem::Monitor monitor) {
+    fbb_.AddElement<int8_t>(Organism::VT_MONITOR, static_cast<int8_t>(monitor), 0);
+  }
+  void add_chromosome_structure(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chromosome_structure) {
     fbb_.AddOffset(Organism::VT_CHROMOSOME_STRUCTURE, chromosome_structure);
   }
   void add_food_chain_rank(uint64_t food_chain_rank) {
@@ -1043,11 +1105,32 @@ struct OrganismBuilder {
   void add_max_vitality_at_age(double max_vitality_at_age) {
     fbb_.AddElement<double>(Organism::VT_MAX_VITALITY_AT_AGE, max_vitality_at_age, 0.0);
   }
+  void add_appetite(double appetite) {
+    fbb_.AddElement<double>(Organism::VT_APPETITE, appetite, 0.0);
+  }
+  void add_speed(double speed) {
+    fbb_.AddElement<double>(Organism::VT_SPEED, speed, 0.0);
+  }
+  void add_stamina(double stamina) {
+    fbb_.AddElement<double>(Organism::VT_STAMINA, stamina, 0.0);
+  }
+  void add_vitality(double vitality) {
+    fbb_.AddElement<double>(Organism::VT_VITALITY, vitality, 0.0);
+  }
+  void add_X(uint64_t X) {
+    fbb_.AddElement<uint64_t>(Organism::VT_X, X, 0);
+  }
+  void add_Y(uint64_t Y) {
+    fbb_.AddElement<uint64_t>(Organism::VT_Y, Y, 0);
+  }
   void add_vision_radius(double vision_radius) {
     fbb_.AddElement<double>(Organism::VT_VISION_RADIUS, vision_radius, 0.0);
   }
   void add_sleep_restore_factor(double sleep_restore_factor) {
     fbb_.AddElement<double>(Organism::VT_SLEEP_RESTORE_FACTOR, sleep_restore_factor, 0.0);
+  }
+  void add_asleep(Ecosystem::Sleep asleep) {
+    fbb_.AddElement<int8_t>(Organism::VT_ASLEEP, static_cast<int8_t>(asleep), 0);
   }
   explicit OrganismBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -1069,7 +1152,8 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     flatbuffers::Offset<flatbuffers::String> kind = 0,
     flatbuffers::Offset<flatbuffers::String> kingdom = 0,
     uint64_t chromosome_number = 0,
-    flatbuffers::Offset<Ecosystem::ChromosomeStructure> chromosome_structure = 0,
+    Ecosystem::Monitor monitor = Ecosystem::Monitor::None,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chromosome_structure = 0,
     uint64_t food_chain_rank = 0,
     Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
     double age_fitness_on_death_ratio = 0.0,
@@ -1133,11 +1217,24 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     double max_speed_at_age = 0.0,
     double max_stamina_at_age = 0.0,
     double max_vitality_at_age = 0.0,
+    double appetite = 0.0,
+    double speed = 0.0,
+    double stamina = 0.0,
+    double vitality = 0.0,
+    uint64_t X = 0,
+    uint64_t Y = 0,
     double vision_radius = 0.0,
-    double sleep_restore_factor = 0.0) {
+    double sleep_restore_factor = 0.0,
+    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake) {
   OrganismBuilder builder_(_fbb);
   builder_.add_sleep_restore_factor(sleep_restore_factor);
   builder_.add_vision_radius(vision_radius);
+  builder_.add_Y(Y);
+  builder_.add_X(X);
+  builder_.add_vitality(vitality);
+  builder_.add_stamina(stamina);
+  builder_.add_speed(speed);
+  builder_.add_appetite(appetite);
   builder_.add_max_vitality_at_age(max_vitality_at_age);
   builder_.add_max_stamina_at_age(max_stamina_at_age);
   builder_.add_max_speed_at_age(max_speed_at_age);
@@ -1203,8 +1300,10 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
   builder_.add_chromosome_structure(chromosome_structure);
   builder_.add_kingdom(kingdom);
   builder_.add_kind(kind);
+  builder_.add_asleep(asleep);
   builder_.add_gender(gender);
   builder_.add_is_asexual(is_asexual);
+  builder_.add_monitor(monitor);
   return builder_.Finish();
 }
 
@@ -1218,7 +1317,8 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     const char *kind = nullptr,
     const char *kingdom = nullptr,
     uint64_t chromosome_number = 0,
-    flatbuffers::Offset<Ecosystem::ChromosomeStructure> chromosome_structure = 0,
+    Ecosystem::Monitor monitor = Ecosystem::Monitor::None,
+    std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *chromosome_structure = nullptr,
     uint64_t food_chain_rank = 0,
     Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
     double age_fitness_on_death_ratio = 0.0,
@@ -1282,10 +1382,18 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     double max_speed_at_age = 0.0,
     double max_stamina_at_age = 0.0,
     double max_vitality_at_age = 0.0,
+    double appetite = 0.0,
+    double speed = 0.0,
+    double stamina = 0.0,
+    double vitality = 0.0,
+    uint64_t X = 0,
+    uint64_t Y = 0,
     double vision_radius = 0.0,
-    double sleep_restore_factor = 0.0) {
+    double sleep_restore_factor = 0.0,
+    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake) {
   auto kind__ = kind ? _fbb.CreateString(kind) : 0;
   auto kingdom__ = kingdom ? _fbb.CreateString(kingdom) : 0;
+  auto chromosome_structure__ = chromosome_structure ? _fbb.CreateVectorOfSortedTables<Ecosystem::ChromosomeStrand>(chromosome_structure) : 0;
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto chromosome__ = chromosome ? _fbb.CreateString(chromosome) : 0;
   return Ecosystem::CreateOrganism(
@@ -1293,7 +1401,8 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       kind__,
       kingdom__,
       chromosome_number,
-      chromosome_structure,
+      monitor,
+      chromosome_structure__,
       food_chain_rank,
       is_asexual,
       age_fitness_on_death_ratio,
@@ -1357,8 +1466,15 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       max_speed_at_age,
       max_stamina_at_age,
       max_vitality_at_age,
+      appetite,
+      speed,
+      stamina,
+      vitality,
+      X,
+      Y,
       vision_radius,
-      sleep_restore_factor);
+      sleep_restore_factor,
+      asleep);
 }
 
 struct Species FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1591,6 +1707,44 @@ inline const flatbuffers::TypeTable *ReproductionTypeTable() {
   return &tt;
 }
 
+inline const flatbuffers::TypeTable *MonitorTypeTable() {
+  static const flatbuffers::TypeCode type_codes[] = {
+    { flatbuffers::ET_CHAR, 0, 0 },
+    { flatbuffers::ET_CHAR, 0, 0 }
+  };
+  static const flatbuffers::TypeFunction type_refs[] = {
+    Ecosystem::MonitorTypeTable
+  };
+  static const char * const names[] = {
+    "None",
+    "Simulation"
+  };
+  static const flatbuffers::TypeTable tt = {
+    flatbuffers::ST_ENUM, 2, type_codes, type_refs, nullptr, nullptr, names
+  };
+  return &tt;
+}
+
+inline const flatbuffers::TypeTable *SleepTypeTable() {
+  static const flatbuffers::TypeCode type_codes[] = {
+    { flatbuffers::ET_CHAR, 0, 0 },
+    { flatbuffers::ET_CHAR, 0, 0 },
+    { flatbuffers::ET_CHAR, 0, 0 }
+  };
+  static const flatbuffers::TypeFunction type_refs[] = {
+    Ecosystem::SleepTypeTable
+  };
+  static const char * const names[] = {
+    "Awake",
+    "Drowsy",
+    "Asleep"
+  };
+  static const flatbuffers::TypeTable tt = {
+    flatbuffers::ST_ENUM, 3, type_codes, type_refs, nullptr, nullptr, names
+  };
+  return &tt;
+}
+
 inline const flatbuffers::TypeTable *ChromosomeStrandTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_STRING, 0, -1 },
@@ -1608,65 +1762,50 @@ inline const flatbuffers::TypeTable *ChromosomeStrandTypeTable() {
   return &tt;
 }
 
-inline const flatbuffers::TypeTable *ChromosomeStructureTypeTable() {
-  static const flatbuffers::TypeCode type_codes[] = {
-    { flatbuffers::ET_SEQUENCE, 1, 0 }
-  };
-  static const flatbuffers::TypeFunction type_refs[] = {
-    Ecosystem::ChromosomeStrandTypeTable
-  };
-  static const char * const names[] = {
-    "structure"
-  };
-  static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 1, type_codes, type_refs, nullptr, nullptr, names
-  };
-  return &tt;
-}
-
 inline const flatbuffers::TypeTable *OrganismTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_SEQUENCE, 0, 0 },
+    { flatbuffers::ET_CHAR, 0, 0 },
+    { flatbuffers::ET_SEQUENCE, 1, 1 },
     { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_CHAR, 0, 1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_STRING, 0, -1 },
-    { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_CHAR, 0, 2 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_STRING, 0, -1 },
+    { flatbuffers::ET_STRING, 0, -1 },
+    { flatbuffers::ET_CHAR, 0, 3 },
     { flatbuffers::ET_ULONG, 0, -1 },
     { flatbuffers::ET_DOUBLE, 0, -1 },
     { flatbuffers::ET_DOUBLE, 0, -1 },
@@ -1694,17 +1833,27 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     { flatbuffers::ET_DOUBLE, 0, -1 },
     { flatbuffers::ET_DOUBLE, 0, -1 },
     { flatbuffers::ET_DOUBLE, 0, -1 },
-    { flatbuffers::ET_DOUBLE, 0, -1 }
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_DOUBLE, 0, -1 },
+    { flatbuffers::ET_CHAR, 0, 4 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
-    Ecosystem::ChromosomeStructureTypeTable,
+    Ecosystem::MonitorTypeTable,
+    Ecosystem::ChromosomeStrandTypeTable,
     Ecosystem::ReproductionTypeTable,
-    Ecosystem::GenderTypeTable
+    Ecosystem::GenderTypeTable,
+    Ecosystem::SleepTypeTable
   };
   static const char * const names[] = {
     "kind",
     "kingdom",
     "chromosome_number",
+    "monitor",
     "chromosome_structure",
     "food_chain_rank",
     "is_asexual",
@@ -1769,11 +1918,18 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "max_speed_at_age",
     "max_stamina_at_age",
     "max_vitality_at_age",
+    "appetite",
+    "speed",
+    "stamina",
+    "vitality",
+    "X",
+    "Y",
     "vision_radius",
-    "sleep_restore_factor"
+    "sleep_restore_factor",
+    "asleep"
   };
   static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 69, type_codes, type_refs, nullptr, nullptr, names
+    flatbuffers::ST_TABLE, 77, type_codes, type_refs, nullptr, nullptr, names
   };
   return &tt;
 }

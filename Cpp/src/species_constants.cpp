@@ -1,4 +1,6 @@
 #include <species_constants.hpp>
+#include <helper.hpp>
+#include <filesystem>
 
 namespace constants
 {
@@ -11,7 +13,7 @@ namespace constants
             for (const auto &entry : std::filesystem::directory_iterator(dirpath))
             {
                 // entry.path() / "base.json" copy to map
-                
+
                 std::string species_name = entry.path().filename();
                 std::ifstream in(entry.path() / "base.json");
                 nlohmann::json tmp;
@@ -21,7 +23,7 @@ namespace constants
             }
         }
     }
-    
+
     void init()
     {
         parse_species_directories(helper::get_ecosystem_root() / "data" / "json" / "animal");

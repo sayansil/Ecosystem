@@ -2,15 +2,13 @@ namespace Ecosystem;
 
 enum Gender : byte { Male = 0, Female}
 enum Reproduction : byte { Sexual = 0, Asexual}
+enum Monitor : byte {None = 0, Simulation}
+enum Sleep : byte {Awake = 0, Drowsy, Asleep}
 
 table ChromosomeStrand {
     code:string (key, required);
     start:int;
     length:int;
-}
-
-table ChromosomeStructure {
-    structure:[ChromosomeStrand];
 }
 
 table Organism {
@@ -19,7 +17,8 @@ table Organism {
     kind:string (required);
     kingdom:string (required);
     chromosome_number:ulong = 0;
-    chromosome_structure:ChromosomeStructure;
+    monitor:Monitor = None;
+    chromosome_structure:[ChromosomeStrand];
     food_chain_rank:ulong = 0;
     is_asexual:Reproduction = Sexual;
     age_fitness_on_death_ratio:double = 0.0;
@@ -88,10 +87,18 @@ table Organism {
     max_stamina_at_age:double;
     max_vitality_at_age:double;
 
+    // Physical attributes
+    appetite:double;
+    speed:double;
+    stamina:double;
+    vitality:double;
+    X:ulong;
+    Y:ulong;
+
     /// Miscellaneous attributes
     vision_radius:double;
     sleep_restore_factor:double;
-
+    asleep:Sleep;
 }
 
 table Species {
