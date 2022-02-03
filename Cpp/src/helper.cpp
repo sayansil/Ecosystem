@@ -120,4 +120,38 @@ namespace helper
     {
         return kingdom + "/" + kind;
     }
+    
+    std::vector<uint8_t> create_bytevector(const std::string& str)
+    {
+        int len = str.length() / 8;
+        if(str.length() % 8 != 0)
+            len += 8;
+        std::vector<uint8_t> ans;
+        for(size_t i = 0; i <= (str.length() / 8); i++)
+        {
+            uint8_t cur_val = 0;
+            for(size_t j = 0; j < 8 && i * 8 + j < str.length(); j++)
+            {
+                cur_val = (str[i + j] == '1') ? (cur_val | (1 << j)) : cur_val;
+            }
+            ans.push_back(cur_val);
+        }
+        return ans;
+    }
+    
+    uint32_t get_value_from_bytearray(const uint8_t* ptr, const size_t& start, const size_t & len)
+    {
+        uint32_t val = 0; size_t val_index = 0;
+        while(val_index < len)
+        {
+            size_t ptr_index = (start + val_index) / 8;
+            size_t ptr_offset = (start + val_index) % 8;
+            if(ptr[ptr_index] & (1 << ptr_offset))
+            {
+                val = val | (1 << val_index);
+            }
+            val_index++;
+        }
+        return  val;
+    }
 };

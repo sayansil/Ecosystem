@@ -21,14 +21,14 @@ static uint64_t getValueAsUlong(const nlohmann::json &attributes, const std::str
     return attributes.find(key) != attributes.end() ? attributes[key].get<uint64_t>() : 0;
 }
 
-static double getValueAsDouble(const nlohmann::json &attributes, const std::string &key)
+static float getValueAsFloat(const nlohmann::json &attributes, const std::string &key)
 {
-    return attributes.find(key) != attributes.end() ? attributes[key].get<double>() : 0.0;
+    return attributes.find(key) != attributes.end() ? attributes[key].get<float>() : 0.0;
 }
 
-static int8_t getValueAsByte(const nlohmann::json &attributes, const std::string &key)
+static uint8_t getValueAsByte(const nlohmann::json &attributes, const std::string &key)
 {
-    return attributes.find(key) != attributes.end() ? attributes[key].get<int8_t>() : 0;
+    return attributes.find(key) != attributes.end() ? attributes[key].get<uint8_t>() : 0;
 }
 
 God::God()
@@ -78,7 +78,7 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
             }
         }
 
-        species_builder.add_kingdom(builder.CreateString(kingdom.c_str()));
+        species_builder.add_kingdom((Ecosystem::KingdomE)std::stoi(kingdom));
         species_builder.add_kind(builder.CreateString(kind.c_str()));
         species_builder.add_organism(builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size()));
 
@@ -87,7 +87,7 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
 
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Species>>> species_vec = builder.CreateVectorOfSortedTables(stdvecSpecies.data(), stdvecSpecies.size());
     world_builder.add_species(species_vec);
-    world_builder.add_year(builder.CreateString(std::to_string(year).c_str()));
+    world_builder.add_year(year);
     builder.Finish(world_builder.Finish());
 }
 
@@ -127,47 +127,47 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     }
 
     organism_builder.add_chromosome_structure(builder.CreateVectorOfSortedTables(stdvecCStrand.data(), stdvecCStrand.size()));
-    organism_builder.add_chromosome_number(getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number"));
+    organism_builder.add_chromosome_number(getValueAsByte(constants::species_constants_map[kind], "species_chromosome_number"));
     organism_builder.add_mating_age_start(getValueAsUlong(constants::species_constants_map[kind], "mating_age_start"));
     organism_builder.add_mating_age_end(getValueAsUlong(constants::species_constants_map[kind], "mating_age_end"));
     organism_builder.add_max_age(getValueAsUlong(constants::species_constants_map[kind], "species_max_age"));
-    organism_builder.add_offsprings_factor(getValueAsDouble(constants::species_constants_map[kind], "offsprings_factor"));
+    organism_builder.add_offsprings_factor(getValueAsFloat(constants::species_constants_map[kind], "offsprings_factor"));
     organism_builder.add_is_asexual((Ecosystem::Reproduction)getValueAsByte(constants::species_constants_map[kind], "is_asexual"));
-    organism_builder.add_mutation_probability(getValueAsDouble(constants::species_constants_map[kind], "mutation_probability"));
-    organism_builder.add_conceiving_probability(getValueAsDouble(constants::species_constants_map[kind], "conceiving_probability"));
-    organism_builder.add_mating_probability(getValueAsDouble(constants::species_constants_map[kind], "mating_probability"));
-    organism_builder.add_age_fitness_on_death_ratio(getValueAsDouble(constants::species_constants_map[kind], "species_age_fitness_on_death_ratio"));
-    organism_builder.add_height_on_speed(getValueAsDouble(constants::species_constants_map[kind], "species_height_on_speed"));
-    organism_builder.add_height_on_stamina(getValueAsDouble(constants::species_constants_map[kind], "species_height_on_stamina"));
-    organism_builder.add_height_on_vitality(getValueAsDouble(constants::species_constants_map[kind], "species_height_on_vitality"));
-    organism_builder.add_weight_on_speed(getValueAsDouble(constants::species_constants_map[kind], "species_weight_on_speed"));
-    organism_builder.add_weight_on_stamina(getValueAsDouble(constants::species_constants_map[kind], "species_weight_on_stamina"));
-    organism_builder.add_weight_on_vitality(getValueAsDouble(constants::species_constants_map[kind], "species_weight_on_vitality"));
-    organism_builder.add_vitality_on_appetite(getValueAsDouble(constants::species_constants_map[kind], "species_vitality_on_appetite"));
-    organism_builder.add_vitality_on_speed(getValueAsDouble(constants::species_constants_map[kind], "species_vitality_on_speed"));
-    organism_builder.add_stamina_on_appetite(getValueAsDouble(constants::species_constants_map[kind], "species_stamina_on_appetite"));
-    organism_builder.add_stamina_on_speed(getValueAsDouble(constants::species_constants_map[kind], "species_stamina_on_speed"));
-    organism_builder.add_theoretical_maximum_base_appetite(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_base_appetite"));
-    organism_builder.add_theoretical_maximum_base_height(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_base_height"));
-    organism_builder.add_theoretical_maximum_base_speed(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_base_speed"));
-    organism_builder.add_theoretical_maximum_base_stamina(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_base_stamina"));
-    organism_builder.add_theoretical_maximum_base_vitality(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_base_vitality"));
-    organism_builder.add_theoretical_maximum_base_weight(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_base_weight"));
-    organism_builder.add_theoretical_maximum_height_multiplier(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_height_multiplier"));
-    organism_builder.add_theoretical_maximum_speed_multiplier(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_speed_multiplier"));
-    organism_builder.add_theoretical_maximum_stamina_multiplier(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_stamina_multiplier"));
-    organism_builder.add_theoretical_maximum_vitality_multiplier(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_vitality_multiplier"));
-    organism_builder.add_theoretical_maximum_weight_multiplier(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_weight_multiplier"));
-    organism_builder.add_theoretical_maximum_height(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_height"));
-    organism_builder.add_theoretical_maximum_speed(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_speed"));
-    organism_builder.add_theoretical_maximum_weight(getValueAsDouble(constants::species_constants_map[kind], "species_theoretical_maximum_weight"));
-    organism_builder.add_sleep_restore_factor(getValueAsDouble(constants::species_constants_map[kind], "species_sleep_restore_factor"));
+    organism_builder.add_mutation_probability(getValueAsFloat(constants::species_constants_map[kind], "mutation_probability"));
+    organism_builder.add_conceiving_probability(getValueAsFloat(constants::species_constants_map[kind], "conceiving_probability"));
+    organism_builder.add_mating_probability(getValueAsFloat(constants::species_constants_map[kind], "mating_probability"));
+    organism_builder.add_age_fitness_on_death_ratio(getValueAsFloat(constants::species_constants_map[kind], "species_age_fitness_on_death_ratio"));
+    organism_builder.add_height_on_speed(getValueAsFloat(constants::species_constants_map[kind], "species_height_on_speed"));
+    organism_builder.add_height_on_stamina(getValueAsFloat(constants::species_constants_map[kind], "species_height_on_stamina"));
+    organism_builder.add_height_on_vitality(getValueAsFloat(constants::species_constants_map[kind], "species_height_on_vitality"));
+    organism_builder.add_weight_on_speed(getValueAsFloat(constants::species_constants_map[kind], "species_weight_on_speed"));
+    organism_builder.add_weight_on_stamina(getValueAsFloat(constants::species_constants_map[kind], "species_weight_on_stamina"));
+    organism_builder.add_weight_on_vitality(getValueAsFloat(constants::species_constants_map[kind], "species_weight_on_vitality"));
+    organism_builder.add_vitality_on_appetite(getValueAsFloat(constants::species_constants_map[kind], "species_vitality_on_appetite"));
+    organism_builder.add_vitality_on_speed(getValueAsFloat(constants::species_constants_map[kind], "species_vitality_on_speed"));
+    organism_builder.add_stamina_on_appetite(getValueAsFloat(constants::species_constants_map[kind], "species_stamina_on_appetite"));
+    organism_builder.add_stamina_on_speed(getValueAsFloat(constants::species_constants_map[kind], "species_stamina_on_speed"));
+    organism_builder.add_theoretical_maximum_base_appetite(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_appetite"));
+    organism_builder.add_theoretical_maximum_base_height(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_height"));
+    organism_builder.add_theoretical_maximum_base_speed(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_speed"));
+    organism_builder.add_theoretical_maximum_base_stamina(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_stamina"));
+    organism_builder.add_theoretical_maximum_base_vitality(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_vitality"));
+    organism_builder.add_theoretical_maximum_base_weight(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_weight"));
+    organism_builder.add_theoretical_maximum_height_multiplier(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_height_multiplier"));
+    organism_builder.add_theoretical_maximum_speed_multiplier(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_speed_multiplier"));
+    organism_builder.add_theoretical_maximum_stamina_multiplier(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_stamina_multiplier"));
+    organism_builder.add_theoretical_maximum_vitality_multiplier(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_vitality_multiplier"));
+    organism_builder.add_theoretical_maximum_weight_multiplier(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_weight_multiplier"));
+    organism_builder.add_theoretical_maximum_height(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_height"));
+    organism_builder.add_theoretical_maximum_speed(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_speed"));
+    organism_builder.add_theoretical_maximum_weight(getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_weight"));
+    organism_builder.add_sleep_restore_factor(getValueAsFloat(constants::species_constants_map[kind], "species_sleep_restore_factor"));
     organism_builder.add_food_chain_rank(getValueAsUlong(constants::species_constants_map[kind], "food_chain_rank"));
-    organism_builder.add_vision_radius(getValueAsDouble(constants::species_constants_map[kind], "vision_radius"));
+    organism_builder.add_vision_radius(getValueAsFloat(constants::species_constants_map[kind], "vision_radius"));
 
     // Assign passed default attributes
     organism_builder.add_kind(builder.CreateString(kind.c_str()));
-    organism_builder.add_kingdom(builder.CreateString(kingdom.c_str()));
+    organism_builder.add_kingdom((Ecosystem::KingdomE)std::stoi(kingdom));
     organism_builder.add_generation(generation);
     organism_builder.add_age(age);
     organism_builder.add_monitor((Ecosystem::Monitor)monitor);
@@ -176,9 +176,12 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 
     tmp_str = tmp_str.length() != 0 ? name : fmt::format("{}-orphan-{}", kind, helper::random_name(16));
     organism_builder.add_name(builder.CreateString(tmp_str.c_str()));
+    tmp_str.clear();
 
     tmp_str = tmp_str.length() != 0 ? chromosome : helper::random_binary((int)getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number"));
-    organism_builder.add_chromosome(builder.CreateString(tmp_str.c_str()));
+    std::vector<uint8_t> chromosome_vec = helper::create_bytevector(tmp_str);
+    tmp_str.clear();
+    organism_builder.add_chromosome(builder.CreateVector(chromosome_vec.data(), chromosome_vec.size()));
 
     organism_builder.add_X(XY.first);
     organism_builder.add_Y(XY.second);

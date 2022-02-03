@@ -5,13 +5,13 @@ namespace organism_opts
 {
     double get_value_from_chromosome(const Ecosystem::Organism *organism, const std::string &code, const double &multiplier)
     {
-        std::string chromosome = organism->chromosome()->str();
+        const flatbuffers::Vector<uint8_t> * chromosome = organism->chromosome();
         int start = organism->chromosome_structure()->LookupByKey(code.c_str())->start();
         int length = organism->chromosome_structure()->LookupByKey(code.c_str())->length();
 
         if (length == 0)
             return 0;
-        return (helper::to_decimal(chromosome.substr(start, length)) / static_cast<double>(1 << length)) * multiplier;
+        return (helper::get_value_from_bytearray(chromosome->Data(), start, length) / static_cast<double>(1 << length)) * multiplier;
     }
 
     double get_immunity(const Ecosystem::Organism *organism)

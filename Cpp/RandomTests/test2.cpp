@@ -11,7 +11,7 @@ int main()
     std::vector<std::unordered_map<std::string, std::string>> organisms;
 
     organisms.push_back({{"kind", "deer"},
-                         {"kingdom", "animal"},
+                         {"kingdom", "0"},
                          {"age", "20"},
                          {"name", "sreenik"},
                          {"chromosome", ""},

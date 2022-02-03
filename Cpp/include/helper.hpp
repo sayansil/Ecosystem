@@ -37,6 +37,8 @@ namespace helper
     extern std::filesystem::path get_ecosystem_root();
     extern bool is_nonzero_nonnegative_nonnan(const double &);
     extern std::string generate_full_species_name(const std::string &, const std::string &);
+    extern std::vector<uint8_t> create_bytevector(const std::string&);
+    extern uint32_t get_value_from_bytearray(const uint8_t* ptr, const size_t& start, const size_t & len);
 };
 
 #endif // HELPER_HPP
