@@ -31,6 +31,11 @@ static uint8_t getValueAsByte(const nlohmann::json &attributes, const std::strin
     return attributes.find(key) != attributes.end() ? attributes[key].get<uint8_t>() : 0;
 }
 
+static uint16_t getValueAsUshort(const nlohmann::json &attributes, const std::string &key)
+{
+    return attributes.find(key) != attributes.end() ? attributes[key].get<uint16_t>() : 0;
+}
+
 God::God()
 {
     constants::init();
@@ -127,7 +132,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     }
 
     organism_builder.add_chromosome_structure(builder.CreateVectorOfSortedTables(stdvecCStrand.data(), stdvecCStrand.size()));
-    organism_builder.add_chromosome_number(getValueAsByte(constants::species_constants_map[kind], "species_chromosome_number"));
+    organism_builder.add_chromosome_number(getValueAsUshort(constants::species_constants_map[kind], "species_chromosome_number"));
     organism_builder.add_mating_age_start(getValueAsUlong(constants::species_constants_map[kind], "mating_age_start"));
     organism_builder.add_mating_age_end(getValueAsUlong(constants::species_constants_map[kind], "mating_age_end"));
     organism_builder.add_max_age(getValueAsUlong(constants::species_constants_map[kind], "species_max_age"));
