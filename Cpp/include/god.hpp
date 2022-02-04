@@ -13,6 +13,7 @@
 class God
 {
 public:
+    flatbuffers::DetachedBuffer buffer;
     unsigned int year = 0;
 
     unsigned int recent_deaths = 0;
@@ -44,6 +45,15 @@ public:
         const uint64_t &generation,
         const std::pair<uint64_t, uint64_t> &XY,
         const int8_t &monitor);
+    
+    flatbuffers::Offset<Ecosystem::Organism> createOrganism(
+        flatbuffers::FlatBufferBuilder &builder,
+        Ecosystem::OrganismBuilder &organism_builder,
+        const std::string &kind,
+        const std::string &kingdom,
+        const uint64_t &age,
+        const int8_t &monitor = 0);
+    
     void displayWorldMetadata();
 
     // void catastrophe();

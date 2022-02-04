@@ -11,7 +11,7 @@ namespace organism_opts
 
         if (length == 0)
             return 0;
-        return (helper::get_value_from_bytearray(chromosome->Data(), start, length) / static_cast<double>(1 << length)) * multiplier;
+        return (helper::get_value_from_bytearray(chromosome->Data(), chromosome->size(), start, length) / static_cast<double>(1 << length)) * multiplier;
     }
 
     double get_immunity(const Ecosystem::Organism *organism)

@@ -1,4 +1,5 @@
 #include <helper.hpp>
+#include <fmt/core.h>
 
 namespace helper
 {
@@ -54,10 +55,10 @@ namespace helper
         return str;
     }
 
-    std::pair<unsigned int, unsigned int> random_location()
+    std::pair<uint64_t, uint64_t> random_location()
     {
-        std::uniform_int_distribution<unsigned int> dis_height(0, static_cast<unsigned int>(map_height - 1));
-        std::uniform_int_distribution<unsigned int> dis_width(0, static_cast<unsigned int>(map_width - 1));
+        std::uniform_int_distribution<uint64_t> dis_height(0, static_cast<uint64_t>(map_height - 1));
+        std::uniform_int_distribution<uint64_t> dis_width(0, static_cast<uint64_t>(map_width - 1));
         return {dis_width(rng), dis_height(rng)};
     }
 
@@ -121,37 +122,28 @@ namespace helper
         return kingdom + "/" + kind;
     }
     
-    std::vector<uint8_t> create_bytevector(const std::string& str)
+    std::vector<uint8_t> string_to_bytevector(const std::string& str)
     {
-        int len = str.length() / 8;
-        if(str.length() % 8 != 0)
-            len += 8;
         std::vector<uint8_t> ans;
-        for(size_t i = 0; i <= (str.length() / 8); i++)
+        size_t len = str.length();
+        for(size_t i = 0; i <= len / 8; i++)
         {
-            uint8_t cur_val = 0;
-            for(size_t j = 0; j < 8 && i * 8 + j < str.length(); j++)
-            {
-                cur_val = (str[i + j] == '1') ? (cur_val | (1 << j)) : cur_val;
-            }
-            ans.push_back(cur_val);
+            if(i != len / 8 || len % 8 != 0)
+                ans.push_back(to_decimal(str.substr(i * 8, (i == len / 8 ? len % 8 : 8))));
         }
         return ans;
     }
     
-    uint32_t get_value_from_bytearray(const uint8_t* ptr, const size_t& start, const size_t & len)
+    std::string bytevector_to_string(const uint8_t* arr, const size_t& len)
     {
-        uint32_t val = 0; size_t val_index = 0;
-        while(val_index < len)
-        {
-            size_t ptr_index = (start + val_index) / 8;
-            size_t ptr_offset = (start + val_index) % 8;
-            if(ptr[ptr_index] & (1 << ptr_offset))
-            {
-                val = val | (1 << val_index);
-            }
-            val_index++;
-        }
-        return  val;
+        std::string str;
+        for(size_t i = 0; i < len; i++)
+            str += fmt::format("{:b}", arr[i]);
+        return str;
+    }
+    
+    uint32_t get_value_from_bytearray(const uint8_t* arr, const size_t& arr_len, const size_t& start, const size_t & len)
+    {
+        return to_decimal(bytevector_to_string(arr, arr_len).substr(start, len));
     }
 };

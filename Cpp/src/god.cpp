@@ -75,11 +75,7 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
                     organism["kind"],
                     organism["kingdom"],
                     std::stoul(organism["age"]),
-                    organism["name"],
-                    organism["chromosome"],
-                    std::stoul(organism["generation"]),
-                    std::make_pair(std::stoul(organism["X"]), std::stoul(organism["Y"])),
-                    (int8_t)std::stoi(organism["monitor"])));
+                    organism.find("monitor") != organism.end() ? std::stoi(organism["monitor"]) : 0));
             }
         }
 
@@ -94,14 +90,16 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
     world_builder.add_species(species_vec);
     world_builder.add_year(year);
     builder.Finish(world_builder.Finish());
+    buffer = builder.Release();
+    builder.Clear();
 }
 
 void God::displayWorldMetadata()
 {
-    fmt::print("\nBuffer Size: {} bytes \n", builder.GetSize());
+    fmt::print("\nBuffer Size: {} bytes \n", buffer.size());
 
     flatbuffers::ToStringVisitor visitor("", true, "", true);
-    flatbuffers::IterateFlatBuffer(builder.GetBufferPointer(), Ecosystem::WorldTypeTable(), &visitor);
+    flatbuffers::IterateFlatBuffer(buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
     nlohmann::json json_data = nlohmann::json::parse(visitor.s);
     fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 }
@@ -184,7 +182,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     tmp_str.clear();
 
     tmp_str = tmp_str.length() != 0 ? chromosome : helper::random_binary((int)getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number"));
-    std::vector<uint8_t> chromosome_vec = helper::create_bytevector(tmp_str);
+    std::vector<uint8_t> chromosome_vec = helper::string_to_bytevector(tmp_str);
     tmp_str.clear();
     organism_builder.add_chromosome(builder.CreateVector(chromosome_vec.data(), chromosome_vec.size()));
 
@@ -203,4 +201,15 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     //TODO evaluate_dynamic_fitness();
 
     return organism_builder.Finish();
+}
+    
+flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
+        flatbuffers::FlatBufferBuilder &builder,
+        Ecosystem::OrganismBuilder &organism_builder,
+        const std::string &kind,
+        const std::string &kingdom,
+        const uint64_t &age,
+        const int8_t &monitor)
+{
+    return createOrganism(builder, organism_builder, kind, kingdom, age, "", "", 0, helper::random_location(), monitor);
 }
