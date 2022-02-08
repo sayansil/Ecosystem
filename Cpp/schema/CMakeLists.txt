@@ -1,5 +1,6 @@
 set(SCHEMAS
     world
+    species_report
     )
 
 foreach(SCHEMA ${SCHEMAS})
