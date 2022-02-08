@@ -38,8 +38,7 @@ namespace helper
     extern bool is_nonzero_nonnegative_nonnan(const double &);
     extern std::string generate_full_species_name(const std::string &, const std::string &);
     extern std::vector<uint8_t> string_to_bytevector(const std::string&);
-    extern std::string bytevector_to_string(const uint8_t* arr, const size_t& len);
-    extern uint32_t get_value_from_bytearray(const uint8_t* arr, const size_t& arr_len, const size_t& start, const size_t & len);
+    extern std::string bytevector_to_string(const uint8_t* arr, const size_t& len, const size_t& expected_len);
 };
 
 #endif // HELPER_HPP

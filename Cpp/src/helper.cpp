@@ -126,24 +126,22 @@ namespace helper
     {
         std::vector<uint8_t> ans;
         size_t len = str.length();
+        len = len % 8 == 0 ? len : len + 8 - (len % 8);
+        auto tmp_str = fmt::format("{:0>{}}", str, len);
         for(size_t i = 0; i <= len / 8; i++)
         {
             if(i != len / 8 || len % 8 != 0)
-                ans.push_back(to_decimal(str.substr(i * 8, (i == len / 8 ? len % 8 : 8))));
+                ans.push_back(to_decimal(tmp_str.substr(i * 8, (i == len / 8 ? len % 8 : 8))));
         }
         return ans;
     }
     
-    std::string bytevector_to_string(const uint8_t* arr, const size_t& len)
+    std::string bytevector_to_string(const uint8_t* arr, const size_t& len, const size_t& expected_len)
     {
-        std::string str;
-        for(size_t i = 0; i < len; i++)
-            str += fmt::format("{:b}", arr[i]);
+        std::string str; size_t i;
+        for(i = 0; i < len; i++)
+            str += fmt::format("{:0>8b}", arr[i]);
+        str = str.substr(str.length() - expected_len, expected_len);
         return str;
-    }
-    
-    uint32_t get_value_from_bytearray(const uint8_t* arr, const size_t& arr_len, const size_t& start, const size_t & len)
-    {
-        return to_decimal(bytevector_to_string(arr, arr_len).substr(start, len));
     }
 };
