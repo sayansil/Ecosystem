@@ -13,7 +13,7 @@ table SinglePlot {
 }
 
 table MultiPlot {
-    title:string;
+    title:string (key);
     plots:[SinglePlot];
 }
 

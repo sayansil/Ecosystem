@@ -230,6 +230,12 @@ struct MultiPlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   flatbuffers::String *mutable_title() {
     return GetPointer<flatbuffers::String *>(VT_TITLE);
   }
+  bool KeyCompareLessThan(const MultiPlot *o) const {
+    return *title() < *o->title();
+  }
+  int KeyCompareWithValue(const char *val) const {
+    return strcmp(title()->c_str(), val);
+  }
   const flatbuffers::Vector<flatbuffers::Offset<Visualisation::SinglePlot>> *plots() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Visualisation::SinglePlot>> *>(VT_PLOTS);
   }
@@ -238,7 +244,7 @@ struct MultiPlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyOffset(verifier, VT_TITLE) &&
+           VerifyOffsetRequired(verifier, VT_TITLE) &&
            verifier.VerifyString(title()) &&
            VerifyOffset(verifier, VT_PLOTS) &&
            verifier.VerifyVector(plots()) &&
@@ -264,6 +270,7 @@ struct MultiPlotBuilder {
   flatbuffers::Offset<MultiPlot> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<MultiPlot>(end);
+    fbb_.Required(o, MultiPlot::VT_TITLE);
     return o;
   }
 };
@@ -405,11 +412,11 @@ inline flatbuffers::Offset<SpeciesReport> CreateSpeciesReportDirect(
     const char *title = nullptr,
     const char *species = nullptr,
     const char *date = nullptr,
-    const std::vector<flatbuffers::Offset<Visualisation::MultiPlot>> *plots = nullptr) {
+    std::vector<flatbuffers::Offset<Visualisation::MultiPlot>> *plots = nullptr) {
   auto title__ = title ? _fbb.CreateString(title) : 0;
   auto species__ = species ? _fbb.CreateString(species) : 0;
   auto date__ = date ? _fbb.CreateString(date) : 0;
-  auto plots__ = plots ? _fbb.CreateVector<flatbuffers::Offset<Visualisation::MultiPlot>>(*plots) : 0;
+  auto plots__ = plots ? _fbb.CreateVectorOfSortedTables<Visualisation::MultiPlot>(plots) : 0;
   return Visualisation::CreateSpeciesReport(
       _fbb,
       title__,
