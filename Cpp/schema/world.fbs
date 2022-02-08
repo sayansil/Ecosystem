@@ -88,13 +88,14 @@ table Organism {
     max_stamina_at_age:float;
     max_vitality_at_age:float;
 
-    // Physical attributes
+    // Dynamic attributes
     appetite:float;
     speed:float;
     stamina:float;
     vitality:float;
     X:ulong;
     Y:ulong;
+    dynamic_fitness:float = 0.0;
 
     /// Miscellaneous attributes
     vision_radius:float;

@@ -1,77 +1,58 @@
 #include <organism.hpp>
 #include <helper.hpp>
 
+static void increment_age_animal(Ecosystem::Organism *organism);
+static void increment_age_plant(Ecosystem::Organism *organism);
+static void evaluate_static_fitness_animal(Ecosystem::Organism *organism);
+static void evaluate_static_fitness_plant(Ecosystem::Organism *organism);
+
 namespace organism_opts
 {
-    double get_value_from_chromosome(const Ecosystem::Organism *organism, const std::string &code, const double &multiplier)
+    void increment_age(Ecosystem::Organism *organism)
     {
-        const flatbuffers::Vector<uint8_t> * chromosome = organism->chromosome();
-        int start = organism->chromosome_structure()->LookupByKey(code.c_str())->start();
-        int length = organism->chromosome_structure()->LookupByKey(code.c_str())->length();
-
-        if (length == 0)
-            return 0;
-        return (helper::get_value_from_bytearray(chromosome->Data(), chromosome->size(), start, length) / static_cast<double>(1 << length)) * multiplier;
+        if (organism->kingdom() == Ecosystem::KingdomE::Animal)
+        {
+            increment_age_animal(organism);
+        }
+        else if (organism->kingdom() == Ecosystem::KingdomE::Plant)
+        {
+            increment_age_plant(organism);
+        }
+        else
+        {
+            throw std::runtime_error("Unknown kingdom");
+        }
     }
 
-    double get_immunity(const Ecosystem::Organism *organism)
+    void evaluate_static_fitness(Ecosystem::Organism *organism)
     {
-        return get_value_from_chromosome(organism, "im", 1.0);
-    }
-    double get_base_vitality(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "bv", organism->theoretical_maximum_base_vitality());
-    }
-    double get_base_weight(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "bw", organism->theoretical_maximum_base_weight());
-    }
-    double get_height_multiplier(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "hm", organism->theoretical_maximum_height_multiplier());
-    }
-    double get_vitality_multiplier(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "vm", organism->theoretical_maximum_vitality_multiplier());
-    }
-    double get_weight_multiplier(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "wm", organism->theoretical_maximum_weight_multiplier());
-    }
-    double get_max_height(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "mh", organism->theoretical_maximum_height());
-    }
-    double get_max_weight(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "mw", organism->theoretical_maximum_weight());
-    }
-    int8_t get_gender(const Ecosystem::Organism *organism)
-    {
-        return (int8_t)get_value_from_chromosome(organism, "gn", 2.0);
-    }
-    double get_base_appetite(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "ba", organism->theoretical_maximum_base_appetite());
-    }
-    double get_base_height(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "bh", organism->theoretical_maximum_base_height());
-    }
-    double get_base_speed(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "bp", organism->theoretical_maximum_base_speed());
-    }
-    double get_base_stamina(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "bs", organism->theoretical_maximum_base_stamina());
-    }
-    double get_speed_multiplier(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "pm", organism->theoretical_maximum_speed_multiplier());
-    }
-    double get_stamina_multiplier(const Ecosystem::Organism *organism)
-    {
-        return get_value_from_chromosome(organism, "sm", organism->theoretical_maximum_stamina_multiplier());
+        if (organism->kingdom() == Ecosystem::KingdomE::Animal)
+        {
+            evaluate_static_fitness_animal(organism);
+        }
+        else if (organism->kingdom() == Ecosystem::KingdomE::Plant)
+        {
+            evaluate_static_fitness_plant(organism);
+        }
+        else
+        {
+            throw std::runtime_error("Unknown kingdom");
+        }
     }
 };
+
+void increment_age_animal(Ecosystem::Organism *organism)
+{
+}
+
+void increment_age_plant(Ecosystem::Organism *organism)
+{
+}
+
+void evaluate_static_fitness_animal(Ecosystem::Organism *organism)
+{
+}
+
+void evaluate_static_fitness_plant(Ecosystem::Organism *organism)
+{
+}

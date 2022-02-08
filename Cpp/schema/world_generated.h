@@ -362,9 +362,10 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_VITALITY = 146,
     VT_X = 148,
     VT_Y = 150,
-    VT_VISION_RADIUS = 152,
-    VT_SLEEP_RESTORE_FACTOR = 154,
-    VT_ASLEEP = 156
+    VT_DYNAMIC_FITNESS = 152,
+    VT_VISION_RADIUS = 154,
+    VT_SLEEP_RESTORE_FACTOR = 156,
+    VT_ASLEEP = 158
   };
   /// Fixed for a species
   const flatbuffers::String *kind() const {
@@ -819,6 +820,12 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_Y(uint64_t _Y = 0) {
     return SetField<uint64_t>(VT_Y, _Y, 0);
   }
+  float dynamic_fitness() const {
+    return GetField<float>(VT_DYNAMIC_FITNESS, 0.0f);
+  }
+  bool mutate_dynamic_fitness(float _dynamic_fitness = 0.0f) {
+    return SetField<float>(VT_DYNAMIC_FITNESS, _dynamic_fitness, 0.0f);
+  }
   /// Miscellaneous attributes
   float vision_radius() const {
     return GetField<float>(VT_VISION_RADIUS, 0.0f);
@@ -919,6 +926,7 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<float>(verifier, VT_VITALITY) &&
            VerifyField<uint64_t>(verifier, VT_X) &&
            VerifyField<uint64_t>(verifier, VT_Y) &&
+           VerifyField<float>(verifier, VT_DYNAMIC_FITNESS) &&
            VerifyField<float>(verifier, VT_VISION_RADIUS) &&
            VerifyField<float>(verifier, VT_SLEEP_RESTORE_FACTOR) &&
            VerifyField<uint8_t>(verifier, VT_ASLEEP) &&
@@ -1152,6 +1160,9 @@ struct OrganismBuilder {
   void add_Y(uint64_t Y) {
     fbb_.AddElement<uint64_t>(Organism::VT_Y, Y, 0);
   }
+  void add_dynamic_fitness(float dynamic_fitness) {
+    fbb_.AddElement<float>(Organism::VT_DYNAMIC_FITNESS, dynamic_fitness, 0.0f);
+  }
   void add_vision_radius(float vision_radius) {
     fbb_.AddElement<float>(Organism::VT_VISION_RADIUS, vision_radius, 0.0f);
   }
@@ -1251,6 +1262,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     float vitality = 0.0f,
     uint64_t X = 0,
     uint64_t Y = 0,
+    float dynamic_fitness = 0.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
     Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake) {
@@ -1259,6 +1271,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
   builder_.add_X(X);
   builder_.add_sleep_restore_factor(sleep_restore_factor);
   builder_.add_vision_radius(vision_radius);
+  builder_.add_dynamic_fitness(dynamic_fitness);
   builder_.add_vitality(vitality);
   builder_.add_stamina(stamina);
   builder_.add_speed(speed);
@@ -1416,6 +1429,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     float vitality = 0.0f,
     uint64_t X = 0,
     uint64_t Y = 0,
+    float dynamic_fitness = 0.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
     Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake) {
@@ -1499,6 +1513,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       vitality,
       X,
       Y,
+      dynamic_fitness,
       vision_radius,
       sleep_restore_factor,
       asleep);
@@ -1879,6 +1894,7 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     { flatbuffers::ET_ULONG, 0, -1 },
     { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_UCHAR, 0, 5 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
@@ -1964,12 +1980,13 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "vitality",
     "X",
     "Y",
+    "dynamic_fitness",
     "vision_radius",
     "sleep_restore_factor",
     "asleep"
   };
   static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 77, type_codes, type_refs, nullptr, nullptr, names
+    flatbuffers::ST_TABLE, 78, type_codes, type_refs, nullptr, nullptr, names
   };
   return &tt;
 }

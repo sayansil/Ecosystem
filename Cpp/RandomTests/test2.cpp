@@ -11,14 +11,13 @@ int main()
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
 
-    for(size_t i = 0; i < initial_organism_count; i++)
+    for (size_t i = 0; i < initial_organism_count; i++)
     {
         organisms.push_back({{"kind", "deer"},
-                {"kingdom", "0"},
-                {"age", "20"}
-                });
+                             {"kingdom", "0"},
+                             {"age", "20"}});
     }
-    
+
     // organisms.push_back({{"kingdom", "animal"},
     //                      {"kind", "deer"},
     //                      {"name", "deer2-rmg"}});
@@ -32,5 +31,5 @@ int main()
     God allah;
 
     allah.createWorld(organisms);
-    fmt::print("Buffer size = {}\n", allah.buffer.size());
+    fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
 }

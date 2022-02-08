@@ -1,5 +1,6 @@
 #include <god.hpp>
 #include <set>
+#include <organism.hpp>
 #include <species_constants.hpp>
 #include <helper.hpp>
 #include <fmt/core.h>
@@ -10,6 +11,8 @@ static flatbuffers::Offset<Ecosystem::Organism> createOrganism(
     flatbuffers::FlatBufferBuilder &builder,
     Ecosystem::OrganismBuilder &organism_builder,
     std::unordered_map<std::string, std::string> attributes);
+
+static double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier);
 
 static std::string getValueAsStr(const nlohmann::json &attributes, const std::string &key)
 {
@@ -92,6 +95,8 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
     builder.Finish(world_builder.Finish());
     buffer = builder.Release();
     builder.Clear();
+
+    //TODO in increment_age() + evaluate_static_fitness();
 }
 
 void God::displayWorldMetadata()
@@ -119,8 +124,8 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 
     // Assign base stats of species
     std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> stdvecCStrand;
-    std::map<std::string, std::map<std::string, int>> cStructure = constants::species_constants_map[kind]["chromosome_structure"];
-    for (auto &cStrand : cStructure)
+    std::map<std::string, std::map<std::string, int>> c_structure = constants::species_constants_map[kind]["chromosome_structure"];
+    for (auto &cStrand : c_structure)
     {
         Ecosystem::ChromosomeStrandBuilder cStrandBuilder(builder);
         cStrandBuilder.add_code(builder.CreateString(cStrand.first.c_str()));
@@ -176,6 +181,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     organism_builder.add_monitor((Ecosystem::Monitor)monitor);
 
     std::string tmp_str;
+    float tmp_flt;
 
     tmp_str = tmp_str.length() != 0 ? name : fmt::format("{}-orphan-{}", kind, helper::random_name(16));
     organism_builder.add_name(builder.CreateString(tmp_str.c_str()));
@@ -190,26 +196,51 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     organism_builder.add_Y(XY.second);
     organism_builder.add_asleep(Ecosystem::Sleep::Awake);
 
-    // TODO Assign dynamic values
-    //this->vitality = this->max_vitality_at_age;
-    //this->stamina = this->max_stamina_at_age;
-    //this->appetite = this->max_appetite_at_age;
-    //this->speed = this->max_speed_at_age;
+    // Assign attributes from chromosome
+    organism_builder.add_immunity(get_value_from_chromosome(chromosome_vec, c_structure, "im", 1.0));
+    organism_builder.add_gender((Ecosystem::Gender)get_value_from_chromosome(chromosome_vec, c_structure, "gn", 2.0));
+    organism_builder.add_base_appetite(get_value_from_chromosome(chromosome_vec, c_structure, "ba", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_appetite")));
+    organism_builder.add_base_speed(get_value_from_chromosome(chromosome_vec, c_structure, "bp", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_speed")));
+    organism_builder.add_base_stamina(get_value_from_chromosome(chromosome_vec, c_structure, "bs", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_stamina")));
+    organism_builder.add_base_vitality(get_value_from_chromosome(chromosome_vec, c_structure, "bv", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_vitality")));
+    organism_builder.add_base_weight(get_value_from_chromosome(chromosome_vec, c_structure, "bw", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_weight")));
+    organism_builder.add_base_height(get_value_from_chromosome(chromosome_vec, c_structure, "bh", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_height")));
+    organism_builder.add_weight(get_value_from_chromosome(chromosome_vec, c_structure, "bw", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_weight")));
+    organism_builder.add_height(get_value_from_chromosome(chromosome_vec, c_structure, "bh", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_height")));
+    organism_builder.add_max_weight(get_value_from_chromosome(chromosome_vec, c_structure, "mw", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_weight")));
+    organism_builder.add_max_height(get_value_from_chromosome(chromosome_vec, c_structure, "mh", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_height")));
+    organism_builder.add_max_appetite_at_age(get_value_from_chromosome(chromosome_vec, c_structure, "ba", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_appetite")));
+    organism_builder.add_max_speed_at_age(get_value_from_chromosome(chromosome_vec, c_structure, "bp", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_speed")));
+    organism_builder.add_max_stamina_at_age(get_value_from_chromosome(chromosome_vec, c_structure, "bs", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_stamina")));
+    organism_builder.add_max_vitality_at_age(get_value_from_chromosome(chromosome_vec, c_structure, "bv", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_vitality")));
+    organism_builder.add_weight_multiplier(get_value_from_chromosome(chromosome_vec, c_structure, "wm", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_weight_multiplier")));
+    organism_builder.add_height_multiplier(get_value_from_chromosome(chromosome_vec, c_structure, "hm", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_height_multiplier")));
+    organism_builder.add_speed_multiplier(get_value_from_chromosome(chromosome_vec, c_structure, "pm", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_speed_multiplier")));
+    organism_builder.add_stamina_multiplier(get_value_from_chromosome(chromosome_vec, c_structure, "sm", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_stamina_multiplier")));
+    organism_builder.add_vitality_multiplier(get_value_from_chromosome(chromosome_vec, c_structure, "vm", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_vitality_multiplier")));
 
-    //TODO increment_age();
-    //TODO evaluate_static_fitness();
-    //TODO evaluate_dynamic_fitness();
+    organism_builder.add_vitality(get_value_from_chromosome(chromosome_vec, c_structure, "bv", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_vitality")));
+    organism_builder.add_stamina(get_value_from_chromosome(chromosome_vec, c_structure, "bs", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_stamina")));
+    organism_builder.add_appetite(get_value_from_chromosome(chromosome_vec, c_structure, "ba", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_appetite")));
+    organism_builder.add_speed(get_value_from_chromosome(chromosome_vec, c_structure, "bp", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_speed")));
+
+    organism_builder.add_static_fitness(0.0);
+    organism_builder.add_dynamic_fitness(0.0);
 
     return organism_builder.Finish();
 }
-    
+
 flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
-        flatbuffers::FlatBufferBuilder &builder,
-        Ecosystem::OrganismBuilder &organism_builder,
-        const std::string &kind,
-        const std::string &kingdom,
-        const uint64_t &age,
-        const int8_t &monitor)
+    flatbuffers::FlatBufferBuilder &builder,
+    Ecosystem::OrganismBuilder &organism_builder,
+    const std::string &kind,
+    const std::string &kingdom,
+    const uint64_t &age,
+    const int8_t &monitor)
 {
     return createOrganism(builder, organism_builder, kind, kingdom, age, "", "", 0, helper::random_location(), monitor);
+}
+
+double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier)
+{
 }
