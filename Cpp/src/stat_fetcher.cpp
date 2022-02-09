@@ -1,5 +1,8 @@
 #include <stat_fetcher.hpp>
+#include <database_manager.hpp>
 #include <ctime>
+
+static flatbuffers::DetachedBuffer get_avg_buffer(const std::vector<flatbuffers::DetachedBuffer> &data, const std::string &kind);
 
 namespace stat_fetcher
 {
@@ -9,6 +12,13 @@ namespace stat_fetcher
         const std::string &kingdom,
         const std::string &title)
     {
+        DatabaseManager db;
+        db.begin_transaction();
+        auto data = db.read_all_rows();
+        db.end_transaction();
+
+        auto avg_organism = (Ecosystem::Organism *)get_avg_buffer(data, kind).data();
+
         flatbuffers::FlatBufferBuilder builder;
         Visualisation::SpeciesReportBuilder report_builder(builder);
 
@@ -942,3 +952,19 @@ namespace stat_fetcher
         return report_buffer;
     }
 };
+
+flatbuffers::DetachedBuffer get_avg_buffer(const std::vector<flatbuffers::DetachedBuffer> &data, const std::string &kind)
+{
+    flatbuffers::FlatBufferBuilder builder;
+    Ecosystem::OrganismBuilder organism_builder(builder);
+
+    organism_builder.add_kind(builder.CreateString(kind.c_str()));
+
+    // TODO add average stats in new buffer
+
+    builder.Finish(organism_builder.Finish());
+    auto organism_buffer = builder.Release();
+    builder.Clear();
+
+    return organism_buffer;
+}

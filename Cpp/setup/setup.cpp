@@ -12,20 +12,14 @@ const std::filesystem::path json_template_path = helper::get_ecosystem_root() / 
 
 sqlite3 *db;
 
-static std::string sql_command_creator(const std::string &tableName, const std::vector<std::pair<std::string, SQLType>> &schema)
+static std::string sql_command_creator(const std::string &tableName, const std::vector<std::pair<std::string, std::string>> &schema)
 {
     std::string sql_command = "create table " + tableName + "(";
 
     bool primaryKey = true;
     for (const auto &[colName, colType] : schema)
     {
-        sql_command += colName + " ";
-        if (colType == SQLType::TEXT)
-            sql_command += "TEXT ";
-        else if (colType == SQLType::FLOAT)
-            sql_command += "FLOAT ";
-        else if (colType == SQLType::INT)
-            sql_command += "INT ";
+        sql_command += colName + " " + colType + " ";
 
         if (primaryKey)
         {
@@ -59,46 +53,12 @@ static void create_master_table()
     }
 }
 
-static void create_species_table(const std::string &path)
-{
-    std::string kind, kingdom;
-    kind = path.substr(path.rfind('/') + 1);
-    kingdom = path.substr(0, path.rfind('/'));
-    if (kingdom.rfind('/') != std::string::npos)
-    {
-        kingdom = kingdom.substr(kingdom.rfind('/') + 1);
-    }
-
-    std::string table_name = "STATS_" + kind;
-    for (auto & c: table_name) c = toupper(c);
-
-    std::string sql_command;
-
-    if (kingdom == "animal")
-    {
-        sql_command = sql_command_creator(table_name, schema::schemaAnimal);
-    }
-    else if (kingdom == "plant")
-    {
-        sql_command = sql_command_creator(table_name, schema::schemaPlant);
-    }
-
-    int rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
-    if (rc != SQLITE_OK)
-    {
-        std::cout << "New " << table_name << " table cannot be created\n";
-    }
-    else
-    {
-        std::cout << table_name << " table created successfully\n";
-    }
-}
-
 static void parse_species_directories(std::string subdirectory)
 {
     std::filesystem::path filepath;
 
-    auto copy_contents = [](const std::filesystem::path &source, const std::filesystem::path &sink) {
+    auto copy_contents = [](const std::filesystem::path &source, const std::filesystem::path &sink)
+    {
         if (!std::filesystem::exists(sink))
         {
             std::ifstream to_read(source, std::ios::binary);
@@ -122,15 +82,13 @@ static void parse_species_directories(std::string subdirectory)
         copy_contents(
             json_template_path / subdirectory / "modify.json",
             entry.path() / "modify.json");
-
-        create_species_table(entry.path());
     }
 }
 
 int main()
 {
 
-    if(!std::filesystem::exists(master_db_path))
+    if (!std::filesystem::exists(master_db_path))
     {
         sqlite3_open(master_db_path.c_str(), &db);
         create_master_table();

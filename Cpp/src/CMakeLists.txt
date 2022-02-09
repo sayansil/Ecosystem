@@ -4,12 +4,12 @@ set(ECOSYSTEM_SOURCES
     god.cpp
     organism.cpp
     helper.cpp
-    # database_manager.cpp
-    # schema.cpp
+    database_manager.cpp
+    schema.cpp
     # StopWatch.cpp
     species_constants.cpp
     # logger.cpp
-    # ${sqlite3_SOURCE_DIR}/src/sqlite3.c
+    ${sqlite3_SOURCE_DIR}/src/sqlite3.c
     )
 
 add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES})
