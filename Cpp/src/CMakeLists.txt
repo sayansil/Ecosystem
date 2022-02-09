@@ -1,6 +1,6 @@
 set(ECOSYSTEM_SOURCES
     # helper.cpp
-    # stat_fetcher.cpp
+    stat_fetcher.cpp
     god.cpp
     organism.cpp
     helper.cpp
