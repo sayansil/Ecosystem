@@ -32,13 +32,7 @@ struct SinglePlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_TITLE = 4,
     VT_X = 6,
-    VT_Y = 8,
-    VT_XLABEL = 10,
-    VT_YLABEL = 12,
-    VT_XMIN = 14,
-    VT_XMAX = 16,
-    VT_YMIN = 18,
-    VT_YMAX = 20
+    VT_Y = 8
   };
   const flatbuffers::String *title() const {
     return GetPointer<const flatbuffers::String *>(VT_TITLE);
@@ -58,42 +52,6 @@ struct SinglePlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   flatbuffers::Vector<float> *mutable_y() {
     return GetPointer<flatbuffers::Vector<float> *>(VT_Y);
   }
-  const flatbuffers::String *xlabel() const {
-    return GetPointer<const flatbuffers::String *>(VT_XLABEL);
-  }
-  flatbuffers::String *mutable_xlabel() {
-    return GetPointer<flatbuffers::String *>(VT_XLABEL);
-  }
-  const flatbuffers::String *ylabel() const {
-    return GetPointer<const flatbuffers::String *>(VT_YLABEL);
-  }
-  flatbuffers::String *mutable_ylabel() {
-    return GetPointer<flatbuffers::String *>(VT_YLABEL);
-  }
-  float xmin() const {
-    return GetField<float>(VT_XMIN, 0.0f);
-  }
-  bool mutate_xmin(float _xmin = 0.0f) {
-    return SetField<float>(VT_XMIN, _xmin, 0.0f);
-  }
-  float xmax() const {
-    return GetField<float>(VT_XMAX, 0.0f);
-  }
-  bool mutate_xmax(float _xmax = 0.0f) {
-    return SetField<float>(VT_XMAX, _xmax, 0.0f);
-  }
-  float ymin() const {
-    return GetField<float>(VT_YMIN, 0.0f);
-  }
-  bool mutate_ymin(float _ymin = 0.0f) {
-    return SetField<float>(VT_YMIN, _ymin, 0.0f);
-  }
-  float ymax() const {
-    return GetField<float>(VT_YMAX, 0.0f);
-  }
-  bool mutate_ymax(float _ymax = 0.0f) {
-    return SetField<float>(VT_YMAX, _ymax, 0.0f);
-  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffset(verifier, VT_TITLE) &&
@@ -102,14 +60,6 @@ struct SinglePlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVector(x()) &&
            VerifyOffset(verifier, VT_Y) &&
            verifier.VerifyVector(y()) &&
-           VerifyOffset(verifier, VT_XLABEL) &&
-           verifier.VerifyString(xlabel()) &&
-           VerifyOffset(verifier, VT_YLABEL) &&
-           verifier.VerifyString(ylabel()) &&
-           VerifyField<float>(verifier, VT_XMIN) &&
-           VerifyField<float>(verifier, VT_XMAX) &&
-           VerifyField<float>(verifier, VT_YMIN) &&
-           VerifyField<float>(verifier, VT_YMAX) &&
            verifier.EndTable();
   }
 };
@@ -127,24 +77,6 @@ struct SinglePlotBuilder {
   void add_y(flatbuffers::Offset<flatbuffers::Vector<float>> y) {
     fbb_.AddOffset(SinglePlot::VT_Y, y);
   }
-  void add_xlabel(flatbuffers::Offset<flatbuffers::String> xlabel) {
-    fbb_.AddOffset(SinglePlot::VT_XLABEL, xlabel);
-  }
-  void add_ylabel(flatbuffers::Offset<flatbuffers::String> ylabel) {
-    fbb_.AddOffset(SinglePlot::VT_YLABEL, ylabel);
-  }
-  void add_xmin(float xmin) {
-    fbb_.AddElement<float>(SinglePlot::VT_XMIN, xmin, 0.0f);
-  }
-  void add_xmax(float xmax) {
-    fbb_.AddElement<float>(SinglePlot::VT_XMAX, xmax, 0.0f);
-  }
-  void add_ymin(float ymin) {
-    fbb_.AddElement<float>(SinglePlot::VT_YMIN, ymin, 0.0f);
-  }
-  void add_ymax(float ymax) {
-    fbb_.AddElement<float>(SinglePlot::VT_YMAX, ymax, 0.0f);
-  }
   explicit SinglePlotBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -160,20 +92,8 @@ inline flatbuffers::Offset<SinglePlot> CreateSinglePlot(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> title = 0,
     flatbuffers::Offset<flatbuffers::Vector<float>> x = 0,
-    flatbuffers::Offset<flatbuffers::Vector<float>> y = 0,
-    flatbuffers::Offset<flatbuffers::String> xlabel = 0,
-    flatbuffers::Offset<flatbuffers::String> ylabel = 0,
-    float xmin = 0.0f,
-    float xmax = 0.0f,
-    float ymin = 0.0f,
-    float ymax = 0.0f) {
+    flatbuffers::Offset<flatbuffers::Vector<float>> y = 0) {
   SinglePlotBuilder builder_(_fbb);
-  builder_.add_ymax(ymax);
-  builder_.add_ymin(ymin);
-  builder_.add_xmax(xmax);
-  builder_.add_xmin(xmin);
-  builder_.add_ylabel(ylabel);
-  builder_.add_xlabel(xlabel);
   builder_.add_y(y);
   builder_.add_x(x);
   builder_.add_title(title);
@@ -189,29 +109,15 @@ inline flatbuffers::Offset<SinglePlot> CreateSinglePlotDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *title = nullptr,
     const std::vector<float> *x = nullptr,
-    const std::vector<float> *y = nullptr,
-    const char *xlabel = nullptr,
-    const char *ylabel = nullptr,
-    float xmin = 0.0f,
-    float xmax = 0.0f,
-    float ymin = 0.0f,
-    float ymax = 0.0f) {
+    const std::vector<float> *y = nullptr) {
   auto title__ = title ? _fbb.CreateString(title) : 0;
   auto x__ = x ? _fbb.CreateVector<float>(*x) : 0;
   auto y__ = y ? _fbb.CreateVector<float>(*y) : 0;
-  auto xlabel__ = xlabel ? _fbb.CreateString(xlabel) : 0;
-  auto ylabel__ = ylabel ? _fbb.CreateString(ylabel) : 0;
   return Visualisation::CreateSinglePlot(
       _fbb,
       title__,
       x__,
-      y__,
-      xlabel__,
-      ylabel__,
-      xmin,
-      xmax,
-      ymin,
-      ymax);
+      y__);
 }
 
 struct MultiPlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -222,7 +128,9 @@ struct MultiPlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_TITLE = 4,
-    VT_PLOTS = 6
+    VT_XLABEL = 6,
+    VT_YLABEL = 8,
+    VT_PLOTS = 10
   };
   const flatbuffers::String *title() const {
     return GetPointer<const flatbuffers::String *>(VT_TITLE);
@@ -236,6 +144,18 @@ struct MultiPlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int KeyCompareWithValue(const char *val) const {
     return strcmp(title()->c_str(), val);
   }
+  const flatbuffers::String *xlabel() const {
+    return GetPointer<const flatbuffers::String *>(VT_XLABEL);
+  }
+  flatbuffers::String *mutable_xlabel() {
+    return GetPointer<flatbuffers::String *>(VT_XLABEL);
+  }
+  const flatbuffers::String *ylabel() const {
+    return GetPointer<const flatbuffers::String *>(VT_YLABEL);
+  }
+  flatbuffers::String *mutable_ylabel() {
+    return GetPointer<flatbuffers::String *>(VT_YLABEL);
+  }
   const flatbuffers::Vector<flatbuffers::Offset<Visualisation::SinglePlot>> *plots() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Visualisation::SinglePlot>> *>(VT_PLOTS);
   }
@@ -246,6 +166,10 @@ struct MultiPlot FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_TITLE) &&
            verifier.VerifyString(title()) &&
+           VerifyOffset(verifier, VT_XLABEL) &&
+           verifier.VerifyString(xlabel()) &&
+           VerifyOffset(verifier, VT_YLABEL) &&
+           verifier.VerifyString(ylabel()) &&
            VerifyOffset(verifier, VT_PLOTS) &&
            verifier.VerifyVector(plots()) &&
            verifier.VerifyVectorOfTables(plots()) &&
@@ -259,6 +183,12 @@ struct MultiPlotBuilder {
   flatbuffers::uoffset_t start_;
   void add_title(flatbuffers::Offset<flatbuffers::String> title) {
     fbb_.AddOffset(MultiPlot::VT_TITLE, title);
+  }
+  void add_xlabel(flatbuffers::Offset<flatbuffers::String> xlabel) {
+    fbb_.AddOffset(MultiPlot::VT_XLABEL, xlabel);
+  }
+  void add_ylabel(flatbuffers::Offset<flatbuffers::String> ylabel) {
+    fbb_.AddOffset(MultiPlot::VT_YLABEL, ylabel);
   }
   void add_plots(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Visualisation::SinglePlot>>> plots) {
     fbb_.AddOffset(MultiPlot::VT_PLOTS, plots);
@@ -278,9 +208,13 @@ struct MultiPlotBuilder {
 inline flatbuffers::Offset<MultiPlot> CreateMultiPlot(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> title = 0,
+    flatbuffers::Offset<flatbuffers::String> xlabel = 0,
+    flatbuffers::Offset<flatbuffers::String> ylabel = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Visualisation::SinglePlot>>> plots = 0) {
   MultiPlotBuilder builder_(_fbb);
   builder_.add_plots(plots);
+  builder_.add_ylabel(ylabel);
+  builder_.add_xlabel(xlabel);
   builder_.add_title(title);
   return builder_.Finish();
 }
@@ -293,12 +227,18 @@ struct MultiPlot::Traits {
 inline flatbuffers::Offset<MultiPlot> CreateMultiPlotDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *title = nullptr,
+    const char *xlabel = nullptr,
+    const char *ylabel = nullptr,
     const std::vector<flatbuffers::Offset<Visualisation::SinglePlot>> *plots = nullptr) {
   auto title__ = title ? _fbb.CreateString(title) : 0;
+  auto xlabel__ = xlabel ? _fbb.CreateString(xlabel) : 0;
+  auto ylabel__ = ylabel ? _fbb.CreateString(ylabel) : 0;
   auto plots__ = plots ? _fbb.CreateVector<flatbuffers::Offset<Visualisation::SinglePlot>>(*plots) : 0;
   return Visualisation::CreateMultiPlot(
       _fbb,
       title__,
+      xlabel__,
+      ylabel__,
       plots__);
 }
 
@@ -311,7 +251,7 @@ struct SpeciesReport FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_TITLE = 4,
     VT_SPECIES = 6,
-    VT_DATE = 8,
+    VT_TIMESTAMP = 8,
     VT_PLOTS = 10
   };
   const flatbuffers::String *title() const {
@@ -332,11 +272,11 @@ struct SpeciesReport FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   flatbuffers::String *mutable_species() {
     return GetPointer<flatbuffers::String *>(VT_SPECIES);
   }
-  const flatbuffers::String *date() const {
-    return GetPointer<const flatbuffers::String *>(VT_DATE);
+  const flatbuffers::String *timestamp() const {
+    return GetPointer<const flatbuffers::String *>(VT_TIMESTAMP);
   }
-  flatbuffers::String *mutable_date() {
-    return GetPointer<flatbuffers::String *>(VT_DATE);
+  flatbuffers::String *mutable_timestamp() {
+    return GetPointer<flatbuffers::String *>(VT_TIMESTAMP);
   }
   const flatbuffers::Vector<flatbuffers::Offset<Visualisation::MultiPlot>> *plots() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Visualisation::MultiPlot>> *>(VT_PLOTS);
@@ -350,8 +290,8 @@ struct SpeciesReport FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyString(title()) &&
            VerifyOffsetRequired(verifier, VT_SPECIES) &&
            verifier.VerifyString(species()) &&
-           VerifyOffset(verifier, VT_DATE) &&
-           verifier.VerifyString(date()) &&
+           VerifyOffset(verifier, VT_TIMESTAMP) &&
+           verifier.VerifyString(timestamp()) &&
            VerifyOffset(verifier, VT_PLOTS) &&
            verifier.VerifyVector(plots()) &&
            verifier.VerifyVectorOfTables(plots()) &&
@@ -369,8 +309,8 @@ struct SpeciesReportBuilder {
   void add_species(flatbuffers::Offset<flatbuffers::String> species) {
     fbb_.AddOffset(SpeciesReport::VT_SPECIES, species);
   }
-  void add_date(flatbuffers::Offset<flatbuffers::String> date) {
-    fbb_.AddOffset(SpeciesReport::VT_DATE, date);
+  void add_timestamp(flatbuffers::Offset<flatbuffers::String> timestamp) {
+    fbb_.AddOffset(SpeciesReport::VT_TIMESTAMP, timestamp);
   }
   void add_plots(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Visualisation::MultiPlot>>> plots) {
     fbb_.AddOffset(SpeciesReport::VT_PLOTS, plots);
@@ -392,11 +332,11 @@ inline flatbuffers::Offset<SpeciesReport> CreateSpeciesReport(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> title = 0,
     flatbuffers::Offset<flatbuffers::String> species = 0,
-    flatbuffers::Offset<flatbuffers::String> date = 0,
+    flatbuffers::Offset<flatbuffers::String> timestamp = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Visualisation::MultiPlot>>> plots = 0) {
   SpeciesReportBuilder builder_(_fbb);
   builder_.add_plots(plots);
-  builder_.add_date(date);
+  builder_.add_timestamp(timestamp);
   builder_.add_species(species);
   builder_.add_title(title);
   return builder_.Finish();
@@ -411,17 +351,17 @@ inline flatbuffers::Offset<SpeciesReport> CreateSpeciesReportDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *title = nullptr,
     const char *species = nullptr,
-    const char *date = nullptr,
+    const char *timestamp = nullptr,
     std::vector<flatbuffers::Offset<Visualisation::MultiPlot>> *plots = nullptr) {
   auto title__ = title ? _fbb.CreateString(title) : 0;
   auto species__ = species ? _fbb.CreateString(species) : 0;
-  auto date__ = date ? _fbb.CreateString(date) : 0;
+  auto timestamp__ = timestamp ? _fbb.CreateString(timestamp) : 0;
   auto plots__ = plots ? _fbb.CreateVectorOfSortedTables<Visualisation::MultiPlot>(plots) : 0;
   return Visualisation::CreateSpeciesReport(
       _fbb,
       title__,
       species__,
-      date__,
+      timestamp__,
       plots__);
 }
 
@@ -429,33 +369,23 @@ inline const flatbuffers::TypeTable *SinglePlotTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_FLOAT, 1, -1 },
-    { flatbuffers::ET_FLOAT, 1, -1 },
-    { flatbuffers::ET_STRING, 0, -1 },
-    { flatbuffers::ET_STRING, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 }
+    { flatbuffers::ET_FLOAT, 1, -1 }
   };
   static const char * const names[] = {
     "title",
     "x",
-    "y",
-    "xlabel",
-    "ylabel",
-    "xmin",
-    "xmax",
-    "ymin",
-    "ymax"
+    "y"
   };
   static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 9, type_codes, nullptr, nullptr, nullptr, names
+    flatbuffers::ST_TABLE, 3, type_codes, nullptr, nullptr, nullptr, names
   };
   return &tt;
 }
 
 inline const flatbuffers::TypeTable *MultiPlotTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
+    { flatbuffers::ET_STRING, 0, -1 },
+    { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_SEQUENCE, 1, 0 }
   };
@@ -464,10 +394,12 @@ inline const flatbuffers::TypeTable *MultiPlotTypeTable() {
   };
   static const char * const names[] = {
     "title",
+    "xlabel",
+    "ylabel",
     "plots"
   };
   static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 2, type_codes, type_refs, nullptr, nullptr, names
+    flatbuffers::ST_TABLE, 4, type_codes, type_refs, nullptr, nullptr, names
   };
   return &tt;
 }
@@ -485,7 +417,7 @@ inline const flatbuffers::TypeTable *SpeciesReportTypeTable() {
   static const char * const names[] = {
     "title",
     "species",
-    "date",
+    "timestamp",
     "plots"
   };
   static const flatbuffers::TypeTable tt = {

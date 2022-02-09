@@ -4,23 +4,19 @@ table SinglePlot {
     title:string;
     x:[float];
     y:[float];
-    xlabel:string;
-    ylabel:string;
-    xmin:float;
-    xmax:float;
-    ymin:float;
-    ymax:float;
 }
 
 table MultiPlot {
     title:string (key);
+    xlabel:string;
+    ylabel:string;
     plots:[SinglePlot];
 }
 
 table SpeciesReport {
     title:string (key, required);
     species:string (required);
-    date:string;
+    timestamp:string;
     plots:[MultiPlot];
 }
 
