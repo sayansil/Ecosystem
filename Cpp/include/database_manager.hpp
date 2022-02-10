@@ -27,7 +27,7 @@ struct DatabaseManager
      *  Standard DBMS operations  *
      ******************************/
 
-    std::vector<flatbuffers::DetachedBuffer> read_all_rows();
+    std::vector<std::vector<uint8_t>> read_all_rows();
     void insert_rows(const std::vector<flatbuffers::DetachedBuffer> &);
 
     /******************************
