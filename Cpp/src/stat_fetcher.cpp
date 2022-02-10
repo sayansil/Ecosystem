@@ -2,8 +2,6 @@
 #include <database_manager.hpp>
 #include <ctime>
 
-static flatbuffers::DetachedBuffer get_avg_buffer(const std::vector<flatbuffers::DetachedBuffer> &data, const std::string &kind);
-
 namespace stat_fetcher
 {
     flatbuffers::DetachedBuffer export_report(
@@ -14,15 +12,21 @@ namespace stat_fetcher
     {
         DatabaseManager db;
         db.begin_transaction();
-        auto data = db.read_all_rows();
+        std::vector<std::vector<uint8_t>> data = db.read_all_rows();
         db.end_transaction();
-
-        auto avg_organism = (Ecosystem::Organism *)get_avg_buffer(data, kind).data();
 
         flatbuffers::FlatBufferBuilder builder;
         Visualisation::SpeciesReportBuilder report_builder(builder);
 
         std::vector<flatbuffers::Offset<Visualisation::MultiPlot>> stdvecMultiplot;
+
+        for (const auto &row : data)
+        {
+            const Ecosystem::World *world = Ecosystem::World::GetRootAsWorld(row.data());
+            const Ecosystem::Species *species = world->species()->LookupByKey(kind.c_str());
+
+            // TODO
+        }
 
         std::vector<float> tmp;
 
@@ -952,19 +956,3 @@ namespace stat_fetcher
         return report_buffer;
     }
 };
-
-flatbuffers::DetachedBuffer get_avg_buffer(const std::vector<flatbuffers::DetachedBuffer> &data, const std::string &kind)
-{
-    flatbuffers::FlatBufferBuilder builder;
-    Ecosystem::OrganismBuilder organism_builder(builder);
-
-    organism_builder.add_kind(builder.CreateString(kind.c_str()));
-
-    // TODO add average stats in new buffer
-
-    builder.Finish(organism_builder.Finish());
-    auto organism_buffer = builder.Release();
-    builder.Clear();
-
-    return organism_buffer;
-}

@@ -48,19 +48,20 @@ void DatabaseManager::insert_rows(const std::vector<flatbuffers::DetachedBuffer>
     }
 }
 
-std::vector<flatbuffers::DetachedBuffer> DatabaseManager::read_all_rows()
+std::vector<std::vector<uint8_t>> DatabaseManager::read_all_rows()
 {
     gRowsMaster.clear();
     gRowsMaster.shrink_to_fit();
     std::string sql_command = "SELECT * FROM ECOSYSTEM_MASTER";
     sqlite3_exec(db, sql_command.c_str(), callback_read_master, 0, nullptr);
 
-    std::vector<flatbuffers::DetachedBuffer> rows;
+    std::vector<std::vector<uint8_t>> rows;
     for (auto &gRow : gRowsMaster)
     {
-        flatbuffers::DetachedBuffer buffer; // TODO from string to buffer pointer
+        std::vector<uint8_t> row;
+        std::copy(gRow.begin(), gRow.end(), std::back_inserter(row));
 
-        // rows.push_back(buffer);
+        rows.push_back(row);
     }
 
     return rows;
