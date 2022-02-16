@@ -3,9 +3,11 @@
 #include <fmt/core.h>
 #include <vector>
 #include <unordered_map>
+#include <profiler.hpp>
 
 int main()
 {
+    Instrumentor::Get().BeginSession("Profile");
     fmt::print("Hello world\n");
     unsigned int initial_organism_count = 45000;
     std::vector<std::unordered_map<std::string, std::string>> organisms;
@@ -32,4 +34,5 @@ int main()
 
     allah.createWorld(organisms);
     fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
+    Instrumentor::Get().EndSession();
 }
