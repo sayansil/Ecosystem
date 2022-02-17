@@ -6,6 +6,7 @@
 #include <fmt/core.h>
 #include <flatbuffers/minireflect.h>
 #include <nlohmann/json.hpp>
+#include <profiler.hpp>
 
 static flatbuffers::Offset<Ecosystem::Organism> createOrganism(
     flatbuffers::FlatBufferBuilder &builder,
@@ -101,6 +102,7 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
 
 void God::displayWorldMetadata()
 {
+    PROFILE_FUNCTION();
     fmt::print("\nBuffer Size: {} bytes \n", buffer.size());
 
     flatbuffers::ToStringVisitor visitor("", true, "", true);
@@ -122,6 +124,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     const int8_t &monitor)
 {
 
+    PROFILE_FUNCTION();
     // Assign base stats of species
     std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> stdvecCStrand;
     std::map<std::string, std::map<std::string, int>> c_structure = constants::species_constants_map[kind]["chromosome_structure"];
@@ -238,6 +241,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     const uint64_t &age,
     const int8_t &monitor)
 {
+    PROFILE_FUNCTION();
     return createOrganism(builder, organism_builder, kind, kingdom, age, "", "", 0, helper::random_location(), monitor);
 }
 

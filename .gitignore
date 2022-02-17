@@ -5,6 +5,7 @@ __pycache__/*
 Cpp/.ccls-cache/*
 .ccls-cache/*
 **.swp
+Cpp/.cache/*
 build-Cpp-Desktop-Release/
 python/*
 Python/keys.json
