@@ -50,6 +50,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(flatbuffer)
 set(FLATC ${FlatBuffers_BINARY_DIR}/flatc)
 message("flatc compiler at: ${FLATC}")
+include_directories(${FlatBuffers_SOURCE_DIR}/include)
 
 FetchContent_Declare(
     fmtlib
