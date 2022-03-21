@@ -5,6 +5,7 @@
 #include <sqlite3.h>
 #include <vector>
 #include <helper.hpp>
+#include <ecosystem_types.hpp>
 #include <world_generated.h>
 
 struct DatabaseManager
@@ -27,8 +28,8 @@ struct DatabaseManager
      *  Standard DBMS operations  *
      ******************************/
 
-    std::vector<std::vector<uint8_t>> read_all_rows();
-    void insert_rows(const std::vector<flatbuffers::DetachedBuffer> &);
+    std::vector<FBuffer> read_all_rows();
+    void insert_rows(const std::vector<FBuffer> &);
 
     /******************************
      *  Miscellaneous operations  *

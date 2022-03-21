@@ -1,12 +1,46 @@
 #include <god.hpp>
 #include <iostream>
+#include <vector>
+#include <nlohmann/json.hpp>
+#include <flatbuffers/idl.h>
+#include <fmt/core.h>
+#include <flatbuffers/minireflect.h>
+#include <unordered_map>
+#include <stat_fetcher.hpp>
+#include <database_manager.hpp>
+#include <ecosystem_types.hpp>
 
 int main()
 {
-    constants::init();
-    ENTITY obj = std::make_shared<Animal>("deer", 10, false, "OG-1");
-    const auto& a_map = stat_fetcher::get_var_map(obj);
-    std::cout << a_map.is_initialized << ' ' << a_map.map.size() << '\n';
-    const auto& a_map2 = stat_fetcher::get_var_map(obj);
-    std::cout << a_map2.is_initialized << ' ' << a_map2.map.size() << '\n';
+    unsigned int initial_organism_count = 4500;
+    std::vector<std::unordered_map<std::string, std::string>> organisms;
+    organisms.reserve(initial_organism_count);
+
+    for (size_t i = 0; i < initial_organism_count; i++)
+    {
+        organisms.push_back({{"kind", "deer"},
+                             {"kingdom", "0"},
+                             {"age", "20"}});
+    }
+
+    God allah;
+
+    allah.createWorld(organisms);
+    fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
+    
+    FBuffer buff = stat_fetcher::create_avg_world(allah.buffer);
+    
+    {
+        DatabaseManager db_manager;
+        
+        db_manager.insert_rows({buff});
+        
+        std::vector<FBuffer> rows = db_manager.read_all_rows();
+        
+        flatbuffers::ToStringVisitor visitor("", true, "", true);
+        flatbuffers::IterateFlatBuffer(rows[0].data(), Ecosystem::WorldTypeTable(), &visitor);
+        nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+        fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
+    }
+    
 }

@@ -3,14 +3,13 @@
 #include <string>
 #include <utility>
 #include <unordered_map>
-
-static std::vector<std::string> gRowsMaster;
+#include <fmt/core.h>
 
 static std::vector<std::string> items;
 
-static int callback_read_master(void *data, int argc, char **argv, char **colName)
-{
-    gRowsMaster.push_back(argv[0]);
+static int callback_numrows(void *count, int argc, char **argv, char **azColName) {
+    int *c = (int *)count;
+    *c = atoi(argv[0]);
     return 0;
 }
 
@@ -37,33 +36,41 @@ void DatabaseManager::end_transaction()
     sqlite3_exec(db, "END TRANSACTION", nullptr, nullptr, nullptr);
 }
 
-void DatabaseManager::insert_rows(const std::vector<flatbuffers::DetachedBuffer> &rows)
+void DatabaseManager::insert_rows(const std::vector<FBuffer> &rows)
 {
     for (const auto &row : rows)
     {
-        std::string blob = ""; // TODO from buffer pointer to string
-
-        std::string sql_command = "INSERT INTO ECOSYSTEM_MASTER VALUES (" + blob + ")";
+        std::string sql_command = fmt::format(
+            "INSERT INTO ECOSYSTEM_MASTER VALUES ({}, ZEROBLOB({}))", 
+            Ecosystem::GetWorld(row.data())->year(),
+            row.size());
         sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
+        
+        sqlite3_blob *newBlob = 0;
+        sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "AVG_WORLD", sqlite3_last_insert_rowid(db), 1, &newBlob);
+        sqlite3_blob_write(newBlob, row.data(), row.size(), 0);
+        sqlite3_blob_close(newBlob);
     }
 }
 
-std::vector<std::vector<uint8_t>> DatabaseManager::read_all_rows()
+std::vector<FBuffer> DatabaseManager::read_all_rows()
 {
-    gRowsMaster.clear();
-    gRowsMaster.shrink_to_fit();
-    std::string sql_command = "SELECT * FROM ECOSYSTEM_MASTER";
-    sqlite3_exec(db, sql_command.c_str(), callback_read_master, 0, nullptr);
+    int count = 0;
+    sqlite3_exec(db, "SELECT COUNT(YEAR) FROM ECOSYSTEM_MASTER", callback_numrows, &count, nullptr);
 
-    std::vector<std::vector<uint8_t>> rows;
-    for (auto &gRow : gRowsMaster)
-    {
-        std::vector<uint8_t> row;
-        std::copy(gRow.begin(), gRow.end(), std::back_inserter(row));
-
-        rows.push_back(row);
+    std::vector<FBuffer> rows;
+    rows.reserve(count);
+    
+    for (int i=0; i<count; i++) {
+        sqlite3_blob *blob = 0;
+        sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "AVG_WORLD", i+1, 0, &blob);
+        int size = sqlite3_blob_bytes(blob);
+        
+        FBuffer data(size);
+        sqlite3_blob_read(blob, data.data(), data.size(), 0);
+        sqlite3_blob_close(blob);
+        rows.push_back(data);
     }
-
     return rows;
 }
 

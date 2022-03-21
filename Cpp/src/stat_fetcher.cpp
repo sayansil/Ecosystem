@@ -10,8 +10,7 @@ static std::vector<float> get_value_vector(
 namespace stat_fetcher
 {
     flatbuffers::DetachedBuffer export_report(
-        const flatbuffers::DetachedBuffer &world_buffer, const std::string &kind,
-        const std::string &kingdom, const std::string &title)
+        const std::string &kind, const std::string &kingdom, const std::string &title)
     {
         DatabaseManager db;
         db.begin_transaction();
@@ -1358,6 +1357,28 @@ namespace stat_fetcher
         builder.Clear();
 
         return report_buffer;
+    }
+
+    FBuffer create_avg_world(const flatbuffers::DetachedBuffer &world_buffer) {
+        
+        const Ecosystem::World *world_pointer = Ecosystem::GetWorld(world_buffer.data());
+        
+        flatbuffers::FlatBufferBuilder new_builder;
+        Ecosystem::WorldBuilder new_world_builder(new_builder);
+
+        // Do avg stuff here
+        
+        new_world_builder.add_year(world_pointer->year());
+        new_builder.Finish(new_world_builder.Finish());
+        
+        FBuffer new_buffer(new_builder.GetSize());
+        uint8_t *new_buffer_ptr = new_builder.GetBufferPointer();
+        
+        for (int i = 0; i < new_buffer.size(); i++) {
+            new_buffer[i] = new_buffer_ptr[i];
+        }
+        
+        return new_buffer;
     }
 }; // namespace stat_fetcher
 
