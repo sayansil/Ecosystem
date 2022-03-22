@@ -13,7 +13,7 @@ static flatbuffers::Offset<Ecosystem::Organism> createOrganism(
     Ecosystem::OrganismBuilder &organism_builder,
     std::unordered_map<std::string, std::string> attributes);
 
-static double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier, const uint16_t& chromosome_number);
+static double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier, const uint16_t &chromosome_number);
 
 static std::string getValueAsStr(const nlohmann::json &attributes, const std::string &key)
 {
@@ -23,6 +23,11 @@ static std::string getValueAsStr(const nlohmann::json &attributes, const std::st
 static uint64_t getValueAsUlong(const nlohmann::json &attributes, const std::string &key)
 {
     return attributes.find(key) != attributes.end() ? attributes[key].get<uint64_t>() : 0;
+}
+
+static uint32_t getValueAsUint(const nlohmann::json &attributes, const std::string &key)
+{
+    return attributes.find(key) != attributes.end() ? attributes[key].get<uint32_t>() : 0;
 }
 
 static float getValueAsFloat(const nlohmann::json &attributes, const std::string &key)
@@ -83,9 +88,9 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
             }
         }
 
+        species_builder.add_organism(builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size()));
         species_builder.add_kingdom((Ecosystem::KingdomE)std::stoi(kingdom));
         species_builder.add_kind(builder.CreateString(kind.c_str()));
-        species_builder.add_organism(builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size()));
 
         stdvecSpecies.push_back(species_builder.Finish());
     }
@@ -97,7 +102,7 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
     buffer = builder.Release();
     builder.Clear();
 
-    //TODO in increment_age() + evaluate_static_fitness();
+    // TODO in increment_age() + evaluate_static_fitness();
 }
 
 void God::displayWorldMetadata()
@@ -139,9 +144,9 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 
     organism_builder.add_chromosome_structure(builder.CreateVectorOfSortedTables(stdvecCStrand.data(), stdvecCStrand.size()));
     organism_builder.add_chromosome_number(getValueAsUshort(constants::species_constants_map[kind], "species_chromosome_number"));
-    organism_builder.add_mating_age_start(getValueAsUlong(constants::species_constants_map[kind], "mating_age_start"));
-    organism_builder.add_mating_age_end(getValueAsUlong(constants::species_constants_map[kind], "mating_age_end"));
-    organism_builder.add_max_age(getValueAsUlong(constants::species_constants_map[kind], "species_max_age"));
+    organism_builder.add_mating_age_start(getValueAsUint(constants::species_constants_map[kind], "mating_age_start"));
+    organism_builder.add_mating_age_end(getValueAsUint(constants::species_constants_map[kind], "mating_age_end"));
+    organism_builder.add_max_age(getValueAsUint(constants::species_constants_map[kind], "species_max_age"));
     organism_builder.add_offsprings_factor(getValueAsFloat(constants::species_constants_map[kind], "offsprings_factor"));
     organism_builder.add_is_asexual((Ecosystem::Reproduction)getValueAsByte(constants::species_constants_map[kind], "is_asexual"));
     organism_builder.add_mutation_probability(getValueAsFloat(constants::species_constants_map[kind], "mutation_probability"));
@@ -245,15 +250,15 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     return createOrganism(builder, organism_builder, kind, kingdom, age, "", "", 0, helper::random_location(), monitor);
 }
 
-double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier, const uint16_t& chromosome_number)
+double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier, const uint16_t &chromosome_number)
 {
     auto it = c_structure.find(code);
-    if(it == c_structure.end())
+    if (it == c_structure.end())
         return 0;
     std::string chromosome_str = helper::bytevector_to_string(chromosome.data(), chromosome.size(), chromosome_number);
     int start = it->second.find("start")->second;
     int len = it->second.find("length")->second;
-    if(len == 0)
+    if (len == 0)
         return 0;
     return (helper::to_decimal(chromosome_str.substr(start, len)) / static_cast<double>(1 << len)) * multiplier;
 }
