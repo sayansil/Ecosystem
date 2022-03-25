@@ -18,7 +18,6 @@ table Organism {
     kind:string (required);
     kingdom:KingdomE = Animal;
     chromosome_number:ushort = 0;
-    monitor:Monitor = None;
     chromosome_structure:[ChromosomeStrand];
     food_chain_rank:ubyte = 0;
     is_asexual:Reproduction = Sexual;
@@ -101,6 +100,7 @@ table Organism {
     vision_radius:float;
     sleep_restore_factor:float;
     asleep:Sleep;
+    monitor:Monitor = None;
 }
 
 table Species {

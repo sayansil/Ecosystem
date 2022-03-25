@@ -10,6 +10,8 @@
 #include <string>
 #include <execution>
 #include <world_generated.h>
+#include <database_manager.hpp>
+
 class God
 {
 public:
@@ -57,10 +59,10 @@ public:
     void displayWorldMetadata();
 
     // void catastrophe();
-    // void reset_species(const std::string&);
+    void cleanSlate();
     // void happy_new_year(const bool &log = false);
     // void kill_organisms(const std::vector<std::string>&);
-    // bool spawn_organism(ENTITY&&);
+    bool spawn_organism(Ecosystem::Organism *);
     // bool spawn_organism(ENTITY&&, std::vector<std::pair<std::string, ENTITY>>&);
     // void remember_species(const std::string&);
     // std::string get_annual_data(const std::string&);
@@ -73,13 +75,13 @@ public:
     // std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> statistics;
 
 protected:
-    // double killer_function(const double &, const double &) const;
-    // int creator_function(const double &) const;
+    double killer_function(const double &, const double &) const;
+    int creator_function(const double &) const;
 
 private:
     flatbuffers::FlatBufferBuilder builder;
 
-    // DatabaseManager db;
+    DatabaseManager db;
     bool gods_eye = false;
     const int max_mate_trials = 100;
 
@@ -90,8 +92,8 @@ private:
      *         Unavailable to users         *
      ****************************************/
 
-    // bool mate(const std::string&, const std::string&, std::vector<std::pair<std::string, ENTITY>>&, const nlohmann::json & = nlohmann::json());
-    // void update_species(const std::string&);
+    // bool mate(Ecosystem::Organism *, Ecosystem::Organism *, const nlohmann::json &= nlohmann::json());
+    void update_species(const std::string&);
     // template <typename T>
     // void assignBaseStats(
     //     const std::string &kingdom,

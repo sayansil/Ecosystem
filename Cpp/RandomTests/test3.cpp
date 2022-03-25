@@ -24,7 +24,7 @@ int main()
     }
 
     God allah;
-
+    // allah.cleanSlate();
     allah.createWorld(organisms);
     fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
     
@@ -42,5 +42,4 @@ int main()
         nlohmann::json json_data = nlohmann::json::parse(visitor.s);
         fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
     }
-    
 }

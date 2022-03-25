@@ -45,6 +45,27 @@ static uint16_t getValueAsUshort(const nlohmann::json &attributes, const std::st
     return attributes.find(key) != attributes.end() ? attributes[key].get<uint16_t>() : 0;
 }
 
+static double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier, const uint16_t &chromosome_number)
+{
+    auto it = c_structure.find(code);
+    if (it == c_structure.end())
+        return 0;
+    std::string chromosome_str = helper::bytevector_to_string(chromosome.data(), chromosome.size(), chromosome_number);
+    int start = it->second.find("start")->second;
+    int len = it->second.find("length")->second;
+    if (len == 0)
+        return 0;
+    return (helper::to_decimal(chromosome_str.substr(start, len)) / static_cast<double>(1 << len)) * multiplier;
+}
+
+static double updateStat(double base, double p_range)
+{
+    std::uniform_real_distribution<double> dis(0.0, p_range * 2);
+    const double x = p_range - dis(helper::rng);
+
+    return base * (1 + x);
+}
+
 God::God()
 {
     constants::init();
@@ -250,15 +271,86 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     return createOrganism(builder, organism_builder, kind, kingdom, age, "", "", 0, helper::random_location(), monitor);
 }
 
-double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier, const uint16_t &chromosome_number)
+void God::cleanSlate()
 {
-    auto it = c_structure.find(code);
-    if (it == c_structure.end())
-        return 0;
-    std::string chromosome_str = helper::bytevector_to_string(chromosome.data(), chromosome.size(), chromosome_number);
-    int start = it->second.find("start")->second;
-    int len = it->second.find("length")->second;
-    if (len == 0)
-        return 0;
-    return (helper::to_decimal(chromosome_str.substr(start, len)) / static_cast<double>(1 << len)) * multiplier;
+    for (const auto &entry : std::filesystem::directory_iterator(
+        helper::get_ecosystem_root() / std::filesystem::path("data") / std::filesystem::path("json")))
+    {
+        for (const auto &inner_entry : std::filesystem::directory_iterator(entry.path()))
+        {
+            fmt::print("{}\n", inner_entry.path().string());
+            std::ifstream in(inner_entry.path() / "base.json");
+            nlohmann::json tmp;
+            in >> tmp;
+            in.close();
+            
+            constants::species_constants_map[inner_entry.path().filename().string()] = tmp;
+        }
+    }
+    
+    db.clear_database();
 }
+
+void God::update_species(const std::string &full_species_name)
+{
+    std::string kind = full_species_name.substr(full_species_name.find('/') + 1); // Note to Darkstar1997: this is not path
+    std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
+
+    const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / std::filesystem::path("data") / std::filesystem::path("json") / kingdom / kind / std::filesystem::path("modify.json");
+
+    std::ifstream modify_in(modify_filepath);
+
+    nlohmann::json modify;
+    modify_in >> modify;
+
+    for (const auto [key, value]: modify.items())
+    {
+        constants::species_constants_map[kind][key] = updateStat((double)constants::species_constants_map[kind][key], (double)value);
+    }
+
+    modify_in.close();
+}
+
+double God::killer_function(const double &index, const double &size) const
+{
+    // return std::exp(-x / (s / 10.0))
+    // return pow(x / s, 1 / 1.75)
+    // return 1 - (1 / (1 + exp(-(10 * index - size) / pow(size, 0.5))));
+    const double &ratio = 1.0 / 10.0;
+    return 1 - (1 / (1 + exp((ratio * size - index) / (ratio * pow(size, 0.5)))));
+}
+
+int God::creator_function(const double &o_factor) const
+{
+    std::gamma_distribution<double> dis(1.5, o_factor);
+    return std::round(dis(helper::rng));
+}
+
+bool God::spawn_organism(Ecosystem::Organism *current_organism)
+{
+    organism_opts::generate_death_factor(current_organism);
+
+    return organism_opts::is_normal_child(current_organism);
+    
+    // Also add to the newborn vector
+}
+
+// bool God::mate(Ecosystem::Organism *parent1, Ecosystem::Organism *parent2, const nlohmann::json &species_constants)
+// {
+//     // Generate chromosomes of the child
+//     auto child_chromosome = helper::get_random_mixture(
+//         helper::bytevector_to_string(parent1->chromosome().data(), parent1->chromosome().size(), parent1->chromosome_number()), 
+//         helper::bytevector_to_string(parent2->chromosome().data(), parent2->chromosome().size(), parent2->chromosome_number()));
+
+//     // Mutate chromosomes
+//     for(auto &bit : child_chromosome)
+//         if(helper::weighted_prob(std::max(parent1->mutation_probability(), parent2->mutation_probability())))
+//             bit = (bit == '1')?'0':'1';
+
+//     // Spawn child (if probable)
+//     if(helper::weighted_prob(std::min(parent1->conceiving_probability(), parent2->conceiving_probability())))
+//     {
+//         // TODO
+//     }
+//     return false;
+// }
