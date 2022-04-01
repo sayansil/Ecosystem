@@ -11,8 +11,6 @@ const std::filesystem::path master_db_path = helper::get_ecosystem_root() / "dat
 const std::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
 const std::filesystem::path json_template_path = helper::get_ecosystem_root() / "data/templates/json";
 
-const std::vector<std::pair<std::string, std::string>> schema::schemaMaster;
-
 // Hack to solve linking error in Windows...Needs to be fixed (definition copied from schema.cpp)
 
 #ifdef WIN32
