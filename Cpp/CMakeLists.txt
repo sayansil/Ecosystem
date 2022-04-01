@@ -66,14 +66,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(fmtlib)
 
 FetchContent_Declare(
-    customRNG
+    customrng
     GIT_REPOSITORY "https://github.com/Reputeless/Xoshiro-cpp"
     GIT_TAG 078bf3396c31c3fa6d6f6c785b4612fb547f7132
     GIT_PROGRESS TRUE
 )
-FetchContent_Populate(customRNG)
+FetchContent_Populate(customrng)
 #due to some reason the ${customRNG_SOURCE_DIR} variable doesn't get initialized
-include_directories(${customRNG_SOURCE_DIR})
+include_directories(${customrng_SOURCE_DIR})
 
 FetchContent_Declare(
     sqlite3
