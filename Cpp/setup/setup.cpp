@@ -5,10 +5,13 @@
 #include <string>
 #include <helper.hpp>
 #include <schema.hpp>
+#include <ecosystem_EXPORTS.h>
 
 const std::filesystem::path master_db_path = helper::get_ecosystem_root() / "data/ecosystem_master.db";
 const std::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
 const std::filesystem::path json_template_path = helper::get_ecosystem_root() / "data/templates/json";
+
+const std::vector<std::pair<std::string, std::string>> schema::schemaMaster;
 
 sqlite3 *db;
 
@@ -90,12 +93,12 @@ int main()
 
     if (!std::filesystem::exists(master_db_path))
     {
-        sqlite3_open(master_db_path.c_str(), &db);
+        sqlite3_open(master_db_path.string().c_str(), &db);
         create_master_table();
     }
     else
     {
-        sqlite3_open(master_db_path.c_str(), &db);
+        sqlite3_open(master_db_path.string().c_str(), &db);
         std::cout << "Using existing db at " << master_db_path << '\n';
     }
 
