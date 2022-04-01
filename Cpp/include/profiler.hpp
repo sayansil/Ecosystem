@@ -24,6 +24,10 @@
 #include <fstream>
 #include <thread>
 
+#ifdef WIN32
+	#define __PRETTY_FUNCTION__ __FUNCSIG__
+#endif
+
 #define ECOSYSTEM_PROFILING 1
 #if ECOSYSTEM_PROFILING
 #define PROFILE_SCOPE(name) InstrumentationTimer timer##__LINE__(name)
