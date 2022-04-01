@@ -14,7 +14,7 @@ namespace constants
             {
                 // entry.path() / "base.json" copy to map
 
-                std::string species_name = entry.path().filename();
+                std::string species_name = entry.path().filename().string();
                 std::ifstream in(entry.path() / "base.json");
                 nlohmann::json tmp;
                 in >> tmp;
