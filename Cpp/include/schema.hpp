@@ -3,10 +3,11 @@
 
 #include <vector>
 #include <string>
+#include <ecosystem_export.h>
 
 namespace schema
 {
-    extern const std::vector<std::pair<std::string, std::string>> schemaMaster;
+    extern DLLIMPORT const std::vector<std::pair<std::string, std::string>> schemaMaster;
 }; // namespace schema
 
 #endif // SCHEMA_HPP

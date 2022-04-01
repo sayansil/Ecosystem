@@ -9,7 +9,7 @@ function(add_code name)
     add_executable(rt_${name} ${name}.cpp)
     target_include_directories(rt_${name} PRIVATE
                                ${Ecosystem_SOURCE_DIR}/include
-							   ${CMAKE_BINARY_DIR}/src)
+							   )
     target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} fmt::fmt)
 	copy_dll(rt_${name} fmt)
 	copy_dll(rt_${name} ${ECOSYSTEM_LIB})

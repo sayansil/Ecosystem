@@ -291,81 +291,81 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_KIND = 4,
     VT_KINGDOM = 6,
     VT_CHROMOSOME_NUMBER = 8,
-    VT_MONITOR = 10,
-    VT_CHROMOSOME_STRUCTURE = 12,
-    VT_FOOD_CHAIN_RANK = 14,
-    VT_IS_ASEXUAL = 16,
-    VT_AGE_FITNESS_ON_DEATH_RATIO = 18,
-    VT_CONCEIVING_PROBABILITY = 20,
-    VT_MATING_PROBABILITY = 22,
-    VT_MATING_AGE_START = 24,
-    VT_MATING_AGE_END = 26,
-    VT_MAX_AGE = 28,
-    VT_MUTATION_PROBABILITY = 30,
-    VT_OFFSPRINGS_FACTOR = 32,
-    VT_HEIGHT_ON_SPEED = 34,
-    VT_HEIGHT_ON_STAMINA = 36,
-    VT_HEIGHT_ON_VITALITY = 38,
-    VT_WEIGHT_ON_SPEED = 40,
-    VT_WEIGHT_ON_STAMINA = 42,
-    VT_WEIGHT_ON_VITALITY = 44,
-    VT_VITALITY_ON_APPETITE = 46,
-    VT_VITALITY_ON_SPEED = 48,
-    VT_STAMINA_ON_APPETITE = 50,
-    VT_STAMINA_ON_SPEED = 52,
-    VT_THEORETICAL_MAXIMUM_BASE_APPETITE = 54,
-    VT_THEORETICAL_MAXIMUM_BASE_HEIGHT = 56,
-    VT_THEORETICAL_MAXIMUM_BASE_SPEED = 58,
-    VT_THEORETICAL_MAXIMUM_BASE_STAMINA = 60,
-    VT_THEORETICAL_MAXIMUM_BASE_VITALITY = 62,
-    VT_THEORETICAL_MAXIMUM_BASE_WEIGHT = 64,
-    VT_THEORETICAL_MAXIMUM_HEIGHT = 66,
-    VT_THEORETICAL_MAXIMUM_SPEED = 68,
-    VT_THEORETICAL_MAXIMUM_WEIGHT = 70,
-    VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER = 72,
-    VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER = 74,
-    VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER = 76,
-    VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER = 78,
-    VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER = 80,
-    VT_NAME = 82,
-    VT_CHROMOSOME = 84,
-    VT_GENDER = 86,
-    VT_GENERATION = 88,
-    VT_IMMUNITY = 90,
-    VT_BASE_APPETITE = 92,
-    VT_BASE_HEIGHT = 94,
-    VT_BASE_SPEED = 96,
-    VT_BASE_STAMINA = 98,
-    VT_BASE_VITALITY = 100,
-    VT_BASE_WEIGHT = 102,
-    VT_HEIGHT_MULTIPLIER = 104,
-    VT_SPEED_MULTIPLIER = 106,
-    VT_STAMINA_MULTIPLIER = 108,
-    VT_VITALITY_MULTIPLIER = 110,
-    VT_WEIGHT_MULTIPLIER = 112,
-    VT_MAX_HEIGHT = 114,
-    VT_MAX_WEIGHT = 116,
-    VT_AGE = 118,
-    VT_HEIGHT = 120,
-    VT_WEIGHT = 122,
-    VT_AGE_DEATH_FACTOR = 124,
-    VT_FITNESS_DEATH_FACTOR = 126,
-    VT_DEATH_FACTOR = 128,
-    VT_STATIC_FITNESS = 130,
-    VT_MAX_APPETITE_AT_AGE = 132,
-    VT_MAX_SPEED_AT_AGE = 134,
-    VT_MAX_STAMINA_AT_AGE = 136,
-    VT_MAX_VITALITY_AT_AGE = 138,
-    VT_APPETITE = 140,
-    VT_SPEED = 142,
-    VT_STAMINA = 144,
-    VT_VITALITY = 146,
-    VT_X = 148,
-    VT_Y = 150,
-    VT_DYNAMIC_FITNESS = 152,
-    VT_VISION_RADIUS = 154,
-    VT_SLEEP_RESTORE_FACTOR = 156,
-    VT_ASLEEP = 158
+    VT_CHROMOSOME_STRUCTURE = 10,
+    VT_FOOD_CHAIN_RANK = 12,
+    VT_IS_ASEXUAL = 14,
+    VT_AGE_FITNESS_ON_DEATH_RATIO = 16,
+    VT_CONCEIVING_PROBABILITY = 18,
+    VT_MATING_PROBABILITY = 20,
+    VT_MATING_AGE_START = 22,
+    VT_MATING_AGE_END = 24,
+    VT_MAX_AGE = 26,
+    VT_MUTATION_PROBABILITY = 28,
+    VT_OFFSPRINGS_FACTOR = 30,
+    VT_HEIGHT_ON_SPEED = 32,
+    VT_HEIGHT_ON_STAMINA = 34,
+    VT_HEIGHT_ON_VITALITY = 36,
+    VT_WEIGHT_ON_SPEED = 38,
+    VT_WEIGHT_ON_STAMINA = 40,
+    VT_WEIGHT_ON_VITALITY = 42,
+    VT_VITALITY_ON_APPETITE = 44,
+    VT_VITALITY_ON_SPEED = 46,
+    VT_STAMINA_ON_APPETITE = 48,
+    VT_STAMINA_ON_SPEED = 50,
+    VT_THEORETICAL_MAXIMUM_BASE_APPETITE = 52,
+    VT_THEORETICAL_MAXIMUM_BASE_HEIGHT = 54,
+    VT_THEORETICAL_MAXIMUM_BASE_SPEED = 56,
+    VT_THEORETICAL_MAXIMUM_BASE_STAMINA = 58,
+    VT_THEORETICAL_MAXIMUM_BASE_VITALITY = 60,
+    VT_THEORETICAL_MAXIMUM_BASE_WEIGHT = 62,
+    VT_THEORETICAL_MAXIMUM_HEIGHT = 64,
+    VT_THEORETICAL_MAXIMUM_SPEED = 66,
+    VT_THEORETICAL_MAXIMUM_WEIGHT = 68,
+    VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER = 70,
+    VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER = 72,
+    VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER = 74,
+    VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER = 76,
+    VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER = 78,
+    VT_NAME = 80,
+    VT_CHROMOSOME = 82,
+    VT_GENDER = 84,
+    VT_GENERATION = 86,
+    VT_IMMUNITY = 88,
+    VT_BASE_APPETITE = 90,
+    VT_BASE_HEIGHT = 92,
+    VT_BASE_SPEED = 94,
+    VT_BASE_STAMINA = 96,
+    VT_BASE_VITALITY = 98,
+    VT_BASE_WEIGHT = 100,
+    VT_HEIGHT_MULTIPLIER = 102,
+    VT_SPEED_MULTIPLIER = 104,
+    VT_STAMINA_MULTIPLIER = 106,
+    VT_VITALITY_MULTIPLIER = 108,
+    VT_WEIGHT_MULTIPLIER = 110,
+    VT_MAX_HEIGHT = 112,
+    VT_MAX_WEIGHT = 114,
+    VT_AGE = 116,
+    VT_HEIGHT = 118,
+    VT_WEIGHT = 120,
+    VT_AGE_DEATH_FACTOR = 122,
+    VT_FITNESS_DEATH_FACTOR = 124,
+    VT_DEATH_FACTOR = 126,
+    VT_STATIC_FITNESS = 128,
+    VT_MAX_APPETITE_AT_AGE = 130,
+    VT_MAX_SPEED_AT_AGE = 132,
+    VT_MAX_STAMINA_AT_AGE = 134,
+    VT_MAX_VITALITY_AT_AGE = 136,
+    VT_APPETITE = 138,
+    VT_SPEED = 140,
+    VT_STAMINA = 142,
+    VT_VITALITY = 144,
+    VT_X = 146,
+    VT_Y = 148,
+    VT_DYNAMIC_FITNESS = 150,
+    VT_VISION_RADIUS = 152,
+    VT_SLEEP_RESTORE_FACTOR = 154,
+    VT_ASLEEP = 156,
+    VT_MONITOR = 158
   };
   /// Fixed for a species
   const flatbuffers::String *kind() const {
@@ -385,12 +385,6 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool mutate_chromosome_number(uint16_t _chromosome_number = 0) {
     return SetField<uint16_t>(VT_CHROMOSOME_NUMBER, _chromosome_number, 0);
-  }
-  Ecosystem::Monitor monitor() const {
-    return static_cast<Ecosystem::Monitor>(GetField<uint8_t>(VT_MONITOR, 0));
-  }
-  bool mutate_monitor(Ecosystem::Monitor _monitor = static_cast<Ecosystem::Monitor>(0)) {
-    return SetField<uint8_t>(VT_MONITOR, static_cast<uint8_t>(_monitor), 0);
   }
   const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *chromosome_structure() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *>(VT_CHROMOSOME_STRUCTURE);
@@ -845,13 +839,18 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_asleep(Ecosystem::Sleep _asleep = static_cast<Ecosystem::Sleep>(0)) {
     return SetField<uint8_t>(VT_ASLEEP, static_cast<uint8_t>(_asleep), 0);
   }
+  Ecosystem::Monitor monitor() const {
+    return static_cast<Ecosystem::Monitor>(GetField<uint8_t>(VT_MONITOR, 0));
+  }
+  bool mutate_monitor(Ecosystem::Monitor _monitor = static_cast<Ecosystem::Monitor>(0)) {
+    return SetField<uint8_t>(VT_MONITOR, static_cast<uint8_t>(_monitor), 0);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_KIND) &&
            verifier.VerifyString(kind()) &&
            VerifyField<uint8_t>(verifier, VT_KINGDOM) &&
            VerifyField<uint16_t>(verifier, VT_CHROMOSOME_NUMBER) &&
-           VerifyField<uint8_t>(verifier, VT_MONITOR) &&
            VerifyOffset(verifier, VT_CHROMOSOME_STRUCTURE) &&
            verifier.VerifyVector(chromosome_structure()) &&
            verifier.VerifyVectorOfTables(chromosome_structure()) &&
@@ -930,6 +929,7 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<float>(verifier, VT_VISION_RADIUS) &&
            VerifyField<float>(verifier, VT_SLEEP_RESTORE_FACTOR) &&
            VerifyField<uint8_t>(verifier, VT_ASLEEP) &&
+           VerifyField<uint8_t>(verifier, VT_MONITOR) &&
            verifier.EndTable();
   }
 };
@@ -946,9 +946,6 @@ struct OrganismBuilder {
   }
   void add_chromosome_number(uint16_t chromosome_number) {
     fbb_.AddElement<uint16_t>(Organism::VT_CHROMOSOME_NUMBER, chromosome_number, 0);
-  }
-  void add_monitor(Ecosystem::Monitor monitor) {
-    fbb_.AddElement<uint8_t>(Organism::VT_MONITOR, static_cast<uint8_t>(monitor), 0);
   }
   void add_chromosome_structure(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chromosome_structure) {
     fbb_.AddOffset(Organism::VT_CHROMOSOME_STRUCTURE, chromosome_structure);
@@ -1172,6 +1169,9 @@ struct OrganismBuilder {
   void add_asleep(Ecosystem::Sleep asleep) {
     fbb_.AddElement<uint8_t>(Organism::VT_ASLEEP, static_cast<uint8_t>(asleep), 0);
   }
+  void add_monitor(Ecosystem::Monitor monitor) {
+    fbb_.AddElement<uint8_t>(Organism::VT_MONITOR, static_cast<uint8_t>(monitor), 0);
+  }
   explicit OrganismBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -1191,7 +1191,6 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     flatbuffers::Offset<flatbuffers::String> kind = 0,
     Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
     uint16_t chromosome_number = 0,
-    Ecosystem::Monitor monitor = Ecosystem::Monitor::None,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chromosome_structure = 0,
     uint8_t food_chain_rank = 0,
     Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
@@ -1265,7 +1264,8 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     float dynamic_fitness = 0.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
-    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake) {
+    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake,
+    Ecosystem::Monitor monitor = Ecosystem::Monitor::None) {
   OrganismBuilder builder_(_fbb);
   builder_.add_Y(Y);
   builder_.add_X(X);
@@ -1339,11 +1339,11 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
   builder_.add_chromosome_structure(chromosome_structure);
   builder_.add_kind(kind);
   builder_.add_chromosome_number(chromosome_number);
+  builder_.add_monitor(monitor);
   builder_.add_asleep(asleep);
   builder_.add_gender(gender);
   builder_.add_is_asexual(is_asexual);
   builder_.add_food_chain_rank(food_chain_rank);
-  builder_.add_monitor(monitor);
   builder_.add_kingdom(kingdom);
   return builder_.Finish();
 }
@@ -1358,7 +1358,6 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     const char *kind = nullptr,
     Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
     uint16_t chromosome_number = 0,
-    Ecosystem::Monitor monitor = Ecosystem::Monitor::None,
     std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *chromosome_structure = nullptr,
     uint8_t food_chain_rank = 0,
     Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
@@ -1432,7 +1431,8 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     float dynamic_fitness = 0.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
-    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake) {
+    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake,
+    Ecosystem::Monitor monitor = Ecosystem::Monitor::None) {
   auto kind__ = kind ? _fbb.CreateString(kind) : 0;
   auto chromosome_structure__ = chromosome_structure ? _fbb.CreateVectorOfSortedTables<Ecosystem::ChromosomeStrand>(chromosome_structure) : 0;
   auto name__ = name ? _fbb.CreateString(name) : 0;
@@ -1442,7 +1442,6 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       kind__,
       kingdom,
       chromosome_number,
-      monitor,
       chromosome_structure__,
       food_chain_rank,
       is_asexual,
@@ -1516,7 +1515,8 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       dynamic_fitness,
       vision_radius,
       sleep_restore_factor,
-      asleep);
+      asleep,
+      monitor);
 }
 
 struct Species FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1821,10 +1821,9 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_UCHAR, 0, 0 },
     { flatbuffers::ET_USHORT, 0, -1 },
-    { flatbuffers::ET_UCHAR, 0, 1 },
-    { flatbuffers::ET_SEQUENCE, 1, 2 },
+    { flatbuffers::ET_SEQUENCE, 1, 1 },
     { flatbuffers::ET_UCHAR, 0, -1 },
-    { flatbuffers::ET_UCHAR, 0, 3 },
+    { flatbuffers::ET_UCHAR, 0, 2 },
     { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_FLOAT, 0, -1 },
@@ -1859,57 +1858,57 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_STRING, 0, -1 },
     { flatbuffers::ET_UCHAR, 1, -1 },
+    { flatbuffers::ET_UCHAR, 0, 3 },
+    { flatbuffers::ET_UINT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_UINT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_ULONG, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
+    { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_UCHAR, 0, 4 },
-    { flatbuffers::ET_UINT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_UINT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_ULONG, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_UCHAR, 0, 5 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
     Ecosystem::KingdomETypeTable,
-    Ecosystem::MonitorTypeTable,
     Ecosystem::ChromosomeStrandTypeTable,
     Ecosystem::ReproductionTypeTable,
     Ecosystem::GenderTypeTable,
-    Ecosystem::SleepTypeTable
+    Ecosystem::SleepTypeTable,
+    Ecosystem::MonitorTypeTable
   };
   static const char * const names[] = {
     "kind",
     "kingdom",
     "chromosome_number",
-    "monitor",
     "chromosome_structure",
     "food_chain_rank",
     "is_asexual",
@@ -1983,7 +1982,8 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "dynamic_fitness",
     "vision_radius",
     "sleep_restore_factor",
-    "asleep"
+    "asleep",
+    "monitor"
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_TABLE, 78, type_codes, type_refs, nullptr, nullptr, names
