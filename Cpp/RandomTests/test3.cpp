@@ -9,6 +9,7 @@
 #include <stat_fetcher.hpp>
 #include <database_manager.hpp>
 #include <ecosystem_types.hpp>
+#include <ecosystem_EXPORTS.h>
 
 int main()
 {
