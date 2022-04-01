@@ -13,6 +13,14 @@ const std::filesystem::path json_template_path = helper::get_ecosystem_root() / 
 
 const std::vector<std::pair<std::string, std::string>> schema::schemaMaster;
 
+// Hack to solve linking error in Windows...Needs to be fixed (definition copied from schema.cpp)
+
+#ifdef WIN32
+const std::vector<std::pair<std::string, std::string>> schema::schemaMaster{
+    {"YEAR", "NUMBER"},
+    {"AVG_WORLD", "LONGBLOB"}};
+#endif
+
 sqlite3 *db;
 
 static std::string sql_command_creator(const std::string &tableName, const std::vector<std::pair<std::string, std::string>> &schema)
