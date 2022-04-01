@@ -16,7 +16,7 @@ static int callback_numrows(void *count, int argc, char **argv, char **azColName
 DatabaseManager::DatabaseManager(const std::filesystem::path &path)
 {
     db_path = std::filesystem::canonical(path);
-    sqlite3_open(db_path.c_str(), &db);
+    sqlite3_open(db_path.string().c_str(), &db);
     begin_transaction();
 }
 
