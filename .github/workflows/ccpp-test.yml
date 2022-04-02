@@ -139,5 +139,5 @@ jobs:
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/setup/setup
-        ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/RandomTests/rt_sanity_test
+        build\${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}\setup\setup.exe
+        build\${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}\RandomTests\rt_sanity_test.exe
