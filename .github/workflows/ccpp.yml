@@ -170,3 +170,43 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset osx-gcc-rel
+
+  build-win-msvc-rel:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v2
+      - uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: prepare-build
+        run: |
+          choco install ninja
+          
+      - name: configure-build
+        run: |
+          cd Cpp
+          cmake --preset win-msvc-rel
+          
+      - name: build
+        run: |
+          cd Cpp
+          cmake --build --preset win-msvc-rel
+
+  build-win-msvc-dbg:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v2
+      - uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: prepare-build
+        run: |
+          choco install ninja
+          
+      - name: configure-build
+        run: |
+          cd Cpp
+          cmake --preset win-msvc-dbg
+          
+      - name: build
+        run: |
+          cd Cpp
+          cmake --build --preset win-msvc-dbg
