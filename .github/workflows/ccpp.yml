@@ -189,6 +189,7 @@ jobs:
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
 
     - name: prepare-build
       run: |
@@ -218,6 +219,7 @@ jobs:
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
 
     - name: prepare-build
       run: |
