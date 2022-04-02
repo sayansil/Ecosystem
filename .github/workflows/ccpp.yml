@@ -192,6 +192,12 @@ jobs:
           cd Cpp
           cmake --build --preset win-msvc-rel
 
+      - name: upload-report
+        uses: actions/upload-artifact@v2
+        with:
+          name: Ecosystem Binaries
+          path: Cpp/build/win-msvc-rel
+
   build-win-msvc-dbg:
     runs-on: windows-2022
     steps:
@@ -212,3 +218,45 @@ jobs:
         run: |
           cd Cpp
           cmake --build --preset win-msvc-dbg
+
+  build-win-clang-dbg:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v2
+      - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: ilammy/msvc-dev-cmd@v1.10.0
+
+      - name: prepare-build
+        run: |
+          choco install ninja
+          
+      - name: configure-build
+        run: |
+          cd Cpp
+          cmake --preset win-clang-dbg
+          
+      - name: build
+        run: |
+          cd Cpp
+          cmake --build --preset win-clang-dbg
+
+  build-win-clang-rel:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v2
+      - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: ilammy/msvc-dev-cmd@v1.10.0
+
+      - name: prepare-build
+        run: |
+          choco install ninja
+          
+      - name: configure-build
+        run: |
+          cd Cpp
+          cmake --preset win-clang-rel
+          
+      - name: build
+        run: |
+          cd Cpp
+          cmake --build --preset win-clang-rel
