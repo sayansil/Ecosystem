@@ -37,7 +37,6 @@ jobs:
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} ${{ matrix.sys_update }}
         ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
@@ -73,7 +72,6 @@ jobs:
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} ${{ matrix.sys_update }}
         ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
@@ -119,7 +117,6 @@ jobs:
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} ${{ matrix.sys_update }}
         ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
@@ -155,7 +152,6 @@ jobs:
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} ${{ matrix.sys_update }}
         ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
@@ -196,7 +192,6 @@ jobs:
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} ${{ matrix.sys_update }}
         ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
@@ -226,7 +221,6 @@ jobs:
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} ${{ matrix.sys_update }}
         ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
