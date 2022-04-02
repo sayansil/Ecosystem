@@ -15,200 +15,127 @@ on:
       - '.github/workflows/ccpp.yml'
 
 jobs:
-  build-lin-gcc-dbg:
-    runs-on: ubuntu-20.04
+  build-clang-debug:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            dependencies: 'ninja-build clang-12'
+          - os: macos-11
+            os_identifier: osx
+            dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
+      if: matrix.os == 'ubuntu-20.04'
       run: |
         sudo apt update
-        sudo apt install ninja-build
+        sudo apt install ${{ matrix.dependencies }}
+    - name: prepare-build
+      if: matrix.os == 'macos-11'
+      run: |
+        brew upgrade
+        brew install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset lin-gcc-dbg
+        cmake --preset ${{ matrix.os_identifier }}-clang-dbg
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset lin-gcc-dbg
+        cmake --build --preset ${{ matrix.os_identifier }}-clang-dbg
 
-  build-lin-clang-dbg:
-    runs-on: ubuntu-20.04
+  build-clang-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            zip_os_identifier: linux
+            dependencies: 'ninja-build clang-12'
+          - os: macos-11
+            os_identifier: osx
+            zip_os_identifier: osx
+            dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
+      if: matrix.os == 'ubuntu-20.04'
       run: |
         sudo apt update
-        sudo apt install ninja-build clang-12
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset lin-clang-dbg
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset lin-clang-dbg
-
-  build-lin-clang-rel:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-
+        sudo apt install ${{ matrix.dependencies }}
     - name: prepare-build
+      if: matrix.os == 'macos-11'
       run: |
-        sudo apt update
-        sudo apt install ninja-build clang-12
+        brew upgrade
+        brew install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset lin-clang-rel
+        cmake --preset ${{ matrix.os_identifier }}-clang-rel
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset lin-clang-rel
+        cmake --build --preset ${{ matrix.os_identifier }}-clang-rel
 
     - name: upload-setup
       uses: actions/upload-artifact@v2
       with:
-        name: ecosystem_setup_linux_clang
-        path: Cpp/build/lin-clang-rel/setup
+        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_clang
+        path: Cpp/build/${{ matrix.os_identifier }}-clang-rel/setup
 
     - name: upload-randomTests
       uses: actions/upload-artifact@v2
       with:
-        name: ecosystem_random_tests_linux_clang
-        path: Cpp/build/lin-clang-rel/RandomTests
+        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_clang
+        path: Cpp/build/${{ matrix.os_identifier }}-clang-rel/RandomTests
 
-  build-osx-clang-dbg:
-    runs-on: macos-11
+  build-gcc-debug:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            dependencies: 'ninja-build'
+          - os: macos-11
+            os_identifier: osx
+            dependencies: 'gcc ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
+      if: matrix.os == 'ubuntu-20.04'
       run: |
-        brew install ninja
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset osx-clang-dbg
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset osx-clang-dbg
-
-  build-osx-clang-rel:
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@v2
-
+        sudo apt update
+        sudo apt install ${{ matrix.dependencies }}
     - name: prepare-build
+      if: matrix.os == 'macos-11'
       run: |
-        brew install ninja
+        brew upgrade
+        brew install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset osx-clang-rel
+        cmake --preset ${{ matrix.os_identifier }}-gcc-dbg
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset osx-clang-rel
-
-    - name: upload-setup
-      uses: actions/upload-artifact@v2
-      with:
-        name: ecosystem_setup_osx_clang
-        path: Cpp/build/osx-clang-rel/setup
-
-    - name: upload-randomTests
-      uses: actions/upload-artifact@v2
-      with:
-        name: ecosystem_random_tests_osx_clang
-        path: Cpp/build/osx-clang-rel/RandomTests
-
-  build-osx-gcc-dbg:
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        brew install gcc ninja
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset osx-gcc-dbg
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset osx-gcc-dbg
-
-  build-win-msvc-dbg:
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: ilammy/msvc-dev-cmd@v1.10.0
-
-      - name: prepare-build
-        run: |
-          choco install ninja
-          
-      - name: configure-build
-        run: |
-          cd Cpp
-          cmake --preset win-msvc-dbg
-          
-      - name: build
-        run: |
-          cd Cpp
-          cmake --build --preset win-msvc-dbg
-
-  build-win-msvc-rel:
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: ilammy/msvc-dev-cmd@v1.10.0
-
-      - name: prepare-build
-        run: |
-          choco install ninja
-          
-      - name: configure-build
-        run: |
-          cd Cpp
-          cmake --preset win-msvc-rel
-          
-      - name: build
-        run: |
-          cd Cpp
-          cmake --build --preset win-msvc-rel
-
-      - name: upload-setup
-        uses: actions/upload-artifact@v2
-        with:
-          name: ecosystem_setup_windows_msvc
-          path: Cpp/build/win-msvc-rel/setup
-
-      - name: upload-randomTests
-        uses: actions/upload-artifact@v2
-        with:
-          name: ecosystem_random_tests_windows_msvc
-          path: Cpp/build/win-msvc-rel/RandomTests
+        cmake --build --preset ${{ matrix.os_identifier }}-gcc-dbg
 
   build-gcc-release:
     runs-on: ${{ matrix.os }}
@@ -237,7 +164,6 @@ jobs:
       run: |
         brew upgrade
         brew install ${{ matrix.dependencies }}
-      
 
     - name: configure-build
       run: |
@@ -260,3 +186,73 @@ jobs:
       with:
         name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_gcc
         path: Cpp/build/${{ matrix.os_identifier }}-gcc-rel/RandomTests
+
+  build-msvc-debug:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2022]
+        include:
+          - os: windows-2022
+            os_identifier: win
+            dependencies: 'ninja'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      if: matrix.os == 'windows-2022'
+      run: |
+        choco upgrade all
+        choco install ${{ matrix.dependencies }}
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset ${{ matrix.os_identifier }}-msvc-dbg
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset ${{ matrix.os_identifier }}-msvc-dbg
+
+  build-msvc-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2022]
+        include:
+          - os: windows-2022
+            os_identifier: win
+            zip_os_identifier: windows
+            dependencies: 'ninja'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      if: matrix.os == 'windows-2022'
+      run: |
+        choco upgrade all
+        choco install ${{ matrix.dependencies }}
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset ${{ matrix.os_identifier }}-msvc-rel
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset ${{ matrix.os_identifier }}-msvc-rel
+
+    - name: upload-setup
+      uses: actions/upload-artifact@v2
+      with:
+        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_msvc
+        path: Cpp/build/${{ matrix.os_identifier }}-msvc-rel/setup
+
+    - name: upload-randomTests
+      uses: actions/upload-artifact@v2
+      with:
+        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_msvc
+        path: Cpp/build/${{ matrix.os_identifier }}-msvc-rel/RandomTests
+        
