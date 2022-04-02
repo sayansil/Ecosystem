@@ -35,38 +35,6 @@ jobs:
         cd Cpp
         cmake --build --preset lin-gcc-dbg
 
-  build-lin-gcc-rel:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        sudo apt update
-        sudo apt install ninja-build
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset lin-gcc-rel
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset lin-gcc-rel
-
-    - name: upload-setup
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ecosystem_Setup_Linux_GCC
-        path: Cpp/build/lin-gcc-rel/setup
-
-    - name: upload-randomTests
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ecosystem_Random_Tests_Linux_GCC
-        path: Cpp/build/lin-gcc-rel/RandomTests
-
   build-lin-clang-dbg:
     runs-on: ubuntu-20.04
     steps:
@@ -110,13 +78,13 @@ jobs:
     - name: upload-setup
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Setup_Linux_Clang
+        name: ecosystem_setup_linux_clang
         path: Cpp/build/lin-clang-rel/setup
 
     - name: upload-randomTests
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Random_Tests_Linux_Clang
+        name: ecosystem_random_tests_linux_clang
         path: Cpp/build/lin-clang-rel/RandomTests
 
   build-osx-clang-dbg:
@@ -160,13 +128,13 @@ jobs:
     - name: upload-setup
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Setup_Darwin_Clang
+        name: ecosystem_setup_osx_clang
         path: Cpp/build/osx-clang-rel/setup
 
     - name: upload-randomTests
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Random_Tests_Darwin_Clang
+        name: ecosystem_random_tests_osx_clang
         path: Cpp/build/osx-clang-rel/RandomTests
 
   build-osx-gcc-dbg:
@@ -187,37 +155,6 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset osx-gcc-dbg
-
-  build-osx-gcc-rel:
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        brew install gcc ninja
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset osx-gcc-rel
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset osx-gcc-rel
-    
-    - name: upload-setup
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ecosystem_Setup_Darwin_GCC
-        path: Cpp/build/osx-gcc-rel/setup
-
-    - name: upload-randomTests
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ecosystem_Random_Tests_Darwin_GCC
-        path: Cpp/build/osx-gcc-rel/RandomTests
 
   build-win-msvc-dbg:
     runs-on: windows-2022
@@ -264,11 +201,62 @@ jobs:
       - name: upload-setup
         uses: actions/upload-artifact@v2
         with:
-          name: Ecosystem_Setup_Windows_MSVC
+          name: ecosystem_setup_windows_msvc
           path: Cpp/build/win-msvc-rel/setup
 
       - name: upload-randomTests
         uses: actions/upload-artifact@v2
         with:
-          name: Ecosystem_Random_Tests_Windows_MSVC
+          name: ecosystem_random_tests_windows_msvc
           path: Cpp/build/win-msvc-rel/RandomTests
+
+  build-gcc-release:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            zip_os_identifier: linux
+            dependencies: 'ninja-build'
+          - os: macos-11
+            os_identifier: osx
+            zip_os_identifier: osx
+            dependencies: 'gcc ninja'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      if: matrix.os == 'ubuntu-20.04'
+      run: |
+        sudo apt update
+        sudo apt install ${{ matrix.dependencies }}
+    - name: prepare-build
+      if: matrix.os == 'macos-11'
+      run: |
+        brew upgrade
+        brew install ${{ matrix.dependencies }}
+      
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset ${{ matrix.os_identifier }}-gcc-rel
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset ${{ matrix.os_identifier }}-gcc-rel
+
+    - name: upload-setup
+      uses: actions/upload-artifact@v2
+      with:
+        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_gcc
+        path: Cpp/build/${{ matrix.os_identifier }}-gcc-rel/setup
+
+    - name: upload-randomTests
+      uses: actions/upload-artifact@v2
+      with:
+        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_gcc
+        path: Cpp/build/${{ matrix.os_identifier }}-gcc-rel/RandomTests
