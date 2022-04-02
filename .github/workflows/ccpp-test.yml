@@ -114,7 +114,7 @@ jobs:
             zip_os_identifier: windows
             installer: 'choco'
             dependencies: 'ninja'
-            set_root: 'export ECOSYSTEM_ROOT=`pwd`'
+            set_root: 'set ECOSYSTEM_ROOT=%CD%'
     steps:
     - uses: actions/checkout@v2
     - uses: ilammy/msvc-dev-cmd@v1.10.0
