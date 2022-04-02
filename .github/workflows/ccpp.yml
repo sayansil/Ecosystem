@@ -15,6 +15,7 @@ on:
       - '.github/workflows/ccpp.yml'
 
 jobs:
+
   build-clang-debug:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -23,23 +24,21 @@ jobs:
         include:
           - os: ubuntu-20.04
             os_identifier: lin
+            installer: 'sudo apt'
+            sys_update: 'update'
             dependencies: 'ninja-build clang-12'
           - os: macos-11
             os_identifier: osx
+            installer: 'brew'
+            sys_update: 'upgrade'
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
-      if: matrix.os == 'ubuntu-20.04'
       run: |
-        sudo apt update
-        sudo apt install ${{ matrix.dependencies }}
-    - name: prepare-build
-      if: matrix.os == 'macos-11'
-      run: |
-        brew upgrade
-        brew install ${{ matrix.dependencies }}
+        ${{ matrix.installer }} ${{ matrix.sys_update }}
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
@@ -60,24 +59,22 @@ jobs:
           - os: ubuntu-20.04
             os_identifier: lin
             zip_os_identifier: linux
+            installer: 'sudo apt'
+            sys_update: 'update'
             dependencies: 'ninja-build clang-12'
           - os: macos-11
             os_identifier: osx
             zip_os_identifier: osx
+            installer: 'brew'
+            sys_update: 'upgrade'
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
-      if: matrix.os == 'ubuntu-20.04'
       run: |
-        sudo apt update
-        sudo apt install ${{ matrix.dependencies }}
-    - name: prepare-build
-      if: matrix.os == 'macos-11'
-      run: |
-        brew upgrade
-        brew install ${{ matrix.dependencies }}
+        ${{ matrix.installer }} ${{ matrix.sys_update }}
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
@@ -109,23 +106,21 @@ jobs:
         include:
           - os: ubuntu-20.04
             os_identifier: lin
+            installer: 'sudo apt'
+            sys_update: 'update'
             dependencies: 'ninja-build'
           - os: macos-11
             os_identifier: osx
+            installer: 'brew'
+            sys_update: 'upgrade'
             dependencies: 'gcc ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
-      if: matrix.os == 'ubuntu-20.04'
       run: |
-        sudo apt update
-        sudo apt install ${{ matrix.dependencies }}
-    - name: prepare-build
-      if: matrix.os == 'macos-11'
-      run: |
-        brew upgrade
-        brew install ${{ matrix.dependencies }}
+        ${{ matrix.installer }} ${{ matrix.sys_update }}
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
@@ -146,24 +141,22 @@ jobs:
           - os: ubuntu-20.04
             os_identifier: lin
             zip_os_identifier: linux
+            installer: 'sudo apt'
+            sys_update: 'update'
             dependencies: 'ninja-build'
           - os: macos-11
             os_identifier: osx
             zip_os_identifier: osx
+            installer: 'brew'
+            sys_update: 'upgrade'
             dependencies: 'gcc ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
-      if: matrix.os == 'ubuntu-20.04'
       run: |
-        sudo apt update
-        sudo apt install ${{ matrix.dependencies }}
-    - name: prepare-build
-      if: matrix.os == 'macos-11'
-      run: |
-        brew upgrade
-        brew install ${{ matrix.dependencies }}
+        ${{ matrix.installer }} ${{ matrix.sys_update }}
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
@@ -195,15 +188,16 @@ jobs:
         include:
           - os: windows-2022
             os_identifier: win
+            installer: 'choco'
+            sys_update: 'upgrade all'
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
-      if: matrix.os == 'windows-2022'
       run: |
-        choco upgrade all
-        choco install ${{ matrix.dependencies }}
+        ${{ matrix.installer }} ${{ matrix.sys_update }}
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
@@ -224,15 +218,16 @@ jobs:
           - os: windows-2022
             os_identifier: win
             zip_os_identifier: windows
+            installer: 'choco'
+            sys_update: 'upgrade all'
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
-      if: matrix.os == 'windows-2022'
       run: |
-        choco upgrade all
-        choco install ${{ matrix.dependencies }}
+        ${{ matrix.installer }} ${{ matrix.sys_update }}
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
