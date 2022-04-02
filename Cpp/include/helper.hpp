@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <cassert>
 #include <XoshiroCpp.hpp>
+#include <ecosystem_export.h>
 
 namespace helper
 {
@@ -20,7 +21,7 @@ namespace helper
     extern unsigned int map_height;
     extern unsigned int map_width;
     extern XoshiroCpp::Xoshiro128PlusPlus rng;
-    extern std::filesystem::path ecosystem_root;
+    extern DLLIMPORT std::filesystem::path ecosystem_root;
 
     /*******************
      *  Helper methods *

@@ -22,7 +22,7 @@ namespace helper
     unsigned int map_height = 1000;
     unsigned int map_width = 1000;
     XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
-    std::filesystem::path ecosystem_root = std::filesystem::path(get_ecosystem_root()) / "Ecosystem";
+    DLLEXPORT std::filesystem::path ecosystem_root = std::filesystem::path(get_ecosystem_root()) / "Ecosystem";
     
 
     std::string to_binary(const unsigned int &x)
