@@ -1,11 +1,29 @@
 #include <helper.hpp>
 #include <fmt/core.h>
+#include <whereami.h>
+
+static std::string get_ecosystem_root()
+{
+    uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
+    std::string exe_path;
+    {
+        char * path = (char *)malloc(length + 1);
+        wai_getExecutablePath(path, length, nullptr);
+        exe_path = path;
+        free(path);
+    }
+    auto pos = exe_path.find("Ecosystem");
+    std::string root_path = exe_path.substr(0, pos);
+    return root_path;
+}
 
 namespace helper
 {
     unsigned int map_height = 1000;
     unsigned int map_width = 1000;
     XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
+    std::filesystem::path ecosystem_root = std::filesystem::path(get_ecosystem_root()) / "Ecosystem";
+    
 
     std::string to_binary(const unsigned int &x)
     {
@@ -103,11 +121,6 @@ namespace helper
             return 1;
         else
             return 0;
-    }
-
-    std::filesystem::path get_ecosystem_root()
-    {
-        return std::filesystem::canonical(__FILE__).parent_path().parent_path().parent_path();
     }
 
     bool is_nonzero_nonnegative_nonnan(const double &x)

@@ -1,6 +1,7 @@
 #include <species_constants.hpp>
 #include <helper.hpp>
 #include <filesystem>
+#include <fmt/core.h>
 
 namespace constants
 {
@@ -26,7 +27,8 @@ namespace constants
 
     void init()
     {
-        parse_species_directories(helper::get_ecosystem_root() / "data" / "json" / "animal");
-        parse_species_directories(helper::get_ecosystem_root() / "data" / "json" / "plant");
+
+        parse_species_directories(helper::ecosystem_root / "data" / "json" / "animal");
+        parse_species_directories(helper::ecosystem_root / "data" / "json" / "plant");
     }
 };

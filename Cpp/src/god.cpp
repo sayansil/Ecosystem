@@ -274,7 +274,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 void God::cleanSlate()
 {
     for (const auto &entry : std::filesystem::directory_iterator(
-             helper::get_ecosystem_root() / std::filesystem::path("data") / std::filesystem::path("json")))
+             helper::ecosystem_root / std::filesystem::path("data") / std::filesystem::path("json")))
     {
         for (const auto &inner_entry : std::filesystem::directory_iterator(entry.path()))
         {
@@ -296,7 +296,7 @@ void God::update_species(const std::string &full_species_name)
     std::string kind = full_species_name.substr(full_species_name.find('/') + 1); // Note to Darkstar1997: this is not path
     std::string kingdom = full_species_name.substr(0, full_species_name.find('/'));
 
-    const std::filesystem::path modify_filepath = helper::get_ecosystem_root() / std::filesystem::path("data") / std::filesystem::path("json") / kingdom / kind / std::filesystem::path("modify.json");
+    const std::filesystem::path modify_filepath = helper::ecosystem_root / std::filesystem::path("data") / std::filesystem::path("json") / kingdom / kind / std::filesystem::path("modify.json");
 
     std::ifstream modify_in(modify_filepath);
 

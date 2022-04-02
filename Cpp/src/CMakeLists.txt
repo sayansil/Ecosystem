@@ -10,6 +10,7 @@ set(ECOSYSTEM_SOURCES
     species_constants.cpp
     # logger.cpp
     ${sqlite3_SOURCE_DIR}/src/sqlite3.c
+    ${whereami_SOURCE_DIR}/src/whereami.c
     )
 
 add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES})

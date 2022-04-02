@@ -6,9 +6,9 @@
 #include <helper.hpp>
 #include <schema.hpp>
 
-const std::filesystem::path master_db_path = helper::get_ecosystem_root() / "data/ecosystem_master.db";
-const std::filesystem::path json_data_path = helper::get_ecosystem_root() / "data/json";
-const std::filesystem::path json_template_path = helper::get_ecosystem_root() / "data/templates/json";
+const std::filesystem::path master_db_path = helper::ecosystem_root / "data/ecosystem_master.db";
+const std::filesystem::path json_data_path = helper::ecosystem_root / "data/json";
+const std::filesystem::path json_template_path = helper::ecosystem_root / "data/templates/json";
 
 sqlite3 *db;
 

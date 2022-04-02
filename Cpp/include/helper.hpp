@@ -20,6 +20,7 @@ namespace helper
     extern unsigned int map_height;
     extern unsigned int map_width;
     extern XoshiroCpp::Xoshiro128PlusPlus rng;
+    extern std::filesystem::path ecosystem_root;
 
     /*******************
      *  Helper methods *
@@ -34,7 +35,6 @@ namespace helper
     extern unsigned int to_decimal(const std::string &);
     extern double weighted_average(const std::vector<double> &values, const std::vector<double> &weights);
     extern double get_value_from_chromosome(const std::string &, const unsigned int &, const unsigned int &, const double &);
-    extern std::filesystem::path get_ecosystem_root();
     extern bool is_nonzero_nonnegative_nonnan(const double &);
     extern std::string generate_full_species_name(const std::string &, const std::string &);
     extern std::vector<uint8_t> string_to_bytevector(const std::string&);

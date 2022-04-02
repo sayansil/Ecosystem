@@ -83,6 +83,15 @@ FetchContent_Declare(
 FetchContent_Populate(sqlite3)
 include_directories(${sqlite3_SOURCE_DIR}/include)
 
+FetchContent_Declare(
+    whereami
+    GIT_REPOSITORY "https://github.com/gpakosz/whereami"
+    GIT_TAG ba364cd54fd431c76c045393b6522b4bff547f50
+    GIT_PROGRESS TRUE
+)
+FetchContent_Populate(whereami)
+include_directories(${whereami_SOURCE_DIR}/src)
+
 add_subdirectory(src)
 add_subdirectory(schema)
 
