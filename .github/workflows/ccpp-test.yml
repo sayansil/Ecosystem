@@ -1,43 +1,141 @@
-name: test
+name: build
 
 on:
   push:
       branches:
-      - master
+      - flatbuffer
       paths:
       - 'Cpp/**'
       - '.github/workflows/ccpp-test.yml'
   pull_request:
       branches:
-      - master
+      - flatbuffer
       paths:
       - 'Cpp/**'
       - '.github/workflows/ccpp-test.yml'
 
 jobs:
-  test-linux:
-    runs-on: ubuntu-20.04
+
+  build-clang:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        build_type: [dbg, rel]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            zip_os_identifier: linux
+            installer: 'sudo apt'
+            dependencies: 'ninja-build clang-12'
+            set_root: 'export ECOSYSTEM_ROOT=`pwd`'
+          - os: macos-11
+            os_identifier: osx
+            zip_os_identifier: osx
+            installer: 'brew'
+            dependencies: 'ninja'
+            set_root: 'export ECOSYSTEM_ROOT=`pwd`'
     steps:
     - uses: actions/checkout@v2
 
-    - name: prepare
+    - name: prepare-build
       run: |
-        sudo apt update
-        sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
-    - name: configure
+    - name: configure-build
       run: |
         cd Cpp
-        mkdir build
-        cd build
-        cmake ..
+        cmake --preset ${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
 
     - name: build
       run: |
-        cd Cpp/build
-        cmake --build . -- -j $(nproc)
+        cd Cpp
+        cmake --build --preset ${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
 
-    - name: test
+    - name: run
       run: |
-        ./Cpp/build/setup/setup
-        ./Cpp/build/RandomTests/rt_sanity_test
+        ${{ matrix.set_root }}
+        cd Cpp
+        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/setup/setup
+        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/RandomTests/rt_sanity_test
+
+  build-gcc:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        build_type: [dbg, rel]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            zip_os_identifier: linux
+            installer: 'sudo apt'
+            dependencies: 'ninja-build'
+            set_root: 'export ECOSYSTEM_ROOT=`pwd`'
+          - os: macos-11
+            os_identifier: osx
+            zip_os_identifier: osx
+            installer: 'brew'
+            dependencies: 'gcc ninja'
+            set_root: 'export ECOSYSTEM_ROOT=`pwd`'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      run: |
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset ${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset ${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}
+    
+    - name: run
+      run: |
+        ${{ matrix.set_root }}
+        cd Cpp
+        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/setup/setup
+        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/RandomTests/rt_sanity_test
+
+  build-msvc:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2022]
+        build_type: [dbg, rel]
+        include:
+          - os: windows-2022
+            os_identifier: win
+            zip_os_identifier: windows
+            installer: 'choco'
+            dependencies: 'ninja'
+            set_root: 'set ECOSYSTEM_ROOT=%cmd%'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
+
+    - name: prepare-build
+      run: |
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset ${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset ${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
+    
+    - name: run
+      run: |
+        ${{ matrix.set_root }}
+        cd Cpp
+        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/setup/setup
+        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/RandomTests/rt_sanity_test
