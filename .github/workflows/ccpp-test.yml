@@ -114,7 +114,7 @@ jobs:
             zip_os_identifier: windows
             installer: 'choco'
             dependencies: 'ninja'
-            set_root: 'set ECOSYSTEM_ROOT=%CD%'
+            set_root: 'export ECOSYSTEM_ROOT=`pwd`'
     steps:
     - uses: actions/checkout@v2
     - uses: ilammy/msvc-dev-cmd@v1.10.0
@@ -132,11 +132,10 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset ${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
-    
-    - uses: ilammy/msvc-dev-cmd@v1.10.0
+  
     - name: run
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        build\${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}\setup\setup.exe
-        build\${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}\RandomTests\rt_sanity_test.exe
+        ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/setup/setup.exe
+        ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/RandomTests/rt_sanity_test.exe
