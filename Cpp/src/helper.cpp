@@ -1,20 +1,28 @@
 #include <helper.hpp>
 #include <fmt/core.h>
 #include <whereami.h>
+#include <cstdlib>
 
 static std::string get_ecosystem_root()
 {
-    uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
-    std::string exe_path;
+    const char * root_path = std::getenv("ECOSYSTEM_ROOT");
+    if(root_path == nullptr)
     {
-        char * path = (char *)malloc(length + 1);
-        wai_getExecutablePath(path, length, nullptr);
-        exe_path = path;
-        free(path);
+        fmt::print("ERROR: ECOSYSTEM_ROOT environment variable not set\n");
+        exit(0);
     }
-    auto pos = exe_path.find("Ecosystem");
-    std::string root_path = exe_path.substr(0, pos);
-    return root_path;
+    return std::string(root_path);
+    //uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
+    //std::string exe_path;
+    //{
+    //    char * path = (char *)malloc(length + 1);
+    //    wai_getExecutablePath(path, length, nullptr);
+    //    exe_path = path;
+    //    free(path);
+    //}
+    //auto pos = exe_path.find("Ecosystem");
+    //std::string root_path = exe_path.substr(0, pos);
+    //return root_path;
 }
 
 namespace helper
@@ -22,7 +30,7 @@ namespace helper
     unsigned int map_height = 1000;
     unsigned int map_width = 1000;
     XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
-    DLLEXPORT std::filesystem::path ecosystem_root = std::filesystem::path(get_ecosystem_root()) / "Ecosystem";
+    DLLEXPORT std::filesystem::path ecosystem_root = std::filesystem::canonical(get_ecosystem_root());
     
 
     std::string to_binary(const unsigned int &x)
