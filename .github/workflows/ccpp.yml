@@ -81,7 +81,7 @@ jobs:
 
     - name: prepare-build
       run: |
-        brew install gcc
+        brew install gcc ninja
 
     - name: configure-build
       run: |

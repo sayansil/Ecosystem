@@ -10,7 +10,11 @@ function(add_code name)
     target_include_directories(rt_${name} PRIVATE
                                ${Ecosystem_SOURCE_DIR}/include
 							   )
-    target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} fmt::fmt)
+	if(WIN32 OR APPLE)
+		target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} fmt::fmt)
+	else()
+		target_link_libraries(rt_${name} PRIVATE ${ECOSYSTEM_LIB} fmt::fmt dl pthread)
+	endif()
 	copy_dll(rt_${name} fmt)
 	copy_dll(rt_${name} ${ECOSYSTEM_LIB})
 	

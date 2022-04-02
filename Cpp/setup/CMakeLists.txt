@@ -11,6 +11,12 @@ endfunction()
 
 add_executable(setup ${SOURCE_LIST})
 target_include_directories(setup PRIVATE ${Ecosystem_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/src)
-target_link_libraries(setup PRIVATE ${ECOSYSTEM_LIB})
+
+if(WIN32 OR APPLE)
+    target_link_libraries(setup PRIVATE ${ECOSYSTEM_LIB})
+else()
+    target_link_libraries(setup PRIVATE ${ECOSYSTEM_LIB} dl pthread)
+endif()
+
 copy_dll(setup ${ECOSYSTEM_LIB})
 copy_dll(setup fmt)

@@ -16,4 +16,8 @@ add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES})
 target_include_directories(${ECOSYSTEM_LIB} PRIVATE
                            ${Ecosystem_SOURCE_DIR}/include
                            ${Ecosystem_SOURCE_DIR}/schema)
-target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt)
+if(WIN32 OR APPLE)
+    target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt)
+else()
+    target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt dl pthread)
+endif()
