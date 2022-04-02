@@ -102,5 +102,5 @@ add_subdirectory(setup)
 #add_subdirectory(python)
 #add_subdirectory(WebApp)
 
-#include(CTest)
-#add_subdirectory(tests)
+include(CTest)
+add_subdirectory(tests)

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20220402-2252-Experimental"
+	Name="(empty)"
+	Generator="ctest-3.23.0"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Linux"
+	Hostname="archlinux"
+	OSRelease="5.17.1-zen1-1-zen"
+	OSVersion="#1 ZEN SMP PREEMPT Mon, 28 Mar 2022 21:56:46 +0000"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="158"
+	ProcessorCacheSize="6144"
+	NumberOfLogicalCPU="8"
+	NumberOfPhysicalCPU="4"
+	TotalVirtualMemory="8191"
+	TotalPhysicalMemory="7828"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="2800"
+	>
+	<Testing>
+		<StartDateTime>Apr 03 04:22 IST</StartDateTime>
+		<StartTestTime>1648939937</StartTestTime>
+		<TestList/>
+		<EndDateTime>Apr 03 04:22 IST</EndDateTime>
+		<EndTestTime>1648939937</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>
