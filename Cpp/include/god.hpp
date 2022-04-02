@@ -47,7 +47,7 @@ public:
         const uint64_t &generation,
         const std::pair<uint64_t, uint64_t> &XY,
         const int8_t &monitor);
-    
+
     flatbuffers::Offset<Ecosystem::Organism> createOrganism(
         flatbuffers::FlatBufferBuilder &builder,
         Ecosystem::OrganismBuilder &organism_builder,
@@ -55,12 +55,12 @@ public:
         const std::string &kingdom,
         const uint64_t &age,
         const int8_t &monitor = 0);
-    
+
     void displayWorldMetadata();
 
     // void catastrophe();
     void cleanSlate();
-    // void happy_new_year(const bool &log = false);
+    void happy_new_year(const bool &log = false);
     // void kill_organisms(const std::vector<std::string>&);
     bool spawn_organism(Ecosystem::Organism *);
     // bool spawn_organism(ENTITY&&, std::vector<std::pair<std::string, ENTITY>>&);
@@ -85,7 +85,6 @@ private:
     bool gods_eye = false;
     const int max_mate_trials = 100;
 
-    unsigned int planet_age = 0;
     unsigned int spawn_count = 0;
 
     /****************************************
@@ -93,7 +92,11 @@ private:
      ****************************************/
 
     // bool mate(Ecosystem::Organism *, Ecosystem::Organism *, const nlohmann::json &= nlohmann::json());
-    void update_species(const std::string&);
+    void update_species(const std::string &);
+    flatbuffers::Offset<Ecosystem::Organism> clone_organism(
+        flatbuffers::FlatBufferBuilder &builder,
+        Ecosystem::OrganismBuilder &organism_builder,
+        const Ecosystem::Organism *previous_organism);
     // template <typename T>
     // void assignBaseStats(
     //     const std::string &kingdom,

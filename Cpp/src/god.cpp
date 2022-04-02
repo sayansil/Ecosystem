@@ -274,7 +274,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 void God::cleanSlate()
 {
     for (const auto &entry : std::filesystem::directory_iterator(
-        helper::get_ecosystem_root() / std::filesystem::path("data") / std::filesystem::path("json")))
+             helper::get_ecosystem_root() / std::filesystem::path("data") / std::filesystem::path("json")))
     {
         for (const auto &inner_entry : std::filesystem::directory_iterator(entry.path()))
         {
@@ -283,11 +283,11 @@ void God::cleanSlate()
             nlohmann::json tmp;
             in >> tmp;
             in.close();
-            
+
             constants::species_constants_map[inner_entry.path().filename().string()] = tmp;
         }
     }
-    
+
     db.clear_database();
 }
 
@@ -303,7 +303,7 @@ void God::update_species(const std::string &full_species_name)
     nlohmann::json modify;
     modify_in >> modify;
 
-    for (const auto [key, value]: modify.items())
+    for (const auto [key, value] : modify.items())
     {
         constants::species_constants_map[kind][key] = updateStat((double)constants::species_constants_map[kind][key], (double)value);
     }
@@ -331,7 +331,7 @@ bool God::spawn_organism(Ecosystem::Organism *current_organism)
     organism_opts::generate_death_factor(current_organism);
 
     return organism_opts::is_normal_child(current_organism);
-    
+
     // Also add to the newborn vector
 }
 
@@ -339,7 +339,7 @@ bool God::spawn_organism(Ecosystem::Organism *current_organism)
 // {
 //     // Generate chromosomes of the child
 //     auto child_chromosome = helper::get_random_mixture(
-//         helper::bytevector_to_string(parent1->chromosome().data(), parent1->chromosome().size(), parent1->chromosome_number()), 
+//         helper::bytevector_to_string(parent1->chromosome().data(), parent1->chromosome().size(), parent1->chromosome_number()),
 //         helper::bytevector_to_string(parent2->chromosome().data(), parent2->chromosome().size(), parent2->chromosome_number()));
 
 //     // Mutate chromosomes
@@ -354,3 +354,190 @@ bool God::spawn_organism(Ecosystem::Organism *current_organism)
 //     }
 //     return false;
 // }
+
+flatbuffers::Offset<Ecosystem::Organism> God::clone_organism(
+    flatbuffers::FlatBufferBuilder &builder,
+    Ecosystem::OrganismBuilder &organism_builder,
+    const Ecosystem::Organism *previous_organism)
+{
+    // Assign base stats of species
+
+    std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> newStdvecCStrand;
+    for (const auto &cStrand : *previous_organism->chromosome_structure())
+    {
+        Ecosystem::ChromosomeStrandBuilder cStrandBuilder(builder);
+        cStrandBuilder.add_code(builder.CreateString(cStrand->code()));
+        cStrandBuilder.add_start(cStrand->start());
+        cStrandBuilder.add_length(cStrand->length());
+        newStdvecCStrand.push_back(cStrandBuilder.Finish());
+    }
+
+    organism_builder.add_chromosome_structure(builder.CreateVectorOfSortedTables(newStdvecCStrand.data(), newStdvecCStrand.size()));
+    organism_builder.add_chromosome_number(previous_organism->chromosome_number());
+    organism_builder.add_mating_age_start(previous_organism->mating_age_start());
+    organism_builder.add_mating_age_end(previous_organism->mating_age_end());
+    organism_builder.add_max_age(previous_organism->max_age());
+    organism_builder.add_offsprings_factor(previous_organism->offsprings_factor());
+    organism_builder.add_is_asexual(previous_organism->is_asexual());
+    organism_builder.add_mutation_probability(previous_organism->mutation_probability());
+    organism_builder.add_conceiving_probability(previous_organism->conceiving_probability());
+    organism_builder.add_mating_probability(previous_organism->mating_probability());
+    organism_builder.add_age_fitness_on_death_ratio(previous_organism->age_fitness_on_death_ratio());
+    organism_builder.add_height_on_speed(previous_organism->height_on_speed());
+    organism_builder.add_height_on_stamina(previous_organism->height_on_stamina());
+    organism_builder.add_height_on_vitality(previous_organism->height_on_vitality());
+    organism_builder.add_weight_on_speed(previous_organism->weight_on_speed());
+    organism_builder.add_weight_on_stamina(previous_organism->weight_on_stamina());
+    organism_builder.add_weight_on_vitality(previous_organism->weight_on_vitality());
+    organism_builder.add_vitality_on_appetite(previous_organism->vitality_on_appetite());
+    organism_builder.add_vitality_on_speed(previous_organism->vitality_on_speed());
+    organism_builder.add_stamina_on_appetite(previous_organism->stamina_on_appetite());
+    organism_builder.add_stamina_on_speed(previous_organism->stamina_on_speed());
+    organism_builder.add_theoretical_maximum_base_appetite(previous_organism->theoretical_maximum_base_appetite());
+    organism_builder.add_theoretical_maximum_base_height(previous_organism->theoretical_maximum_base_height());
+    organism_builder.add_theoretical_maximum_base_speed(previous_organism->theoretical_maximum_base_speed());
+    organism_builder.add_theoretical_maximum_base_stamina(previous_organism->theoretical_maximum_base_stamina());
+    organism_builder.add_theoretical_maximum_base_vitality(previous_organism->theoretical_maximum_base_vitality());
+    organism_builder.add_theoretical_maximum_base_weight(previous_organism->theoretical_maximum_base_weight());
+    organism_builder.add_theoretical_maximum_height_multiplier(previous_organism->theoretical_maximum_height_multiplier());
+    organism_builder.add_theoretical_maximum_speed_multiplier(previous_organism->theoretical_maximum_speed_multiplier());
+    organism_builder.add_theoretical_maximum_stamina_multiplier(previous_organism->theoretical_maximum_stamina_multiplier());
+    organism_builder.add_theoretical_maximum_vitality_multiplier(previous_organism->theoretical_maximum_vitality_multiplier());
+    organism_builder.add_theoretical_maximum_weight_multiplier(previous_organism->theoretical_maximum_weight_multiplier());
+    organism_builder.add_theoretical_maximum_height(previous_organism->theoretical_maximum_height());
+    organism_builder.add_theoretical_maximum_speed(previous_organism->theoretical_maximum_speed());
+    organism_builder.add_theoretical_maximum_weight(previous_organism->theoretical_maximum_weight());
+    organism_builder.add_sleep_restore_factor(previous_organism->sleep_restore_factor());
+    organism_builder.add_food_chain_rank(previous_organism->food_chain_rank());
+    organism_builder.add_vision_radius(previous_organism->vision_radius());
+
+    // Assign passed default attributes
+    organism_builder.add_kind(builder.CreateString(previous_organism->kind()));
+    organism_builder.add_kingdom(previous_organism->kingdom());
+    organism_builder.add_generation(previous_organism->generation());
+    organism_builder.add_age(previous_organism->age());
+    organism_builder.add_monitor(previous_organism->monitor());
+
+    std::vector<uint8_t> chromosome(
+        previous_organism->chromosome()->data(),
+        previous_organism->chromosome()->data() + previous_organism->chromosome()->size());
+    organism_builder.add_chromosome(builder.CreateVector(chromosome));
+
+    organism_builder.add_X(previous_organism->X());
+    organism_builder.add_Y(previous_organism->Y());
+    organism_builder.add_asleep(previous_organism->asleep());
+
+    // Assign attributes from chromosome
+    organism_builder.add_immunity(previous_organism->immunity());
+    organism_builder.add_gender(previous_organism->gender());
+    organism_builder.add_base_appetite(previous_organism->base_appetite());
+    organism_builder.add_base_speed(previous_organism->base_speed());
+    organism_builder.add_base_stamina(previous_organism->base_stamina());
+    organism_builder.add_base_vitality(previous_organism->base_vitality());
+    organism_builder.add_base_weight(previous_organism->base_weight());
+    organism_builder.add_base_height(previous_organism->base_height());
+    organism_builder.add_weight(previous_organism->weight());
+    organism_builder.add_height(previous_organism->height());
+    organism_builder.add_max_weight(previous_organism->max_weight());
+    organism_builder.add_max_height(previous_organism->max_height());
+    organism_builder.add_max_appetite_at_age(previous_organism->max_appetite_at_age());
+    organism_builder.add_max_speed_at_age(previous_organism->max_speed_at_age());
+    organism_builder.add_max_stamina_at_age(previous_organism->max_stamina_at_age());
+    organism_builder.add_max_vitality_at_age(previous_organism->max_vitality_at_age());
+    organism_builder.add_weight_multiplier(previous_organism->weight_multiplier());
+    organism_builder.add_height_multiplier(previous_organism->height_multiplier());
+    organism_builder.add_speed_multiplier(previous_organism->speed_multiplier());
+    organism_builder.add_stamina_multiplier(previous_organism->stamina_multiplier());
+    organism_builder.add_vitality_multiplier(previous_organism->vitality_multiplier());
+
+    organism_builder.add_vitality(previous_organism->vitality());
+    organism_builder.add_stamina(previous_organism->stamina());
+    organism_builder.add_appetite(previous_organism->appetite());
+    organism_builder.add_speed(previous_organism->speed());
+
+    organism_builder.add_static_fitness(previous_organism->static_fitness());
+    organism_builder.add_dynamic_fitness(previous_organism->dynamic_fitness());
+
+    return organism_builder.Finish();
+}
+
+void God::happy_new_year(const bool &log)
+{
+    spawn_count = 0;
+    recent_births = 0;
+    recent_deaths = 0;
+
+    Ecosystem::World *previous_world = Ecosystem::GetMutableWorld(buffer.data());
+
+    Ecosystem::WorldBuilder new_world_builder(builder);
+
+    std::vector<flatbuffers::Offset<Ecosystem::Species>> newStdvecSpecies;
+    Ecosystem::SpeciesBuilder new_species_builder(builder);
+
+    uint32_t num_species = previous_world->species()->size();
+
+    for (uint32_t n = 0; n < num_species; n++)
+    {
+        Ecosystem::Species *species = previous_world->mutable_species()->GetMutableObject(n);
+        auto kingdom = species->kingdom();
+        auto kind = species->kind();
+
+        std::vector<flatbuffers::Offset<Ecosystem::Organism>> stdvecOrganisms;
+        Ecosystem::OrganismBuilder new_organism_builder(builder);
+
+        /***************************************************
+         *       Annual Killing (un-selection) Begins      *
+         ***************************************************/
+
+        // Vector for [ (death_factor, index in vector) ]
+
+        std::vector<std::pair<float, uint32_t>> organisms_vec;
+        organisms_vec.reserve(species->organism()->size());
+
+        for (uint32_t i = 0; i < species->organism()->size(); i++)
+        {
+            Ecosystem::Organism *organism = species->mutable_organism()->GetMutableObject(i);
+            organism_opts::generate_death_factor(organism);
+            organisms_vec.emplace_back(std::make_pair(organism->death_factor(), i));
+        }
+
+        // Sort organism_vec by death factor
+
+        std::sort(
+            organisms_vec.begin(), organisms_vec.end(),
+            std::greater<std::pair<float, uint32_t>>());
+
+        std::set<uint32_t> organism_indices_to_remove;
+
+        std::uniform_real_distribution<double> par_dis(0.0, 1.0);
+        std::mt19937_64 par_rng{std::random_device()()};
+
+        for (uint32_t index = 0; index < organisms_vec.size(); index++)
+        {
+            const double x = par_dis(par_rng);
+
+            // Spare this organism
+            if (disable_deaths || x >= killer_function(index, organisms_vec.size()))
+            {
+                // Annual ageing of this Organism
+                organism_opts::increment_age(species->mutable_organism()->GetMutableObject(organisms_vec[index].second));
+
+                auto new_organism = clone_organism(
+                    builder,
+                    new_organism_builder,
+                    species->organism()->Get(organisms_vec[index].second));
+                stdvecOrganisms.push_back(new_organism);
+            }
+        }
+
+        // Birth
+
+        new_species_builder.add_organism(builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size()));
+        new_species_builder.add_kingdom(kingdom);
+        new_species_builder.add_kind(builder.CreateString(kind));
+
+        newStdvecSpecies.push_back(new_species_builder.Finish());
+    }
+
+    year++;
+}
