@@ -3,19 +3,19 @@ name: build
 on:
   push:
       branches:
-      - master
+      - flatbuffer
       paths:
       - 'Cpp/**'
       - '.github/workflows/ccpp.yml'
   pull_request:
       branches:
-      - master
+      - flatbuffer
       paths:
       - 'Cpp/**'
       - '.github/workflows/ccpp.yml'
 
 jobs:
-  build-linux:
+  build-lin-gcc-rel:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -23,16 +23,34 @@ jobs:
     - name: prepare-build
       run: |
         sudo apt update
-        sudo apt install libtbb-dev freeglut3-dev libglfw3 libglfw3-dev libglew-dev libsfml-dev
+        sudo apt install ninja-build
 
     - name: configure-build
       run: |
         cd Cpp
-        mkdir build
-        cd build
-        cmake ..
+        cmake --preset lin-gcc-rel
 
     - name: build
       run: |
-        cd Cpp/build
-        cmake --build . -- -j $(nproc)
+        cd Cpp
+        cmake --build --preset lin-gcc-rel
+
+  build-lin-clang-rel:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      run: |
+        sudo apt update
+        sudo apt install ninja-build clang
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset lin-clang-rel
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset lin-clang-rel
