@@ -43,7 +43,7 @@ jobs:
     - name: prepare-build
       run: |
         sudo apt update
-        sudo apt install ninja-build clang
+        sudo apt install ninja-build clang-12
 
     - name: configure-build
       run: |
@@ -54,3 +54,41 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset lin-clang-rel
+
+  build-osx-clang-rel:
+    runs-on: macos-11
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      run: |
+        brew install ninja
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset osx-clang-rel
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset osx-clang-rel
+
+  build-osx-gcc-rel:
+    runs-on: macos-11
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      run: |
+        brew install gcc
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset osx-gcc-rel
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset osx-gcc-rel

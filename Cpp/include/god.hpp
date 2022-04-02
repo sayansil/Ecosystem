@@ -8,7 +8,6 @@
 #include <utility>
 #include <vector>
 #include <string>
-#include <execution>
 #include <world_generated.h>
 #include <database_manager.hpp>
 
