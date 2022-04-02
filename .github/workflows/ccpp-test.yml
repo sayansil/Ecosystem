@@ -64,7 +64,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-11]
-        build_type: [dbg, rel]
+        build_type: [rel]
         include:
           - os: ubuntu-20.04
             os_identifier: lin
@@ -107,7 +107,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        build_type: [dbg, rel]
+        build_type: [rel]
         include:
           - os: windows-2022
             os_identifier: win
