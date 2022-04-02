@@ -1,28 +1,35 @@
 #include <helper.hpp>
 #include <fmt/core.h>
+#include <string>
 #include <whereami.h>
-#include <cstdlib>
 
 static std::string get_ecosystem_root()
 {
     const char * root_path = std::getenv("ECOSYSTEM_ROOT");
     if(root_path == nullptr)
     {
-        fmt::print("ERROR: ECOSYSTEM_ROOT environment variable not set\n");
-        exit(0);
+        fmt::print("ECOSYSTEM_ROOT environment variable not set\n");
+        fmt::print("Attempting to extract ECOSYSTEM_ROOT from exe path\n");
+        uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
+        std::string exe_path;
+        {
+            char * path = (char *)malloc(length + 1);
+            wai_getExecutablePath(path, length, nullptr);
+            exe_path = path;
+            free(path);
+        }
+        auto pos = exe_path.find("Ecosystem");
+        if(pos == std::string::npos)
+        {
+            fmt::print("ERROR: ECOSYSTEM_ROOT could not be extracted from exe path {}\n", exe_path);
+            exit(0);
+        }
+        std::string tmp = exe_path.substr(0, pos);
+        std::filesystem::path tmp_fs = std::filesystem::path(tmp) / "Ecosystem";
+        fmt::print("Extracted ECOSYSTEM_ROOT - {} from exe path\n", tmp_fs.string());
+        return tmp_fs.string();
     }
     return std::string(root_path);
-    //uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
-    //std::string exe_path;
-    //{
-    //    char * path = (char *)malloc(length + 1);
-    //    wai_getExecutablePath(path, length, nullptr);
-    //    exe_path = path;
-    //    free(path);
-    //}
-    //auto pos = exe_path.find("Ecosystem");
-    //std::string root_path = exe_path.substr(0, pos);
-    //return root_path;
 }
 
 namespace helper
