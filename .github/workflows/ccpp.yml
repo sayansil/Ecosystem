@@ -176,6 +176,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: ilammy/msvc-dev-cmd@v1.10.0
 
       - name: prepare-build
         run: |
@@ -196,6 +197,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: ilammy/msvc-dev-cmd@v1.10.0
 
       - name: prepare-build
         run: |
