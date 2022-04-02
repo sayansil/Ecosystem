@@ -15,260 +15,143 @@ on:
       - '.github/workflows/ccpp.yml'
 
 jobs:
-  build-lin-gcc-dbg:
-    runs-on: ubuntu-20.04
+
+  build-clang:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        build_type: [dbg, rel]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            zip_os_identifier: linux
+            installer: 'sudo apt'
+            dependencies: 'ninja-build clang-12'
+          - os: macos-11
+            os_identifier: osx
+            zip_os_identifier: osx
+            installer: 'brew'
+            dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
       run: |
-        sudo apt update
-        sudo apt install ninja-build
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset lin-gcc-dbg
+        cmake --preset ${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset lin-gcc-dbg
-
-  build-lin-gcc-rel:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        sudo apt update
-        sudo apt install ninja-build
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset lin-gcc-rel
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset lin-gcc-rel
+        cmake --build --preset ${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
 
     - name: upload-setup
+      if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Setup_Linux_GCC
-        path: Cpp/build/lin-gcc-rel/setup
+        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_clang
+        path: Cpp/build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/setup
 
     - name: upload-randomTests
+      if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Random_Tests_Linux_GCC
-        path: Cpp/build/lin-gcc-rel/RandomTests
+        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_clang
+        path: Cpp/build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/RandomTests
 
-  build-lin-clang-dbg:
-    runs-on: ubuntu-20.04
+  build-gcc:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04, macos-11]
+        build_type: [dbg, rel]
+        include:
+          - os: ubuntu-20.04
+            os_identifier: lin
+            zip_os_identifier: linux
+            installer: 'sudo apt'
+            dependencies: 'ninja-build'
+          - os: macos-11
+            os_identifier: osx
+            zip_os_identifier: osx
+            installer: 'brew'
+            dependencies: 'gcc ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
       run: |
-        sudo apt update
-        sudo apt install ninja-build clang-12
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset lin-clang-dbg
+        cmake --preset ${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset lin-clang-dbg
-
-  build-lin-clang-rel:
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        sudo apt update
-        sudo apt install ninja-build clang-12
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset lin-clang-rel
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset lin-clang-rel
+        cmake --build --preset ${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}
 
     - name: upload-setup
+      if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Setup_Linux_Clang
-        path: Cpp/build/lin-clang-rel/setup
+        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_gcc
+        path: Cpp/build/${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}/setup
 
     - name: upload-randomTests
+      if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Random_Tests_Linux_Clang
-        path: Cpp/build/lin-clang-rel/RandomTests
+        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_gcc
+        path: Cpp/build/${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}/RandomTests
 
-  build-osx-clang-dbg:
-    runs-on: macos-11
+  build-msvc:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2022]
+        build_type: [dbg, rel]
+        include:
+          - os: windows-2022
+            os_identifier: win
+            zip_os_identifier: windows
+            installer: 'choco'
+            dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
 
     - name: prepare-build
       run: |
-        brew install ninja
+        ${{ matrix.installer }} install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset osx-clang-dbg
+        cmake --preset ${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset osx-clang-dbg
-
-  build-osx-clang-rel:
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        brew install ninja
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset osx-clang-rel
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset osx-clang-rel
+        cmake --build --preset ${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
 
     - name: upload-setup
+      if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Setup_Darwin_Clang
-        path: Cpp/build/osx-clang-rel/setup
+        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_msvc
+        path: Cpp/build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/setup
 
     - name: upload-randomTests
+      if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: Ecosystem_Random_Tests_Darwin_Clang
-        path: Cpp/build/osx-clang-rel/RandomTests
-
-  build-osx-gcc-dbg:
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        brew install gcc ninja
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset osx-gcc-dbg
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset osx-gcc-dbg
-
-  build-osx-gcc-rel:
-    runs-on: macos-11
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        brew install gcc ninja
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset osx-gcc-rel
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset osx-gcc-rel
-    
-    - name: upload-setup
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ecosystem_Setup_Darwin_GCC
-        path: Cpp/build/osx-gcc-rel/setup
-
-    - name: upload-randomTests
-      uses: actions/upload-artifact@v2
-      with:
-        name: Ecosystem_Random_Tests_Darwin_GCC
-        path: Cpp/build/osx-gcc-rel/RandomTests
-
-  build-win-msvc-dbg:
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: ilammy/msvc-dev-cmd@v1.10.0
-
-      - name: prepare-build
-        run: |
-          choco install ninja
-          
-      - name: configure-build
-        run: |
-          cd Cpp
-          cmake --preset win-msvc-dbg
-          
-      - name: build
-        run: |
-          cd Cpp
-          cmake --build --preset win-msvc-dbg
-
-  build-win-msvc-rel:
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v2
-      - uses: seanmiddleditch/gha-setup-ninja@master
-      - uses: ilammy/msvc-dev-cmd@v1.10.0
-
-      - name: prepare-build
-        run: |
-          choco install ninja
-          
-      - name: configure-build
-        run: |
-          cd Cpp
-          cmake --preset win-msvc-rel
-          
-      - name: build
-        run: |
-          cd Cpp
-          cmake --build --preset win-msvc-rel
-
-      - name: upload-setup
-        uses: actions/upload-artifact@v2
-        with:
-          name: Ecosystem_Setup_Windows_MSVC
-          path: Cpp/build/win-msvc-rel/setup
-
-      - name: upload-randomTests
-        uses: actions/upload-artifact@v2
-        with:
-          name: Ecosystem_Random_Tests_Windows_MSVC
-          path: Cpp/build/win-msvc-rel/RandomTests
+        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_msvc
+        path: Cpp/build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/RandomTests
