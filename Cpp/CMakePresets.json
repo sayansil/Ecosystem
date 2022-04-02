@@ -1,4 +1,4 @@
-﻿{
+{
     "version": 3,
     "cmakeMinimumRequired": {
         "major": 3,
@@ -84,7 +84,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl",
                 "CMAKE_CXX_COMPILER": "cl",
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo",
+                "CMAKE_BUILD_TYPE": "Release",
                 "ENABLE_DEVELOPER_MODE": "ON"
              }
         },
@@ -112,7 +112,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang-cl",
                 "CMAKE_CXX_COMPILER": "clang-cl",
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+                "CMAKE_BUILD_TYPE": "Release"
             },
             "vendor": {
                 "microsoft.com/VisualStudioSettings/CMake/1.0": {
@@ -139,7 +139,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "gcc",
                 "CMAKE_CXX_COMPILER": "g++",
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
@@ -161,7 +161,7 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++",
-                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
@@ -207,6 +207,56 @@
                 "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        }
+    ],
+    "buildPresets":[
+        {
+            "name": "lin-gcc-rel",
+            "configurePreset": "lin-gcc-rel"
+        },
+        {
+            "name": "lin-gcc-dbg",
+            "configurePreset": "lin-gcc-dbg"
+        },
+        {
+            "name": "lin-clang-rel",
+            "configurePreset": "lin-clang-rel"
+        },
+        {
+            "name": "lin-clang-dbg",
+            "configurePreset": "lin-clang-dbg"
+        },
+        {
+            "name": "win-msvc-rel",
+            "configurePreset": "win-msvc-rel"
+        },
+        {
+            "name": "win-msvc-dbg",
+            "configurePreset": "win-msvc-dbg"
+        },
+        {
+            "name": "win-clang-rel",
+            "configurePreset": "win-clang-rel"
+        },
+        {
+            "name": "win-clang-dbg",
+            "configurePreset": "win-clang-dbg"
+        },
+        {
+            "name": "osx-clang-rel",
+            "configurePreset": "osx-clang-rel"
+        },
+        {
+            "name": "osx-clang-dbg",
+            "configurePreset": "osx-clang-dbg"
+        },
+        {
+            "name": "osx-gcc-rel",
+            "configurePreset": "osx-gcc-rel"
+        },
+        {
+            "name": "osx-gcc-dbg",
+            "configurePreset": "osx-gcc-dbg"
         }
     ],
     "testPresets": [
