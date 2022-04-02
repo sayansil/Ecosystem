@@ -112,7 +112,7 @@ jobs:
         name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_gcc
         path: Cpp/build/${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}/RandomTests
 
-  build-msvc-release:
+  build-msvc:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
