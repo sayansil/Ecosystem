@@ -19,6 +19,7 @@ Cpp/.vscode
 Cpp/WebApp/keys.json
 Cpp/WebApp/extern/uWebSockets
 Cpp/python/pybind11
+Cpp/Testing/*
 compile_commands.json
 release/
 .firebase/*

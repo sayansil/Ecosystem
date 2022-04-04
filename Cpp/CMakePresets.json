@@ -269,64 +269,130 @@
             },
             "execution": {
                 "noTestsAction": "error",
-                "stopOnFailure": true
+                "stopOnFailure": false
+            },
+            "filter": {
+                "include": {
+                    "name": "Ecosystem+"
+                }
+            }
+        },
+        {
+            "name": "test-common-windows",
+            "description": "Test CMake settings that apply to Windows",
+            "hidden": true,
+            "inherits": "test-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "test-common-linux",
+            "description": "Test CMake settings that apply to Linux",
+            "hidden": true,
+            "inherits": "test-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "test-common-osx",
+            "description": "Test CMake settings that apply to MacOS",
+            "hidden": true,
+            "inherits": "test-common",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
             }
         },
         {
             "name": "test-win-msvc-dbg",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-windows",
             "configurePreset": "win-msvc-dbg"
         },
         {
             "name": "test-win-msvc-rel",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-windows",
             "configurePreset": "win-msvc-rel"
         },
         {
             "name": "test-win-clang-dbg",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-windows",
             "configurePreset": "win-clang-dbg"
         },
         {
             "name": "test-win-clang-rel",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-windows",
             "configurePreset": "win-clang-rel"
         },
         {
             "name": "test-lin-gcc-dbg",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-linux",
             "configurePreset": "lin-gcc-dbg"
         },
         {
             "name": "test-lin-gcc-rel",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-linux",
             "configurePreset": "lin-gcc-rel"
         },
         {
             "name": "test-lin-clang-dbg",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-linux",
             "configurePreset": "lin-clang-dbg"
         },
         {
             "name": "test-lin-clang-rel",
             "displayName": "Strict",
             "description": "Enable output and stop on failure",
-            "inherits": "test-common",
+            "inherits": "test-common-linux",
             "configurePreset": "lin-clang-rel"
+        },
+        {
+            "name": "test-osx-gcc-dbg",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common-osx",
+            "configurePreset": "osx-gcc-dbg"
+        },
+        {
+            "name": "test-osx-gcc-rel",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common-osx",
+            "configurePreset": "osx-gcc-rel"
+        },
+        {
+            "name": "test-osx-clang-dbg",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common-osx",
+            "configurePreset": "osx-clang-dbg"
+        },
+        {
+            "name": "test-osx-clang-rel",
+            "displayName": "Strict",
+            "description": "Enable output and stop on failure",
+            "inherits": "test-common-osx",
+            "configurePreset": "osx-clang-rel"
         }
     ]
 }
