@@ -26,8 +26,15 @@ static std::string get_ecosystem_root()
         }
         std::string tmp = exe_path.substr(0, pos);
         std::filesystem::path tmp_fs = std::filesystem::path(tmp) / "Ecosystem";
-        fmt::print("Extracted ECOSYSTEM_ROOT - {} from exe path\n", tmp_fs.string());
-        return tmp_fs.string();
+        std::string tmp_fs_str = tmp_fs.string();
+#ifdef WIN32
+        // replace \ with \\ for windows
+        for(int i = 0; i < tmp_fs_str.length(); i++)
+            if(tmp_fs_str[i] == '\\')
+                tmp_fs_str.insert(i++, 1, '\\');
+#endif
+        fmt::print("Extracted ECOSYSTEM_ROOT - {} from exe path\n", tmp_fs_str);
+        return tmp_fs_str;
     }
     return std::string(root_path);
 }
