@@ -1,4 +1,5 @@
 #include <god.hpp>
+#include <setup.hpp>
 #include <iostream>
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -12,6 +13,8 @@
 
 int main()
 {
+    setup::setup();
+
     unsigned int initial_organism_count = 4500;
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);

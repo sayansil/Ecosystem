@@ -1,16 +1,10 @@
-#include <filesystem>
-#include <iostream>
-#include <fstream>
-#include <sqlite3.h>
-#include <string>
-#include <helper.hpp>
-#include <schema.hpp>
+#include <setup.hpp>
 
-const std::filesystem::path master_db_path = helper::ecosystem_root / "data/ecosystem_master.db";
-const std::filesystem::path json_data_path = helper::ecosystem_root / "data/json";
-const std::filesystem::path json_template_path = helper::ecosystem_root / "data/templates/json";
+static const std::filesystem::path master_db_path = helper::ecosystem_root / "data/ecosystem_master.db";
+static const std::filesystem::path json_data_path = helper::ecosystem_root / "data/json";
+static const std::filesystem::path json_template_path = helper::ecosystem_root / "data/templates/json";
 
-sqlite3 *db;
+static sqlite3 *db;
 
 static std::string sql_command_creator(const std::string &tableName, const std::vector<std::pair<std::string, std::string>> &schema)
 {
@@ -85,26 +79,29 @@ static void parse_species_directories(std::string subdirectory)
     }
 }
 
-int main()
+namespace setup
 {
+    void setup()
+    {
 
-    if (!std::filesystem::exists(master_db_path))
-    {
-        sqlite3_open(master_db_path.string().c_str(), &db);
-        create_master_table();
-    }
-    else
-    {
-        sqlite3_open(master_db_path.string().c_str(), &db);
-        std::cout << "Using existing db at " << master_db_path << '\n';
-    }
+        if (!std::filesystem::exists(master_db_path))
+        {
+            sqlite3_open(master_db_path.string().c_str(), &db);
+            create_master_table();
+        }
+        else
+        {
+            sqlite3_open(master_db_path.string().c_str(), &db);
+            std::cout << "Using existing db at " << master_db_path << '\n';
+        }
 
-    if (std::filesystem::exists(json_data_path / "animal"))
-    {
-        parse_species_directories("animal");
+        if (std::filesystem::exists(json_data_path / "animal"))
+        {
+            parse_species_directories("animal");
+        }
+        if (std::filesystem::exists(json_data_path / "plant"))
+        {
+            parse_species_directories("plant");
+        }
     }
-    if (std::filesystem::exists(json_data_path / "plant"))
-    {
-        parse_species_directories("plant");
-    }
-}
+};

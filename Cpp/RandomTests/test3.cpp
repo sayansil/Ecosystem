@@ -1,4 +1,5 @@
 #include <god.hpp>
+#include <setup.hpp>
 #include <iostream>
 #include <vector>
 #include <nlohmann/json.hpp>
@@ -12,6 +13,8 @@
 
 int main()
 {
+    setup::setup();
+
     unsigned int initial_organism_count = 4500;
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
@@ -27,16 +30,16 @@ int main()
     // allah.cleanSlate();
     allah.createWorld(organisms);
     fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
-    
+
     FBuffer buff = stat_fetcher::create_avg_world(allah.buffer);
-    
+
     {
         DatabaseManager db_manager;
-        
+
         db_manager.insert_rows({buff});
-        
+
         std::vector<FBuffer> rows = db_manager.read_all_rows();
-        
+
         flatbuffers::ToStringVisitor visitor("", true, "", true);
         flatbuffers::IterateFlatBuffer(rows[0].data(), Ecosystem::WorldTypeTable(), &visitor);
         nlohmann::json json_data = nlohmann::json::parse(visitor.s);

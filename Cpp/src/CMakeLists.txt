@@ -6,6 +6,7 @@ set(ECOSYSTEM_SOURCES
     helper.cpp
     database_manager.cpp
     schema.cpp
+    setup.cpp
     # StopWatch.cpp
     species_constants.cpp
     # logger.cpp

@@ -56,8 +56,7 @@ jobs:
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/setup/setup
-        ./build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/RandomTests/rt_sanity_test
+        ctest --prest test-${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
 
   build-gcc:
     runs-on: ${{ matrix.os }}
@@ -99,8 +98,7 @@ jobs:
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        ./build/${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}/setup/setup
-        ./build/${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}/RandomTests/rt_sanity_test
+        ctest --prest test-${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
 
   build-msvc:
     runs-on: ${{ matrix.os }}
@@ -137,5 +135,4 @@ jobs:
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/setup/setup.exe
-        ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/RandomTests/rt_sanity_test.exe
+        ctest --prest test-${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
