@@ -137,6 +137,5 @@ jobs:
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        echo $env:ECOSYSTEM_ROOT
         ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/setup/setup.exe
         ./build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/RandomTests/rt_sanity_test.exe
