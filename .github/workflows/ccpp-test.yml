@@ -98,7 +98,7 @@ jobs:
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        ctest --prest test-${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
+        ctest --prest test-${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}
 
   build-msvc:
     runs-on: ${{ matrix.os }}
@@ -135,4 +135,4 @@ jobs:
       run: |
         ${{ matrix.set_root }}
         cd Cpp
-        ctest --prest test-${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
+        ctest --prest test-${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
