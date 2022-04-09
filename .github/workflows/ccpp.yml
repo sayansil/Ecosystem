@@ -68,13 +68,17 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        compiler: [gcc, clang]
+        compiler: [gcc]
         build_type: [dbg, rel]
         include:
           - compiler: gcc
             dependencies: 'cmake ninja-build'
           - compiler: clang
             dependencies: 'cmake ninja-build clang-12'
+          - build_type: rel
+            build_name: Release
+          - build_type: dbg
+            build_name: Debug
     steps:
     - uses: actions/checkout@v2
 
@@ -94,9 +98,10 @@ jobs:
           apt-get install -q -y ${{ matrix.dependencies }}
         run: |
           cd Cpp
-          cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
-          cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
-          zip -r /artifacts/output_linux_${{ matrix.compiler }}_${{ matrix.build_type }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+          mkdir build && cd build
+          cmake -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build_name }} ..
+          cmake --build .
+          zip -r /artifacts/output_linux_${{ matrix.compiler }}_${{ matrix.build_type }}.zip build/RandomTests
 
     - name: Save release asset
       id: save_release_asset
