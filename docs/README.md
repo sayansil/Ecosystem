@@ -17,11 +17,11 @@
 
 <!-- CodeQL -->
 <a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg?branch=flatbuffer" /></a>
+        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg" /></a>
 
 <!-- CodeFactor-->
 <a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/flatbuffer">
-        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/flatbuffer" alt="CodeFactor" /></a>
+        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
 </p>
 
 <p align="center">
