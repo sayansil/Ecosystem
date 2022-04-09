@@ -63,7 +63,7 @@ jobs:
         path: Cpp/output_linux_${{ matrix.compiler }}.zip
 
   build-arm-linux:
-    name: Build on Linux
+    name: Build on ARM Linux
     needs: build-linux
     runs-on: ubuntu-20.04
     strategy:
