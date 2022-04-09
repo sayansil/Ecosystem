@@ -35,8 +35,17 @@ jobs:
       with:
         name: Ecosystem Simulator ${{ github.ref }}
         body_path: CHANGELOG.md
+        body: |
+          ## Changelog
+          ### New Features
+          - [ ]
+          ### Bug Fixes
+          - [ ]
+          ### Documentation
+          - [ ]
         draft: true
         prerelease: true
+        token: ${{ secrets.RELEASE_TOKEN }}
 
     - name: Output Release URL
       id: output_release_url
@@ -182,13 +191,16 @@ jobs:
     strategy:
       matrix:
         os: [linux, macos, windows]
-        include:
+        compiler: [gcc, clang, msvc]
+        exclude:
           - os: linux
-            compiler: [gcc, clang]
+            compiler: msvc
           - os: macos
-            compiler: [gcc, clang]
+            compiler: msvc
           - os: windows
-            compiler: [msvc]
+            compiler: gcc
+          - os: windows
+            compiler: clang
 
     steps:
     - uses: actions/checkout@v2
