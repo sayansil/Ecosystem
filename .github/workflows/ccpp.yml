@@ -34,7 +34,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         name: Ecosystem Simulator ${{ github.ref }}
-        body_path: CHANGELOG.md
+        body_path: /home/runner/work/Ecosystem/Ecosystem/CHANGELOG.md
         draft: true
         prerelease: true
 
