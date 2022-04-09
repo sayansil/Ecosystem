@@ -7,30 +7,36 @@
 
 </p>
 
-
-
 <!-- Badges -->
 
 <p align="center">
+
+<!-- License -->
 <a href="https://github.com/sayansil/Ecosystem/blob/master/LICENSE">
         <img src="https://img.shields.io/badge/license-GPL%20v3-yellow.svg" /></a>
 
+<!-- CodeQL -->
 <a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg?branch=master" /></a>
- 
-<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/master">
-        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/master" alt="CodeFactor" /></a>
+        <img src="https://github.com/sayansil/Ecosystem/workflows/CodeQL/badge.svg?branch=flatbuffer" /></a>
+
+<!-- CodeFactor-->
+<a href="https://www.codefactor.io/repository/github/sayansil/ecosystem/overview/flatbuffer">
+        <img src="https://www.codefactor.io/repository/github/sayansil/ecosystem/badge/flatbuffer" alt="CodeFactor" /></a>
 </p>
 
 <p align="center">
-<a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=master" /></a>
 
+<!-- Build -->
 <a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=master" /></a>
+        <img src="https://github.com/sayansil/Ecosystem/workflows/build/badge.svg?branch=flatbuffer" /></a>
 
+<!-- Test -->
 <a href="https://github.com/sayansil/Ecosystem/actions">
-        <img src="https://github.com/sayansil/Ecosystem/workflows/python-test/badge.svg?branch=master" /></a>
+        <img src="https://github.com/sayansil/Ecosystem/workflows/test/badge.svg?branch=flatbuffer" /></a>
+
+<!-- Release -->
+<a href="https://github.com/sayansil/Ecosystem/releases">
+        <img src="https://img.shields.io/github/v/release/sayansil/Ecosystem?include_prereleases" /></a>
 </p>
 
 <br>
@@ -41,8 +47,7 @@
 
 <div align="center">
 <h2>Quick Navigation</h2>
- 
-  
+
 <table align="center">
   <tr>
   ` <td colspan="2">
