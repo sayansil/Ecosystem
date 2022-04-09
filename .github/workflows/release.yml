@@ -2,12 +2,16 @@ name: build
 
 on:
   push:
+      tags:
+      - 'v*.*.*'
       branches:
       - flatbuffer
       paths:
       - 'Cpp/**'
       - '.github/workflows/release.yml'
   pull_request:
+      tags:
+      - 'v*.*.*'
       branches:
       - flatbuffer
       paths:
