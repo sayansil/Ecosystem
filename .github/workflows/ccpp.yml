@@ -89,7 +89,7 @@ jobs:
             mkdir -p "${PWD}/artifacts"
         dockerRunArgs: |
           --volume "${PWD}/artifacts:/artifacts"
-        install: sudo apt install ${{ matrix.dependencies }}
+        install: apt install ${{ matrix.dependencies }}
         run: |
           cd Cpp
           cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
