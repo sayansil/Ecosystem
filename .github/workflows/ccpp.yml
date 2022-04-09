@@ -18,11 +18,18 @@ on:
       - 'Cpp/**'
       - '.github/workflows/ccpp.yml'
   workflow_dispatch:
+    inputs:
+      keep_artifacts:
+        type: boolean
+        description: Do you want to keep the build artifacts?
+        default: false
+        required: true
 
 jobs:
 
   sonar-check:
     name: Sonar Check
+    if: contains(github.ref, 'tags/') || contains(github.event.head_commit.message, '[Sonar Check]')
     runs-on: ubuntu-20.04
     env:
       SONAR_SCANNER_VERSION: 4.6.1.2450 
@@ -314,7 +321,6 @@ jobs:
 
   clean-unused-artifacts:
     name: Clean unused artifacts
-    if: ${{ always() }}
     needs:
       - publish-assets
     runs-on: ubuntu-20.04
@@ -328,7 +334,7 @@ jobs:
 
   clean-build-artifacts:
     name: Clean build artifacts
-    if: ${{ always() }} && !contains(github.ref, 'tags/')
+    if: (${{ always() }} && contains(github.ref, 'tags/')) || ${{ github.event.inputs.keep_artifacts == 'true' }}
     needs:
       - build-linux
       - build-macos
