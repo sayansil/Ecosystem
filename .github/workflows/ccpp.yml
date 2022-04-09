@@ -62,55 +62,6 @@ jobs:
         name: output_linux_${{ matrix.compiler }}
         path: Cpp/output_linux_${{ matrix.compiler }}.zip
 
-  build-arm-linux:
-    name: Build on ARM Linux
-    needs: build-linux
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        compiler: [gcc]
-        build_type: [dbg, rel]
-        include:
-          - compiler: gcc
-            dependencies: 'cmake ninja-build'
-          - compiler: clang
-            dependencies: 'cmake ninja-build clang-12'
-          - build_type: rel
-            build_name: Release
-          - build_type: dbg
-            build_name: Debug
-    steps:
-    - uses: actions/checkout@v2
-
-    - uses: uraimo/run-on-arch-action@v2
-      name: Build on ARM
-      id: build_on_arm
-      with:
-        arch: armv7
-        distro: ubuntu20.04
-        githubToken: ${{ github.token }}
-        setup: |
-            mkdir -p "${PWD}/artifacts"
-        dockerRunArgs: |
-          --volume "${PWD}/artifacts:/artifacts"
-        install: |
-          apt-get update -q -y
-          apt-get install -q -y ${{ matrix.dependencies }}
-        run: |
-          cd Cpp
-          mkdir build && cd build
-          cmake -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build_name }} ..
-          cmake --build .
-          zip -r /artifacts/output_linux_${{ matrix.compiler }}_${{ matrix.build_type }}.zip build/RandomTests
-
-    - name: Save release asset
-      id: save_release_asset
-      if: ${{ matrix.build_type }} == 'rel'
-      uses: actions/upload-artifact@v1
-      with:
-        name: output_armv7_linux_${{ matrix.compiler }}
-        path: artifacts/output_linux_${{ matrix.compiler }}_${{ matrix.build_type }}.zip
-
   build-macos:
     name: Build on MacOS
     runs-on: macos-11
