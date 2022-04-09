@@ -41,7 +41,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        name: Ecosystem Simulator ${{ github.ref }}
+        name: Ecosystem Simulator ${{ github.ref_name }}
         body: |
           ## Changelog
             ${{ steps.build_changelog.outputs.changelog }}
