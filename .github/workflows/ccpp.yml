@@ -72,9 +72,9 @@ jobs:
         build_type: [dbg, rel]
         include:
           - compiler: gcc
-            dependencies: 'ninja-build'
+            dependencies: 'ninja'
           - compiler: clang
-            dependencies: 'ninja-build clang-12'
+            dependencies: 'ninja clang'
     steps:
     - uses: actions/checkout@v2
 
@@ -83,13 +83,13 @@ jobs:
       id: build_on_arm
       with:
         arch: armv7
-        distro: ubuntu20.04
+        distro: archarm_latest
         githubToken: ${{ github.token }}
         setup: |
             mkdir -p "${PWD}/artifacts"
         dockerRunArgs: |
           --volume "${PWD}/artifacts:/artifacts"
-        install: apt install ${{ matrix.dependencies }}
+        install: pacman -S ${{ matrix.dependencies }}
         run: |
           cd Cpp
           cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
