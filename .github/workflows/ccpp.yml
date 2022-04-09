@@ -29,12 +29,11 @@ jobs:
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v0.1.14
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Ecosystem Simulator ${{ github.ref }}
+        name: Ecosystem Simulator ${{ github.ref }}
         body_path: CHANGELOG.md
         draft: true
         prerelease: true
