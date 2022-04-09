@@ -11,7 +11,7 @@ on:
       - '.github/workflows/ccpp.yml'
   pull_request:
       tags:
-      - 'v*.*.*'
+      - '*'
       branches:
       - flatbuffer
       paths:

@@ -2,12 +2,16 @@ name: test
 
 on:
   push:
+      tags:
+      - '*'
       branches:
       - flatbuffer
       paths:
       - 'Cpp/**'
       - '.github/workflows/ccpp-test.yml'
   pull_request:
+      tags:
+      - '*'
       branches:
       - flatbuffer
       paths:
@@ -22,7 +26,7 @@ jobs:
     strategy:
       matrix:
         compiler: [gcc, clang]
-        build_type: [rel]
+        build_type: [dbg, rel]
         include:
           - compiler: gcc
             dependencies: 'ninja-build'
@@ -61,7 +65,7 @@ jobs:
     strategy:
       matrix:
         compiler: [gcc, clang]
-        build_type: [rel]
+        build_type: [dbg, rel]
         include:
           - compiler: gcc
             dependencies: 'gcc ninja'
@@ -100,7 +104,7 @@ jobs:
     strategy:
       matrix:
         compiler: [msvc]
-        build_type: [rel]
+        build_type: [dbg, rel]
         include:
           - compiler: msvc
             dependencies: 'ninja'
