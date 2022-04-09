@@ -8,7 +8,7 @@ on:
       - flatbuffer
       paths:
       - 'Cpp/**'
-      - '.github/workflows/ccpp-test.yml'
+      - '.github/workflows/test.yml'
   pull_request:
       tags:
       - '*'
@@ -16,7 +16,7 @@ on:
       - flatbuffer
       paths:
       - 'Cpp/**'
-      - '.github/workflows/ccpp-test.yml'
+      - '.github/workflows/test.yml'
 
 jobs:
 

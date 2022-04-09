@@ -8,7 +8,7 @@ on:
       - flatbuffer
       paths:
       - 'Cpp/**'
-      - '.github/workflows/ccpp.yml'
+      - '.github/workflows/build.yml'
   pull_request:
       tags:
       - '*'
@@ -16,7 +16,7 @@ on:
       - flatbuffer
       paths:
       - 'Cpp/**'
-      - '.github/workflows/ccpp.yml'
+      - '.github/workflows/build.yml'
   workflow_dispatch:
     inputs:
       keep_artifacts:
@@ -334,7 +334,7 @@ jobs:
 
   clean-build-artifacts:
     name: Clean build artifacts
-    if: (${{ always() }} && contains(github.ref, 'tags/')) || ${{ github.event.inputs.keep_artifacts == 'true' }}
+    if: ${{ always() }} && (contains(github.ref, 'tags/') || ${{ github.event.inputs.keep_artifacts != 'true' }})
     needs:
       - build-linux
       - build-macos
