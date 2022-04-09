@@ -69,6 +69,7 @@ jobs:
       - name: Run build-wrapper
         id: run_build_wrapper
         run: |
+          cd Cpp
           mkdir build
           cmake -S . -B build
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Release
@@ -83,6 +84,7 @@ jobs:
 
   build-linux:
     name: Build on Linux
+    if: ${{ always() }}
     needs: sonar-check
     runs-on: ubuntu-20.04
     strategy:
@@ -125,6 +127,7 @@ jobs:
 
   build-macos:
     name: Build on MacOS
+    if: ${{ always() }}
     needs: sonar-check
     runs-on: macos-11
     strategy:
@@ -167,6 +170,7 @@ jobs:
 
   build-windows:
     name: Build on Windows
+    if: ${{ always() }}
     needs: sonar-check
     runs-on: windows-2022
     strategy:
