@@ -7,7 +7,8 @@
 
 static std::vector<std::string> items;
 
-static int callback_numrows(void *count, int argc, char **argv, char **azColName) {
+static int callback_numrows(void *count, int argc, char **argv, char **azColName)
+{
     int *c = (int *)count;
     *c = atoi(argv[0]);
     return 0;
@@ -41,11 +42,11 @@ void DatabaseManager::insert_rows(const std::vector<FBuffer> &rows)
     for (const auto &row : rows)
     {
         std::string sql_command = fmt::format(
-            "INSERT INTO ECOSYSTEM_MASTER VALUES ({}, ZEROBLOB({}))", 
+            "INSERT INTO ECOSYSTEM_MASTER VALUES ({}, ZEROBLOB({}))",
             Ecosystem::GetWorld(row.data())->year(),
             row.size());
         sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
-        
+
         sqlite3_blob *newBlob = 0;
         sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "AVG_WORLD", sqlite3_last_insert_rowid(db), 1, &newBlob);
         sqlite3_blob_write(newBlob, row.data(), row.size(), 0);
@@ -60,12 +61,13 @@ std::vector<FBuffer> DatabaseManager::read_all_rows()
 
     std::vector<FBuffer> rows;
     rows.reserve(count);
-    
-    for (int i=0; i<count; i++) {
+
+    for (int i = 0; i < count; i++)
+    {
         sqlite3_blob *blob = 0;
-        sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "AVG_WORLD", i+1, 0, &blob);
+        sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "AVG_WORLD", i + 1, 0, &blob);
         int size = sqlite3_blob_bytes(blob);
-        
+
         FBuffer data(size);
         sqlite3_blob_read(blob, data.data(), data.size(), 0);
         sqlite3_blob_close(blob);

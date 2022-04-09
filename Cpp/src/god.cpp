@@ -278,7 +278,6 @@ void God::cleanSlate()
     {
         for (const auto &inner_entry : std::filesystem::directory_iterator(entry.path()))
         {
-            fmt::print("{}\n", inner_entry.path().string());
             std::ifstream in(inner_entry.path() / "base.json");
             nlohmann::json tmp;
             in >> tmp;

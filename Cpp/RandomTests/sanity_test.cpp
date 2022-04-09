@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 #include <flatbuffers/idl.h>
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 #include <flatbuffers/minireflect.h>
 #include <unordered_map>
 #include <stat_fetcher.hpp>
@@ -26,19 +27,25 @@ int main()
                              {"age", "20"}});
     }
 
-    God allah;
-    // allah.cleanSlate();
-    allah.createWorld(organisms);
-    fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
+    FBuffer avg_instance;
 
-    FBuffer buff = stat_fetcher::create_avg_world(allah.buffer);
+    // Keep God (contains db object) and other db operations in separate scopes
+    {
+        God allah;
+        allah.cleanSlate();
+        allah.createWorld(organisms);
+        fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
+
+        avg_instance = stat_fetcher::create_avg_world(allah.buffer);
+    }
 
     {
         DatabaseManager db_manager;
 
-        db_manager.insert_rows({buff});
+        db_manager.insert_rows({avg_instance});
 
         std::vector<FBuffer> rows = db_manager.read_all_rows();
+        fmt::print("Rows: {}\n", rows.size());
 
         flatbuffers::ToStringVisitor visitor("", true, "", true);
         flatbuffers::IterateFlatBuffer(rows[0].data(), Ecosystem::WorldTypeTable(), &visitor);
