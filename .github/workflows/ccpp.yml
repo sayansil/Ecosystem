@@ -3,7 +3,7 @@ name: build
 on:
   push:
       tags:
-      - 'v*.*.*'
+      - '*'
       branches:
       - flatbuffer
       paths:
@@ -81,7 +81,7 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
-        zip -r ecosystem_random_test_linux_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+        zip -r output_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
 
     - name: Load release url
       id: load_release_url
@@ -94,7 +94,7 @@ jobs:
       id: get_release_info
       if: contains(github.ref, 'tags/v')
       run: |
-        echo ::set-output name=file_name::ecosystem_random_test_linux_${{ matrix.compiler }}
+        echo ::set-output name=file_name::output_${{ matrix.compiler }}
         value=`cat release_url/release_url.txt`
         echo ::set-output name=upload_url::$value
       env:
@@ -109,8 +109,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./Cpp
-        asset_name: ${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_path: ./Cpp/${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_name: ecosystem_example_linux_${{ matrix.compiler }}.zip
         asset_content_type: application/zip
 
   build-macos:
@@ -144,7 +144,7 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
-        zip -r ecosystem_random_test_osx_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+        zip -r output_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
 
     - name: Load release url
       id: load_release_url
@@ -157,7 +157,7 @@ jobs:
       id: get_release_info
       if: contains(github.ref, 'tags/v')
       run: |
-        echo ::set-output name=file_name::ecosystem_random_test_osx_${{ matrix.compiler }}
+        echo ::set-output name=file_name::output_${{ matrix.compiler }}
         value=`cat release_url/release_url.txt`
         echo ::set-output name=upload_url::$value
       env:
@@ -172,8 +172,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./Cpp
-        asset_name: ${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_path: ./Cpp/${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_name: ecosystem_example_osx_${{ matrix.compiler }}.zip
         asset_content_type: application/zip
 
   build-windows:
@@ -206,7 +206,7 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
-        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }}\RandomTests -DestinationPath ecosystem_random_test_win_${{ matrix.compiler }}
+        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }}\RandomTests -DestinationPath output_${{ matrix.compiler }}
 
     - name: Load release url
       id: load_release_url
@@ -219,7 +219,7 @@ jobs:
       id: get_release_info
       if: contains(github.ref, 'tags/v')
       run: |
-        echo ::set-output name=file_name::ecosystem_random_test_win_${{ matrix.compiler }}
+        echo ::set-output name=file_name::output_${{ matrix.compiler }}
         value=`Get-Content release_url\release_url.txt`
         echo ::set-output name=upload_url::$value
       env:
@@ -234,6 +234,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./Cpp
-        asset_name: ${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_path: ./Cpp/${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_name: ecosystem_example_win_${{ matrix.compiler }}.zip
         asset_content_type: application/zip
