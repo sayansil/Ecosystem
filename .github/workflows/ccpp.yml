@@ -220,7 +220,7 @@ jobs:
       if: contains(github.ref, 'tags/v') && matrix.build_type == 'rel'
       run: |
         echo ::set-output name=file_name::output_${{ matrix.compiler }}
-        value=`Get-Content release_url\release_url.txt`
+        value=`cat release_url\release_url.txt`
         echo ::set-output name=upload_url::$value
       env:
         TAG_REF_NAME: ${{ github.ref }}
