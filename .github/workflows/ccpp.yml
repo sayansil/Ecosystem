@@ -16,113 +16,84 @@ on:
 
 jobs:
 
-  build-clang:
-    runs-on: ${{ matrix.os }}
+  build-linux:
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-11]
+        compiler: [gcc, clang]
         build_type: [dbg, rel]
         include:
-          - os: ubuntu-20.04
-            os_identifier: lin
-            zip_os_identifier: linux
-            installer: 'sudo apt'
+          - compiler: gcc
+            dependencies: 'ninja-build'
+          - compiler: clang
             dependencies: 'ninja-build clang-12'
-          - os: macos-11
-            os_identifier: osx
-            zip_os_identifier: osx
-            installer: 'brew'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: prepare-build
+      run: |
+        sudo apt install ${{ matrix.dependencies }}
+
+    - name: configure-build
+      run: |
+        cd Cpp
+        cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: build
+      run: |
+        cd Cpp
+        cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: upload-randomTests
+      if: matrix.build_type == 'rel'
+      uses: actions/upload-artifact@v2
+      with:
+        name: ecosystem_random_tests_linux_${{ matrix.compiler }}
+        path: Cpp/build/lin-${{ matrix.compiler }}-rel/RandomTests
+
+  build-macos:
+    runs-on: macos-11
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        build_type: [dbg, rel]
+        include:
+          - compiler: gcc
+            dependencies: 'gcc ninja'
+          - compiler: clang
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} install ${{ matrix.dependencies }}
+        brew install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset ${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
+        cmake --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset ${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}
-
-    - name: upload-setup
-      if: matrix.build_type == 'rel'
-      uses: actions/upload-artifact@v2
-      with:
-        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_clang
-        path: Cpp/build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/setup
+        cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: upload-randomTests
       if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_clang
-        path: Cpp/build/${{ matrix.os_identifier }}-clang-${{ matrix.build_type }}/RandomTests
+        name: ecosystem_random_tests_darwin_${{ matrix.compiler }}
+        path: Cpp/build/osx-${{ matrix.compiler }}-rel/RandomTests
 
-  build-gcc:
-    runs-on: ${{ matrix.os }}
+  build-windows:
+    runs-on: windows-2022
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-11]
+        compiler: [msvc]
         build_type: [dbg, rel]
         include:
-          - os: ubuntu-20.04
-            os_identifier: lin
-            zip_os_identifier: linux
-            installer: 'sudo apt'
-            dependencies: 'ninja-build'
-          - os: macos-11
-            os_identifier: osx
-            zip_os_identifier: osx
-            installer: 'brew'
-            dependencies: 'gcc ninja'
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: prepare-build
-      run: |
-        ${{ matrix.installer }} install ${{ matrix.dependencies }}
-
-    - name: configure-build
-      run: |
-        cd Cpp
-        cmake --preset ${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}
-
-    - name: build
-      run: |
-        cd Cpp
-        cmake --build --preset ${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}
-
-    - name: upload-setup
-      if: matrix.build_type == 'rel'
-      uses: actions/upload-artifact@v2
-      with:
-        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_gcc
-        path: Cpp/build/${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}/setup
-
-    - name: upload-randomTests
-      if: matrix.build_type == 'rel'
-      uses: actions/upload-artifact@v2
-      with:
-        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_gcc
-        path: Cpp/build/${{ matrix.os_identifier }}-gcc-${{ matrix.build_type }}/RandomTests
-
-  build-msvc:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-2022]
-        build_type: [dbg, rel]
-        include:
-          - os: windows-2022
-            os_identifier: win
-            zip_os_identifier: windows
-            installer: 'choco'
+          - compiler: msvc
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v2
@@ -130,28 +101,21 @@ jobs:
 
     - name: prepare-build
       run: |
-        ${{ matrix.installer }} install ${{ matrix.dependencies }}
+        choco install ${{ matrix.dependencies }}
 
     - name: configure-build
       run: |
         cd Cpp
-        cmake --preset ${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
+        cmake --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: build
       run: |
         cd Cpp
-        cmake --build --preset ${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}
-
-    - name: upload-setup
-      if: matrix.build_type == 'rel'
-      uses: actions/upload-artifact@v2
-      with:
-        name: ecosystem_setup_${{ matrix.zip_os_identifier }}_msvc
-        path: Cpp/build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/setup
+        cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: upload-randomTests
       if: matrix.build_type == 'rel'
       uses: actions/upload-artifact@v2
       with:
-        name: ecosystem_random_tests_${{ matrix.zip_os_identifier }}_msvc
-        path: Cpp/build/${{ matrix.os_identifier }}-msvc-${{ matrix.build_type }}/RandomTests
+        name: ecosystem_random_tests_windows_${{ matrix.compiler }}
+        path: Cpp/build/win-${{ matrix.compiler }}-rel/RandomTests
