@@ -35,7 +35,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Ecosystem Simulator ${{ github.ref }}
-        body_path: docs/CHANGELOG.md
+        body_path: ./docs/CHANGELOG.md
         draft: true
         prerelease: true
 
