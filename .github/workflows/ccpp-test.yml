@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         compiler: [gcc, clang]
-        build_type: [dbg, rel]
+        build_type: [rel]
         include:
           - compiler: gcc
             dependencies: 'ninja-build'
@@ -65,7 +65,7 @@ jobs:
     strategy:
       matrix:
         compiler: [gcc, clang]
-        build_type: [dbg, rel]
+        build_type: [rel]
         include:
           - compiler: gcc
             dependencies: 'gcc ninja'
@@ -104,7 +104,7 @@ jobs:
     strategy:
       matrix:
         compiler: [msvc]
-        build_type: [dbg, rel]
+        build_type: [rel]
         include:
           - compiler: msvc
             dependencies: 'ninja'
