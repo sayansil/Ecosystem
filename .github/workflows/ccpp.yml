@@ -2,19 +2,53 @@ name: build
 
 on:
   push:
+      tags:
+      - 'v*.*.*'
       branches:
       - flatbuffer
       paths:
       - 'Cpp/**'
-      - '.github/workflows/ccpp.yml'
+      - '.github/workflows/release.yml'
   pull_request:
+      tags:
+      - 'v*.*.*'
       branches:
       - flatbuffer
       paths:
       - 'Cpp/**'
-      - '.github/workflows/ccpp.yml'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
 
 jobs:
+
+  release:
+    name: Create Github Release
+    if: contains(github.ref, 'tags/v')
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Ecosystem Simulator ${{ github.ref }}
+        body_path: docs/CHANGELOG.md
+        draft: true
+        prerelease: true
+
+    - name: Output Release URL
+      id: output_release_url
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+
+    - name: Save Release URL
+      id: save_release_url
+      uses: actions/upload-artifact@v1
+      with:
+        name: release_url
+        path: release_url.txt
 
   build-linux:
     name: Build on Linux
@@ -47,6 +81,37 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+        zip -r ecosystem_random_test_linux_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+
+    - name: Load release url
+      id: load_release_url
+      if: contains(github.ref, 'tags/v')
+      uses: actions/download-artifact@v1
+      with:
+        name: release_url
+
+    - name: Get release info
+      id: get_release_info
+      if: contains(github.ref, 'tags/v')
+      run: |
+        echo ::set-output name=file_name::ecosystem_random_test_linux_${{ matrix.compiler }}
+        value=`cat release_url/release_url.txt`
+        echo ::set-output name=upload_url::$value
+      env:
+        TAG_REF_NAME: ${{ github.ref }}
+        REPOSITORY_NAME: ${{ github.repository }}
+
+    - name: Upload Release Asset
+      id: upload_release_asset
+      if: contains(github.ref, 'tags/v')
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+        asset_path: ./Cpp
+        asset_name: ${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_content_type: application/zip
 
   build-macos:
     name: Build on MacOS
@@ -79,6 +144,37 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+        zip -r ecosystem_random_test_osx_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+
+    - name: Load release url
+      id: load_release_url
+      if: contains(github.ref, 'tags/v')
+      uses: actions/download-artifact@v1
+      with:
+        name: release_url
+
+    - name: Get release info
+      id: get_release_info
+      if: contains(github.ref, 'tags/v')
+      run: |
+        echo ::set-output name=file_name::ecosystem_random_test_osx_${{ matrix.compiler }}
+        value=`cat release_url/release_url.txt`
+        echo ::set-output name=upload_url::$value
+      env:
+        TAG_REF_NAME: ${{ github.ref }}
+        REPOSITORY_NAME: ${{ github.repository }}
+
+    - name: Upload Release Asset
+      id: upload_release_asset
+      if: contains(github.ref, 'tags/v')
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+        asset_path: ./Cpp
+        asset_name: ${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_content_type: application/zip
 
   build-windows:
     name: Build on Windows
@@ -110,3 +206,34 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
+        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }}\RandomTests -DestinationPath ecosystem_random_test_win_${{ matrix.compiler }}
+
+    - name: Load release url
+      id: load_release_url
+      if: contains(github.ref, 'tags/v')
+      uses: actions/download-artifact@v1
+      with:
+        name: release_url
+
+    - name: Get release info
+      id: get_release_info
+      if: contains(github.ref, 'tags/v')
+      run: |
+        echo ::set-output name=file_name::ecosystem_random_test_win_${{ matrix.compiler }}
+        value=`Get-Content release_url\release_url.txt`
+        echo ::set-output name=upload_url::$value
+      env:
+        TAG_REF_NAME: ${{ github.ref }}
+        REPOSITORY_NAME: ${{ github.repository }}
+
+    - name: Upload Release Asset
+      id: upload_release_asset
+      if: contains(github.ref, 'tags/v')
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+        asset_path: ./Cpp
+        asset_name: ${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_content_type: application/zip
