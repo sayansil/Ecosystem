@@ -21,7 +21,7 @@ on:
 
 jobs:
 
-  release:
+  create-release:
     name: Create Github Release
     if: contains(github.ref, 'tags/')
     runs-on: ubuntu-latest
@@ -34,7 +34,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         name: Ecosystem Simulator ${{ github.ref }}
-        body_path: /home/runner/work/Ecosystem/Ecosystem/CHANGELOG.md
+        body_path: CHANGELOG.md
         draft: true
         prerelease: true
 
@@ -52,6 +52,7 @@ jobs:
   build-linux:
     name: Build on Linux
     runs-on: ubuntu-20.04
+    needs: create-release
     strategy:
       matrix:
         compiler: [gcc, clang]
@@ -80,41 +81,19 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
-        zip -r output_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+        zip -r output_linux_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
 
-    - name: Load release url
-      id: load_release_url
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
-      uses: actions/download-artifact@v1
+    - name: Save release asset
+      id: save_release_asset
+      uses: actions/upload-artifact@v1
       with:
-        name: release_url
-
-    - name: Get release info
-      id: get_release_info
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
-      run: |
-        echo ::set-output name=file_name::output_${{ matrix.compiler }}
-        value=`cat release_url/release_url.txt`
-        echo ::set-output name=upload_url::$value
-      env:
-        TAG_REF_NAME: ${{ github.ref }}
-        REPOSITORY_NAME: ${{ github.repository }}
-
-    - name: Upload Release Asset
-      id: upload_release_asset
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      with:
-        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./Cpp/${{ steps.get_release_info.outputs.file_name }}.zip
-        asset_name: ecosystem_example_linux_${{ matrix.compiler }}.zip
-        asset_content_type: application/zip
+        name: output_linux_${{ matrix.compiler }}
+        path: Cpp/output_linux_${{ matrix.compiler }}.zip
 
   build-macos:
     name: Build on MacOS
     runs-on: macos-11
+    needs: create-release
     strategy:
       matrix:
         compiler: [gcc, clang]
@@ -143,41 +122,19 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
-        zip -r output_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+        zip -r output_macos_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
 
-    - name: Load release url
-      id: load_release_url
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
-      uses: actions/download-artifact@v1
+    - name: Save release asset
+      id: save_release_asset
+      uses: actions/upload-artifact@v1
       with:
-        name: release_url
-
-    - name: Get release info
-      id: get_release_info
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
-      run: |
-        echo ::set-output name=file_name::output_${{ matrix.compiler }}
-        value=`cat release_url/release_url.txt`
-        echo ::set-output name=upload_url::$value
-      env:
-        TAG_REF_NAME: ${{ github.ref }}
-        REPOSITORY_NAME: ${{ github.repository }}
-
-    - name: Upload Release Asset
-      id: upload_release_asset
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      with:
-        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./Cpp/${{ steps.get_release_info.outputs.file_name }}.zip
-        asset_name: ecosystem_example_osx_${{ matrix.compiler }}.zip
-        asset_content_type: application/zip
+        name: output_macos_${{ matrix.compiler }}
+        path: Cpp/output_macos_${{ matrix.compiler }}.zip
 
   build-windows:
     name: Build on Windows
     runs-on: windows-2022
+    needs: create-release
     strategy:
       matrix:
         compiler: [msvc]
@@ -205,21 +162,54 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
-        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }}\RandomTests -DestinationPath output_${{ matrix.compiler }}
+        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }}\RandomTests -DestinationPath output_windows_${{ matrix.compiler }}
+
+    - name: Save release asset
+      id: save_release_asset
+      uses: actions/upload-artifact@v1
+      with:
+        name: output_windows_${{ matrix.compiler }}
+        path: Cpp/output_windows_${{ matrix.compiler }}.zip
+
+  publish-assets:
+    name: Publish build assets to Release
+    if: contains(github.ref, 'tags/')
+    runs-on: ubuntu-20.04
+    needs: 
+      - build-linux
+      - build-macos
+      - build-windows
+    strategy:
+      matrix:
+        os: [linux, macos, windows]
+        include:
+          - os: linux
+            compiler: [gcc, clang]
+          - os: macos
+            compiler: [gcc, clang]
+          - os: windows
+            compiler: [msvc]
+
+    steps:
+    - uses: actions/checkout@v2
 
     - name: Load release url
       id: load_release_url
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
       uses: actions/download-artifact@v1
       with:
         name: release_url
 
+    - name: Load release asset
+      id: load_release_asset
+      uses: actions/download-artifact@v1
+      with:
+        name: output_${{ matrix.os }}_${{ matrix.compiler }}
+
     - name: Get release info
       id: get_release_info
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
       run: |
-        echo ::set-output name=file_name::output_${{ matrix.compiler }}
-        $value = & "cat release_url\release_url.txt" 2>&1
+        echo ::set-output name=file_name::output_${{ matrix.os }}_${{ matrix.compiler }}
+        value=`cat release_url/release_url.txt`
         echo ::set-output name=upload_url::$value
       env:
         TAG_REF_NAME: ${{ github.ref }}
@@ -227,12 +217,11 @@ jobs:
 
     - name: Upload Release Asset
       id: upload_release_asset
-      if: contains(github.ref, 'tags/') && matrix.build_type == 'rel'
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-        asset_path: ./Cpp/${{ steps.get_release_info.outputs.file_name }}.zip
-        asset_name: ecosystem_example_win_${{ matrix.compiler }}.zip
+        asset_path: ./${{ steps.get_release_info.outputs.file_name }}/${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_name: ecosystem_example_${{ matrix.os }}_${{ matrix.compiler }}.zip
         asset_content_type: application/zip
