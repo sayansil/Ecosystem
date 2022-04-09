@@ -27,6 +27,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: "Build Changelog"
+      id: build_changelog
+      uses: mikepenz/release-changelog-builder-action@{latest-release}
+      with:
+        ignorePreReleases: "false"
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
     - name: Create Release
       id: create_release
       uses: softprops/action-gh-release@v0.1.14
@@ -36,12 +44,10 @@ jobs:
         name: Ecosystem Simulator ${{ github.ref }}
         body: |
           ## Changelog
-          ### New Features
-          - [ ]
-          ### Bug Fixes
-          - [ ]
+            ${{ steps.build_changelog.outputs.changelog }}
           ### Documentation
-          - [ ]
+          - Read project wiki [here](https://github.com/sayansil/Ecosystem/wiki).
+          - Read installation/usage steps [here](https://github.com/sayansil/Ecosystem/wiki/Usage).
         draft: true
         prerelease: true
         token: ${{ secrets.RELEASE_TOKEN }}
