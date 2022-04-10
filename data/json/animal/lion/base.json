@@ -52,5 +52,5 @@
     "offsprings_factor": 0,
     "food_chain_rank": 1,
     "vision_radius" : 0,
-    "is_asexual": 0
+    "sexuality": 0
 }

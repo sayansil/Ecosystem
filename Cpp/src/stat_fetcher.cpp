@@ -1388,7 +1388,7 @@ namespace stat_fetcher
                 if (!common_values_set)
                 {
                     new_organism_builder.add_chromosome_number(organism->chromosome_number());
-                    new_organism_builder.add_is_asexual(organism->is_asexual());
+                    new_organism_builder.add_sexuality(organism->sexuality());
                     new_organism_builder.add_food_chain_rank(organism->food_chain_rank());
                     new_organism_builder.add_kind(new_builder.CreateString(organism->kind()));
                     new_organism_builder.add_kingdom(organism->kingdom());

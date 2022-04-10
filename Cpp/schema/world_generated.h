@@ -293,7 +293,7 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_CHROMOSOME_NUMBER = 8,
     VT_CHROMOSOME_STRUCTURE = 10,
     VT_FOOD_CHAIN_RANK = 12,
-    VT_IS_ASEXUAL = 14,
+    VT_SEXUALITY = 14,
     VT_AGE_FITNESS_ON_DEATH_RATIO = 16,
     VT_CONCEIVING_PROBABILITY = 18,
     VT_MATING_PROBABILITY = 20,
@@ -398,11 +398,11 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_food_chain_rank(uint8_t _food_chain_rank = 0) {
     return SetField<uint8_t>(VT_FOOD_CHAIN_RANK, _food_chain_rank, 0);
   }
-  Ecosystem::Reproduction is_asexual() const {
-    return static_cast<Ecosystem::Reproduction>(GetField<uint8_t>(VT_IS_ASEXUAL, 0));
+  Ecosystem::Reproduction sexuality() const {
+    return static_cast<Ecosystem::Reproduction>(GetField<uint8_t>(VT_SEXUALITY, 0));
   }
-  bool mutate_is_asexual(Ecosystem::Reproduction _is_asexual = static_cast<Ecosystem::Reproduction>(0)) {
-    return SetField<uint8_t>(VT_IS_ASEXUAL, static_cast<uint8_t>(_is_asexual), 0);
+  bool mutate_sexuality(Ecosystem::Reproduction _sexuality = static_cast<Ecosystem::Reproduction>(0)) {
+    return SetField<uint8_t>(VT_SEXUALITY, static_cast<uint8_t>(_sexuality), 0);
   }
   float age_fitness_on_death_ratio() const {
     return GetField<float>(VT_AGE_FITNESS_ON_DEATH_RATIO, 0.0f);
@@ -855,7 +855,7 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVector(chromosome_structure()) &&
            verifier.VerifyVectorOfTables(chromosome_structure()) &&
            VerifyField<uint8_t>(verifier, VT_FOOD_CHAIN_RANK) &&
-           VerifyField<uint8_t>(verifier, VT_IS_ASEXUAL) &&
+           VerifyField<uint8_t>(verifier, VT_SEXUALITY) &&
            VerifyField<float>(verifier, VT_AGE_FITNESS_ON_DEATH_RATIO) &&
            VerifyField<float>(verifier, VT_CONCEIVING_PROBABILITY) &&
            VerifyField<float>(verifier, VT_MATING_PROBABILITY) &&
@@ -953,8 +953,8 @@ struct OrganismBuilder {
   void add_food_chain_rank(uint8_t food_chain_rank) {
     fbb_.AddElement<uint8_t>(Organism::VT_FOOD_CHAIN_RANK, food_chain_rank, 0);
   }
-  void add_is_asexual(Ecosystem::Reproduction is_asexual) {
-    fbb_.AddElement<uint8_t>(Organism::VT_IS_ASEXUAL, static_cast<uint8_t>(is_asexual), 0);
+  void add_sexuality(Ecosystem::Reproduction sexuality) {
+    fbb_.AddElement<uint8_t>(Organism::VT_SEXUALITY, static_cast<uint8_t>(sexuality), 0);
   }
   void add_age_fitness_on_death_ratio(float age_fitness_on_death_ratio) {
     fbb_.AddElement<float>(Organism::VT_AGE_FITNESS_ON_DEATH_RATIO, age_fitness_on_death_ratio, 0.0f);
@@ -1193,7 +1193,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     uint16_t chromosome_number = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chromosome_structure = 0,
     uint8_t food_chain_rank = 0,
-    Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
+    Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::Sexual,
     float age_fitness_on_death_ratio = 0.0f,
     float conceiving_probability = 0.0f,
     float mating_probability = 0.0f,
@@ -1342,7 +1342,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
   builder_.add_monitor(monitor);
   builder_.add_asleep(asleep);
   builder_.add_gender(gender);
-  builder_.add_is_asexual(is_asexual);
+  builder_.add_sexuality(sexuality);
   builder_.add_food_chain_rank(food_chain_rank);
   builder_.add_kingdom(kingdom);
   return builder_.Finish();
@@ -1360,7 +1360,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     uint16_t chromosome_number = 0,
     std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *chromosome_structure = nullptr,
     uint8_t food_chain_rank = 0,
-    Ecosystem::Reproduction is_asexual = Ecosystem::Reproduction::Sexual,
+    Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::Sexual,
     float age_fitness_on_death_ratio = 0.0f,
     float conceiving_probability = 0.0f,
     float mating_probability = 0.0f,
@@ -1444,7 +1444,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       chromosome_number,
       chromosome_structure__,
       food_chain_rank,
-      is_asexual,
+      sexuality,
       age_fitness_on_death_ratio,
       conceiving_probability,
       mating_probability,
@@ -1911,7 +1911,7 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "chromosome_number",
     "chromosome_structure",
     "food_chain_rank",
-    "is_asexual",
+    "sexuality",
     "age_fitness_on_death_ratio",
     "conceiving_probability",
     "mating_probability",

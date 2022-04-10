@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <cassert>
 #include <XoshiroCpp.hpp>
+#include <world_generated.h>
 #include <ecosystem_export.h>
 
 namespace helper
@@ -38,8 +39,10 @@ namespace helper
     extern double get_value_from_chromosome(const std::string &, const unsigned int &, const unsigned int &, const double &);
     extern bool is_nonzero_nonnegative_nonnan(const double &);
     extern std::string generate_full_species_name(const std::string &, const std::string &);
-    extern std::vector<uint8_t> string_to_bytevector(const std::string&);
-    extern std::string bytevector_to_string(const uint8_t* arr, const size_t& len, const size_t& expected_len);
+    extern std::vector<uint8_t> string_to_bytevector(const std::string &);
+    extern std::string bytevector_to_string(const uint8_t *arr, const size_t &len, const size_t &expected_len);
+    extern Ecosystem::Organism *get_mutable_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object);
+    extern const Ecosystem::Organism *get_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object);
 };
 
 #endif // HELPER_HPP

@@ -122,8 +122,6 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
     builder.Finish(world_builder.Finish());
     buffer = builder.Release();
     builder.Clear();
-
-    // TODO in increment_age() + evaluate_static_fitness();
 }
 
 void God::displayWorldMetadata()
@@ -169,7 +167,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     organism_builder.add_mating_age_end(getValueAsUint(constants::species_constants_map[kind], "mating_age_end"));
     organism_builder.add_max_age(getValueAsUint(constants::species_constants_map[kind], "species_max_age"));
     organism_builder.add_offsprings_factor(getValueAsFloat(constants::species_constants_map[kind], "offsprings_factor"));
-    organism_builder.add_is_asexual((Ecosystem::Reproduction)getValueAsByte(constants::species_constants_map[kind], "is_asexual"));
+    organism_builder.add_sexuality((Ecosystem::Reproduction)getValueAsByte(constants::species_constants_map[kind], "sexuality"));
     organism_builder.add_mutation_probability(getValueAsFloat(constants::species_constants_map[kind], "mutation_probability"));
     organism_builder.add_conceiving_probability(getValueAsFloat(constants::species_constants_map[kind], "conceiving_probability"));
     organism_builder.add_mating_probability(getValueAsFloat(constants::species_constants_map[kind], "mating_probability"));
@@ -206,7 +204,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     organism_builder.add_kind(builder.CreateString(kind.c_str()));
     organism_builder.add_kingdom((Ecosystem::KingdomE)std::stoi(kingdom));
     organism_builder.add_generation(generation);
-    organism_builder.add_age(age);
+    organism_builder.add_age(age - 1); // inrcrement_age() called below
     organism_builder.add_monitor((Ecosystem::Monitor)monitor);
 
     std::string tmp_str;
@@ -256,7 +254,13 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     organism_builder.add_static_fitness(0.0);
     organism_builder.add_dynamic_fitness(0.0);
 
-    return organism_builder.Finish();
+    auto organism_offset = organism_builder.Finish();
+
+    Ecosystem::Organism *organism_ptr = helper::get_mutable_pointer_from_offset(builder, organism_offset);
+    organism_opts::increment_age(organism_ptr);
+    organism_opts::evaluate_static_fitness(organism_ptr);
+
+    return organism_offset;
 }
 
 flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
@@ -325,34 +329,20 @@ int God::creator_function(const double &o_factor) const
     return std::round(dis(helper::rng));
 }
 
-bool God::spawn_organism(Ecosystem::Organism *current_organism)
+std::string God::get_child_chromosome(const Ecosystem::Organism *parent1, const Ecosystem::Organism *parent2, const nlohmann::json &species_constants)
 {
-    organism_opts::generate_death_factor(current_organism);
+    // Generate chromosomes of the child
+    auto child_chromosome = helper::get_random_mixture(
+        helper::bytevector_to_string(parent1->chromosome()->data(), parent1->chromosome()->size(), parent1->chromosome_number()),
+        helper::bytevector_to_string(parent2->chromosome()->data(), parent2->chromosome()->size(), parent2->chromosome_number()));
 
-    return organism_opts::is_normal_child(current_organism);
+    // Mutate chromosomes
+    for (auto &bit : child_chromosome)
+        if (helper::weighted_prob(std::max(parent1->mutation_probability(), parent2->mutation_probability())))
+            bit = (bit == '1') ? '0' : '1';
 
-    // Also add to the newborn vector
+    return child_chromosome;
 }
-
-// bool God::mate(Ecosystem::Organism *parent1, Ecosystem::Organism *parent2, const nlohmann::json &species_constants)
-// {
-//     // Generate chromosomes of the child
-//     auto child_chromosome = helper::get_random_mixture(
-//         helper::bytevector_to_string(parent1->chromosome().data(), parent1->chromosome().size(), parent1->chromosome_number()),
-//         helper::bytevector_to_string(parent2->chromosome().data(), parent2->chromosome().size(), parent2->chromosome_number()));
-
-//     // Mutate chromosomes
-//     for(auto &bit : child_chromosome)
-//         if(helper::weighted_prob(std::max(parent1->mutation_probability(), parent2->mutation_probability())))
-//             bit = (bit == '1')?'0':'1';
-
-//     // Spawn child (if probable)
-//     if(helper::weighted_prob(std::min(parent1->conceiving_probability(), parent2->conceiving_probability())))
-//     {
-//         // TODO
-//     }
-//     return false;
-// }
 
 flatbuffers::Offset<Ecosystem::Organism> God::clone_organism(
     flatbuffers::FlatBufferBuilder &builder,
@@ -377,7 +367,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::clone_organism(
     organism_builder.add_mating_age_end(previous_organism->mating_age_end());
     organism_builder.add_max_age(previous_organism->max_age());
     organism_builder.add_offsprings_factor(previous_organism->offsprings_factor());
-    organism_builder.add_is_asexual(previous_organism->is_asexual());
+    organism_builder.add_sexuality(previous_organism->sexuality());
     organism_builder.add_mutation_probability(previous_organism->mutation_probability());
     organism_builder.add_conceiving_probability(previous_organism->conceiving_probability());
     organism_builder.add_mating_probability(previous_organism->mating_probability());
@@ -465,6 +455,7 @@ void God::happy_new_year(const bool &log)
     spawn_count = 0;
     recent_births = 0;
     recent_deaths = 0;
+    recent_population = 0;
 
     Ecosystem::World *previous_world = Ecosystem::GetMutableWorld(buffer.data());
 
@@ -475,11 +466,15 @@ void God::happy_new_year(const bool &log)
 
     uint32_t num_species = previous_world->species()->size();
 
+    std::mt19937_64 rng{std::random_device()()};
+
     for (uint32_t n = 0; n < num_species; n++)
     {
         Ecosystem::Species *species = previous_world->mutable_species()->GetMutableObject(n);
         auto kingdom = species->kingdom();
         auto kind = species->kind();
+
+        std::string full_species_name = EcosystemTypes::get_kingdom_name[static_cast<uint8_t>(kingdom)] + "/" + kind->str();
 
         std::vector<flatbuffers::Offset<Ecosystem::Organism>> stdvecOrganisms;
         Ecosystem::OrganismBuilder new_organism_builder(builder);
@@ -506,8 +501,6 @@ void God::happy_new_year(const bool &log)
             organisms_vec.begin(), organisms_vec.end(),
             std::greater<std::pair<float, uint32_t>>());
 
-        std::set<uint32_t> organism_indices_to_remove;
-
         std::uniform_real_distribution<double> par_dis(0.0, 1.0);
         std::mt19937_64 par_rng{std::random_device()()};
 
@@ -527,15 +520,138 @@ void God::happy_new_year(const bool &log)
                     species->organism()->Get(organisms_vec[index].second));
                 stdvecOrganisms.push_back(new_organism);
             }
+            else
+            {
+                recent_deaths++;
+            }
         }
 
-        // Birth
+        /***************************************************
+         *       Annual Mating (spawning) Begins      *
+         ***************************************************/
+
+        if (stdvecOrganisms.size() > 0)
+        {
+            update_species(full_species_name);
+            const auto &species_constants = constants::species_constants_map[kind->str()];
+
+            std::vector<uint32_t> mating_list1, mating_list2;
+
+            for (int index = 0; index < stdvecOrganisms.size(); index++)
+            {
+                auto desparate_organism = helper::get_pointer_from_offset(builder, stdvecOrganisms[index]);
+                auto sexuality = desparate_organism->sexuality();
+
+                if (sexuality == Ecosystem::Reproduction::Asexual)
+                {
+                    if (desparate_organism->age() >= desparate_organism->mating_age_start() &&
+                        desparate_organism->age() <= desparate_organism->mating_age_end())
+                    {
+                        mating_list1.push_back(index);
+                    }
+                }
+                else if (sexuality == Ecosystem::Reproduction::Sexual)
+                {
+                    if (desparate_organism->age() >= desparate_organism->mating_age_start() &&
+                        desparate_organism->age() <= desparate_organism->mating_age_end())
+                    {
+                        if (desparate_organism->gender() == Ecosystem::Gender::Male)
+                        {
+                            mating_list1.push_back(index);
+                        }
+                        else
+                        {
+                            mating_list2.push_back(index);
+                        }
+                    }
+                }
+            }
+
+            std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
+            std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
+
+            uint32_t index_parent = 0;
+
+            while ((mating_list1.size() > index_parent && mating_list2.size() > index_parent &&
+                    helper::get_pointer_from_offset(builder, stdvecOrganisms[index_parent])->sexuality() == Ecosystem::Reproduction::Sexual) ||
+                   (mating_list1.size() > index_parent &&
+                    helper::get_pointer_from_offset(builder, stdvecOrganisms[index_parent])->sexuality() == Ecosystem::Reproduction::Asexual))
+            {
+                const Ecosystem::Organism *parent1 = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]]);
+                const Ecosystem::Organism *parent2 = helper::get_pointer_from_offset(builder, stdvecOrganisms[helper::get_pointer_from_offset(builder, stdvecOrganisms[index_parent])->sexuality() == Ecosystem::Reproduction::Sexual ? mating_list2[index_parent] : mating_list1[index_parent]]);
+
+                if (helper::weighted_prob(std::min(parent1->mating_probability(), parent2->mating_probability())))
+                {
+                    int n_children = creator_function(std::min(parent1->offsprings_factor(), parent2->offsprings_factor()));
+
+                    while (n_children--)
+                    {
+                        if (!helper::weighted_prob(std::min(parent1->conceiving_probability(), parent2->conceiving_probability())))
+                            continue; // Conceiving probability too low this time
+
+                        auto child_chromosome = get_child_chromosome(parent1, parent2, species_constants);
+                        bool monitor_child = monitor_offsprings && (static_cast<bool>(parent1->monitor()) || static_cast<bool>(parent2->monitor()));
+
+                        uint64_t child_X = (parent1->X() + parent2->X()) / 2, child_Y = (parent1->Y() + parent2->Y()) / 2;
+                        std::string child_name = std::to_string(year) + "-" + std::to_string(spawn_count++);
+
+                        auto child_offset = createOrganism(
+                            builder,
+                            new_organism_builder,
+                            parent1->kind()->str(),
+                            EcosystemTypes::get_kingdom_name[static_cast<uint8_t>(kingdom)],
+                            1,
+                            child_name,
+                            child_chromosome,
+                            std::max(parent1->generation(), parent2->generation()) + 1,
+                            std::make_pair(child_X, child_Y),
+                            monitor_child);
+
+                        Ecosystem::Organism *child_ptr = helper::get_mutable_pointer_from_offset(builder, child_offset);
+                        organism_opts::generate_death_factor(child_ptr);
+
+                        // Skip abnormal children (with weird stats)
+                        if (organism_opts::is_normal_child(child_ptr))
+                        {
+                            stdvecOrganisms.push_back(child_offset);
+                            recent_births++;
+                        }
+                    }
+                }
+                index_parent++;
+            }
+        }
+
+        recent_population += stdvecOrganisms.size();
 
         new_species_builder.add_organism(builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size()));
         new_species_builder.add_kingdom(kingdom);
         new_species_builder.add_kind(builder.CreateString(kind));
 
         newStdvecSpecies.push_back(new_species_builder.Finish());
+    }
+
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Species>>> species_vec = builder.CreateVectorOfSortedTables(newStdvecSpecies.data(), newStdvecSpecies.size());
+    new_world_builder.add_species(species_vec);
+    new_world_builder.add_year(year);
+    builder.Finish(new_world_builder.Finish());
+
+    /***************************
+     *       World Updated     *
+     ***************************/
+
+    buffer = builder.Release();
+    builder.Clear();
+
+    // TODO push new buffer to db
+
+    /*********************
+     *       Logging     *
+     *********************/
+
+    if (log)
+    {
+        fmt::print("Year: {} - Recent births: {} - Recent deaths: {} - Population: {}", year, recent_births, recent_deaths, recent_population);
     }
 
     year++;

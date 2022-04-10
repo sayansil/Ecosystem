@@ -10,15 +10,17 @@
 #include <string>
 #include <world_generated.h>
 #include <database_manager.hpp>
+#include <nlohmann/json.hpp>
 
 class God
 {
 public:
     flatbuffers::DetachedBuffer buffer;
-    unsigned int year = 0;
+    uint32_t year = 0;
 
-    unsigned int recent_deaths = 0;
-    unsigned int recent_births = 0;
+    uint32_t recent_deaths = 0;
+    uint32_t recent_births = 0;
+    uint32_t recent_population = 0;
 
     bool monitor_offsprings = false;
     bool disable_deaths = false;
@@ -57,11 +59,9 @@ public:
 
     void displayWorldMetadata();
 
-    // void catastrophe();
     void cleanSlate();
     void happy_new_year(const bool &log = false);
     // void kill_organisms(const std::vector<std::string>&);
-    bool spawn_organism(Ecosystem::Organism *);
     // bool spawn_organism(ENTITY&&, std::vector<std::pair<std::string, ENTITY>>&);
     // void remember_species(const std::string&);
     // std::string get_annual_data(const std::string&);
@@ -90,19 +90,12 @@ private:
      *         Unavailable to users         *
      ****************************************/
 
-    // bool mate(Ecosystem::Organism *, Ecosystem::Organism *, const nlohmann::json &= nlohmann::json());
+    std::string get_child_chromosome(const Ecosystem::Organism *, const Ecosystem::Organism *, const nlohmann::json & = nlohmann::json());
     void update_species(const std::string &);
     flatbuffers::Offset<Ecosystem::Organism> clone_organism(
         flatbuffers::FlatBufferBuilder &builder,
         Ecosystem::OrganismBuilder &organism_builder,
         const Ecosystem::Organism *previous_organism);
-    // template <typename T>
-    // void assignBaseStats(
-    //     const std::string &kingdom,
-    //     const std::string &kind,
-    //     const T *basePtr)
-    // {
-    // }
 };
 
 #endif // GOD_HPP

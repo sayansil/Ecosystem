@@ -5,21 +5,21 @@
 
 static std::string get_ecosystem_root()
 {
-    const char * root_path = std::getenv("ECOSYSTEM_ROOT");
-    if(root_path == nullptr)
+    const char *root_path = std::getenv("ECOSYSTEM_ROOT");
+    if (root_path == nullptr)
     {
         fmt::print("ECOSYSTEM_ROOT environment variable not set\n");
         fmt::print("Attempting to extract ECOSYSTEM_ROOT from exe path\n");
         uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
         std::string exe_path;
         {
-            char * path = (char *)malloc(length + 1);
+            char *path = (char *)malloc(length + 1);
             wai_getExecutablePath(path, length, nullptr);
             exe_path = path;
             free(path);
         }
         auto pos = exe_path.find("Ecosystem");
-        if(pos == std::string::npos)
+        if (pos == std::string::npos)
         {
             fmt::print("ERROR: ECOSYSTEM_ROOT could not be extracted from exe path {}\n", exe_path);
             exit(0);
@@ -29,8 +29,8 @@ static std::string get_ecosystem_root()
         std::string tmp_fs_str = tmp_fs.string();
 #ifdef WIN32
         // replace \ with \\ for windows
-        for(int i = 0; i < tmp_fs_str.length(); i++)
-            if(tmp_fs_str[i] == '\\')
+        for (int i = 0; i < tmp_fs_str.length(); i++)
+            if (tmp_fs_str[i] == '\\')
                 tmp_fs_str.insert(i++, 1, '\\');
 #endif
         fmt::print("Extracted ECOSYSTEM_ROOT - {} from exe path\n", tmp_fs_str);
@@ -45,7 +45,6 @@ namespace helper
     unsigned int map_width = 1000;
     XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
     DLLEXPORT std::filesystem::path ecosystem_root = std::filesystem::canonical(get_ecosystem_root());
-    
 
     std::string to_binary(const unsigned int &x)
     {
@@ -156,27 +155,38 @@ namespace helper
     {
         return kingdom + "/" + kind;
     }
-    
-    std::vector<uint8_t> string_to_bytevector(const std::string& str)
+
+    std::vector<uint8_t> string_to_bytevector(const std::string &str)
     {
         std::vector<uint8_t> ans;
         size_t len = str.length();
         len = len % 8 == 0 ? len : len + 8 - (len % 8);
         auto tmp_str = fmt::format("{:0>{}}", str, len);
-        for(size_t i = 0; i <= len / 8; i++)
+        for (size_t i = 0; i <= len / 8; i++)
         {
-            if(i != len / 8 || len % 8 != 0)
+            if (i != len / 8 || len % 8 != 0)
                 ans.push_back(to_decimal(tmp_str.substr(i * 8, (i == len / 8 ? len % 8 : 8))));
         }
         return ans;
     }
-    
-    std::string bytevector_to_string(const uint8_t* arr, const size_t& len, const size_t& expected_len)
+
+    std::string bytevector_to_string(const uint8_t *arr, const size_t &len, const size_t &expected_len)
     {
-        std::string str; size_t i;
-        for(i = 0; i < len; i++)
+        std::string str;
+        size_t i;
+        for (i = 0; i < len; i++)
             str += fmt::format("{:0>8b}", arr[i]);
         str = str.substr(str.length() - expected_len, expected_len);
         return str;
+    }
+
+    Ecosystem::Organism *get_mutable_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object)
+    {
+        return (reinterpret_cast<Ecosystem::Organism *>(builder.GetCurrentBufferPointer() + builder.GetSize() - object.o));
+    }
+
+    const Ecosystem::Organism *get_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object)
+    {
+        return (reinterpret_cast<const Ecosystem::Organism *>(builder.GetCurrentBufferPointer() + builder.GetSize() - object.o));
     }
 };

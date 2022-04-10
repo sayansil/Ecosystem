@@ -20,7 +20,7 @@ table Organism {
     chromosome_number:ushort = 0;
     chromosome_structure:[ChromosomeStrand];
     food_chain_rank:ubyte = 0;
-    is_asexual:Reproduction = Sexual;
+    sexuality:Reproduction = Sexual;
     age_fitness_on_death_ratio:float = 0.0;
     conceiving_probability:float = 0.0;
     mating_probability:float = 0.0;
