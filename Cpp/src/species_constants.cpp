@@ -14,8 +14,12 @@ namespace constants
             for (const auto &entry : std::filesystem::directory_iterator(dirpath))
             {
                 // entry.path() / "base.json" copy to map
-
                 std::string species_name = entry.path().filename().string();
+
+                if (species_name[0] == '.')
+                    // non-species file (probably hidden file/directory)
+                    continue;
+
                 std::ifstream in(entry.path() / "base.json");
                 nlohmann::json tmp;
                 in >> tmp;
