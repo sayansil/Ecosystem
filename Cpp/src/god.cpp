@@ -599,7 +599,7 @@ void God::happy_new_year(const bool &log)
                             builder,
                             new_organism_builder,
                             parent1->kind()->str(),
-                            EcosystemTypes::get_kingdom_name[static_cast<uint8_t>(kingdom)],
+                            std::to_string(static_cast<uint8_t>(kingdom)),
                             1,
                             child_name,
                             child_chromosome,

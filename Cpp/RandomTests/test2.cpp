@@ -1,15 +1,21 @@
 #include <god.hpp>
+#include <setup.hpp>
 #include <iostream>
-#include <fmt/core.h>
 #include <vector>
+#include <nlohmann/json.hpp>
+#include <flatbuffers/idl.h>
+#include <fmt/core.h>
+#include <flatbuffers/minireflect.h>
 #include <unordered_map>
-#include <profiler.hpp>
+#include <stat_fetcher.hpp>
+#include <database_manager.hpp>
+#include <ecosystem_types.hpp>
 
 int main()
 {
-    Instrumentor::Get().BeginSession("Profile");
-    fmt::print("Hello world\n");
-    unsigned int initial_organism_count = 45000;
+    setup::setup();
+
+    unsigned int initial_organism_count = 4500;
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
 
@@ -20,19 +26,10 @@ int main()
                              {"age", "20"}});
     }
 
-    // organisms.push_back({{"kingdom", "animal"},
-    //                      {"kind", "deer"},
-    //                      {"name", "deer2-rmg"}});
-    // organisms.push_back({{"kingdom", "plant"},
-    //                      {"kind", "bamboo"},
-    //                      {"name", "bamboo1-shanti"}});
-    // organisms.push_back({{"kingdom", "plant"},
-    //                      {"kind", "bamboo"},
-    //                      {"name", "bamboo2-sayan"}});
-
     God allah;
-
+    // Cannot create 2 db instances in same context
+    // allah.cleanSlate();
     allah.createWorld(organisms);
     fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
-    Instrumentor::Get().EndSession();
+    allah.happy_new_year();
 }

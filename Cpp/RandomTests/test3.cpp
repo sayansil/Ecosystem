@@ -27,6 +27,7 @@ int main()
     }
 
     God allah;
+    // Cannot create 2 db instances in same context
     // allah.cleanSlate();
     allah.createWorld(organisms);
     fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
