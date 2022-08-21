@@ -6,12 +6,12 @@ using FBuffer = std::vector<uint8_t>;
 namespace EcosystemTypes
 {
     static const std::vector<std::string> get_kingdom_name = {
-        "Animal",
-        "Plant"};
+        "animal",
+        "plant"};
 
     static const std::vector<std::string> get_sexuality = {
-        "Sexual",
-        "Asexual"};
+        "sexual",
+        "asexual"};
 };
 
 #endif // ECOSYSTEMTYPES_HPP
