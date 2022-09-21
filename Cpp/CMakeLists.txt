@@ -45,7 +45,7 @@ FetchContent_Declare(
 FetchContent_Populate(nlohmann)
 include_directories(${nlohmann_SOURCE_DIR}/include)
 
-set(FLATBUFFERS_BUILD_TESTS OFF)
+set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "")
 FetchContent_Declare(
     flatbuffer
     GIT_REPOSITORY "https://github.com/google/flatbuffers"
