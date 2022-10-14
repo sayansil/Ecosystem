@@ -39,7 +39,6 @@ public:
     void createWorld(std::vector<std::unordered_map<std::string, std::string>> &organisms);
     flatbuffers::Offset<Ecosystem::Organism> createOrganism(
         flatbuffers::FlatBufferBuilder &builder,
-        Ecosystem::OrganismBuilder &organism_builder,
         const std::string &kind,
         const std::string &kingdom,
         const uint64_t &age,
@@ -51,7 +50,6 @@ public:
 
     flatbuffers::Offset<Ecosystem::Organism> createOrganism(
         flatbuffers::FlatBufferBuilder &builder,
-        Ecosystem::OrganismBuilder &organism_builder,
         const std::string &kind,
         const std::string &kingdom,
         const uint64_t &age,
