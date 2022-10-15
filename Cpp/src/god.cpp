@@ -478,10 +478,7 @@ void God::happy_new_year(const bool &log)
 
     Ecosystem::World *previous_world = Ecosystem::GetMutableWorld(buffer.data());
 
-    Ecosystem::WorldBuilder new_world_builder(builder);
-
     std::vector<flatbuffers::Offset<Ecosystem::Species>> newStdvecSpecies;
-    Ecosystem::SpeciesBuilder new_species_builder(builder);
 
     uint32_t num_species = previous_world->species()->size();
 
@@ -496,7 +493,6 @@ void God::happy_new_year(const bool &log)
         std::string full_species_name = EcosystemTypes::get_kingdom_name[static_cast<uint8_t>(kingdom)] + "/" + kind->str();
 
         std::vector<flatbuffers::Offset<Ecosystem::Organism>> stdvecOrganisms;
-        Ecosystem::OrganismBuilder new_organism_builder(builder);
 
         /***************************************************
          *       Annual Killing (un-selection) Begins      *
@@ -649,16 +645,18 @@ void God::happy_new_year(const bool &log)
 
         recent_population += stdvecOrganisms.size();
 
-        new_species_builder.add_organism(builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size()));
-        new_species_builder.add_kingdom(kingdom);
-        new_species_builder.add_kind(builder.CreateString(kind));
-
-        newStdvecSpecies.push_back(new_species_builder.Finish());
+        newStdvecSpecies.push_back(Ecosystem::CreateSpecies(builder,
+            builder.CreateString(kind),
+            kingdom,
+            builder.CreateVectorOfSortedTables(stdvecOrganisms.data(), stdvecOrganisms.size())
+        ));
     }
 
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Species>>> species_vec = builder.CreateVectorOfSortedTables(newStdvecSpecies.data(), newStdvecSpecies.size());
-    new_world_builder.add_species(species_vec);
+
+    Ecosystem::WorldBuilder new_world_builder(builder);
     new_world_builder.add_year(year);
+    new_world_builder.add_species(species_vec);
     builder.Finish(new_world_builder.Finish());
 
     /***************************
