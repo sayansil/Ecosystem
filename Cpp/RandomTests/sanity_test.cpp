@@ -35,15 +35,16 @@ int main()
         God allah;
         allah.cleanSlate();
         allah.createWorld(organisms);
+        allah.happy_new_year();
         fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
 
-        flatbuffers::ToStringVisitor visitor("", true, "", true);
-        flatbuffers::IterateFlatBuffer(allah.buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
-        fmt::print("Iterated result: {}\n", visitor.s);
-        nlohmann::json json_data = nlohmann::json::parse(visitor.s);
-        fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
+        // flatbuffers::ToStringVisitor visitor("", true, "", true);
+        // flatbuffers::IterateFlatBuffer(allah.buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
+        // fmt::print("Iterated result: {}\n", visitor.s);
+        // nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+        // fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 
-        // avg_instance = stat_fetcher::create_avg_world(allah.buffer);
+        avg_instance = stat_fetcher::create_avg_world(allah.buffer);
     }
 
     //{
