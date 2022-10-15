@@ -43,7 +43,7 @@ int main()
         nlohmann::json json_data = nlohmann::json::parse(visitor.s);
         fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 
-        //avg_instance = stat_fetcher::create_avg_world(allah.buffer);
+        // avg_instance = stat_fetcher::create_avg_world(allah.buffer);
     }
 
     //{

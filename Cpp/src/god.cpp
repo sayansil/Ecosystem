@@ -92,12 +92,22 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
         {
             if (organism.find("kind")->second == kind)
             {
-                stdvecOrganisms.push_back(createOrganism(
-                    builder,
-                    organism["kind"],
-                    organism["kingdom"],
-                    std::stoul(organism["age"]),
-                    organism.find("monitor") != organism.end() ? std::stoi(organism["monitor"]) : 0));
+                flatbuffers::Offset<Ecosystem::Organism> current_organism;
+                bool spawn_killed = false;
+
+                do
+                {
+                    // Retry for spawn-kill situations
+                    current_organism = createOrganism(
+                        builder,
+                        organism["kind"],
+                        organism["kingdom"],
+                        std::stoul(organism["age"]),
+                        organism.find("monitor") != organism.end() ? std::stoi(organism["monitor"]) : 0);
+                    spawn_killed = !organism_opts::is_normal_child(helper::get_pointer_from_offset(builder, current_organism));
+                } while (spawn_killed);
+
+                stdvecOrganisms.push_back(current_organism);
             }
         }
 
@@ -626,7 +636,7 @@ void God::happy_new_year(const bool &log)
                         organism_opts::generate_death_factor(child_ptr);
 
                         // Skip abnormal children (with weird stats)
-                        if (organism_opts::is_normal_child(child_ptr))
+                        if (organism_opts::is_normal_child(helper::get_pointer_from_offset(builder, child_offset)))
                         {
                             stdvecOrganisms.push_back(child_offset);
                             recent_births++;

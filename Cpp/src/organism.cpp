@@ -5,8 +5,8 @@ static void increment_age_animal(Ecosystem::Organism *organism);
 static void increment_age_plant(Ecosystem::Organism *organism);
 static void evaluate_static_fitness_animal(Ecosystem::Organism *organism);
 static void evaluate_static_fitness_plant(Ecosystem::Organism *organism);
-static bool is_normal_child_animal(Ecosystem::Organism *organism);
-static bool is_normal_child_plant(Ecosystem::Organism *organism);
+static bool is_normal_child_animal(const Ecosystem::Organism *organism);
+static bool is_normal_child_plant(const Ecosystem::Organism *organism);
 
 namespace organism_opts
 {
@@ -27,7 +27,7 @@ namespace organism_opts
             {organism->age_fitness_on_death_ratio(), 1.0})));
     }
     
-    bool is_normal_child(Ecosystem::Organism *organism)
+    bool is_normal_child(const Ecosystem::Organism *organism)
     {
         if (organism->kingdom() == Ecosystem::KingdomE::Animal)
         {
@@ -78,7 +78,7 @@ namespace organism_opts
     }
 };
 
-static bool is_normal_child_animal(Ecosystem::Organism *organism)
+static bool is_normal_child_animal(const Ecosystem::Organism *organism)
 {
     return helper::is_nonzero_nonnegative_nonnan(organism->height()) &&
         helper::is_nonzero_nonnegative_nonnan(organism->weight()) &&
@@ -102,7 +102,7 @@ static bool is_normal_child_animal(Ecosystem::Organism *organism)
         helper::is_nonzero_nonnegative_nonnan(organism->weight_multiplier());
 }
 
-static bool is_normal_child_plant(Ecosystem::Organism *organism)
+static bool is_normal_child_plant(const Ecosystem::Organism *organism)
 {
     
     return helper::is_nonzero_nonnegative_nonnan(organism->height()) &&
