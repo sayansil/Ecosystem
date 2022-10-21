@@ -593,14 +593,13 @@ void God::happy_new_year(const bool &log)
             std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
 
             uint32_t index_parent = 0;
+            Ecosystem::Reproduction sexuality = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]])->sexuality();
 
-            while ((mating_list1.size() > index_parent && mating_list2.size() > index_parent &&
-                    helper::get_pointer_from_offset(builder, stdvecOrganisms[index_parent])->sexuality() == Ecosystem::Reproduction::Sexual) ||
-                   (mating_list1.size() > index_parent &&
-                    helper::get_pointer_from_offset(builder, stdvecOrganisms[index_parent])->sexuality() == Ecosystem::Reproduction::Asexual))
+            while ((mating_list1.size() > index_parent && mating_list2.size() > index_parent && sexuality == Ecosystem::Reproduction::Sexual) ||
+                   (mating_list1.size() > index_parent && sexuality == Ecosystem::Reproduction::Asexual))
             {
                 const Ecosystem::Organism *parent1 = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]]);
-                const Ecosystem::Organism *parent2 = helper::get_pointer_from_offset(builder, stdvecOrganisms[helper::get_pointer_from_offset(builder, stdvecOrganisms[index_parent])->sexuality() == Ecosystem::Reproduction::Sexual ? mating_list2[index_parent] : mating_list1[index_parent]]);
+                const Ecosystem::Organism *parent2 = sexuality == Ecosystem::Reproduction::Sexual ? helper::get_pointer_from_offset(builder,  stdvecOrganisms[mating_list2[index_parent]]) : parent1;
 
                 if (helper::weighted_prob(std::min(parent1->mating_probability(), parent2->mating_probability())))
                 {
