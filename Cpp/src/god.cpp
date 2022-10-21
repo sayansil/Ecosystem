@@ -122,11 +122,7 @@ void God::createWorld(std::vector<std::unordered_map<std::string, std::string>> 
 
     /* World creation ends */
 
-    Ecosystem::WorldBuilder world_builder(builder);
-
-    world_builder.add_species(world_species);
-    world_builder.add_year(year);
-    builder.Finish(world_builder.Finish());
+    builder.Finish(Ecosystem::CreateWorld(builder, year, world_species));
     buffer = builder.Release();
     builder.Clear();
 }
@@ -348,16 +344,16 @@ int God::creator_function(const double &o_factor) const
     return std::round(dis(helper::rng));
 }
 
-std::string God::get_child_chromosome(const Ecosystem::Organism *parent1, const Ecosystem::Organism *parent2, const nlohmann::json &species_constants)
+std::string God::get_child_chromosome(const Ecosystem::OrganismT &parent1, const Ecosystem::OrganismT &parent2, const nlohmann::json &species_constants)
 {
     // Generate chromosomes of the child
     auto child_chromosome = helper::get_random_mixture(
-        helper::bytevector_to_string(parent1->chromosome()->data(), parent1->chromosome()->size(), parent1->chromosome_number()),
-        helper::bytevector_to_string(parent2->chromosome()->data(), parent2->chromosome()->size(), parent2->chromosome_number()));
+        helper::bytevector_to_string(parent1.chromosome.data(), parent1.chromosome.size(), parent1.chromosome_number),
+        helper::bytevector_to_string(parent2.chromosome.data(), parent2.chromosome.size(), parent2.chromosome_number));
 
     // Mutate chromosomes
     for (auto &bit : child_chromosome)
-        if (helper::weighted_prob(std::max(parent1->mutation_probability(), parent2->mutation_probability())))
+        if (helper::weighted_prob(std::max(parent1.mutation_probability, parent2.mutation_probability)))
             bit = (bit == '1') ? '0' : '1';
 
     return child_chromosome;
@@ -598,32 +594,73 @@ void God::happy_new_year(const bool &log)
             while ((mating_list1.size() > index_parent && mating_list2.size() > index_parent && sexuality == Ecosystem::Reproduction::Sexual) ||
                    (mating_list1.size() > index_parent && sexuality == Ecosystem::Reproduction::Asexual))
             {
-                const Ecosystem::Organism *parent1 = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]]);
-                const Ecosystem::Organism *parent2 = sexuality == Ecosystem::Reproduction::Sexual ? helper::get_pointer_from_offset(builder,  stdvecOrganisms[mating_list2[index_parent]]) : parent1;
+                /*
+                   BIG CAUTION HERE!!! Please use flatbuffer object API for holding intermediate data only.
+                   Don't use for serializing/deserializing entire buffers, else there will be a big drop in performance
+                */
 
-                if (helper::weighted_prob(std::min(parent1->mating_probability(), parent2->mating_probability())))
+                Ecosystem::OrganismT parent1, parent2;
+
                 {
-                    int n_children = creator_function(std::min(parent1->offsprings_factor(), parent2->offsprings_factor()));
+                    const Ecosystem::Organism *parent1_ptr = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]]);
+                    const Ecosystem::Organism *parent2_ptr = sexuality == Ecosystem::Reproduction::Sexual ? helper::get_pointer_from_offset(builder,  stdvecOrganisms[mating_list2[index_parent]]) : parent1_ptr;
+
+                    /* Assign copies of data as the parent pointers get shifted during organism creation */
+
+                    parent1.mating_probability = parent1_ptr->mating_probability();
+                    parent1.offsprings_factor = parent1_ptr->offsprings_factor();
+                    parent1.conceiving_probability = parent1_ptr->conceiving_probability();
+                    parent1.monitor = parent1_ptr->monitor();
+                    parent1.X = parent1_ptr->X();
+                    parent1.kind = parent1_ptr->kind()->str();
+                    parent1.generation = parent1_ptr->generation();
+                    parent1.mutation_probability = parent1_ptr->mutation_probability();
+                    size_t chromosome1_size = parent1_ptr->chromosome()->size();
+                    parent1.chromosome.reserve(chromosome1_size);
+                    std::copy(parent1_ptr->chromosome()->data(),
+                              parent1_ptr->chromosome()->data() + chromosome1_size,
+                              std::back_inserter(parent1.chromosome));
+                    parent1.chromosome_number = parent1_ptr->chromosome_number();
+
+                    parent2.mating_probability = parent2_ptr->mating_probability();
+                    parent2.offsprings_factor = parent2_ptr->offsprings_factor();
+                    parent2.conceiving_probability = parent2_ptr->conceiving_probability();
+                    parent2.monitor = parent2_ptr->monitor();
+                    parent2.X = parent2_ptr->X();
+                    parent2.kind = parent2_ptr->kind()->str();
+                    parent2.generation = parent2_ptr->generation();
+                    parent2.mutation_probability = parent2_ptr->mutation_probability();
+                    size_t chromosome2_size = parent2_ptr->chromosome()->size();
+                    parent2.chromosome.reserve(chromosome2_size);
+                    std::copy(parent2_ptr->chromosome()->data(),
+                              parent2_ptr->chromosome()->data() + chromosome1_size,
+                              std::back_inserter(parent2.chromosome));
+                    parent2.chromosome_number = parent2_ptr->chromosome_number();
+                }
+
+                if (helper::weighted_prob(std::min(parent1.mating_probability, parent2.mating_probability)))
+                {
+                    int n_children = creator_function(std::min(parent1.offsprings_factor, parent2.offsprings_factor));
 
                     while (n_children--)
                     {
-                        if (!helper::weighted_prob(std::min(parent1->conceiving_probability(), parent2->conceiving_probability())))
+                        if (!helper::weighted_prob(std::min(parent1.conceiving_probability, parent2.conceiving_probability)))
                             continue; // Conceiving probability too low this time
 
                         auto child_chromosome = get_child_chromosome(parent1, parent2, species_constants);
-                        bool monitor_child = monitor_offsprings && (static_cast<bool>(parent1->monitor()) || static_cast<bool>(parent2->monitor()));
+                        bool monitor_child = monitor_offsprings && (static_cast<bool>(parent1.monitor) || static_cast<bool>(parent2.monitor));
 
-                        uint64_t child_X = (parent1->X() + parent2->X()) / 2, child_Y = (parent1->Y() + parent2->Y()) / 2;
+                        uint64_t child_X = (parent1.X + parent2.X) / 2, child_Y = (parent1.Y + parent2.Y) / 2;
                         std::string child_name = std::to_string(year) + "-" + std::to_string(spawn_count++);
 
                         auto child_offset = createOrganism(
                             builder,
-                            parent1->kind()->str(),
+                            parent1.kind,
                             std::to_string(static_cast<uint8_t>(kingdom)),
                             1,
                             child_name,
                             child_chromosome,
-                            std::max(parent1->generation(), parent2->generation()) + 1,
+                            std::max(parent1.generation, parent2.generation) + 1,
                             std::make_pair(child_X, child_Y),
                             monitor_child);
 
@@ -653,10 +690,7 @@ void God::happy_new_year(const bool &log)
 
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Species>>> species_vec = builder.CreateVectorOfSortedTables(newStdvecSpecies.data(), newStdvecSpecies.size());
 
-    Ecosystem::WorldBuilder new_world_builder(builder);
-    new_world_builder.add_year(year);
-    new_world_builder.add_species(species_vec);
-    builder.Finish(new_world_builder.Finish());
+    builder.Finish(Ecosystem::CreateWorld(builder, year, species_vec));
 
     /***************************
      *       World Updated     *

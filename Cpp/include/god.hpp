@@ -88,7 +88,7 @@ private:
      *         Unavailable to users         *
      ****************************************/
 
-    std::string get_child_chromosome(const Ecosystem::Organism *, const Ecosystem::Organism *, const nlohmann::json & = nlohmann::json());
+    std::string get_child_chromosome(const Ecosystem::OrganismT &, const Ecosystem::OrganismT &, const nlohmann::json & = nlohmann::json());
     void update_species(const std::string &);
     flatbuffers::Offset<Ecosystem::Organism> clone_organism(
         flatbuffers::FlatBufferBuilder &builder,

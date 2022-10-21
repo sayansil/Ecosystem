@@ -10,15 +10,19 @@ namespace Ecosystem {
 
 struct ChromosomeStrand;
 struct ChromosomeStrandBuilder;
+struct ChromosomeStrandT;
 
 struct Organism;
 struct OrganismBuilder;
+struct OrganismT;
 
 struct Species;
 struct SpeciesBuilder;
+struct SpeciesT;
 
 struct World;
 struct WorldBuilder;
+struct WorldT;
 
 inline const flatbuffers::TypeTable *ChromosomeStrandTypeTable();
 
@@ -181,7 +185,15 @@ inline const char *EnumNameKingdomE(KingdomE e) {
   return EnumNamesKingdomE()[index];
 }
 
+struct ChromosomeStrandT : public flatbuffers::NativeTable {
+  typedef ChromosomeStrand TableType;
+  std::string code{};
+  uint16_t start = 0;
+  uint16_t length = 0;
+};
+
 struct ChromosomeStrand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef ChromosomeStrandT NativeTableType;
   typedef ChromosomeStrandBuilder Builder;
   struct Traits;
   static const flatbuffers::TypeTable *MiniReflectTypeTable() {
@@ -224,6 +236,9 @@ struct ChromosomeStrand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint16_t>(verifier, VT_LENGTH) &&
            verifier.EndTable();
   }
+  ChromosomeStrandT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(ChromosomeStrandT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<ChromosomeStrand> Pack(flatbuffers::FlatBufferBuilder &_fbb, const ChromosomeStrandT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct ChromosomeStrandBuilder {
@@ -281,7 +296,92 @@ inline flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrandDirect(
       length);
 }
 
+flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrand(flatbuffers::FlatBufferBuilder &_fbb, const ChromosomeStrandT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
+struct OrganismT : public flatbuffers::NativeTable {
+  typedef Organism TableType;
+  std::string kind{};
+  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
+  uint16_t chromosome_number = 0;
+  std::vector<std::unique_ptr<Ecosystem::ChromosomeStrandT>> chromosome_structure{};
+  uint8_t food_chain_rank = 0;
+  Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::Sexual;
+  float age_fitness_on_death_ratio = 0.0f;
+  float conceiving_probability = 0.0f;
+  float mating_probability = 0.0f;
+  uint32_t mating_age_start = 0;
+  uint32_t mating_age_end = 0;
+  uint32_t max_age = 0;
+  float mutation_probability = 0.0f;
+  float offsprings_factor = 0.0f;
+  float height_on_speed = 0.0f;
+  float height_on_stamina = 0.0f;
+  float height_on_vitality = 0.0f;
+  float weight_on_speed = 0.0f;
+  float weight_on_stamina = 0.0f;
+  float weight_on_vitality = 0.0f;
+  float vitality_on_appetite = 0.0f;
+  float vitality_on_speed = 0.0f;
+  float stamina_on_appetite = 0.0f;
+  float stamina_on_speed = 0.0f;
+  float theoretical_maximum_base_appetite = 0.0f;
+  float theoretical_maximum_base_height = 0.0f;
+  float theoretical_maximum_base_speed = 0.0f;
+  float theoretical_maximum_base_stamina = 0.0f;
+  float theoretical_maximum_base_vitality = 0.0f;
+  float theoretical_maximum_base_weight = 0.0f;
+  float theoretical_maximum_height = 0.0f;
+  float theoretical_maximum_speed = 0.0f;
+  float theoretical_maximum_weight = 0.0f;
+  float theoretical_maximum_height_multiplier = 0.0f;
+  float theoretical_maximum_speed_multiplier = 0.0f;
+  float theoretical_maximum_stamina_multiplier = 0.0f;
+  float theoretical_maximum_vitality_multiplier = 0.0f;
+  float theoretical_maximum_weight_multiplier = 0.0f;
+  std::string name{};
+  std::vector<uint8_t> chromosome{};
+  Ecosystem::Gender gender = Ecosystem::Gender::Male;
+  uint32_t generation = 0;
+  float immunity = 0.0f;
+  float base_appetite = 0.0f;
+  float base_height = 0.0f;
+  float base_speed = 0.0f;
+  float base_stamina = 0.0f;
+  float base_vitality = 0.0f;
+  float base_weight = 0.0f;
+  float height_multiplier = 0.0f;
+  float speed_multiplier = 0.0f;
+  float stamina_multiplier = 0.0f;
+  float vitality_multiplier = 0.0f;
+  float weight_multiplier = 0.0f;
+  float max_height = 0.0f;
+  float max_weight = 0.0f;
+  uint32_t age = 0;
+  float height = 0.0f;
+  float weight = 0.0f;
+  float age_death_factor = 0.0f;
+  float fitness_death_factor = 0.0f;
+  float death_factor = 0.0f;
+  float static_fitness = 0.0f;
+  float max_appetite_at_age = 0.0f;
+  float max_speed_at_age = 0.0f;
+  float max_stamina_at_age = 0.0f;
+  float max_vitality_at_age = 0.0f;
+  float appetite = 0.0f;
+  float speed = 0.0f;
+  float stamina = 0.0f;
+  float vitality = 0.0f;
+  uint64_t X = 0;
+  uint64_t Y = 0;
+  float dynamic_fitness = 0.0f;
+  float vision_radius = 0.0f;
+  float sleep_restore_factor = 0.0f;
+  Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake;
+  Ecosystem::Monitor monitor = Ecosystem::Monitor::None;
+};
+
 struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef OrganismT NativeTableType;
   typedef OrganismBuilder Builder;
   struct Traits;
   static const flatbuffers::TypeTable *MiniReflectTypeTable() {
@@ -932,6 +1032,9 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint8_t>(verifier, VT_MONITOR) &&
            verifier.EndTable();
   }
+  OrganismT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(OrganismT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<Organism> Pack(flatbuffers::FlatBufferBuilder &_fbb, const OrganismT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct OrganismBuilder {
@@ -1519,7 +1622,17 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       monitor);
 }
 
+flatbuffers::Offset<Organism> CreateOrganism(flatbuffers::FlatBufferBuilder &_fbb, const OrganismT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
+struct SpeciesT : public flatbuffers::NativeTable {
+  typedef Species TableType;
+  std::string kind{};
+  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
+  std::vector<std::unique_ptr<Ecosystem::OrganismT>> organism{};
+};
+
 struct Species FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef SpeciesT NativeTableType;
   typedef SpeciesBuilder Builder;
   struct Traits;
   static const flatbuffers::TypeTable *MiniReflectTypeTable() {
@@ -1564,6 +1677,9 @@ struct Species FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(organism()) &&
            verifier.EndTable();
   }
+  SpeciesT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(SpeciesT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<Species> Pack(flatbuffers::FlatBufferBuilder &_fbb, const SpeciesT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct SpeciesBuilder {
@@ -1622,7 +1738,16 @@ inline flatbuffers::Offset<Species> CreateSpeciesDirect(
       organism__);
 }
 
+flatbuffers::Offset<Species> CreateSpecies(flatbuffers::FlatBufferBuilder &_fbb, const SpeciesT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
+struct WorldT : public flatbuffers::NativeTable {
+  typedef World TableType;
+  uint32_t year = 0;
+  std::vector<std::unique_ptr<Ecosystem::SpeciesT>> species{};
+};
+
 struct World FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  typedef WorldT NativeTableType;
   typedef WorldBuilder Builder;
   struct Traits;
   static const flatbuffers::TypeTable *MiniReflectTypeTable() {
@@ -1658,6 +1783,9 @@ struct World FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVectorOfTables(species()) &&
            verifier.EndTable();
   }
+  WorldT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  void UnPackTo(WorldT *_o, const flatbuffers::resolver_function_t *_resolver = nullptr) const;
+  static flatbuffers::Offset<World> Pack(flatbuffers::FlatBufferBuilder &_fbb, const WorldT* _o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
 };
 
 struct WorldBuilder {
@@ -1705,6 +1833,358 @@ inline flatbuffers::Offset<World> CreateWorldDirect(
       _fbb,
       year,
       species__);
+}
+
+flatbuffers::Offset<World> CreateWorld(flatbuffers::FlatBufferBuilder &_fbb, const WorldT *_o, const flatbuffers::rehasher_function_t *_rehasher = nullptr);
+
+inline ChromosomeStrandT *ChromosomeStrand::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::make_unique<ChromosomeStrandT>();
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void ChromosomeStrand::UnPackTo(ChromosomeStrandT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = code(); if (_e) _o->code = _e->str(); }
+  { auto _e = start(); _o->start = _e; }
+  { auto _e = length(); _o->length = _e; }
+}
+
+inline flatbuffers::Offset<ChromosomeStrand> ChromosomeStrand::Pack(flatbuffers::FlatBufferBuilder &_fbb, const ChromosomeStrandT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateChromosomeStrand(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrand(flatbuffers::FlatBufferBuilder &_fbb, const ChromosomeStrandT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const ChromosomeStrandT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _code = _fbb.CreateString(_o->code);
+  auto _start = _o->start;
+  auto _length = _o->length;
+  return Ecosystem::CreateChromosomeStrand(
+      _fbb,
+      _code,
+      _start,
+      _length);
+}
+
+inline OrganismT *Organism::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::make_unique<OrganismT>();
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void Organism::UnPackTo(OrganismT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = kind(); if (_e) _o->kind = _e->str(); }
+  { auto _e = kingdom(); _o->kingdom = _e; }
+  { auto _e = chromosome_number(); _o->chromosome_number = _e; }
+  { auto _e = chromosome_structure(); if (_e) { _o->chromosome_structure.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->chromosome_structure[_i]) { _e->Get(_i)->UnPackTo(_o->chromosome_structure[_i].get(), _resolver); } else { _o->chromosome_structure[_i] = std::unique_ptr<Ecosystem::ChromosomeStrandT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = food_chain_rank(); _o->food_chain_rank = _e; }
+  { auto _e = sexuality(); _o->sexuality = _e; }
+  { auto _e = age_fitness_on_death_ratio(); _o->age_fitness_on_death_ratio = _e; }
+  { auto _e = conceiving_probability(); _o->conceiving_probability = _e; }
+  { auto _e = mating_probability(); _o->mating_probability = _e; }
+  { auto _e = mating_age_start(); _o->mating_age_start = _e; }
+  { auto _e = mating_age_end(); _o->mating_age_end = _e; }
+  { auto _e = max_age(); _o->max_age = _e; }
+  { auto _e = mutation_probability(); _o->mutation_probability = _e; }
+  { auto _e = offsprings_factor(); _o->offsprings_factor = _e; }
+  { auto _e = height_on_speed(); _o->height_on_speed = _e; }
+  { auto _e = height_on_stamina(); _o->height_on_stamina = _e; }
+  { auto _e = height_on_vitality(); _o->height_on_vitality = _e; }
+  { auto _e = weight_on_speed(); _o->weight_on_speed = _e; }
+  { auto _e = weight_on_stamina(); _o->weight_on_stamina = _e; }
+  { auto _e = weight_on_vitality(); _o->weight_on_vitality = _e; }
+  { auto _e = vitality_on_appetite(); _o->vitality_on_appetite = _e; }
+  { auto _e = vitality_on_speed(); _o->vitality_on_speed = _e; }
+  { auto _e = stamina_on_appetite(); _o->stamina_on_appetite = _e; }
+  { auto _e = stamina_on_speed(); _o->stamina_on_speed = _e; }
+  { auto _e = theoretical_maximum_base_appetite(); _o->theoretical_maximum_base_appetite = _e; }
+  { auto _e = theoretical_maximum_base_height(); _o->theoretical_maximum_base_height = _e; }
+  { auto _e = theoretical_maximum_base_speed(); _o->theoretical_maximum_base_speed = _e; }
+  { auto _e = theoretical_maximum_base_stamina(); _o->theoretical_maximum_base_stamina = _e; }
+  { auto _e = theoretical_maximum_base_vitality(); _o->theoretical_maximum_base_vitality = _e; }
+  { auto _e = theoretical_maximum_base_weight(); _o->theoretical_maximum_base_weight = _e; }
+  { auto _e = theoretical_maximum_height(); _o->theoretical_maximum_height = _e; }
+  { auto _e = theoretical_maximum_speed(); _o->theoretical_maximum_speed = _e; }
+  { auto _e = theoretical_maximum_weight(); _o->theoretical_maximum_weight = _e; }
+  { auto _e = theoretical_maximum_height_multiplier(); _o->theoretical_maximum_height_multiplier = _e; }
+  { auto _e = theoretical_maximum_speed_multiplier(); _o->theoretical_maximum_speed_multiplier = _e; }
+  { auto _e = theoretical_maximum_stamina_multiplier(); _o->theoretical_maximum_stamina_multiplier = _e; }
+  { auto _e = theoretical_maximum_vitality_multiplier(); _o->theoretical_maximum_vitality_multiplier = _e; }
+  { auto _e = theoretical_maximum_weight_multiplier(); _o->theoretical_maximum_weight_multiplier = _e; }
+  { auto _e = name(); if (_e) _o->name = _e->str(); }
+  { auto _e = chromosome(); if (_e) { _o->chromosome.resize(_e->size()); std::copy(_e->begin(), _e->end(), _o->chromosome.begin()); } }
+  { auto _e = gender(); _o->gender = _e; }
+  { auto _e = generation(); _o->generation = _e; }
+  { auto _e = immunity(); _o->immunity = _e; }
+  { auto _e = base_appetite(); _o->base_appetite = _e; }
+  { auto _e = base_height(); _o->base_height = _e; }
+  { auto _e = base_speed(); _o->base_speed = _e; }
+  { auto _e = base_stamina(); _o->base_stamina = _e; }
+  { auto _e = base_vitality(); _o->base_vitality = _e; }
+  { auto _e = base_weight(); _o->base_weight = _e; }
+  { auto _e = height_multiplier(); _o->height_multiplier = _e; }
+  { auto _e = speed_multiplier(); _o->speed_multiplier = _e; }
+  { auto _e = stamina_multiplier(); _o->stamina_multiplier = _e; }
+  { auto _e = vitality_multiplier(); _o->vitality_multiplier = _e; }
+  { auto _e = weight_multiplier(); _o->weight_multiplier = _e; }
+  { auto _e = max_height(); _o->max_height = _e; }
+  { auto _e = max_weight(); _o->max_weight = _e; }
+  { auto _e = age(); _o->age = _e; }
+  { auto _e = height(); _o->height = _e; }
+  { auto _e = weight(); _o->weight = _e; }
+  { auto _e = age_death_factor(); _o->age_death_factor = _e; }
+  { auto _e = fitness_death_factor(); _o->fitness_death_factor = _e; }
+  { auto _e = death_factor(); _o->death_factor = _e; }
+  { auto _e = static_fitness(); _o->static_fitness = _e; }
+  { auto _e = max_appetite_at_age(); _o->max_appetite_at_age = _e; }
+  { auto _e = max_speed_at_age(); _o->max_speed_at_age = _e; }
+  { auto _e = max_stamina_at_age(); _o->max_stamina_at_age = _e; }
+  { auto _e = max_vitality_at_age(); _o->max_vitality_at_age = _e; }
+  { auto _e = appetite(); _o->appetite = _e; }
+  { auto _e = speed(); _o->speed = _e; }
+  { auto _e = stamina(); _o->stamina = _e; }
+  { auto _e = vitality(); _o->vitality = _e; }
+  { auto _e = X(); _o->X = _e; }
+  { auto _e = Y(); _o->Y = _e; }
+  { auto _e = dynamic_fitness(); _o->dynamic_fitness = _e; }
+  { auto _e = vision_radius(); _o->vision_radius = _e; }
+  { auto _e = sleep_restore_factor(); _o->sleep_restore_factor = _e; }
+  { auto _e = asleep(); _o->asleep = _e; }
+  { auto _e = monitor(); _o->monitor = _e; }
+}
+
+inline flatbuffers::Offset<Organism> Organism::Pack(flatbuffers::FlatBufferBuilder &_fbb, const OrganismT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateOrganism(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<Organism> CreateOrganism(flatbuffers::FlatBufferBuilder &_fbb, const OrganismT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const OrganismT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _kind = _fbb.CreateString(_o->kind);
+  auto _kingdom = _o->kingdom;
+  auto _chromosome_number = _o->chromosome_number;
+  auto _chromosome_structure = _o->chromosome_structure.size() ? _fbb.CreateVector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> (_o->chromosome_structure.size(), [](size_t i, _VectorArgs *__va) { return CreateChromosomeStrand(*__va->__fbb, __va->__o->chromosome_structure[i].get(), __va->__rehasher); }, &_va ) : 0;
+  auto _food_chain_rank = _o->food_chain_rank;
+  auto _sexuality = _o->sexuality;
+  auto _age_fitness_on_death_ratio = _o->age_fitness_on_death_ratio;
+  auto _conceiving_probability = _o->conceiving_probability;
+  auto _mating_probability = _o->mating_probability;
+  auto _mating_age_start = _o->mating_age_start;
+  auto _mating_age_end = _o->mating_age_end;
+  auto _max_age = _o->max_age;
+  auto _mutation_probability = _o->mutation_probability;
+  auto _offsprings_factor = _o->offsprings_factor;
+  auto _height_on_speed = _o->height_on_speed;
+  auto _height_on_stamina = _o->height_on_stamina;
+  auto _height_on_vitality = _o->height_on_vitality;
+  auto _weight_on_speed = _o->weight_on_speed;
+  auto _weight_on_stamina = _o->weight_on_stamina;
+  auto _weight_on_vitality = _o->weight_on_vitality;
+  auto _vitality_on_appetite = _o->vitality_on_appetite;
+  auto _vitality_on_speed = _o->vitality_on_speed;
+  auto _stamina_on_appetite = _o->stamina_on_appetite;
+  auto _stamina_on_speed = _o->stamina_on_speed;
+  auto _theoretical_maximum_base_appetite = _o->theoretical_maximum_base_appetite;
+  auto _theoretical_maximum_base_height = _o->theoretical_maximum_base_height;
+  auto _theoretical_maximum_base_speed = _o->theoretical_maximum_base_speed;
+  auto _theoretical_maximum_base_stamina = _o->theoretical_maximum_base_stamina;
+  auto _theoretical_maximum_base_vitality = _o->theoretical_maximum_base_vitality;
+  auto _theoretical_maximum_base_weight = _o->theoretical_maximum_base_weight;
+  auto _theoretical_maximum_height = _o->theoretical_maximum_height;
+  auto _theoretical_maximum_speed = _o->theoretical_maximum_speed;
+  auto _theoretical_maximum_weight = _o->theoretical_maximum_weight;
+  auto _theoretical_maximum_height_multiplier = _o->theoretical_maximum_height_multiplier;
+  auto _theoretical_maximum_speed_multiplier = _o->theoretical_maximum_speed_multiplier;
+  auto _theoretical_maximum_stamina_multiplier = _o->theoretical_maximum_stamina_multiplier;
+  auto _theoretical_maximum_vitality_multiplier = _o->theoretical_maximum_vitality_multiplier;
+  auto _theoretical_maximum_weight_multiplier = _o->theoretical_maximum_weight_multiplier;
+  auto _name = _fbb.CreateString(_o->name);
+  auto _chromosome = _fbb.CreateVector(_o->chromosome);
+  auto _gender = _o->gender;
+  auto _generation = _o->generation;
+  auto _immunity = _o->immunity;
+  auto _base_appetite = _o->base_appetite;
+  auto _base_height = _o->base_height;
+  auto _base_speed = _o->base_speed;
+  auto _base_stamina = _o->base_stamina;
+  auto _base_vitality = _o->base_vitality;
+  auto _base_weight = _o->base_weight;
+  auto _height_multiplier = _o->height_multiplier;
+  auto _speed_multiplier = _o->speed_multiplier;
+  auto _stamina_multiplier = _o->stamina_multiplier;
+  auto _vitality_multiplier = _o->vitality_multiplier;
+  auto _weight_multiplier = _o->weight_multiplier;
+  auto _max_height = _o->max_height;
+  auto _max_weight = _o->max_weight;
+  auto _age = _o->age;
+  auto _height = _o->height;
+  auto _weight = _o->weight;
+  auto _age_death_factor = _o->age_death_factor;
+  auto _fitness_death_factor = _o->fitness_death_factor;
+  auto _death_factor = _o->death_factor;
+  auto _static_fitness = _o->static_fitness;
+  auto _max_appetite_at_age = _o->max_appetite_at_age;
+  auto _max_speed_at_age = _o->max_speed_at_age;
+  auto _max_stamina_at_age = _o->max_stamina_at_age;
+  auto _max_vitality_at_age = _o->max_vitality_at_age;
+  auto _appetite = _o->appetite;
+  auto _speed = _o->speed;
+  auto _stamina = _o->stamina;
+  auto _vitality = _o->vitality;
+  auto _X = _o->X;
+  auto _Y = _o->Y;
+  auto _dynamic_fitness = _o->dynamic_fitness;
+  auto _vision_radius = _o->vision_radius;
+  auto _sleep_restore_factor = _o->sleep_restore_factor;
+  auto _asleep = _o->asleep;
+  auto _monitor = _o->monitor;
+  return Ecosystem::CreateOrganism(
+      _fbb,
+      _kind,
+      _kingdom,
+      _chromosome_number,
+      _chromosome_structure,
+      _food_chain_rank,
+      _sexuality,
+      _age_fitness_on_death_ratio,
+      _conceiving_probability,
+      _mating_probability,
+      _mating_age_start,
+      _mating_age_end,
+      _max_age,
+      _mutation_probability,
+      _offsprings_factor,
+      _height_on_speed,
+      _height_on_stamina,
+      _height_on_vitality,
+      _weight_on_speed,
+      _weight_on_stamina,
+      _weight_on_vitality,
+      _vitality_on_appetite,
+      _vitality_on_speed,
+      _stamina_on_appetite,
+      _stamina_on_speed,
+      _theoretical_maximum_base_appetite,
+      _theoretical_maximum_base_height,
+      _theoretical_maximum_base_speed,
+      _theoretical_maximum_base_stamina,
+      _theoretical_maximum_base_vitality,
+      _theoretical_maximum_base_weight,
+      _theoretical_maximum_height,
+      _theoretical_maximum_speed,
+      _theoretical_maximum_weight,
+      _theoretical_maximum_height_multiplier,
+      _theoretical_maximum_speed_multiplier,
+      _theoretical_maximum_stamina_multiplier,
+      _theoretical_maximum_vitality_multiplier,
+      _theoretical_maximum_weight_multiplier,
+      _name,
+      _chromosome,
+      _gender,
+      _generation,
+      _immunity,
+      _base_appetite,
+      _base_height,
+      _base_speed,
+      _base_stamina,
+      _base_vitality,
+      _base_weight,
+      _height_multiplier,
+      _speed_multiplier,
+      _stamina_multiplier,
+      _vitality_multiplier,
+      _weight_multiplier,
+      _max_height,
+      _max_weight,
+      _age,
+      _height,
+      _weight,
+      _age_death_factor,
+      _fitness_death_factor,
+      _death_factor,
+      _static_fitness,
+      _max_appetite_at_age,
+      _max_speed_at_age,
+      _max_stamina_at_age,
+      _max_vitality_at_age,
+      _appetite,
+      _speed,
+      _stamina,
+      _vitality,
+      _X,
+      _Y,
+      _dynamic_fitness,
+      _vision_radius,
+      _sleep_restore_factor,
+      _asleep,
+      _monitor);
+}
+
+inline SpeciesT *Species::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::make_unique<SpeciesT>();
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void Species::UnPackTo(SpeciesT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = kind(); if (_e) _o->kind = _e->str(); }
+  { auto _e = kingdom(); _o->kingdom = _e; }
+  { auto _e = organism(); if (_e) { _o->organism.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->organism[_i]) { _e->Get(_i)->UnPackTo(_o->organism[_i].get(), _resolver); } else { _o->organism[_i] = std::unique_ptr<Ecosystem::OrganismT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+}
+
+inline flatbuffers::Offset<Species> Species::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SpeciesT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateSpecies(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<Species> CreateSpecies(flatbuffers::FlatBufferBuilder &_fbb, const SpeciesT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const SpeciesT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _kind = _fbb.CreateString(_o->kind);
+  auto _kingdom = _o->kingdom;
+  auto _organism = _o->organism.size() ? _fbb.CreateVector<flatbuffers::Offset<Ecosystem::Organism>> (_o->organism.size(), [](size_t i, _VectorArgs *__va) { return CreateOrganism(*__va->__fbb, __va->__o->organism[i].get(), __va->__rehasher); }, &_va ) : 0;
+  return Ecosystem::CreateSpecies(
+      _fbb,
+      _kind,
+      _kingdom,
+      _organism);
+}
+
+inline WorldT *World::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
+  auto _o = std::make_unique<WorldT>();
+  UnPackTo(_o.get(), _resolver);
+  return _o.release();
+}
+
+inline void World::UnPackTo(WorldT *_o, const flatbuffers::resolver_function_t *_resolver) const {
+  (void)_o;
+  (void)_resolver;
+  { auto _e = year(); _o->year = _e; }
+  { auto _e = species(); if (_e) { _o->species.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->species[_i]) { _e->Get(_i)->UnPackTo(_o->species[_i].get(), _resolver); } else { _o->species[_i] = std::unique_ptr<Ecosystem::SpeciesT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+}
+
+inline flatbuffers::Offset<World> World::Pack(flatbuffers::FlatBufferBuilder &_fbb, const WorldT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
+  return CreateWorld(_fbb, _o, _rehasher);
+}
+
+inline flatbuffers::Offset<World> CreateWorld(flatbuffers::FlatBufferBuilder &_fbb, const WorldT *_o, const flatbuffers::rehasher_function_t *_rehasher) {
+  (void)_rehasher;
+  (void)_o;
+  struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const WorldT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
+  auto _year = _o->year;
+  auto _species = _o->species.size() ? _fbb.CreateVector<flatbuffers::Offset<Ecosystem::Species>> (_o->species.size(), [](size_t i, _VectorArgs *__va) { return CreateSpecies(*__va->__fbb, __va->__o->species[i].get(), __va->__rehasher); }, &_va ) : 0;
+  return Ecosystem::CreateWorld(
+      _fbb,
+      _year,
+      _species);
 }
 
 inline const flatbuffers::TypeTable *GenderTypeTable() {
@@ -2066,6 +2546,18 @@ inline void FinishSizePrefixedWorldBuffer(
     flatbuffers::FlatBufferBuilder &fbb,
     flatbuffers::Offset<Ecosystem::World> root) {
   fbb.FinishSizePrefixed(root);
+}
+
+inline std::unique_ptr<Ecosystem::WorldT> UnPackWorld(
+    const void *buf,
+    const flatbuffers::resolver_function_t *res = nullptr) {
+  return std::unique_ptr<Ecosystem::WorldT>(GetWorld(buf)->UnPack(res));
+}
+
+inline std::unique_ptr<Ecosystem::WorldT> UnPackSizePrefixedWorld(
+    const void *buf,
+    const flatbuffers::resolver_function_t *res = nullptr) {
+  return std::unique_ptr<Ecosystem::WorldT>(GetSizePrefixedWorld(buf)->UnPack(res));
 }
 
 }  // namespace Ecosystem
