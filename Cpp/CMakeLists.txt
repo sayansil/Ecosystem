@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.21)
 
 project(Ecosystem
     DESCRIPTION "Ecosystem Simulator"
@@ -8,10 +8,6 @@ project(Ecosystem
 
 include(FetchContent)
 include(cmake/download_file.cmake)
-
-if(${CMAKE_VERSION} VERSION_LESS 3.14)
-    include(cmake/add_FetchContent_MakeAvailable.cmake)
-endif()
 
 if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
