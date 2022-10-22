@@ -154,7 +154,7 @@ jobs:
 
   create-release:
     name: Create Github Release
-    if: contains(github.ref, 'tags/')
+    if: ${{github.event_name == 'pull_request' && github.head_ref == 'release'}}
     needs:
       - build-linux
       - build-macos
@@ -200,7 +200,7 @@ jobs:
 
   publish-assets:
     name: Publish build assets to Release
-    if: contains(github.ref, 'tags/')
+    if: ${{github.event_name == 'pull_request' && github.head_ref == 'release'}}
     needs: create-release
     runs-on: ubuntu-20.04
     strategy:
@@ -268,7 +268,7 @@ jobs:
 
   clean-build-artifacts:
     name: Clean build artifacts
-    if: ${{ always() }} && (contains(github.ref, 'tags/') || ${{ github.event.inputs.keep_artifacts != 'true' }})
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.head_ref == 'release') || github.event.inputs.keep_artifacts != 'true' }})
     needs:
       - build-linux
       - build-macos
