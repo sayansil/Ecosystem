@@ -92,7 +92,6 @@ private:
     void update_species(const std::string &);
     flatbuffers::Offset<Ecosystem::Organism> clone_organism(
         flatbuffers::FlatBufferBuilder &builder,
-        Ecosystem::OrganismBuilder &organism_builder,
         const Ecosystem::Organism *previous_organism);
 };
 
