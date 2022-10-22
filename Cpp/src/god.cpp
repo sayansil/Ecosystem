@@ -64,6 +64,7 @@ static double updateStat(double base, double p_range)
 God::God()
 {
     constants::init();
+    builder.ForceDefaults(true);
     fmt::print("God created!\n");
 }
 
