@@ -10,6 +10,43 @@ static std::vector<float> get_value_vector(
 
 namespace stat_fetcher
 {
+
+    std::unordered_map<uint32_t, uint32_t> get_generation_count(const flatbuffers::DetachedBuffer &world_buffer)
+    {
+        // Map of (generation: live count of that generation)
+        std::unordered_map<uint32_t, uint32_t> gen_map;
+
+        const Ecosystem::World *world_pointer = Ecosystem::GetWorld(world_buffer.data());
+        for (const Ecosystem::Species *species : *(world_pointer->species()))
+        {
+            for (const Ecosystem::Organism *organism : *(species->organism()))
+            {
+                uint32_t generation = organism->generation();
+                gen_map[generation] = gen_map[generation] + 1;
+            }
+        }
+
+        return gen_map;
+    }
+
+    std::unordered_map<uint32_t, uint32_t> get_age_count(const flatbuffers::DetachedBuffer &world_buffer)
+    {
+        // Map of (age: live count of that age)
+        std::unordered_map<uint32_t, uint32_t> age_map;
+
+        const Ecosystem::World *world_pointer = Ecosystem::GetWorld(world_buffer.data());
+        for (const Ecosystem::Species *species : *(world_pointer->species()))
+        {
+            for (const Ecosystem::Organism *organism : *(species->organism()))
+            {
+                uint32_t age = organism->age();
+                age_map[age] = age_map[age] + 1;
+            }
+        }
+
+        return age_map;
+    }
+
     FBuffer create_avg_world(const flatbuffers::DetachedBuffer &world_buffer)
     {
 

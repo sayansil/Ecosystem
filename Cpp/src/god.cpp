@@ -256,6 +256,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
         static_cast<Ecosystem::Monitor>(monitor)
     );
 
+    // TODO: Remove this
     Ecosystem::Organism *organism_ptr = helper::get_mutable_pointer_from_offset(builder, organism_offset);
     organism_opts::increment_age(organism_ptr);
 
@@ -499,13 +500,6 @@ void God::happy_new_year(const bool &log)
                     builder,
                     species->organism()->Get(organisms_vec[index].second));
                 stdvecOrganisms.push_back(new_organism);
-
-                // stdvecOrganisms.push_back(createOrganism(
-                //     builder,
-                //     species->organism()->Get(organisms_vec[index].second)->kind()->str(),
-                //     std::to_string((int)species->organism()->Get(organisms_vec[index].second)->kingdom()),
-                //     species->organism()->Get(organisms_vec[index].second)->age(),
-                //     (int8_t)species->organism()->Get(organisms_vec[index].second)->monitor()));
             }
             else
             {

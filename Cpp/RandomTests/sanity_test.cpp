@@ -17,7 +17,7 @@ int main()
     setup::setup();
 
     //unsigned int initial_organism_count = 4500;
-    unsigned int initial_organism_count = 4000;
+    unsigned int initial_organism_count = 10;
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
 
@@ -35,9 +35,14 @@ int main()
         God allah;
         allah.cleanSlate();
         allah.createWorld(organisms);
-        for(size_t i = 1; i <= 100; i++)
+        for(size_t i = 1; i <= 7; i++)
         {
             allah.happy_new_year(true);
+            auto age_map = stat_fetcher::get_age_count(allah.buffer);
+            auto gen_map = stat_fetcher::get_generation_count(allah.buffer);
+
+            fmt::print("Generation Map\n{}\n", gen_map);
+            fmt::print("Age Map\n{}\n\n", age_map);
         }
         fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
 
