@@ -178,19 +178,6 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     tmp_str.clear();
     auto organism_chromosome = builder.CreateVector(chromosome_vec.data(), chromosome_vec.size());
 
-    /* Organism creation ends */
-
-/*
-
-    // Assign passed default attributes
-*/
-
-
-/*
-
-    // Assign attributes from chromosome
-*/
-
     auto organism_offset = Ecosystem::CreateOrganism(builder,
         builder.CreateString(kind.c_str()),
         (Ecosystem::KingdomE)std::stoi(kingdom),
@@ -515,18 +502,17 @@ void God::happy_new_year(const bool &log)
                 // Annual ageing of this Organism
                 organism_opts::increment_age(species->mutable_organism()->GetMutableObject(organisms_vec[index].second));
 
-                // auto new_organism = clone_organism(
-                //     builder,
-                //     new_organism_builder,
-                //     species->organism()->Get(organisms_vec[index].second));
-                // stdvecOrganisms.push_back(new_organism);
-
-                stdvecOrganisms.push_back(createOrganism(
+                auto new_organism = clone_organism(
                     builder,
-                    species->organism()->Get(organisms_vec[index].second)->kind()->str(),
-                    std::to_string((int)species->organism()->Get(organisms_vec[index].second)->kingdom()),
-                    species->organism()->Get(organisms_vec[index].second)->age(),
-                    (int8_t)species->organism()->Get(organisms_vec[index].second)->monitor()));
+                    species->organism()->Get(organisms_vec[index].second));
+                stdvecOrganisms.push_back(new_organism);
+
+                // stdvecOrganisms.push_back(createOrganism(
+                //     builder,
+                //     species->organism()->Get(organisms_vec[index].second)->kind()->str(),
+                //     std::to_string((int)species->organism()->Get(organisms_vec[index].second)->kingdom()),
+                //     species->organism()->Get(organisms_vec[index].second)->age(),
+                //     (int8_t)species->organism()->Get(organisms_vec[index].second)->monitor()));
             }
             else
             {
