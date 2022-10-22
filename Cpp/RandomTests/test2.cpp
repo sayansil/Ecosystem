@@ -16,8 +16,8 @@ int main()
 {
     setup::setup();
 
-    const size_t initial_organism_count = 10;
-    const size_t simulation_years = 2;
+    const size_t initial_organism_count = 50;
+    const size_t simulation_years = 10;
 
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
@@ -41,12 +41,6 @@ int main()
             allah.happy_new_year(true);
         }
         fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
-
-        // flatbuffers::ToStringVisitor visitor("", true, "", true);
-        // flatbuffers::IterateFlatBuffer(allah.buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
-        // fmt::print("Iterated result: {}\n", visitor.s);
-        // nlohmann::json json_data = nlohmann::json::parse(visitor.s);
-        // fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 
         avg_instance = stat_fetcher::create_avg_world(allah.buffer);
     }

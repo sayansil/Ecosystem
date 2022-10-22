@@ -170,7 +170,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     std::string tmp_str;
     float tmp_flt;
 
-    tmp_str = tmp_str.length() != 0 ? name : fmt::format("{}-orphan-{}", kind, helper::random_name(16));
+    tmp_str = name.length() != 0 ? name : fmt::format("{}-orphan-{}", kind, helper::random_name(16));
     auto organism_name = builder.CreateString(tmp_str.c_str());
     tmp_str.clear();
 
@@ -439,10 +439,10 @@ flatbuffers::Offset<Ecosystem::Organism> God::clone_organism(
 
 void God::happy_new_year(const bool &log)
 {
-    spawn_count = 0;
-    recent_births = 0;
-    recent_deaths = 0;
-    recent_population = 0;
+    uint32_t spawn_count = 0;
+    uint32_t recent_births = 0;
+    uint32_t recent_deaths = 0;
+    uint32_t recent_population = 0;
 
     Ecosystem::World *previous_world = Ecosystem::GetMutableWorld(buffer.data());
 
@@ -619,7 +619,7 @@ void God::happy_new_year(const bool &log)
                             bool monitor_child = monitor_offsprings && (static_cast<bool>(parent1.monitor) || static_cast<bool>(parent2.monitor));
 
                             uint64_t child_X = (parent1.X + parent2.X) / 2, child_Y = (parent1.Y + parent2.Y) / 2;
-                            std::string child_name = std::to_string(year) + "-" + std::to_string(spawn_count++);
+                            std::string child_name = fmt::format("{}-{}-{}", kind->str(), year, spawn_count++);
 
                             auto child_offset = createOrganism(
                                     builder,

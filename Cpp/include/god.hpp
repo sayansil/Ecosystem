@@ -18,10 +18,6 @@ public:
     flatbuffers::DetachedBuffer buffer;
     uint32_t year = 1;
 
-    uint32_t recent_deaths = 0;
-    uint32_t recent_births = 0;
-    uint32_t recent_population = 0;
-
     bool monitor_offsprings = false;
     bool disable_deaths = false;
 
@@ -80,9 +76,6 @@ private:
 
     DatabaseManager db;
     bool gods_eye = false;
-    const int max_mate_trials = 100;
-
-    unsigned int spawn_count = 0;
 
     /****************************************
      *         Unavailable to users         *
