@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.21)
 
 project(Ecosystem
     DESCRIPTION "Ecosystem Simulator"
@@ -9,8 +9,9 @@ project(Ecosystem
 include(FetchContent)
 include(cmake/download_file.cmake)
 
-if(${CMAKE_VERSION} VERSION_LESS 3.14)
-    include(cmake/add_FetchContent_MakeAvailable.cmake)
+if(MSVC)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+    set(BUILD_SHARED_LIBS TRUE)
 endif()
 
 set(ECOSYSTEM_LIB "ecosystem")
@@ -26,7 +27,6 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
 endif()
 
-set(CMAKE_BUILD_TYPE "RELEASE")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE 1)
 
@@ -41,24 +41,35 @@ FetchContent_Declare(
 FetchContent_Populate(nlohmann)
 include_directories(${nlohmann_SOURCE_DIR}/include)
 
+set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "")
 FetchContent_Declare(
-    spdlog
-    GIT_REPOSITORY "https://github.com/gabime/spdlog"
-    GIT_TAG af0d805be43365fa03e92b5fe143e1b50e443cf7
+    flatbuffer
+    GIT_REPOSITORY "https://github.com/google/flatbuffers"
+    GIT_TAG e08da4dea29449c235096a688a361fa914868b76
     GIT_PROGRESS TRUE
 )
-FetchContent_Populate(spdlog)
-include_directories(${spdlog_SOURCE_DIR}/include)
+FetchContent_MakeAvailable(flatbuffer)
+set(FLATC ${FlatBuffers_BINARY_DIR}/flatc)
+message("flatc compiler at: ${FLATC}")
+include_directories(${FlatBuffers_SOURCE_DIR}/include)
 
 FetchContent_Declare(
-    customRNG
+    fmtlib
+    GIT_REPOSITORY "https://github.com/fmtlib/fmt"
+    GIT_TAG 1557ab764422d5087619fea3994012066644a11e
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(fmtlib)
+
+FetchContent_Declare(
+    customrng
     GIT_REPOSITORY "https://github.com/Reputeless/Xoshiro-cpp"
     GIT_TAG 078bf3396c31c3fa6d6f6c785b4612fb547f7132
     GIT_PROGRESS TRUE
 )
-FetchContent_Populate(customRNG)
+FetchContent_Populate(customrng)
 #due to some reason the ${customRNG_SOURCE_DIR} variable doesn't get initialized
-include_directories(${customRNG_SOURCE_DIR})
+include_directories(${customrng_SOURCE_DIR})
 
 FetchContent_Declare(
     sqlite3
@@ -70,19 +81,22 @@ FetchContent_Populate(sqlite3)
 include_directories(${sqlite3_SOURCE_DIR}/include)
 
 FetchContent_Declare(
-    refl-cpp
-    GIT_REPOSITORY "https://github.com/veselink1/refl-cpp"
-    GIT_TAG 4684ff412bda23db3c757307f4fa16b54a5c5788
+    whereami
+    GIT_REPOSITORY "https://github.com/gpakosz/whereami"
+    GIT_TAG ba364cd54fd431c76c045393b6522b4bff547f50
     GIT_PROGRESS TRUE
 )
-FetchContent_Populate(refl-cpp)
-include_directories(${refl-cpp_SOURCE_DIR}/include)
+FetchContent_Populate(whereami)
+include_directories(${whereami_SOURCE_DIR}/src)
 
 add_subdirectory(src)
+add_subdirectory(schema)
+
+include_directories(schema)
 add_subdirectory(RandomTests)
-add_subdirectory(setup)
-add_subdirectory(run)
-add_subdirectory(python)
+# add_subdirectory(setup)
+#add_subdirectory(run)
+#add_subdirectory(python)
 #add_subdirectory(WebApp)
 
 include(CTest)

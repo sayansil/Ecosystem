@@ -1,61 +1,83 @@
-#include <god.hpp>
-#include <iostream>
-#include <memory>
-#include <stat_fetcher.hpp>
-
-void evaluation(God &god)
-{
-    std::cout << "Population: " << stat_fetcher::get_population(god.organisms) << '\n';
-    std::cout << "Deaths: " << god.recent_deaths << '\n';
-    std::cout << "Births: " << god.recent_births << '\n';
-
-    std::cout << "Average height: " << stat_fetcher::get_stat_average(god.organisms, "height") << '\n';
-    std::cout << "Average weight: " << stat_fetcher::get_stat_average(god.organisms, "weight") << '\n';
-
-    double low, high;
-    std::string attribute;
-
-    attribute = "age";
-    std::tie(low, high) = stat_fetcher::get_stat_gap(god.organisms, attribute);
-    std::cout << attribute << " - Lowest: " << low << " | Highest: " << high << '\n';
-
-    attribute = "generation";
-    std::tie(low, high) = stat_fetcher::get_stat_gap(god.organisms, "generation");
-    std::cout << attribute << " - Lowest: " << low << " | Highest: " << high << '\n';
-
-    std::cout << "Kind Distribution:\n";
-    for (const auto &kind : stat_fetcher::get_kind_distribution(god.organisms))
-    {
-        std::cout << kind.first << " : " << kind.second << '\n';
-    }
-
-    std::cout << "\n\n";
-}
+#include <helper.hpp>
+#include <fmt/core.h>
+#include <vector>
+#include <species_report_generated.h>
+#include <nlohmann/json.hpp>
+#include <flatbuffers/minireflect.h>
 
 int main()
 {
-    unsigned int initial_organism_count = 500;
-    unsigned int years_to_simulate = 50;
+    flatbuffers::FlatBufferBuilder builder;
+    Visualisation::SpeciesReportBuilder report_builder(builder);
 
-    God allah(true);
-    allah.reset_species("animal/deer");
+    std::vector<flatbuffers::Offset<Visualisation::MultiPlot>> stdvecMultiplot;
 
-    while (initial_organism_count--)
+    std::vector<float> tmp = {0, 1, 2};
+
     {
-        allah.spawn_organism(std::make_shared<Animal>("deer", 10, true, "OG-" + std::to_string(initial_organism_count)));
+        Visualisation::MultiPlotBuilder multiplot_builder(builder);
+        std::vector<flatbuffers::Offset<Visualisation::SinglePlot>> stdvecSingleplot;
+
+        // first single plot
+        {
+            Visualisation::SinglePlotBuilder singleplot_builder(builder);
+            singleplot_builder.add_title(builder.CreateString("Theoretical max height"));
+            singleplot_builder.add_x(builder.CreateVector(tmp));
+            singleplot_builder.add_y(builder.CreateVector(tmp));
+            stdvecSingleplot.push_back(singleplot_builder.Finish());
+        }
+
+        // second single plot
+        {
+            Visualisation::SinglePlotBuilder singleplot_builder(builder);
+            singleplot_builder.add_title(builder.CreateString("Theoretical max width"));
+            singleplot_builder.add_x(builder.CreateVector(tmp));
+            singleplot_builder.add_y(builder.CreateVector(tmp));
+            stdvecSingleplot.push_back(singleplot_builder.Finish());
+        }
+
+        // create first multiplot
+        multiplot_builder.add_plots(builder.CreateVector(stdvecSingleplot));
+        multiplot_builder.add_title(builder.CreateString("Theoretical max attributes"));
+        stdvecMultiplot.push_back(multiplot_builder.Finish());
     }
 
-    std::cout << "\n\nINITIAL EVALUATION:\n\n";
-    evaluation(allah);
-
-    std::cout << "Simulating " << years_to_simulate << " years\n";
-
-    while (years_to_simulate--)
     {
-        allah.happy_new_year(true);
-        allah.remember_species("animal/deer");
+        Visualisation::MultiPlotBuilder multiplot_builder(builder);
+        std::vector<flatbuffers::Offset<Visualisation::SinglePlot>> stdvecSingleplot;
+        
+        {
+            Visualisation::SinglePlotBuilder singleplot_builder(builder);
+            singleplot_builder.add_title(builder.CreateString("Theoretical max height"));
+            singleplot_builder.add_x(builder.CreateVector(tmp));
+            singleplot_builder.add_y(builder.CreateVector(tmp));
+            stdvecSingleplot.push_back(singleplot_builder.Finish());
+        }
+        
+        {
+            Visualisation::SinglePlotBuilder singleplot_builder(builder);
+            singleplot_builder.add_title(builder.CreateString("Theoretical max width"));
+            singleplot_builder.add_x(builder.CreateVector(tmp));
+            singleplot_builder.add_y(builder.CreateVector(tmp));
+            stdvecSingleplot.push_back(singleplot_builder.Finish());
+        }
+        
+        multiplot_builder.add_plots(builder.CreateVector(stdvecSingleplot));
+        multiplot_builder.add_title(builder.CreateString("Theoretical max attributes 2"));
+        stdvecMultiplot.push_back(multiplot_builder.Finish());
     }
 
-    std::cout << "\n\nFINAL EVALUATION:\n\n";
-    evaluation(allah);
+    report_builder.add_title(builder.CreateString("My report"));
+    report_builder.add_species(builder.CreateString("Human"));
+    report_builder.add_plots(builder.CreateVectorOfSortedTables(stdvecMultiplot.data(), stdvecMultiplot.size()));
+    builder.Finish(report_builder.Finish());
+
+    auto buffer = builder.Release();
+    builder.Clear();
+
+    fmt::print("Buffer size: {}\n", buffer.size());
+    flatbuffers::ToStringVisitor visitor("", true, "", true);
+    flatbuffers::IterateFlatBuffer(buffer.data(), Visualisation::SpeciesReportTypeTable(), &visitor);
+    nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+    fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 }

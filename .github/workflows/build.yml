@@ -1,0 +1,297 @@
+name: build
+
+on:
+  push:
+      tags:
+      - '*'
+      branches:
+      - master
+      paths:
+      - 'Cpp/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+      tags:
+      - '*'
+      branches:
+      - master
+      paths:
+      - 'Cpp/**'
+      - '.github/workflows/build.yml'
+  workflow_dispatch:
+    inputs:
+      keep_artifacts:
+        type: boolean
+        description: Do you want to keep the build artifacts?
+        default: false
+        required: true
+
+jobs:
+
+  build-linux:
+    name: Build on Linux
+    if: ${{ always() }}
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        build_type: [dbg, rel]
+        include:
+          - compiler: gcc
+            dependencies: 'ninja-build'
+          - compiler: clang
+            dependencies: 'ninja-build clang-14'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        sudo apt install ${{ matrix.dependencies }}
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd Cpp
+        cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Build
+      id: build
+      run: |
+        cd Cpp
+        cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+        zip -r output_linux_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Save release asset
+      id: save_release_asset
+      if: ${{ matrix.build_type }} == 'rel'
+      uses: actions/upload-artifact@v1
+      with:
+        name: output_linux_${{ matrix.compiler }}
+        path: Cpp/output_linux_${{ matrix.compiler }}.zip
+
+  build-macos:
+    name: Build on MacOS
+    if: ${{ always() }}
+    runs-on: macos-12
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        build_type: [dbg, rel]
+        include:
+          - compiler: gcc
+            dependencies: 'gcc ninja'
+          - compiler: clang
+            dependencies: 'ninja'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        brew install ${{ matrix.dependencies }}
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd Cpp
+        cmake --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Build
+      id: build
+      run: |
+        cd Cpp
+        cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+        zip -r output_macos_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Save release asset
+      id: save_release_asset
+      if: ${{ matrix.build_type }} == 'rel'
+      uses: actions/upload-artifact@v1
+      with:
+        name: output_macos_${{ matrix.compiler }}
+        path: Cpp/output_macos_${{ matrix.compiler }}.zip
+
+  build-windows:
+    name: Build on Windows
+    if: ${{ always() }}
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        compiler: [msvc]
+        build_type: [dbg, rel]
+        include:
+          - compiler: msvc
+            dependencies: 'ninja'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        choco install ${{ matrix.dependencies }}
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd Cpp
+        cmake --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Build
+      id: build
+      run: |
+        cd Cpp
+        cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
+        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }} -DestinationPath output_windows_${{ matrix.compiler }}
+
+    - name: Save release asset
+      id: save_release_asset
+      if: ${{ matrix.build_type }} == 'rel'
+      uses: actions/upload-artifact@v1
+      with:
+        name: output_windows_${{ matrix.compiler }}
+        path: Cpp/output_windows_${{ matrix.compiler }}.zip
+
+  create-release:
+    name: Create Github Release
+    if: ${{github.event_name == 'pull_request' && github.head_ref == 'release'}}
+    needs:
+      - build-linux
+      - build-macos
+      - build-windows
+    runs-on: ubuntu-20.04
+    steps:
+
+    - name: "Build Changelog"
+      id: build_changelog
+      uses: mikepenz/release-changelog-builder-action@v2.9.0
+      with:
+        ignorePreReleases: "false"
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v0.1.14
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        name: Ecosystem Simulator ${{ github.ref_name }}
+        body: |
+          ## Changelog
+            ${{ steps.build_changelog.outputs.changelog }}
+          ### Documentation
+          - Read project wiki [here](https://github.com/sayansil/Ecosystem/wiki).
+          - Read installation/usage steps [here](https://github.com/sayansil/Ecosystem/wiki/Usage).
+        draft: true
+        prerelease: true
+        token: ${{ secrets.RELEASE_TOKEN }}
+
+    - name: Output Release URL
+      id: output_release_url
+      run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+
+    - name: Save Release URL
+      id: save_release_url
+      uses: actions/upload-artifact@v1
+      with:
+        name: release_url
+        path: release_url.txt
+
+  publish-assets:
+    name: Publish build assets to Release
+    if: ${{github.event_name == 'pull_request' && github.head_ref == 'release'}}
+    needs: create-release
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        os: [linux, macos, windows]
+        compiler: [gcc, clang, msvc]
+        exclude:
+          - os: linux
+            compiler: msvc
+          - os: macos
+            compiler: msvc
+          - os: windows
+            compiler: gcc
+          - os: windows
+            compiler: clang
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Load release url
+      id: load_release_url
+      uses: actions/download-artifact@v1
+      with:
+        name: release_url
+
+    - name: Load release asset
+      id: load_release_asset
+      uses: actions/download-artifact@v1
+      with:
+        name: output_${{ matrix.os }}_${{ matrix.compiler }}
+
+    - name: Get release info
+      id: get_release_info
+      run: |
+        echo ::set-output name=file_name::output_${{ matrix.os }}_${{ matrix.compiler }}
+        value=`cat release_url/release_url.txt`
+        echo ::set-output name=upload_url::$value
+      env:
+        TAG_REF_NAME: ${{ github.ref }}
+        REPOSITORY_NAME: ${{ github.repository }}
+
+    - name: Upload Release Asset
+      id: upload_release_asset
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+        asset_path: ./${{ steps.get_release_info.outputs.file_name }}/${{ steps.get_release_info.outputs.file_name }}.zip
+        asset_name: ecosystem_example_${{ matrix.os }}_${{ matrix.compiler }}.zip
+        asset_content_type: application/zip
+
+  clean-unused-artifacts:
+    name: Clean unused artifacts
+    needs:
+      - publish-assets
+    runs-on: ubuntu-20.04
+
+    steps:
+    - name: Clean
+      id: clean
+      uses: geekyeggo/delete-artifact@v1
+      with:
+        name: release_url
+
+  clean-build-artifacts:
+    name: Clean build artifacts
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.head_ref == 'release') || github.event.inputs.keep_artifacts != 'true') }}
+    needs:
+      - build-linux
+      - build-macos
+      - build-windows
+      - publish-assets
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        os: [linux, macos, windows]
+        compiler: [gcc, clang, msvc]
+        exclude:
+          - os: linux
+            compiler: msvc
+          - os: macos
+            compiler: msvc
+          - os: windows
+            compiler: gcc
+          - os: windows
+            compiler: clang
+
+    steps:
+    - name: Clean
+      id: clean
+      uses: geekyeggo/delete-artifact@v1
+      with:
+        name: output_${{ matrix.os }}_${{ matrix.compiler }}

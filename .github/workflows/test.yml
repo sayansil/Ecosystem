@@ -1,0 +1,137 @@
+name: test
+
+on:
+  push:
+      tags:
+      - '*'
+      branches:
+      - master
+      paths:
+      - 'Cpp/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+      tags:
+      - '*'
+      branches:
+      - master
+      paths:
+      - 'Cpp/**'
+      - '.github/workflows/test.yml'
+
+jobs:
+
+  build-linux:
+    name: Build on Linux
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        build_type: [dbg, rel]
+        include:
+          - compiler: gcc
+            dependencies: 'ninja-build'
+          - compiler: clang
+            dependencies: 'ninja-build clang-12'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        sudo apt install ${{ matrix.dependencies }}
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd Cpp
+        cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Build
+      id: build
+      run: |
+        cd Cpp
+        cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Run Tests
+      id: run_tests
+      run: |
+        export ECOSYSTEM_ROOT=`pwd`
+        cd Cpp
+        ctest --preset test-lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+  build-macos:
+    name: Build on MacOS
+    runs-on: macos-12
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        build_type: [dbg, rel]
+        include:
+          - compiler: gcc
+            dependencies: 'gcc ninja'
+          - compiler: clang
+            dependencies: 'ninja'
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        brew install ${{ matrix.dependencies }}
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd Cpp
+        cmake --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Build
+      id: build
+      run: |
+        cd Cpp
+        cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Run Tests
+      id: run_tests
+      run: |
+        export ECOSYSTEM_ROOT=`pwd`
+        cd Cpp
+        ctest --preset test-osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        compiler: [msvc]
+        build_type: [dbg, rel]
+        include:
+          - compiler: msvc
+            dependencies: 'ninja'
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.10.0
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        choco install ${{ matrix.dependencies }}
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd Cpp
+        cmake --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Build
+      id: build
+      run: |
+        cd Cpp
+        cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Run Tests
+      id: run_tests
+      run: |
+        $env:ECOSYSTEM_ROOT = ($pwd).path
+        cd Cpp
+        ctest --preset test-win-${{ matrix.compiler }}-${{ matrix.build_type }}

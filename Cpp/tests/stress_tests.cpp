@@ -21,10 +21,12 @@ TEST_CASE("Setup", "[test_setup]")
 
 TEST_CASE("Create world without db", "[test_cworld_nodb]")
 {
+    const size_t simulation_years = 100;
+
     REQUIRE_NOTHROW([&]() {
         setup::setup();
 
-        const size_t initial_organism_count = 100;
+        const size_t initial_organism_count = 5000;
 
         std::vector<std::unordered_map<std::string, std::string>> organisms;
         organisms.reserve(initial_organism_count);
@@ -39,7 +41,9 @@ TEST_CASE("Create world without db", "[test_cworld_nodb]")
         God allah;
         allah.cleanSlate();
         allah.createWorld(organisms);
-        allah.happy_new_year(false);
+        for (size_t i = 0; i < simulation_years; i++) {
+            allah.happy_new_year(true);
+        }
     }());
 }
 
@@ -47,12 +51,12 @@ TEST_CASE("Create world with db", "[test_cworld_db]")
 {
 
     std::vector<FBuffer> rows;
-    const size_t simulation_years = 20;
+    const size_t simulation_years = 100;
 
     REQUIRE_NOTHROW([&]() {
         setup::setup();
-        
-        const size_t initial_organism_count = 100;
+
+        const size_t initial_organism_count = 5000;
 
         std::vector<std::unordered_map<std::string, std::string>> organisms;
         organisms.reserve(initial_organism_count);
@@ -69,7 +73,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]")
             allah.cleanSlate();
             allah.createWorld(organisms);
             for (size_t i = 0; i < simulation_years; i++) {
-                allah.happy_new_year(false);
+                allah.happy_new_year(true);
             }
         }
 

@@ -1,20 +1,40 @@
 #include <god.hpp>
+#include <setup.hpp>
 #include <iostream>
+#include <vector>
+#include <nlohmann/json.hpp>
+#include <flatbuffers/idl.h>
+#include <fmt/core.h>
+#include <fmt/ranges.h>
+#include <flatbuffers/minireflect.h>
+#include <unordered_map>
+#include <stat_fetcher.hpp>
+#include <database_manager.hpp>
+#include <ecosystem_types.hpp>
 
 int main()
 {
-    unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 20;
+    setup::setup();
+
+    const size_t initial_organism_count = 4500;
+    const size_t simulation_years = 100;
+
+    std::vector<std::unordered_map<std::string, std::string>> organisms;
+    organisms.reserve(initial_organism_count);
+
+    for (size_t i = 0; i < initial_organism_count; i++)
+    {
+        organisms.push_back({{"kind", "deer"},
+                             {"kingdom", "0"},
+                             {"age", "20"}});
+    }
 
     God allah;
-    allah.reset_species("animal/deer");
-    while (initial_organism_count--)
+    allah.cleanSlate();
+    allah.createWorld(organisms);
+    for(size_t i = 1; i <= simulation_years; i++)
     {
-        allah.spawn_organism(std::make_shared<Animal>("deer", 10, false, "OG-" + std::to_string(initial_organism_count)));
+        allah.happy_new_year(false);
     }
-
-    while (years_to_simulate--)
-    {
-        allah.happy_new_year(true);
-    }
+    fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
 }
