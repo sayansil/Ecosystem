@@ -5,6 +5,7 @@ __pycache__/*
 Cpp/.ccls-cache/*
 .ccls-cache/*
 **.swp
+Cpp/.cache/*
 build-Cpp-Desktop-Release/
 python/*
 Python/keys.json
@@ -18,8 +19,11 @@ Cpp/.vscode
 Cpp/WebApp/keys.json
 Cpp/WebApp/extern/uWebSockets
 Cpp/python/pybind11
+Cpp/Testing/*
 compile_commands.json
 release/
 .firebase/*
 .firebaserc
 ecosystem-*
+tags
+output

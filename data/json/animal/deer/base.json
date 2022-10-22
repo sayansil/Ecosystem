@@ -51,6 +51,6 @@
     "conceiving_probability": 0.80,
     "offsprings_factor": 2.0,
     "food_chain_rank": 1,
-    "vision_radius" : 100,
-    "is_asexual": 0
+    "vision_radius": 100,
+    "sexuality": 0
 }

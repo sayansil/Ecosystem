@@ -25,7 +25,7 @@ TEST_CASE("Create world without db", "[test_cworld_nodb]")
                     {
         setup::setup();
 
-        unsigned int initial_organism_count = 500;
+        unsigned int initial_organism_count = 50000;
         std::vector<std::unordered_map<std::string, std::string>> organisms;
         organisms.reserve(initial_organism_count);
 
@@ -50,7 +50,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]")
                     {
         setup::setup();
         
-        unsigned int initial_organism_count = 500;
+        unsigned int initial_organism_count = 50000;
         std::vector<std::unordered_map<std::string, std::string>> organisms;
         organisms.reserve(initial_organism_count);
 

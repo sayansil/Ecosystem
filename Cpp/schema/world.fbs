@@ -1,0 +1,114 @@
+namespace Ecosystem;
+
+enum Gender : ubyte { Male = 0, Female}
+enum Reproduction : ubyte { Sexual = 0, Asexual}
+enum Monitor : ubyte {None = 0, Simulation}
+enum Sleep : ubyte {Awake = 0, Drowsy, Asleep}
+enum KingdomE : ubyte {Animal = 0, Plant}
+
+table ChromosomeStrand {
+    code:string (key, required);
+    start:ushort;
+    length:ushort;
+}
+
+table Organism {
+
+    /// Fixed for a species
+    kind:string (required);
+    kingdom:KingdomE = Animal;
+    chromosome_number:ushort = 0;
+    chromosome_structure:[ChromosomeStrand];
+    food_chain_rank:ubyte = 0;
+    sexuality:Reproduction = Sexual;
+    age_fitness_on_death_ratio:float = 0.0;
+    conceiving_probability:float = 0.0;
+    mating_probability:float = 0.0;
+    mating_age_start:uint = 0;
+    mating_age_end:uint = 0;
+    max_age:uint = 0;
+    mutation_probability:float = 0.0;
+    offsprings_factor:float = 0.0;
+    height_on_speed:float;
+    height_on_stamina:float;
+    height_on_vitality:float;
+    weight_on_speed:float;
+    weight_on_stamina:float;
+    weight_on_vitality:float;
+    vitality_on_appetite:float;
+    vitality_on_speed:float;
+    stamina_on_appetite:float;
+    stamina_on_speed:float;
+    theoretical_maximum_base_appetite:float;
+    theoretical_maximum_base_height:float;
+    theoretical_maximum_base_speed:float;
+    theoretical_maximum_base_stamina:float;
+    theoretical_maximum_base_vitality:float;
+    theoretical_maximum_base_weight:float;
+    theoretical_maximum_height:float;
+    theoretical_maximum_speed:float;
+    theoretical_maximum_weight:float;
+    theoretical_maximum_height_multiplier:float;
+    theoretical_maximum_speed_multiplier:float;
+    theoretical_maximum_stamina_multiplier:float;
+    theoretical_maximum_vitality_multiplier:float;
+    theoretical_maximum_weight_multiplier:float;
+
+    ///  Fixed for an organism
+    name:string (key, required);
+    chromosome:[ubyte] (required);
+    gender:Gender = Male;
+    generation:uint = 0;
+    immunity:float = 0.0;
+    base_appetite:float;
+    base_height:float;
+    base_speed:float;
+    base_stamina:float;
+    base_vitality:float;
+    base_weight:float;
+    height_multiplier:float;
+    speed_multiplier:float;
+    stamina_multiplier:float;
+    vitality_multiplier:float;
+    weight_multiplier:float;
+    max_height:float;
+    max_weight:float;
+
+    /// Stats affected by age
+    age:uint = 0;
+    height:float = 0.0;
+    weight:float = 0.0;
+    static_fitness:float = 0.0;
+    max_appetite_at_age:float;
+    max_speed_at_age:float;
+    max_stamina_at_age:float;
+    max_vitality_at_age:float;
+
+    // Dynamic attributes
+    appetite:float;
+    speed:float;
+    stamina:float;
+    vitality:float;
+    X:ulong;
+    Y:ulong;
+    dynamic_fitness:float = 1.0;
+
+    /// Miscellaneous attributes
+    vision_radius:float;
+    sleep_restore_factor:float;
+    asleep:Sleep;
+    monitor:Monitor = None;
+}
+
+table Species {
+    kind:string (key, required);
+    kingdom:KingdomE = Animal;
+    organism:[Organism];
+}
+
+table World {
+    year:uint (key);
+    species:[Species];
+}
+
+root_type World;
