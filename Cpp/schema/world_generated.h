@@ -359,9 +359,6 @@ struct OrganismT : public flatbuffers::NativeTable {
   uint32_t age = 0;
   float height = 0.0f;
   float weight = 0.0f;
-  float age_death_factor = 0.0f;
-  float fitness_death_factor = 0.0f;
-  float death_factor = 0.0f;
   float static_fitness = 0.0f;
   float max_appetite_at_age = 0.0f;
   float max_speed_at_age = 0.0f;
@@ -373,7 +370,7 @@ struct OrganismT : public flatbuffers::NativeTable {
   float vitality = 0.0f;
   uint64_t X = 0;
   uint64_t Y = 0;
-  float dynamic_fitness = 0.0f;
+  float dynamic_fitness = 1.0f;
   float vision_radius = 0.0f;
   float sleep_restore_factor = 0.0f;
   Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake;
@@ -447,25 +444,22 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_AGE = 116,
     VT_HEIGHT = 118,
     VT_WEIGHT = 120,
-    VT_AGE_DEATH_FACTOR = 122,
-    VT_FITNESS_DEATH_FACTOR = 124,
-    VT_DEATH_FACTOR = 126,
-    VT_STATIC_FITNESS = 128,
-    VT_MAX_APPETITE_AT_AGE = 130,
-    VT_MAX_SPEED_AT_AGE = 132,
-    VT_MAX_STAMINA_AT_AGE = 134,
-    VT_MAX_VITALITY_AT_AGE = 136,
-    VT_APPETITE = 138,
-    VT_SPEED = 140,
-    VT_STAMINA = 142,
-    VT_VITALITY = 144,
-    VT_X = 146,
-    VT_Y = 148,
-    VT_DYNAMIC_FITNESS = 150,
-    VT_VISION_RADIUS = 152,
-    VT_SLEEP_RESTORE_FACTOR = 154,
-    VT_ASLEEP = 156,
-    VT_MONITOR = 158
+    VT_STATIC_FITNESS = 122,
+    VT_MAX_APPETITE_AT_AGE = 124,
+    VT_MAX_SPEED_AT_AGE = 126,
+    VT_MAX_STAMINA_AT_AGE = 128,
+    VT_MAX_VITALITY_AT_AGE = 130,
+    VT_APPETITE = 132,
+    VT_SPEED = 134,
+    VT_STAMINA = 136,
+    VT_VITALITY = 138,
+    VT_X = 140,
+    VT_Y = 142,
+    VT_DYNAMIC_FITNESS = 144,
+    VT_VISION_RADIUS = 146,
+    VT_SLEEP_RESTORE_FACTOR = 148,
+    VT_ASLEEP = 150,
+    VT_MONITOR = 152
   };
   /// Fixed for a species
   const flatbuffers::String *kind() const {
@@ -830,24 +824,6 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_weight(float _weight = 0.0f) {
     return SetField<float>(VT_WEIGHT, _weight, 0.0f);
   }
-  float age_death_factor() const {
-    return GetField<float>(VT_AGE_DEATH_FACTOR, 0.0f);
-  }
-  bool mutate_age_death_factor(float _age_death_factor = 0.0f) {
-    return SetField<float>(VT_AGE_DEATH_FACTOR, _age_death_factor, 0.0f);
-  }
-  float fitness_death_factor() const {
-    return GetField<float>(VT_FITNESS_DEATH_FACTOR, 0.0f);
-  }
-  bool mutate_fitness_death_factor(float _fitness_death_factor = 0.0f) {
-    return SetField<float>(VT_FITNESS_DEATH_FACTOR, _fitness_death_factor, 0.0f);
-  }
-  float death_factor() const {
-    return GetField<float>(VT_DEATH_FACTOR, 0.0f);
-  }
-  bool mutate_death_factor(float _death_factor = 0.0f) {
-    return SetField<float>(VT_DEATH_FACTOR, _death_factor, 0.0f);
-  }
   float static_fitness() const {
     return GetField<float>(VT_STATIC_FITNESS, 0.0f);
   }
@@ -915,10 +891,10 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return SetField<uint64_t>(VT_Y, _Y, 0);
   }
   float dynamic_fitness() const {
-    return GetField<float>(VT_DYNAMIC_FITNESS, 0.0f);
+    return GetField<float>(VT_DYNAMIC_FITNESS, 1.0f);
   }
-  bool mutate_dynamic_fitness(float _dynamic_fitness = 0.0f) {
-    return SetField<float>(VT_DYNAMIC_FITNESS, _dynamic_fitness, 0.0f);
+  bool mutate_dynamic_fitness(float _dynamic_fitness = 1.0f) {
+    return SetField<float>(VT_DYNAMIC_FITNESS, _dynamic_fitness, 1.0f);
   }
   /// Miscellaneous attributes
   float vision_radius() const {
@@ -1011,9 +987,6 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_AGE) &&
            VerifyField<float>(verifier, VT_HEIGHT) &&
            VerifyField<float>(verifier, VT_WEIGHT) &&
-           VerifyField<float>(verifier, VT_AGE_DEATH_FACTOR) &&
-           VerifyField<float>(verifier, VT_FITNESS_DEATH_FACTOR) &&
-           VerifyField<float>(verifier, VT_DEATH_FACTOR) &&
            VerifyField<float>(verifier, VT_STATIC_FITNESS) &&
            VerifyField<float>(verifier, VT_MAX_APPETITE_AT_AGE) &&
            VerifyField<float>(verifier, VT_MAX_SPEED_AT_AGE) &&
@@ -1218,15 +1191,6 @@ struct OrganismBuilder {
   void add_weight(float weight) {
     fbb_.AddElement<float>(Organism::VT_WEIGHT, weight, 0.0f);
   }
-  void add_age_death_factor(float age_death_factor) {
-    fbb_.AddElement<float>(Organism::VT_AGE_DEATH_FACTOR, age_death_factor, 0.0f);
-  }
-  void add_fitness_death_factor(float fitness_death_factor) {
-    fbb_.AddElement<float>(Organism::VT_FITNESS_DEATH_FACTOR, fitness_death_factor, 0.0f);
-  }
-  void add_death_factor(float death_factor) {
-    fbb_.AddElement<float>(Organism::VT_DEATH_FACTOR, death_factor, 0.0f);
-  }
   void add_static_fitness(float static_fitness) {
     fbb_.AddElement<float>(Organism::VT_STATIC_FITNESS, static_fitness, 0.0f);
   }
@@ -1261,7 +1225,7 @@ struct OrganismBuilder {
     fbb_.AddElement<uint64_t>(Organism::VT_Y, Y, 0);
   }
   void add_dynamic_fitness(float dynamic_fitness) {
-    fbb_.AddElement<float>(Organism::VT_DYNAMIC_FITNESS, dynamic_fitness, 0.0f);
+    fbb_.AddElement<float>(Organism::VT_DYNAMIC_FITNESS, dynamic_fitness, 1.0f);
   }
   void add_vision_radius(float vision_radius) {
     fbb_.AddElement<float>(Organism::VT_VISION_RADIUS, vision_radius, 0.0f);
@@ -1350,9 +1314,6 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     uint32_t age = 0,
     float height = 0.0f,
     float weight = 0.0f,
-    float age_death_factor = 0.0f,
-    float fitness_death_factor = 0.0f,
-    float death_factor = 0.0f,
     float static_fitness = 0.0f,
     float max_appetite_at_age = 0.0f,
     float max_speed_at_age = 0.0f,
@@ -1364,7 +1325,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     float vitality = 0.0f,
     uint64_t X = 0,
     uint64_t Y = 0,
-    float dynamic_fitness = 0.0f,
+    float dynamic_fitness = 1.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
     Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake,
@@ -1384,9 +1345,6 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
   builder_.add_max_speed_at_age(max_speed_at_age);
   builder_.add_max_appetite_at_age(max_appetite_at_age);
   builder_.add_static_fitness(static_fitness);
-  builder_.add_death_factor(death_factor);
-  builder_.add_fitness_death_factor(fitness_death_factor);
-  builder_.add_age_death_factor(age_death_factor);
   builder_.add_weight(weight);
   builder_.add_height(height);
   builder_.add_age(age);
@@ -1517,9 +1475,6 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     uint32_t age = 0,
     float height = 0.0f,
     float weight = 0.0f,
-    float age_death_factor = 0.0f,
-    float fitness_death_factor = 0.0f,
-    float death_factor = 0.0f,
     float static_fitness = 0.0f,
     float max_appetite_at_age = 0.0f,
     float max_speed_at_age = 0.0f,
@@ -1531,7 +1486,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     float vitality = 0.0f,
     uint64_t X = 0,
     uint64_t Y = 0,
-    float dynamic_fitness = 0.0f,
+    float dynamic_fitness = 1.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
     Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake,
@@ -1601,9 +1556,6 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
       age,
       height,
       weight,
-      age_death_factor,
-      fitness_death_factor,
-      death_factor,
       static_fitness,
       max_appetite_at_age,
       max_speed_at_age,
@@ -1937,9 +1889,6 @@ inline void Organism::UnPackTo(OrganismT *_o, const flatbuffers::resolver_functi
   { auto _e = age(); _o->age = _e; }
   { auto _e = height(); _o->height = _e; }
   { auto _e = weight(); _o->weight = _e; }
-  { auto _e = age_death_factor(); _o->age_death_factor = _e; }
-  { auto _e = fitness_death_factor(); _o->fitness_death_factor = _e; }
-  { auto _e = death_factor(); _o->death_factor = _e; }
   { auto _e = static_fitness(); _o->static_fitness = _e; }
   { auto _e = max_appetite_at_age(); _o->max_appetite_at_age = _e; }
   { auto _e = max_speed_at_age(); _o->max_speed_at_age = _e; }
@@ -2025,9 +1974,6 @@ inline flatbuffers::Offset<Organism> CreateOrganism(flatbuffers::FlatBufferBuild
   auto _age = _o->age;
   auto _height = _o->height;
   auto _weight = _o->weight;
-  auto _age_death_factor = _o->age_death_factor;
-  auto _fitness_death_factor = _o->fitness_death_factor;
-  auto _death_factor = _o->death_factor;
   auto _static_fitness = _o->static_fitness;
   auto _max_appetite_at_age = _o->max_appetite_at_age;
   auto _max_speed_at_age = _o->max_speed_at_age;
@@ -2105,9 +2051,6 @@ inline flatbuffers::Offset<Organism> CreateOrganism(flatbuffers::FlatBufferBuild
       _age,
       _height,
       _weight,
-      _age_death_factor,
-      _fitness_death_factor,
-      _death_factor,
       _static_fitness,
       _max_appetite_at_age,
       _max_speed_at_age,
@@ -2366,9 +2309,6 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
-    { flatbuffers::ET_FLOAT, 0, -1 },
     { flatbuffers::ET_ULONG, 0, -1 },
     { flatbuffers::ET_ULONG, 0, -1 },
     { flatbuffers::ET_FLOAT, 0, -1 },
@@ -2445,9 +2385,6 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "age",
     "height",
     "weight",
-    "age_death_factor",
-    "fitness_death_factor",
-    "death_factor",
     "static_fitness",
     "max_appetite_at_age",
     "max_speed_at_age",
@@ -2466,7 +2403,7 @@ inline const flatbuffers::TypeTable *OrganismTypeTable() {
     "monitor"
   };
   static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 78, type_codes, type_refs, nullptr, nullptr, names
+    flatbuffers::ST_TABLE, 75, type_codes, type_refs, nullptr, nullptr, names
   };
   return &tt;
 }

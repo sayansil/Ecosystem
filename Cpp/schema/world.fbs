@@ -78,9 +78,6 @@ table Organism {
     age:uint = 0;
     height:float = 0.0;
     weight:float = 0.0;
-    age_death_factor:float = 0.0;
-    fitness_death_factor:float = 0.0;
-    death_factor:float = 0.0;
     static_fitness:float = 0.0;
     max_appetite_at_age:float;
     max_speed_at_age:float;
@@ -94,7 +91,7 @@ table Organism {
     vitality:float;
     X:ulong;
     Y:ulong;
-    dynamic_fitness:float = 0.0;
+    dynamic_fitness:float = 1.0;
 
     /// Miscellaneous attributes
     vision_radius:float;

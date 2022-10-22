@@ -10,21 +10,20 @@ static bool is_normal_child_plant(const Ecosystem::Organism *organism);
 
 namespace organism_opts
 {
-    float get_fitness(Ecosystem::Organism *organism)
+    float get_fitness(const Ecosystem::Organism *organism)
     {
         return organism->static_fitness() * organism->dynamic_fitness();
     }
     
-    void generate_death_factor(Ecosystem::Organism *organism)
+    float generate_death_factor(const Ecosystem::Organism *organism)
     {
         const double tmp = std::exp((std::log(1.0f / 199) / organism->max_age()) * organism->age());
-        organism->mutate_age_death_factor(static_cast<float>((1 - tmp) / (1 + tmp)));
+        const double age_death_factor = static_cast<float>((1 - tmp) / (1 + tmp));
+        const double fitness_death_factor = 1.0f / get_fitness(organism);
 
-        organism->mutate_fitness_death_factor(1.0f / get_fitness(organism));
-
-        organism->mutate_death_factor(static_cast<float>(helper::weighted_average(
-            {organism->age_death_factor(), organism->fitness_death_factor()}, 
-            {organism->age_fitness_on_death_ratio(), 1.0})));
+        return static_cast<float>(helper::weighted_average(
+            {age_death_factor, fitness_death_factor}, 
+            {organism->age_fitness_on_death_ratio(), 1.0}));
     }
     
     bool is_normal_child(const Ecosystem::Organism *organism)

@@ -305,18 +305,6 @@ namespace stat_fetcher
                     prev_avg = prev_avg + (organism->Y() - prev_avg) / (k + 1);
                 }
                 {
-                    float &prev_avg = org_map["age_death_factor"];
-                    prev_avg = prev_avg + (organism->age_death_factor() - prev_avg) / (k + 1);
-                }
-                {
-                    float &prev_avg = org_map["fitness_death_factor"];
-                    prev_avg = prev_avg + (organism->fitness_death_factor() - prev_avg) / (k + 1);
-                }
-                {
-                    float &prev_avg = org_map["death_factor"];
-                    prev_avg = prev_avg + (organism->death_factor() - prev_avg) / (k + 1);
-                }
-                {
                     float &prev_avg = org_map["max_appetite_at_age"];
                     prev_avg = prev_avg + (organism->max_appetite_at_age() - prev_avg) / (k + 1);
                 }
@@ -401,9 +389,6 @@ namespace stat_fetcher
                 static_cast<uint32_t>(org_map["age"]),
                 org_map["height"],
                 org_map["weight"],
-                org_map["age_death_factor"],
-                org_map["fitness_death_factor"],
-                org_map["death_factor"],
                 org_map["static_fitness"],
                 org_map["max_appetite_at_age"],
                 org_map["max_speed_at_age"],

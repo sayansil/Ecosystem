@@ -238,9 +238,6 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
         age - 1,
         get_value_from_chromosome(chromosome_vec, c_structure, "bh", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_height"), (int)getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number")),
         get_value_from_chromosome(chromosome_vec, c_structure, "bw", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_weight"), (int)getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number")),
-        0.0, /* age_death_factor */
-        0.0, /* fitness_death_factor */
-        0.0, /* death_factor */
         0.0, /* static_fitness */
         get_value_from_chromosome(chromosome_vec, c_structure, "ba", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_appetite"), (int)getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number")),
         get_value_from_chromosome(chromosome_vec, c_structure, "bp", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_speed"), (int)getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number")),
@@ -252,7 +249,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
         get_value_from_chromosome(chromosome_vec, c_structure, "bv", getValueAsFloat(constants::species_constants_map[kind], "species_theoretical_maximum_base_vitality"), (int)getValueAsUlong(constants::species_constants_map[kind], "species_chromosome_number")),
         XY.first,
         XY.second,
-        0.0, /* dynamic_fitness */
+        1.0, /* dynamic_fitness */
         getValueAsFloat(constants::species_constants_map[kind], "vision_radius"),
         getValueAsFloat(constants::species_constants_map[kind], "species_sleep_restore_factor"),
         Ecosystem::Sleep::Awake,
@@ -261,7 +258,6 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 
     Ecosystem::Organism *organism_ptr = helper::get_mutable_pointer_from_offset(builder, organism_offset);
     organism_opts::increment_age(organism_ptr);
-    organism_opts::evaluate_static_fitness(organism_ptr);
 
     return organism_offset;
 }
@@ -420,9 +416,6 @@ flatbuffers::Offset<Ecosystem::Organism> God::clone_organism(
         previous_organism->age(),
         previous_organism->height(),
         previous_organism->weight(),
-        previous_organism->age_death_factor(),
-        previous_organism->fitness_death_factor(),
-        previous_organism->death_factor(),
         previous_organism->static_fitness(),
         previous_organism->max_appetite_at_age(),
         previous_organism->max_speed_at_age(),
@@ -478,9 +471,9 @@ void God::happy_new_year(const bool &log)
 
         for (uint32_t i = 0; i < species->organism()->size(); i++)
         {
-            Ecosystem::Organism *organism = species->mutable_organism()->GetMutableObject(i);
-            organism_opts::generate_death_factor(organism);
-            organisms_vec.emplace_back(std::make_pair(organism->death_factor(), i));
+            const Ecosystem::Organism *organism = species->organism()->Get(i);
+            const float death_factor = organism_opts::generate_death_factor(organism);
+            organisms_vec.emplace_back(std::make_pair(death_factor, i));
         }
 
         // Sort organism_vec by death factor
@@ -642,11 +635,10 @@ void God::happy_new_year(const bool &log)
                                     std::make_pair(child_X, child_Y),
                                     monitor_child);
 
-                            Ecosystem::Organism *child_ptr = helper::get_mutable_pointer_from_offset(builder, child_offset);
-                            organism_opts::generate_death_factor(child_ptr);
+                            const Ecosystem::Organism *child_ptr = helper::get_pointer_from_offset(builder, child_offset);
 
                             // Skip abnormal children (with weird stats)
-                            if (organism_opts::is_normal_child(helper::get_pointer_from_offset(builder, child_offset)))
+                            if (organism_opts::is_normal_child(child_ptr))
                             {
                                 stdvecOrganisms.push_back(child_offset);
                                 recent_births++;
