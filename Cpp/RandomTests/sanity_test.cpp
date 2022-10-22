@@ -29,8 +29,6 @@ int main()
                              {"age", "20"}});
     }
 
-    FBuffer avg_instance;
-
     God allah;
     allah.cleanSlate();
     allah.createWorld(organisms);

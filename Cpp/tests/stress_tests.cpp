@@ -21,57 +21,67 @@ TEST_CASE("Setup", "[test_setup]")
 
 TEST_CASE("Create world without db", "[test_cworld_nodb]")
 {
-    REQUIRE_NOTHROW([&]()
-                    {
+    const size_t simulation_years = 100;
+
+    REQUIRE_NOTHROW([&]() {
         setup::setup();
 
-        unsigned int initial_organism_count = 50000;
+        const size_t initial_organism_count = 5000;
+
         std::vector<std::unordered_map<std::string, std::string>> organisms;
         organisms.reserve(initial_organism_count);
 
         for (size_t i = 0; i < initial_organism_count; i++)
         {
             organisms.push_back({{"kind", "deer"},
-                                 {"kingdom", "0"},
-                                 {"age", "20"}});
+                                {"kingdom", "0"},
+                                {"age", "20"}});
         }
 
         God allah;
         allah.cleanSlate();
-        allah.createWorld(organisms); }());
+        allah.createWorld(organisms);
+        for (size_t i = 0; i < simulation_years; i++) {
+            allah.happy_new_year(true);
+        }
+    }());
 }
 
 TEST_CASE("Create world with db", "[test_cworld_db]")
 {
 
     std::vector<FBuffer> rows;
+    const size_t simulation_years = 100;
 
-    REQUIRE_NOTHROW([&]()
-                    {
+    REQUIRE_NOTHROW([&]() {
         setup::setup();
-        
-        unsigned int initial_organism_count = 50000;
+
+        const size_t initial_organism_count = 5000;
+
         std::vector<std::unordered_map<std::string, std::string>> organisms;
         organisms.reserve(initial_organism_count);
 
         for (size_t i = 0; i < initial_organism_count; i++)
         {
             organisms.push_back({{"kind", "deer"},
-                                    {"kingdom", "0"},
-                                    {"age", "20"}});
+                                {"kingdom", "0"},
+                                {"age", "20"}});
         }
 
-        FBuffer buff;
         {
-            God allah;
+            God allah(true);
             allah.cleanSlate();
             allah.createWorld(organisms);
-            buff = stat_fetcher::create_avg_world(allah.buffer);
+            for (size_t i = 0; i < simulation_years; i++) {
+                allah.happy_new_year(true);
+            }
         }
 
-        DatabaseManager db_manager;
-        db_manager.insert_rows({buff});
-        rows = db_manager.read_all_rows(); }());
+        {
+            DatabaseManager db_manager;
+            rows = db_manager.read_all_rows(); 
+        }
+    }());
 
-    REQUIRE(rows.size() == 1);
+    REQUIRE(rows.size() == simulation_years);
 }
