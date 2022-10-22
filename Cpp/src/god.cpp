@@ -578,6 +578,7 @@ void God::happy_new_year(const bool &log)
                         parent1.conceiving_probability = parent1_ptr->conceiving_probability();
                         parent1.monitor = parent1_ptr->monitor();
                         parent1.X = parent1_ptr->X();
+                        parent1.Y = parent1_ptr->Y();
                         parent1.kind = parent1_ptr->kind()->str();
                         parent1.generation = parent1_ptr->generation();
                         parent1.mutation_probability = parent1_ptr->mutation_probability();
@@ -593,6 +594,7 @@ void God::happy_new_year(const bool &log)
                         parent2.conceiving_probability = parent2_ptr->conceiving_probability();
                         parent2.monitor = parent2_ptr->monitor();
                         parent2.X = parent2_ptr->X();
+                        parent2.Y = parent2_ptr->Y();
                         parent2.kind = parent2_ptr->kind()->str();
                         parent2.generation = parent2_ptr->generation();
                         parent2.mutation_probability = parent2_ptr->mutation_probability();

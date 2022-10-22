@@ -436,7 +436,7 @@ namespace stat_fetcher
                 org_map["appetite"],
                 org_map["speed"],
                 static_cast<uint32_t>(org_map["X"]),
-                static_cast<uint32_t>(org_map["y"]),
+                static_cast<uint32_t>(org_map["Y"]),
                 org_map["dynamic_fitness"],
                 org_map["vision_radius"],
                 org_map["sleep_restore_factor"],

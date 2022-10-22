@@ -16,7 +16,7 @@ class God
 {
 public:
     flatbuffers::DetachedBuffer buffer;
-    uint32_t year = 0;
+    uint32_t year = 1;
 
     uint32_t recent_deaths = 0;
     uint32_t recent_births = 0;

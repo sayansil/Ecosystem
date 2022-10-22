@@ -16,8 +16,9 @@ int main()
 {
     setup::setup();
 
-    //unsigned int initial_organism_count = 4500;
-    unsigned int initial_organism_count = 10;
+    const size_t initial_organism_count = 4500;
+    const size_t simulation_years = 100;
+
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
 
@@ -35,37 +36,10 @@ int main()
         God allah;
         allah.cleanSlate();
         allah.createWorld(organisms);
-        for(size_t i = 1; i <= 7; i++)
+        for(size_t i = 1; i <= simulation_years; i++)
         {
-            allah.happy_new_year(true);
-            auto age_map = stat_fetcher::get_age_count(allah.buffer);
-            auto gen_map = stat_fetcher::get_generation_count(allah.buffer);
-
-            fmt::print("Generation Map\n{}\n", gen_map);
-            fmt::print("Age Map\n{}\n\n", age_map);
+            allah.happy_new_year(false);
         }
         fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
-
-        // flatbuffers::ToStringVisitor visitor("", true, "", true);
-        // flatbuffers::IterateFlatBuffer(allah.buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
-        // fmt::print("Iterated result: {}\n", visitor.s);
-        // nlohmann::json json_data = nlohmann::json::parse(visitor.s);
-        // fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
-
-        avg_instance = stat_fetcher::create_avg_world(allah.buffer);
     }
-
-    //{
-    //    DatabaseManager db_manager;
-
-    //    db_manager.insert_rows({avg_instance});
-
-    //    std::vector<FBuffer> rows = db_manager.read_all_rows();
-    //    fmt::print("Rows: {}\n", rows.size());
-
-    //    flatbuffers::ToStringVisitor visitor("", true, "", true);
-    //    flatbuffers::IterateFlatBuffer(rows[0].data(), Ecosystem::WorldTypeTable(), &visitor);
-    //    nlohmann::json json_data = nlohmann::json::parse(visitor.s);
-    //    fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
-    //}
 }

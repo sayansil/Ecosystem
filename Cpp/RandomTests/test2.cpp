@@ -5,6 +5,7 @@
 #include <nlohmann/json.hpp>
 #include <flatbuffers/idl.h>
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 #include <flatbuffers/minireflect.h>
 #include <unordered_map>
 #include <stat_fetcher.hpp>
@@ -15,7 +16,9 @@ int main()
 {
     setup::setup();
 
-    unsigned int initial_organism_count = 4500;
+    const size_t initial_organism_count = 10;
+    const size_t simulation_years = 2;
+
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
 
@@ -26,10 +29,39 @@ int main()
                              {"age", "20"}});
     }
 
-    God allah;
-    // Cannot create 2 db instances in same context
-    // allah.cleanSlate();
-    allah.createWorld(organisms);
-    fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
-    allah.happy_new_year();
+    FBuffer avg_instance;
+
+    // Keep God (contains db object) and other db operations in separate scopes
+    {
+        God allah;
+        allah.cleanSlate();
+        allah.createWorld(organisms);
+        for(size_t i = 1; i <= simulation_years; i++)
+        {
+            allah.happy_new_year(true);
+        }
+        fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
+
+        // flatbuffers::ToStringVisitor visitor("", true, "", true);
+        // flatbuffers::IterateFlatBuffer(allah.buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
+        // fmt::print("Iterated result: {}\n", visitor.s);
+        // nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+        // fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
+
+        avg_instance = stat_fetcher::create_avg_world(allah.buffer);
+    }
+
+    {
+       DatabaseManager db_manager;
+
+       db_manager.insert_rows({avg_instance});
+
+       std::vector<FBuffer> rows = db_manager.read_all_rows();
+       fmt::print("Rows: {}\n", rows.size());
+
+       flatbuffers::ToStringVisitor visitor("", true, "", true);
+       flatbuffers::IterateFlatBuffer(rows[0].data(), Ecosystem::WorldTypeTable(), &visitor);
+       nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+       fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
+    }
 }
