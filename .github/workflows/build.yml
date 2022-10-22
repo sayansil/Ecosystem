@@ -5,7 +5,7 @@ on:
       tags:
       - '*'
       branches:
-      - flatbuffer
+      - master
       paths:
       - 'Cpp/**'
       - '.github/workflows/build.yml'
@@ -13,7 +13,7 @@ on:
       tags:
       - '*'
       branches:
-      - flatbuffer
+      - master
       paths:
       - 'Cpp/**'
       - '.github/workflows/build.yml'
@@ -30,7 +30,7 @@ jobs:
   build-linux:
     name: Build on Linux
     if: ${{ always() }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         compiler: [gcc, clang]
@@ -39,7 +39,7 @@ jobs:
           - compiler: gcc
             dependencies: 'ninja-build'
           - compiler: clang
-            dependencies: 'ninja-build clang-12'
+            dependencies: 'ninja-build clang-14'
     steps:
     - uses: actions/checkout@v2
 
@@ -59,7 +59,7 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
-        zip -r output_linux_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+        zip -r output_linux_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Save release asset
       id: save_release_asset
@@ -72,7 +72,7 @@ jobs:
   build-macos:
     name: Build on MacOS
     if: ${{ always() }}
-    runs-on: macos-11
+    runs-on: macos-12
     strategy:
       matrix:
         compiler: [gcc, clang]
@@ -101,7 +101,7 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
-        zip -r output_macos_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}/RandomTests
+        zip -r output_macos_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Save release asset
       id: save_release_asset
@@ -142,7 +142,7 @@ jobs:
       run: |
         cd Cpp
         cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
-        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }}\RandomTests -DestinationPath output_windows_${{ matrix.compiler }}
+        Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }} -DestinationPath output_windows_${{ matrix.compiler }}
 
     - name: Save release asset
       id: save_release_asset
