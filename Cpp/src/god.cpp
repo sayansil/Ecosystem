@@ -575,97 +575,100 @@ void God::happy_new_year(const bool &log)
                 }
             }
 
-            std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
-            std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
-
-            uint32_t index_parent = 0;
-            Ecosystem::Reproduction sexuality = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]])->sexuality();
-
-            while ((mating_list1.size() > index_parent && mating_list2.size() > index_parent && sexuality == Ecosystem::Reproduction::Sexual) ||
-                   (mating_list1.size() > index_parent && sexuality == Ecosystem::Reproduction::Asexual))
+            if(mating_list1.size() > 0 && mating_list2.size() > 0)
             {
-                /*
-                   BIG CAUTION HERE!!! Please use flatbuffer object API for holding intermediate data only.
-                   Don't use for serializing/deserializing entire buffers, else there will be a big drop in performance
-                */
+                std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
+                std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
 
-                Ecosystem::OrganismT parent1, parent2;
+                uint32_t index_parent = 0;
+                Ecosystem::Reproduction sexuality = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]])->sexuality();
 
+                while ((mating_list1.size() > index_parent && mating_list2.size() > index_parent && sexuality == Ecosystem::Reproduction::Sexual) ||
+                        (mating_list1.size() > index_parent && sexuality == Ecosystem::Reproduction::Asexual))
                 {
-                    const Ecosystem::Organism *parent1_ptr = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]]);
-                    const Ecosystem::Organism *parent2_ptr = sexuality == Ecosystem::Reproduction::Sexual ? helper::get_pointer_from_offset(builder,  stdvecOrganisms[mating_list2[index_parent]]) : parent1_ptr;
+                    /*
+                       BIG CAUTION HERE!!! Please use flatbuffer object API for holding intermediate data only.
+                       Don't use for serializing/deserializing entire buffers, else there will be a big drop in performance
+                       */
 
-                    /* Assign copies of data as the parent pointers get shifted during organism creation */
+                    Ecosystem::OrganismT parent1, parent2;
 
-                    parent1.mating_probability = parent1_ptr->mating_probability();
-                    parent1.offsprings_factor = parent1_ptr->offsprings_factor();
-                    parent1.conceiving_probability = parent1_ptr->conceiving_probability();
-                    parent1.monitor = parent1_ptr->monitor();
-                    parent1.X = parent1_ptr->X();
-                    parent1.kind = parent1_ptr->kind()->str();
-                    parent1.generation = parent1_ptr->generation();
-                    parent1.mutation_probability = parent1_ptr->mutation_probability();
-                    size_t chromosome1_size = parent1_ptr->chromosome()->size();
-                    parent1.chromosome.reserve(chromosome1_size);
-                    std::copy(parent1_ptr->chromosome()->data(),
-                              parent1_ptr->chromosome()->data() + chromosome1_size,
-                              std::back_inserter(parent1.chromosome));
-                    parent1.chromosome_number = parent1_ptr->chromosome_number();
-
-                    parent2.mating_probability = parent2_ptr->mating_probability();
-                    parent2.offsprings_factor = parent2_ptr->offsprings_factor();
-                    parent2.conceiving_probability = parent2_ptr->conceiving_probability();
-                    parent2.monitor = parent2_ptr->monitor();
-                    parent2.X = parent2_ptr->X();
-                    parent2.kind = parent2_ptr->kind()->str();
-                    parent2.generation = parent2_ptr->generation();
-                    parent2.mutation_probability = parent2_ptr->mutation_probability();
-                    size_t chromosome2_size = parent2_ptr->chromosome()->size();
-                    parent2.chromosome.reserve(chromosome2_size);
-                    std::copy(parent2_ptr->chromosome()->data(),
-                              parent2_ptr->chromosome()->data() + chromosome1_size,
-                              std::back_inserter(parent2.chromosome));
-                    parent2.chromosome_number = parent2_ptr->chromosome_number();
-                }
-
-                if (helper::weighted_prob(std::min(parent1.mating_probability, parent2.mating_probability)))
-                {
-                    int n_children = creator_function(std::min(parent1.offsprings_factor, parent2.offsprings_factor));
-
-                    while (n_children--)
                     {
-                        if (!helper::weighted_prob(std::min(parent1.conceiving_probability, parent2.conceiving_probability)))
-                            continue; // Conceiving probability too low this time
+                        const Ecosystem::Organism *parent1_ptr = helper::get_pointer_from_offset(builder, stdvecOrganisms[mating_list1[index_parent]]);
+                        const Ecosystem::Organism *parent2_ptr = sexuality == Ecosystem::Reproduction::Sexual ? helper::get_pointer_from_offset(builder,  stdvecOrganisms[mating_list2[index_parent]]) : parent1_ptr;
 
-                        auto child_chromosome = get_child_chromosome(parent1, parent2, species_constants);
-                        bool monitor_child = monitor_offsprings && (static_cast<bool>(parent1.monitor) || static_cast<bool>(parent2.monitor));
+                        /* Assign copies of data as the parent pointers get shifted during organism creation */
 
-                        uint64_t child_X = (parent1.X + parent2.X) / 2, child_Y = (parent1.Y + parent2.Y) / 2;
-                        std::string child_name = std::to_string(year) + "-" + std::to_string(spawn_count++);
+                        parent1.mating_probability = parent1_ptr->mating_probability();
+                        parent1.offsprings_factor = parent1_ptr->offsprings_factor();
+                        parent1.conceiving_probability = parent1_ptr->conceiving_probability();
+                        parent1.monitor = parent1_ptr->monitor();
+                        parent1.X = parent1_ptr->X();
+                        parent1.kind = parent1_ptr->kind()->str();
+                        parent1.generation = parent1_ptr->generation();
+                        parent1.mutation_probability = parent1_ptr->mutation_probability();
+                        size_t chromosome1_size = parent1_ptr->chromosome()->size();
+                        parent1.chromosome.reserve(chromosome1_size);
+                        std::copy(parent1_ptr->chromosome()->data(),
+                                parent1_ptr->chromosome()->data() + chromosome1_size,
+                                std::back_inserter(parent1.chromosome));
+                        parent1.chromosome_number = parent1_ptr->chromosome_number();
 
-                        auto child_offset = createOrganism(
-                            builder,
-                            parent1.kind,
-                            std::to_string(static_cast<uint8_t>(kingdom)),
-                            1,
-                            child_name,
-                            child_chromosome,
-                            std::max(parent1.generation, parent2.generation) + 1,
-                            std::make_pair(child_X, child_Y),
-                            monitor_child);
+                        parent2.mating_probability = parent2_ptr->mating_probability();
+                        parent2.offsprings_factor = parent2_ptr->offsprings_factor();
+                        parent2.conceiving_probability = parent2_ptr->conceiving_probability();
+                        parent2.monitor = parent2_ptr->monitor();
+                        parent2.X = parent2_ptr->X();
+                        parent2.kind = parent2_ptr->kind()->str();
+                        parent2.generation = parent2_ptr->generation();
+                        parent2.mutation_probability = parent2_ptr->mutation_probability();
+                        size_t chromosome2_size = parent2_ptr->chromosome()->size();
+                        parent2.chromosome.reserve(chromosome2_size);
+                        std::copy(parent2_ptr->chromosome()->data(),
+                                parent2_ptr->chromosome()->data() + chromosome1_size,
+                                std::back_inserter(parent2.chromosome));
+                        parent2.chromosome_number = parent2_ptr->chromosome_number();
+                    }
 
-                        Ecosystem::Organism *child_ptr = helper::get_mutable_pointer_from_offset(builder, child_offset);
-                        organism_opts::generate_death_factor(child_ptr);
+                    if (helper::weighted_prob(std::min(parent1.mating_probability, parent2.mating_probability)))
+                    {
+                        int n_children = creator_function(std::min(parent1.offsprings_factor, parent2.offsprings_factor));
 
-                        // Skip abnormal children (with weird stats)
-                        if (organism_opts::is_normal_child(helper::get_pointer_from_offset(builder, child_offset)))
+                        while (n_children--)
                         {
-                            stdvecOrganisms.push_back(child_offset);
-                            recent_births++;
+                            if (!helper::weighted_prob(std::min(parent1.conceiving_probability, parent2.conceiving_probability)))
+                                continue; // Conceiving probability too low this time
+
+                            auto child_chromosome = get_child_chromosome(parent1, parent2, species_constants);
+                            bool monitor_child = monitor_offsprings && (static_cast<bool>(parent1.monitor) || static_cast<bool>(parent2.monitor));
+
+                            uint64_t child_X = (parent1.X + parent2.X) / 2, child_Y = (parent1.Y + parent2.Y) / 2;
+                            std::string child_name = std::to_string(year) + "-" + std::to_string(spawn_count++);
+
+                            auto child_offset = createOrganism(
+                                    builder,
+                                    parent1.kind,
+                                    std::to_string(static_cast<uint8_t>(kingdom)),
+                                    1,
+                                    child_name,
+                                    child_chromosome,
+                                    std::max(parent1.generation, parent2.generation) + 1,
+                                    std::make_pair(child_X, child_Y),
+                                    monitor_child);
+
+                            Ecosystem::Organism *child_ptr = helper::get_mutable_pointer_from_offset(builder, child_offset);
+                            organism_opts::generate_death_factor(child_ptr);
+
+                            // Skip abnormal children (with weird stats)
+                            if (organism_opts::is_normal_child(helper::get_pointer_from_offset(builder, child_offset)))
+                            {
+                                stdvecOrganisms.push_back(child_offset);
+                                recent_births++;
+                            }
                         }
                     }
+                    index_parent++;
                 }
-                index_parent++;
             }
         }
 
@@ -697,7 +700,7 @@ void God::happy_new_year(const bool &log)
 
     if (log)
     {
-        fmt::print("Year: {} - Recent births: {} - Recent deaths: {} - Population: {}", year, recent_births, recent_deaths, recent_population);
+        fmt::print("Year: {} - Recent births: {} - Recent deaths: {} - Population: {}\n", year, recent_births, recent_deaths, recent_population);
     }
 
     year++;

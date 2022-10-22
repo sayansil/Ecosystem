@@ -35,7 +35,10 @@ int main()
         God allah;
         allah.cleanSlate();
         allah.createWorld(organisms);
-        allah.happy_new_year();
+        for(size_t i = 1; i <= 100; i++)
+        {
+            allah.happy_new_year(true);
+        }
         fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
 
         // flatbuffers::ToStringVisitor visitor("", true, "", true);
