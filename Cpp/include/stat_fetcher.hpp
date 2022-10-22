@@ -4,6 +4,7 @@
 #include <species_report_generated.h>
 #include <world_generated.h>
 #include <ecosystem_types.hpp>
+#include <unordered_map>
 
 namespace stat_fetcher
 {
