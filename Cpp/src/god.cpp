@@ -7,6 +7,7 @@
 #include <flatbuffers/minireflect.h>
 #include <nlohmann/json.hpp>
 #include <profiler.hpp>
+#include <stat_fetcher.hpp>
 
 static double get_value_from_chromosome(const std::vector<uint8_t> &chromosome, const std::map<std::string, std::map<std::string, int>> &c_structure, const std::string &code, const double &multiplier, const uint16_t &chromosome_number);
 
@@ -61,10 +62,12 @@ static double updateStat(double base, double p_range)
     return base * (1 + x);
 }
 
-God::God()
+God::God(const bool gods_eye)
 {
     constants::init();
     builder.ForceDefaults(true);
+    this->gods_eye = gods_eye;
+
     fmt::print("God created!\n");
 }
 
@@ -291,7 +294,10 @@ void God::cleanSlate()
         }
     }
 
-    db.clear_database();
+    if (gods_eye)
+    {
+        db.clear_database();
+    }
 }
 
 void God::update_species(const std::string &full_species_name)
@@ -676,6 +682,13 @@ void God::happy_new_year(const bool &log)
     if (log)
     {
         fmt::print("Year: {} - Recent births: {} - Recent deaths: {} - Population: {}\n", year, recent_births, recent_deaths, recent_population);
+    }
+
+    if (gods_eye)
+    {
+        // Save average stats for every species in DB
+        FBuffer avg_instance = stat_fetcher::create_avg_world(buffer);
+        db.insert_rows({avg_instance});
     }
 
     year++;

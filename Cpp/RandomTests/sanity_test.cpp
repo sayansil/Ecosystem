@@ -31,15 +31,12 @@ int main()
 
     FBuffer avg_instance;
 
-    // Keep God (contains db object) and other db operations in separate scopes
+    God allah;
+    allah.cleanSlate();
+    allah.createWorld(organisms);
+    for(size_t i = 1; i <= simulation_years; i++)
     {
-        God allah;
-        allah.cleanSlate();
-        allah.createWorld(organisms);
-        for(size_t i = 1; i <= simulation_years; i++)
-        {
-            allah.happy_new_year(false);
-        }
-        fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
+        allah.happy_new_year(false);
     }
+    fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
 }

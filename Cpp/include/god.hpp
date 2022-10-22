@@ -25,7 +25,7 @@ public:
      *  Constructor / Destructor  *
      ******************************/
 
-    God();
+    God(const bool gods_eye = false);
     ~God();
 
     /**************************************
@@ -55,17 +55,6 @@ public:
 
     void cleanSlate();
     void happy_new_year(const bool &log = false);
-    // void kill_organisms(const std::vector<std::string>&);
-    // bool spawn_organism(ENTITY&&, std::vector<std::pair<std::string, ENTITY>>&);
-    // void remember_species(const std::string&);
-    // std::string get_annual_data(const std::string&);
-    // std::vector<std::map<std::string, std::string>> get_live_data();
-
-    // std::unordered_map<std::string, std::vector<double>> test_organism(ENTITY &&, const std::vector<std::string>&, const int&);
-
-    // std::vector<ENTITY> organism_sort(bool (*comp)(const ENTITY&, const ENTITY&));
-    // std::unordered_map<std::string, std::vector<ENTITY>> organism_sort_by_kind(bool (*comp)(const ENTITY&, const ENTITY&));
-    // std::unordered_map<std::string, std::unordered_map<StatGroup, std::vector<std::string>>> statistics;
 
 protected:
     double killer_function(const double &, const double &) const;

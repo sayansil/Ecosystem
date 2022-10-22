@@ -16,7 +16,7 @@ int main()
 {
     setup::setup();
 
-    const size_t initial_organism_count = 50;
+    const size_t initial_organism_count = 5000;
     const size_t simulation_years = 10;
 
     std::vector<std::unordered_map<std::string, std::string>> organisms;
@@ -33,7 +33,7 @@ int main()
 
     // Keep God (contains db object) and other db operations in separate scopes
     {
-        God allah;
+        God allah(true);
         allah.cleanSlate();
         allah.createWorld(organisms);
         for(size_t i = 1; i <= simulation_years; i++)
@@ -47,8 +47,6 @@ int main()
 
     {
        DatabaseManager db_manager;
-
-       db_manager.insert_rows({avg_instance});
 
        std::vector<FBuffer> rows = db_manager.read_all_rows();
        fmt::print("Rows: {}\n", rows.size());

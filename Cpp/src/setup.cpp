@@ -1,4 +1,5 @@
 #include <setup.hpp>
+#include <fmt/core.h>
 
 static const std::filesystem::path master_db_path = helper::ecosystem_root / "data/ecosystem_master.db";
 static const std::filesystem::path json_data_path = helper::ecosystem_root / "data/json";
@@ -39,11 +40,11 @@ static void create_master_table()
     rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
     if (rc != SQLITE_OK)
     {
-        std::cout << "Master table was not created\n";
+        fmt::print("Master table was not created\n\n");
     }
     else
     {
-        std::cout << "Master table created successfully\n";
+        fmt::print("Master table created successfully\n\n");
     }
 }
 
@@ -92,7 +93,7 @@ namespace setup
         else
         {
             sqlite3_open(master_db_path.string().c_str(), &db);
-            std::cout << "Using existing db at " << master_db_path << '\n';
+            fmt::print("Using existing db at {}\n\n", master_db_path.string());
         }
 
         if (std::filesystem::exists(json_data_path / "animal"))
