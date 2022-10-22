@@ -5,7 +5,7 @@ on:
       tags:
       - '*'
       branches:
-      - flatbuffer
+      - master
       paths:
       - 'Cpp/**'
       - '.github/workflows/test.yml'
@@ -13,7 +13,7 @@ on:
       tags:
       - '*'
       branches:
-      - flatbuffer
+      - master
       paths:
       - 'Cpp/**'
       - '.github/workflows/test.yml'
@@ -22,11 +22,11 @@ jobs:
 
   build-linux:
     name: Build on Linux
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         compiler: [gcc, clang]
-        build_type: [rel]
+        build_type: [dbg, rel]
         include:
           - compiler: gcc
             dependencies: 'ninja-build'
@@ -61,11 +61,11 @@ jobs:
 
   build-macos:
     name: Build on MacOS
-    runs-on: macos-11
+    runs-on: macos-12
     strategy:
       matrix:
         compiler: [gcc, clang]
-        build_type: [rel]
+        build_type: [dbg, rel]
         include:
           - compiler: gcc
             dependencies: 'gcc ninja'
@@ -104,7 +104,7 @@ jobs:
     strategy:
       matrix:
         compiler: [msvc]
-        build_type: [rel]
+        build_type: [dbg, rel]
         include:
           - compiler: msvc
             dependencies: 'ninja'
