@@ -575,7 +575,7 @@ void God::happy_new_year(const bool &log)
                 }
             }
 
-            if(mating_list1.size() > 0 && mating_list2.size() > 0)
+            if(mating_list1.size() > 0)
             {
                 std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
                 std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
