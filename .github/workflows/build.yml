@@ -268,7 +268,7 @@ jobs:
 
   clean-build-artifacts:
     name: Clean build artifacts
-    if: ${{ always() && ((github.event_name == 'pull_request' && github.head_ref == 'release') || github.event.inputs.keep_artifacts != 'true' }})
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.head_ref == 'release') || github.event.inputs.keep_artifacts != 'true') }}
     needs:
       - build-linux
       - build-macos
