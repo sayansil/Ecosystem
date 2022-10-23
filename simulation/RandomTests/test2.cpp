@@ -14,10 +14,12 @@
 
 int main()
 {
+    std::vector<FBuffer> rows;
+    const size_t simulation_years = 100;
+
     setup::setup();
 
-    const size_t initial_organism_count = 4500;
-    const size_t simulation_years = 100;
+    const size_t initial_organism_count = 5000;
 
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
@@ -25,16 +27,23 @@ int main()
     for (size_t i = 0; i < initial_organism_count; i++)
     {
         organisms.push_back({{"kind", "deer"},
-                             {"kingdom", "0"},
-                             {"age", "20"}});
+                            {"kingdom", "0"},
+                            {"age", "20"}});
     }
 
-    God allah;
-    allah.cleanSlate();
-    allah.createWorld(organisms);
-    for(size_t i = 1; i <= simulation_years; i++)
     {
-        allah.happy_new_year(false);
+        God allah(true);
+        allah.cleanSlate();
+        allah.createWorld(organisms);
+        for (size_t i = 0; i < simulation_years; i++) {
+            allah.happy_new_year(true);
+        }
     }
-    fmt::print("Buffer size = {:.2f}MB\n", allah.buffer.size() / (1024.0 * 1024));
+
+    {
+        DatabaseManager db_manager;
+        rows = db_manager.read_all_rows(); 
+    }
+
+    fmt::print("Years: {}, Rows: {}\n", simulation_years, rows.size());
 }

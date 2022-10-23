@@ -56,7 +56,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]")
     REQUIRE_NOTHROW([&]() {
         setup::setup();
 
-        const size_t initial_organism_count = 5000;
+        const size_t initial_organism_count = 10000;
 
         std::vector<std::unordered_map<std::string, std::string>> organisms;
         organisms.reserve(initial_organism_count);
