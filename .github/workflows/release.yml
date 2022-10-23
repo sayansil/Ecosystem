@@ -1,4 +1,4 @@
-name: build
+name: release
 
 on:
   pull_request:
@@ -241,11 +241,7 @@ jobs:
 
   clean-build-artifacts:
     name: Clean build artifacts
-    if: ${{ always() }}
     needs:
-      - build-linux
-      - build-macos
-      - build-windows
       - publish-assets
     runs-on: ubuntu-20.04
     strategy:
