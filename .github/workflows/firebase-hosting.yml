@@ -1,6 +1,6 @@
 name: firebase-deploy
 on:
-  pull_request:
+  push:
       branches:
       - master
       paths:
@@ -10,7 +10,6 @@ on:
 jobs:
   build-and-deploy:
     name: Deploy to Firebase Hosting
-    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
