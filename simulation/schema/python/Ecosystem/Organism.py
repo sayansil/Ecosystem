@@ -804,12 +804,12 @@ def AddStamina(builder, stamina):
 def OrganismAddVitality(builder, vitality): builder.PrependFloat32Slot(67, vitality, 0.0)
 def AddVitality(builder, vitality):
     return OrganismAddVitality(builder, vitality)
-def OrganismAddX(builder, X): builder.PrependUint64Slot(68, X, 0)
-def AddX(builder, X):
-    return OrganismAddX(builder, X)
-def OrganismAddY(builder, Y): builder.PrependUint64Slot(69, Y, 0)
-def AddY(builder, Y):
-    return OrganismAddY(builder, Y)
+def OrganismAddX(builder, x): builder.PrependUint64Slot(68, x, 0)
+def AddX(builder, x):
+    return OrganismAddX(builder, x)
+def OrganismAddY(builder, y): builder.PrependUint64Slot(69, y, 0)
+def AddY(builder, y):
+    return OrganismAddY(builder, y)
 def OrganismAddDynamicFitness(builder, dynamicFitness): builder.PrependFloat32Slot(70, dynamicFitness, 1.0)
 def AddDynamicFitness(builder, dynamicFitness):
     return OrganismAddDynamicFitness(builder, dynamicFitness)
@@ -916,8 +916,9 @@ class OrganismT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, 0)
         organism = Organism()
-        organism.Init(buf, pos)
+        organism.Init(buf, pos+n)
         return cls.InitFromObj(organism)
 
     @classmethod

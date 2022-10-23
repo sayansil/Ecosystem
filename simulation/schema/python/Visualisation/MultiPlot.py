@@ -108,8 +108,9 @@ class MultiPlotT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, 0)
         multiPlot = MultiPlot()
-        multiPlot.Init(buf, pos)
+        multiPlot.Init(buf, pos+n)
         return cls.InitFromObj(multiPlot)
 
     @classmethod

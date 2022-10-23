@@ -5,4 +5,3 @@
 class Reproduction(object):
     Sexual = 0
     Asexual = 1
-
