@@ -2,7 +2,7 @@ name: "CodeQL"
 
 on:
   schedule:
-    - cron: '30 6 ? * FRI'
+    - cron: '30 6 * * FRI'
   workflow_dispatch:
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
         language: ['cpp', 'python']
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 2
 

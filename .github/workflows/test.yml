@@ -33,7 +33,7 @@ jobs:
           - compiler: clang
             dependencies: 'ninja-build clang-12'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Prepare for Build
       id: prepare
@@ -72,7 +72,7 @@ jobs:
           - compiler: clang
             dependencies: 'ninja'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Prepare for Build
       id: prepare
@@ -109,7 +109,7 @@ jobs:
           - compiler: msvc
             dependencies: 'ninja'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ilammy/msvc-dev-cmd@v1.10.0
 
     - name: Prepare for Build
