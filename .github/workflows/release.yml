@@ -6,12 +6,19 @@ on:
       - master
       types:
       - closed
+  workflow_dispatch:
+    inputs:
+      relVersion:
+        description: 'Release Version'
+        required: true
+        default: ''
+        type: string
 
 jobs:
 
   build-linux:
     name: Build on Linux
-    if: ${{ github.head_ref == 'release' && github.event.pull_request.merged == true }}
+    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -52,7 +59,7 @@ jobs:
 
   build-macos:
     name: Build on MacOS
-    if: ${{ github.head_ref == 'release' && github.event.pull_request.merged == true }}
+    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: macos-12
     strategy:
       matrix:
@@ -93,7 +100,7 @@ jobs:
 
   build-windows:
     name: Build on Windows
-    if: ${{ github.head_ref == 'release' && github.event.pull_request.merged == true }}
+    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: windows-2022
     strategy:
       matrix:
@@ -154,7 +161,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        name: Ecosystem Simulator
+        name: Ecosystem Simulator ${{ inputs.relVersion }}
         body: |
           ## Changelog
             ${{ steps.build_changelog.outputs.changelog }}
@@ -190,7 +197,9 @@ jobs:
           - os: macos
             compiler: msvc
           - os: windows
-            compiler: [gcc, clang]
+            compiler: gcc
+          - os: windows
+            compiler: clang
 
     steps:
     - uses: actions/checkout@v3

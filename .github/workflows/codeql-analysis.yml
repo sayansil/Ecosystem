@@ -4,11 +4,14 @@ on:
   schedule:
     - cron: '30 6 * * FRI'
   workflow_dispatch:
+  workflow_run:
+    workflows: [release]
+    types: [completed]
 
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:

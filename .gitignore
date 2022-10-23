@@ -26,3 +26,4 @@ release/
 ecosystem-*
 tags
 **/output/**
+**/.DS_Store
