@@ -7,7 +7,7 @@ on:
       branches:
       - master
       paths:
-      - 'Cpp/**'
+      - 'simulation/**'
       - '.github/workflows/test.yml'
   pull_request:
       tags:
@@ -15,7 +15,7 @@ on:
       branches:
       - master
       paths:
-      - 'Cpp/**'
+      - 'simulation/**'
       - '.github/workflows/test.yml'
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
           - compiler: clang
             dependencies: 'ninja-build clang-12'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Prepare for Build
       id: prepare
@@ -43,20 +43,20 @@ jobs:
     - name: Configure for Build
       id: configure
       run: |
-        cd Cpp
+        cd simulation
         cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Build
       id: build
       run: |
-        cd Cpp
+        cd simulation
         cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Run Tests
       id: run_tests
       run: |
         export ECOSYSTEM_ROOT=`pwd`
-        cd Cpp
+        cd simulation
         ctest --preset test-lin-${{ matrix.compiler }}-${{ matrix.build_type }}
 
   build-macos:
@@ -72,7 +72,7 @@ jobs:
           - compiler: clang
             dependencies: 'ninja'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Prepare for Build
       id: prepare
@@ -82,20 +82,20 @@ jobs:
     - name: Configure for Build
       id: configure
       run: |
-        cd Cpp
+        cd simulation
         cmake --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Build
       id: build
       run: |
-        cd Cpp
+        cd simulation
         cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Run Tests
       id: run_tests
       run: |
         export ECOSYSTEM_ROOT=`pwd`
-        cd Cpp
+        cd simulation
         ctest --preset test-osx-${{ matrix.compiler }}-${{ matrix.build_type }}
 
   build-windows:
@@ -109,7 +109,7 @@ jobs:
           - compiler: msvc
             dependencies: 'ninja'
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ilammy/msvc-dev-cmd@v1.10.0
 
     - name: Prepare for Build
@@ -120,18 +120,18 @@ jobs:
     - name: Configure for Build
       id: configure
       run: |
-        cd Cpp
+        cd simulation
         cmake --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Build
       id: build
       run: |
-        cd Cpp
+        cd simulation
         cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
 
     - name: Run Tests
       id: run_tests
       run: |
         $env:ECOSYSTEM_ROOT = ($pwd).path
-        cd Cpp
+        cd simulation
         ctest --preset test-win-${{ matrix.compiler }}-${{ matrix.build_type }}

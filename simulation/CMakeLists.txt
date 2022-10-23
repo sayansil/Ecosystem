@@ -92,7 +92,7 @@ include_directories(${whereami_SOURCE_DIR}/src)
 add_subdirectory(src)
 add_subdirectory(schema)
 
-include_directories(schema)
+include_directories(schema/cpp)
 add_subdirectory(RandomTests)
 # add_subdirectory(setup)
 #add_subdirectory(run)
