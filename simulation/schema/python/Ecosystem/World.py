@@ -86,8 +86,9 @@ class WorldT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, 0)
         world = World()
-        world.Init(buf, pos)
+        world.Init(buf, pos+n)
         return cls.InitFromObj(world)
 
     @classmethod

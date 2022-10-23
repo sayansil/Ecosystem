@@ -71,8 +71,9 @@ class ChromosomeStrandT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, 0)
         chromosomeStrand = ChromosomeStrand()
-        chromosomeStrand.Init(buf, pos)
+        chromosomeStrand.Init(buf, pos+n)
         return cls.InitFromObj(chromosomeStrand)
 
     @classmethod

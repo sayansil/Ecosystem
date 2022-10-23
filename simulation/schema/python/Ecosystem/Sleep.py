@@ -6,4 +6,3 @@ class Sleep(object):
     Awake = 0
     Drowsy = 1
     Asleep = 2
-
