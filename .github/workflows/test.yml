@@ -2,18 +2,17 @@ name: test
 
 on:
   push:
-      tags:
-      - '*'
       branches:
       - master
       paths:
       - 'simulation/**'
       - '.github/workflows/test.yml'
   pull_request:
-      tags:
-      - '*'
       branches:
       - master
+      paths:
+      - 'simulation/**'
+      - '.github/workflows/test.yml'
 
 jobs:
 
