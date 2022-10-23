@@ -14,14 +14,11 @@ on:
         default: ''
         type: string
 
-env:
-  valid_manual_trigger: ${{ (inputs.relVersion != '') }}
-
 jobs:
 
   build-linux:
     name: Build on Linux
-    if: ${{ valid_manual_trigger || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
+    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -62,7 +59,7 @@ jobs:
 
   build-macos:
     name: Build on MacOS
-    if: ${{ valid_manual_trigger || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
+    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: macos-12
     strategy:
       matrix:
@@ -103,7 +100,7 @@ jobs:
 
   build-windows:
     name: Build on Windows
-    if: ${{ valid_manual_trigger || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
+    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: windows-2022
     strategy:
       matrix:
