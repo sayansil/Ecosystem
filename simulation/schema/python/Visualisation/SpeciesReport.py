@@ -108,8 +108,9 @@ class SpeciesReportT(object):
 
     @classmethod
     def InitFromBuf(cls, buf, pos):
+        n = flatbuffers.encode.Get(flatbuffers.packer.uoffset, buf, 0)
         speciesReport = SpeciesReport()
-        speciesReport.Init(buf, pos)
+        speciesReport.Init(buf, pos+n)
         return cls.InitFromObj(speciesReport)
 
     @classmethod

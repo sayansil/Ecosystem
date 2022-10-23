@@ -5,4 +5,3 @@
 class KingdomE(object):
     Animal = 0
     Plant = 1
-

@@ -6,6 +6,13 @@
 
 #include "flatbuffers/flatbuffers.h"
 
+// Ensure the included flatbuffers.h is the same version as when this file was
+// generated, otherwise it may not be compatible.
+static_assert(FLATBUFFERS_VERSION_MAJOR == 22 &&
+              FLATBUFFERS_VERSION_MINOR == 9 &&
+              FLATBUFFERS_VERSION_REVISION == 29,
+             "Non-compatible flatbuffers version included");
+
 namespace Ecosystem {
 
 struct ChromosomeStrand;
@@ -213,8 +220,8 @@ struct ChromosomeStrand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool KeyCompareLessThan(const ChromosomeStrand *o) const {
     return *code() < *o->code();
   }
-  int KeyCompareWithValue(const char *val) const {
-    return strcmp(code()->c_str(), val);
+  int KeyCompareWithValue(const char *_code) const {
+    return strcmp(code()->c_str(), _code);
   }
   uint16_t start() const {
     return GetField<uint16_t>(VT_START, 0);
@@ -232,8 +239,8 @@ struct ChromosomeStrand FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_CODE) &&
            verifier.VerifyString(code()) &&
-           VerifyField<uint16_t>(verifier, VT_START) &&
-           VerifyField<uint16_t>(verifier, VT_LENGTH) &&
+           VerifyField<uint16_t>(verifier, VT_START, 2) &&
+           VerifyField<uint16_t>(verifier, VT_LENGTH, 2) &&
            verifier.EndTable();
   }
   ChromosomeStrandT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -375,6 +382,10 @@ struct OrganismT : public flatbuffers::NativeTable {
   float sleep_restore_factor = 0.0f;
   Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake;
   Ecosystem::Monitor monitor = Ecosystem::Monitor::None;
+  OrganismT() = default;
+  OrganismT(const OrganismT &o);
+  OrganismT(OrganismT&&) FLATBUFFERS_NOEXCEPT = default;
+  OrganismT &operator=(OrganismT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -700,8 +711,8 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool KeyCompareLessThan(const Organism *o) const {
     return *name() < *o->name();
   }
-  int KeyCompareWithValue(const char *val) const {
-    return strcmp(name()->c_str(), val);
+  int KeyCompareWithValue(const char *_name) const {
+    return strcmp(name()->c_str(), _name);
   }
   const flatbuffers::Vector<uint8_t> *chromosome() const {
     return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_CHROMOSOME);
@@ -925,84 +936,84 @@ struct Organism FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_KIND) &&
            verifier.VerifyString(kind()) &&
-           VerifyField<uint8_t>(verifier, VT_KINGDOM) &&
-           VerifyField<uint16_t>(verifier, VT_CHROMOSOME_NUMBER) &&
+           VerifyField<uint8_t>(verifier, VT_KINGDOM, 1) &&
+           VerifyField<uint16_t>(verifier, VT_CHROMOSOME_NUMBER, 2) &&
            VerifyOffset(verifier, VT_CHROMOSOME_STRUCTURE) &&
            verifier.VerifyVector(chromosome_structure()) &&
            verifier.VerifyVectorOfTables(chromosome_structure()) &&
-           VerifyField<uint8_t>(verifier, VT_FOOD_CHAIN_RANK) &&
-           VerifyField<uint8_t>(verifier, VT_SEXUALITY) &&
-           VerifyField<float>(verifier, VT_AGE_FITNESS_ON_DEATH_RATIO) &&
-           VerifyField<float>(verifier, VT_CONCEIVING_PROBABILITY) &&
-           VerifyField<float>(verifier, VT_MATING_PROBABILITY) &&
-           VerifyField<uint32_t>(verifier, VT_MATING_AGE_START) &&
-           VerifyField<uint32_t>(verifier, VT_MATING_AGE_END) &&
-           VerifyField<uint32_t>(verifier, VT_MAX_AGE) &&
-           VerifyField<float>(verifier, VT_MUTATION_PROBABILITY) &&
-           VerifyField<float>(verifier, VT_OFFSPRINGS_FACTOR) &&
-           VerifyField<float>(verifier, VT_HEIGHT_ON_SPEED) &&
-           VerifyField<float>(verifier, VT_HEIGHT_ON_STAMINA) &&
-           VerifyField<float>(verifier, VT_HEIGHT_ON_VITALITY) &&
-           VerifyField<float>(verifier, VT_WEIGHT_ON_SPEED) &&
-           VerifyField<float>(verifier, VT_WEIGHT_ON_STAMINA) &&
-           VerifyField<float>(verifier, VT_WEIGHT_ON_VITALITY) &&
-           VerifyField<float>(verifier, VT_VITALITY_ON_APPETITE) &&
-           VerifyField<float>(verifier, VT_VITALITY_ON_SPEED) &&
-           VerifyField<float>(verifier, VT_STAMINA_ON_APPETITE) &&
-           VerifyField<float>(verifier, VT_STAMINA_ON_SPEED) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_APPETITE) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_HEIGHT) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_SPEED) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_STAMINA) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_VITALITY) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_WEIGHT) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_HEIGHT) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_SPEED) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_WEIGHT) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER) &&
+           VerifyField<uint8_t>(verifier, VT_FOOD_CHAIN_RANK, 1) &&
+           VerifyField<uint8_t>(verifier, VT_SEXUALITY, 1) &&
+           VerifyField<float>(verifier, VT_AGE_FITNESS_ON_DEATH_RATIO, 4) &&
+           VerifyField<float>(verifier, VT_CONCEIVING_PROBABILITY, 4) &&
+           VerifyField<float>(verifier, VT_MATING_PROBABILITY, 4) &&
+           VerifyField<uint32_t>(verifier, VT_MATING_AGE_START, 4) &&
+           VerifyField<uint32_t>(verifier, VT_MATING_AGE_END, 4) &&
+           VerifyField<uint32_t>(verifier, VT_MAX_AGE, 4) &&
+           VerifyField<float>(verifier, VT_MUTATION_PROBABILITY, 4) &&
+           VerifyField<float>(verifier, VT_OFFSPRINGS_FACTOR, 4) &&
+           VerifyField<float>(verifier, VT_HEIGHT_ON_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_HEIGHT_ON_STAMINA, 4) &&
+           VerifyField<float>(verifier, VT_HEIGHT_ON_VITALITY, 4) &&
+           VerifyField<float>(verifier, VT_WEIGHT_ON_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_WEIGHT_ON_STAMINA, 4) &&
+           VerifyField<float>(verifier, VT_WEIGHT_ON_VITALITY, 4) &&
+           VerifyField<float>(verifier, VT_VITALITY_ON_APPETITE, 4) &&
+           VerifyField<float>(verifier, VT_VITALITY_ON_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_STAMINA_ON_APPETITE, 4) &&
+           VerifyField<float>(verifier, VT_STAMINA_ON_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_APPETITE, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_HEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_STAMINA, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_VITALITY, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_BASE_WEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_HEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_WEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_HEIGHT_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_SPEED_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_STAMINA_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_VITALITY_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_THEORETICAL_MAXIMUM_WEIGHT_MULTIPLIER, 4) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
            VerifyOffsetRequired(verifier, VT_CHROMOSOME) &&
            verifier.VerifyVector(chromosome()) &&
-           VerifyField<uint8_t>(verifier, VT_GENDER) &&
-           VerifyField<uint32_t>(verifier, VT_GENERATION) &&
-           VerifyField<float>(verifier, VT_IMMUNITY) &&
-           VerifyField<float>(verifier, VT_BASE_APPETITE) &&
-           VerifyField<float>(verifier, VT_BASE_HEIGHT) &&
-           VerifyField<float>(verifier, VT_BASE_SPEED) &&
-           VerifyField<float>(verifier, VT_BASE_STAMINA) &&
-           VerifyField<float>(verifier, VT_BASE_VITALITY) &&
-           VerifyField<float>(verifier, VT_BASE_WEIGHT) &&
-           VerifyField<float>(verifier, VT_HEIGHT_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_SPEED_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_STAMINA_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_VITALITY_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_WEIGHT_MULTIPLIER) &&
-           VerifyField<float>(verifier, VT_MAX_HEIGHT) &&
-           VerifyField<float>(verifier, VT_MAX_WEIGHT) &&
-           VerifyField<uint32_t>(verifier, VT_AGE) &&
-           VerifyField<float>(verifier, VT_HEIGHT) &&
-           VerifyField<float>(verifier, VT_WEIGHT) &&
-           VerifyField<float>(verifier, VT_STATIC_FITNESS) &&
-           VerifyField<float>(verifier, VT_MAX_APPETITE_AT_AGE) &&
-           VerifyField<float>(verifier, VT_MAX_SPEED_AT_AGE) &&
-           VerifyField<float>(verifier, VT_MAX_STAMINA_AT_AGE) &&
-           VerifyField<float>(verifier, VT_MAX_VITALITY_AT_AGE) &&
-           VerifyField<float>(verifier, VT_APPETITE) &&
-           VerifyField<float>(verifier, VT_SPEED) &&
-           VerifyField<float>(verifier, VT_STAMINA) &&
-           VerifyField<float>(verifier, VT_VITALITY) &&
-           VerifyField<uint64_t>(verifier, VT_X) &&
-           VerifyField<uint64_t>(verifier, VT_Y) &&
-           VerifyField<float>(verifier, VT_DYNAMIC_FITNESS) &&
-           VerifyField<float>(verifier, VT_VISION_RADIUS) &&
-           VerifyField<float>(verifier, VT_SLEEP_RESTORE_FACTOR) &&
-           VerifyField<uint8_t>(verifier, VT_ASLEEP) &&
-           VerifyField<uint8_t>(verifier, VT_MONITOR) &&
+           VerifyField<uint8_t>(verifier, VT_GENDER, 1) &&
+           VerifyField<uint32_t>(verifier, VT_GENERATION, 4) &&
+           VerifyField<float>(verifier, VT_IMMUNITY, 4) &&
+           VerifyField<float>(verifier, VT_BASE_APPETITE, 4) &&
+           VerifyField<float>(verifier, VT_BASE_HEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_BASE_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_BASE_STAMINA, 4) &&
+           VerifyField<float>(verifier, VT_BASE_VITALITY, 4) &&
+           VerifyField<float>(verifier, VT_BASE_WEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_HEIGHT_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_SPEED_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_STAMINA_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_VITALITY_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_WEIGHT_MULTIPLIER, 4) &&
+           VerifyField<float>(verifier, VT_MAX_HEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_MAX_WEIGHT, 4) &&
+           VerifyField<uint32_t>(verifier, VT_AGE, 4) &&
+           VerifyField<float>(verifier, VT_HEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_WEIGHT, 4) &&
+           VerifyField<float>(verifier, VT_STATIC_FITNESS, 4) &&
+           VerifyField<float>(verifier, VT_MAX_APPETITE_AT_AGE, 4) &&
+           VerifyField<float>(verifier, VT_MAX_SPEED_AT_AGE, 4) &&
+           VerifyField<float>(verifier, VT_MAX_STAMINA_AT_AGE, 4) &&
+           VerifyField<float>(verifier, VT_MAX_VITALITY_AT_AGE, 4) &&
+           VerifyField<float>(verifier, VT_APPETITE, 4) &&
+           VerifyField<float>(verifier, VT_SPEED, 4) &&
+           VerifyField<float>(verifier, VT_STAMINA, 4) &&
+           VerifyField<float>(verifier, VT_VITALITY, 4) &&
+           VerifyField<uint64_t>(verifier, VT_X, 8) &&
+           VerifyField<uint64_t>(verifier, VT_Y, 8) &&
+           VerifyField<float>(verifier, VT_DYNAMIC_FITNESS, 4) &&
+           VerifyField<float>(verifier, VT_VISION_RADIUS, 4) &&
+           VerifyField<float>(verifier, VT_SLEEP_RESTORE_FACTOR, 4) &&
+           VerifyField<uint8_t>(verifier, VT_ASLEEP, 1) &&
+           VerifyField<uint8_t>(verifier, VT_MONITOR, 1) &&
            verifier.EndTable();
   }
   OrganismT *UnPack(const flatbuffers::resolver_function_t *_resolver = nullptr) const;
@@ -1581,6 +1592,10 @@ struct SpeciesT : public flatbuffers::NativeTable {
   std::string kind{};
   Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
   std::vector<std::unique_ptr<Ecosystem::OrganismT>> organism{};
+  SpeciesT() = default;
+  SpeciesT(const SpeciesT &o);
+  SpeciesT(SpeciesT&&) FLATBUFFERS_NOEXCEPT = default;
+  SpeciesT &operator=(SpeciesT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct Species FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1604,8 +1619,8 @@ struct Species FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool KeyCompareLessThan(const Species *o) const {
     return *kind() < *o->kind();
   }
-  int KeyCompareWithValue(const char *val) const {
-    return strcmp(kind()->c_str(), val);
+  int KeyCompareWithValue(const char *_kind) const {
+    return strcmp(kind()->c_str(), _kind);
   }
   Ecosystem::KingdomE kingdom() const {
     return static_cast<Ecosystem::KingdomE>(GetField<uint8_t>(VT_KINGDOM, 0));
@@ -1623,7 +1638,7 @@ struct Species FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_KIND) &&
            verifier.VerifyString(kind()) &&
-           VerifyField<uint8_t>(verifier, VT_KINGDOM) &&
+           VerifyField<uint8_t>(verifier, VT_KINGDOM, 1) &&
            VerifyOffset(verifier, VT_ORGANISM) &&
            verifier.VerifyVector(organism()) &&
            verifier.VerifyVectorOfTables(organism()) &&
@@ -1696,6 +1711,10 @@ struct WorldT : public flatbuffers::NativeTable {
   typedef World TableType;
   uint32_t year = 0;
   std::vector<std::unique_ptr<Ecosystem::SpeciesT>> species{};
+  WorldT() = default;
+  WorldT(const WorldT &o);
+  WorldT(WorldT&&) FLATBUFFERS_NOEXCEPT = default;
+  WorldT &operator=(WorldT o) FLATBUFFERS_NOEXCEPT;
 };
 
 struct World FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
@@ -1718,8 +1737,8 @@ struct World FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool KeyCompareLessThan(const World *o) const {
     return year() < o->year();
   }
-  int KeyCompareWithValue(uint32_t val) const {
-    return static_cast<int>(year() > val) - static_cast<int>(year() < val);
+  int KeyCompareWithValue(uint32_t _year) const {
+    return static_cast<int>(year() > _year) - static_cast<int>(year() < _year);
   }
   const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Species>> *species() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Species>> *>(VT_SPECIES);
@@ -1729,7 +1748,7 @@ struct World FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_YEAR) &&
+           VerifyField<uint32_t>(verifier, VT_YEAR, 4) &&
            VerifyOffset(verifier, VT_SPECIES) &&
            verifier.VerifyVector(species()) &&
            verifier.VerifyVectorOfTables(species()) &&
@@ -1821,6 +1840,164 @@ inline flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrand(flatbuffers:
       _length);
 }
 
+inline OrganismT::OrganismT(const OrganismT &o)
+      : kind(o.kind),
+        kingdom(o.kingdom),
+        chromosome_number(o.chromosome_number),
+        food_chain_rank(o.food_chain_rank),
+        sexuality(o.sexuality),
+        age_fitness_on_death_ratio(o.age_fitness_on_death_ratio),
+        conceiving_probability(o.conceiving_probability),
+        mating_probability(o.mating_probability),
+        mating_age_start(o.mating_age_start),
+        mating_age_end(o.mating_age_end),
+        max_age(o.max_age),
+        mutation_probability(o.mutation_probability),
+        offsprings_factor(o.offsprings_factor),
+        height_on_speed(o.height_on_speed),
+        height_on_stamina(o.height_on_stamina),
+        height_on_vitality(o.height_on_vitality),
+        weight_on_speed(o.weight_on_speed),
+        weight_on_stamina(o.weight_on_stamina),
+        weight_on_vitality(o.weight_on_vitality),
+        vitality_on_appetite(o.vitality_on_appetite),
+        vitality_on_speed(o.vitality_on_speed),
+        stamina_on_appetite(o.stamina_on_appetite),
+        stamina_on_speed(o.stamina_on_speed),
+        theoretical_maximum_base_appetite(o.theoretical_maximum_base_appetite),
+        theoretical_maximum_base_height(o.theoretical_maximum_base_height),
+        theoretical_maximum_base_speed(o.theoretical_maximum_base_speed),
+        theoretical_maximum_base_stamina(o.theoretical_maximum_base_stamina),
+        theoretical_maximum_base_vitality(o.theoretical_maximum_base_vitality),
+        theoretical_maximum_base_weight(o.theoretical_maximum_base_weight),
+        theoretical_maximum_height(o.theoretical_maximum_height),
+        theoretical_maximum_speed(o.theoretical_maximum_speed),
+        theoretical_maximum_weight(o.theoretical_maximum_weight),
+        theoretical_maximum_height_multiplier(o.theoretical_maximum_height_multiplier),
+        theoretical_maximum_speed_multiplier(o.theoretical_maximum_speed_multiplier),
+        theoretical_maximum_stamina_multiplier(o.theoretical_maximum_stamina_multiplier),
+        theoretical_maximum_vitality_multiplier(o.theoretical_maximum_vitality_multiplier),
+        theoretical_maximum_weight_multiplier(o.theoretical_maximum_weight_multiplier),
+        name(o.name),
+        chromosome(o.chromosome),
+        gender(o.gender),
+        generation(o.generation),
+        immunity(o.immunity),
+        base_appetite(o.base_appetite),
+        base_height(o.base_height),
+        base_speed(o.base_speed),
+        base_stamina(o.base_stamina),
+        base_vitality(o.base_vitality),
+        base_weight(o.base_weight),
+        height_multiplier(o.height_multiplier),
+        speed_multiplier(o.speed_multiplier),
+        stamina_multiplier(o.stamina_multiplier),
+        vitality_multiplier(o.vitality_multiplier),
+        weight_multiplier(o.weight_multiplier),
+        max_height(o.max_height),
+        max_weight(o.max_weight),
+        age(o.age),
+        height(o.height),
+        weight(o.weight),
+        static_fitness(o.static_fitness),
+        max_appetite_at_age(o.max_appetite_at_age),
+        max_speed_at_age(o.max_speed_at_age),
+        max_stamina_at_age(o.max_stamina_at_age),
+        max_vitality_at_age(o.max_vitality_at_age),
+        appetite(o.appetite),
+        speed(o.speed),
+        stamina(o.stamina),
+        vitality(o.vitality),
+        X(o.X),
+        Y(o.Y),
+        dynamic_fitness(o.dynamic_fitness),
+        vision_radius(o.vision_radius),
+        sleep_restore_factor(o.sleep_restore_factor),
+        asleep(o.asleep),
+        monitor(o.monitor) {
+  chromosome_structure.reserve(o.chromosome_structure.size());
+  for (const auto &chromosome_structure_ : o.chromosome_structure) { chromosome_structure.emplace_back((chromosome_structure_) ? new Ecosystem::ChromosomeStrandT(*chromosome_structure_) : nullptr); }
+}
+
+inline OrganismT &OrganismT::operator=(OrganismT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(kind, o.kind);
+  std::swap(kingdom, o.kingdom);
+  std::swap(chromosome_number, o.chromosome_number);
+  std::swap(chromosome_structure, o.chromosome_structure);
+  std::swap(food_chain_rank, o.food_chain_rank);
+  std::swap(sexuality, o.sexuality);
+  std::swap(age_fitness_on_death_ratio, o.age_fitness_on_death_ratio);
+  std::swap(conceiving_probability, o.conceiving_probability);
+  std::swap(mating_probability, o.mating_probability);
+  std::swap(mating_age_start, o.mating_age_start);
+  std::swap(mating_age_end, o.mating_age_end);
+  std::swap(max_age, o.max_age);
+  std::swap(mutation_probability, o.mutation_probability);
+  std::swap(offsprings_factor, o.offsprings_factor);
+  std::swap(height_on_speed, o.height_on_speed);
+  std::swap(height_on_stamina, o.height_on_stamina);
+  std::swap(height_on_vitality, o.height_on_vitality);
+  std::swap(weight_on_speed, o.weight_on_speed);
+  std::swap(weight_on_stamina, o.weight_on_stamina);
+  std::swap(weight_on_vitality, o.weight_on_vitality);
+  std::swap(vitality_on_appetite, o.vitality_on_appetite);
+  std::swap(vitality_on_speed, o.vitality_on_speed);
+  std::swap(stamina_on_appetite, o.stamina_on_appetite);
+  std::swap(stamina_on_speed, o.stamina_on_speed);
+  std::swap(theoretical_maximum_base_appetite, o.theoretical_maximum_base_appetite);
+  std::swap(theoretical_maximum_base_height, o.theoretical_maximum_base_height);
+  std::swap(theoretical_maximum_base_speed, o.theoretical_maximum_base_speed);
+  std::swap(theoretical_maximum_base_stamina, o.theoretical_maximum_base_stamina);
+  std::swap(theoretical_maximum_base_vitality, o.theoretical_maximum_base_vitality);
+  std::swap(theoretical_maximum_base_weight, o.theoretical_maximum_base_weight);
+  std::swap(theoretical_maximum_height, o.theoretical_maximum_height);
+  std::swap(theoretical_maximum_speed, o.theoretical_maximum_speed);
+  std::swap(theoretical_maximum_weight, o.theoretical_maximum_weight);
+  std::swap(theoretical_maximum_height_multiplier, o.theoretical_maximum_height_multiplier);
+  std::swap(theoretical_maximum_speed_multiplier, o.theoretical_maximum_speed_multiplier);
+  std::swap(theoretical_maximum_stamina_multiplier, o.theoretical_maximum_stamina_multiplier);
+  std::swap(theoretical_maximum_vitality_multiplier, o.theoretical_maximum_vitality_multiplier);
+  std::swap(theoretical_maximum_weight_multiplier, o.theoretical_maximum_weight_multiplier);
+  std::swap(name, o.name);
+  std::swap(chromosome, o.chromosome);
+  std::swap(gender, o.gender);
+  std::swap(generation, o.generation);
+  std::swap(immunity, o.immunity);
+  std::swap(base_appetite, o.base_appetite);
+  std::swap(base_height, o.base_height);
+  std::swap(base_speed, o.base_speed);
+  std::swap(base_stamina, o.base_stamina);
+  std::swap(base_vitality, o.base_vitality);
+  std::swap(base_weight, o.base_weight);
+  std::swap(height_multiplier, o.height_multiplier);
+  std::swap(speed_multiplier, o.speed_multiplier);
+  std::swap(stamina_multiplier, o.stamina_multiplier);
+  std::swap(vitality_multiplier, o.vitality_multiplier);
+  std::swap(weight_multiplier, o.weight_multiplier);
+  std::swap(max_height, o.max_height);
+  std::swap(max_weight, o.max_weight);
+  std::swap(age, o.age);
+  std::swap(height, o.height);
+  std::swap(weight, o.weight);
+  std::swap(static_fitness, o.static_fitness);
+  std::swap(max_appetite_at_age, o.max_appetite_at_age);
+  std::swap(max_speed_at_age, o.max_speed_at_age);
+  std::swap(max_stamina_at_age, o.max_stamina_at_age);
+  std::swap(max_vitality_at_age, o.max_vitality_at_age);
+  std::swap(appetite, o.appetite);
+  std::swap(speed, o.speed);
+  std::swap(stamina, o.stamina);
+  std::swap(vitality, o.vitality);
+  std::swap(X, o.X);
+  std::swap(Y, o.Y);
+  std::swap(dynamic_fitness, o.dynamic_fitness);
+  std::swap(vision_radius, o.vision_radius);
+  std::swap(sleep_restore_factor, o.sleep_restore_factor);
+  std::swap(asleep, o.asleep);
+  std::swap(monitor, o.monitor);
+  return *this;
+}
+
 inline OrganismT *Organism::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::make_unique<OrganismT>();
   UnPackTo(_o.get(), _resolver);
@@ -1833,7 +2010,7 @@ inline void Organism::UnPackTo(OrganismT *_o, const flatbuffers::resolver_functi
   { auto _e = kind(); if (_e) _o->kind = _e->str(); }
   { auto _e = kingdom(); _o->kingdom = _e; }
   { auto _e = chromosome_number(); _o->chromosome_number = _e; }
-  { auto _e = chromosome_structure(); if (_e) { _o->chromosome_structure.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->chromosome_structure[_i]) { _e->Get(_i)->UnPackTo(_o->chromosome_structure[_i].get(), _resolver); } else { _o->chromosome_structure[_i] = std::unique_ptr<Ecosystem::ChromosomeStrandT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = chromosome_structure(); if (_e) { _o->chromosome_structure.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->chromosome_structure[_i]) { _e->Get(_i)->UnPackTo(_o->chromosome_structure[_i].get(), _resolver); } else { _o->chromosome_structure[_i] = std::unique_ptr<Ecosystem::ChromosomeStrandT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->chromosome_structure.resize(0); } }
   { auto _e = food_chain_rank(); _o->food_chain_rank = _e; }
   { auto _e = sexuality(); _o->sexuality = _e; }
   { auto _e = age_fitness_on_death_ratio(); _o->age_fitness_on_death_ratio = _e; }
@@ -2069,6 +2246,20 @@ inline flatbuffers::Offset<Organism> CreateOrganism(flatbuffers::FlatBufferBuild
       _monitor);
 }
 
+inline SpeciesT::SpeciesT(const SpeciesT &o)
+      : kind(o.kind),
+        kingdom(o.kingdom) {
+  organism.reserve(o.organism.size());
+  for (const auto &organism_ : o.organism) { organism.emplace_back((organism_) ? new Ecosystem::OrganismT(*organism_) : nullptr); }
+}
+
+inline SpeciesT &SpeciesT::operator=(SpeciesT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(kind, o.kind);
+  std::swap(kingdom, o.kingdom);
+  std::swap(organism, o.organism);
+  return *this;
+}
+
 inline SpeciesT *Species::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::make_unique<SpeciesT>();
   UnPackTo(_o.get(), _resolver);
@@ -2080,7 +2271,7 @@ inline void Species::UnPackTo(SpeciesT *_o, const flatbuffers::resolver_function
   (void)_resolver;
   { auto _e = kind(); if (_e) _o->kind = _e->str(); }
   { auto _e = kingdom(); _o->kingdom = _e; }
-  { auto _e = organism(); if (_e) { _o->organism.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->organism[_i]) { _e->Get(_i)->UnPackTo(_o->organism[_i].get(), _resolver); } else { _o->organism[_i] = std::unique_ptr<Ecosystem::OrganismT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = organism(); if (_e) { _o->organism.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->organism[_i]) { _e->Get(_i)->UnPackTo(_o->organism[_i].get(), _resolver); } else { _o->organism[_i] = std::unique_ptr<Ecosystem::OrganismT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->organism.resize(0); } }
 }
 
 inline flatbuffers::Offset<Species> Species::Pack(flatbuffers::FlatBufferBuilder &_fbb, const SpeciesT* _o, const flatbuffers::rehasher_function_t *_rehasher) {
@@ -2101,6 +2292,18 @@ inline flatbuffers::Offset<Species> CreateSpecies(flatbuffers::FlatBufferBuilder
       _organism);
 }
 
+inline WorldT::WorldT(const WorldT &o)
+      : year(o.year) {
+  species.reserve(o.species.size());
+  for (const auto &species_ : o.species) { species.emplace_back((species_) ? new Ecosystem::SpeciesT(*species_) : nullptr); }
+}
+
+inline WorldT &WorldT::operator=(WorldT o) FLATBUFFERS_NOEXCEPT {
+  std::swap(year, o.year);
+  std::swap(species, o.species);
+  return *this;
+}
+
 inline WorldT *World::UnPack(const flatbuffers::resolver_function_t *_resolver) const {
   auto _o = std::make_unique<WorldT>();
   UnPackTo(_o.get(), _resolver);
@@ -2111,7 +2314,7 @@ inline void World::UnPackTo(WorldT *_o, const flatbuffers::resolver_function_t *
   (void)_o;
   (void)_resolver;
   { auto _e = year(); _o->year = _e; }
-  { auto _e = species(); if (_e) { _o->species.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->species[_i]) { _e->Get(_i)->UnPackTo(_o->species[_i].get(), _resolver); } else { _o->species[_i] = std::unique_ptr<Ecosystem::SpeciesT>(_e->Get(_i)->UnPack(_resolver)); }; } } }
+  { auto _e = species(); if (_e) { _o->species.resize(_e->size()); for (flatbuffers::uoffset_t _i = 0; _i < _e->size(); _i++) { if(_o->species[_i]) { _e->Get(_i)->UnPackTo(_o->species[_i].get(), _resolver); } else { _o->species[_i] = std::unique_ptr<Ecosystem::SpeciesT>(_e->Get(_i)->UnPack(_resolver)); }; } } else { _o->species.resize(0); } }
 }
 
 inline flatbuffers::Offset<World> World::Pack(flatbuffers::FlatBufferBuilder &_fbb, const WorldT* _o, const flatbuffers::rehasher_function_t *_rehasher) {

@@ -5,4 +5,3 @@
 class Monitor(object):
     None_ = 0
     Simulation = 1
-
