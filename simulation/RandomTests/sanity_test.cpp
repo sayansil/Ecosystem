@@ -16,8 +16,8 @@ int main()
 {
     setup::setup();
 
-    const size_t initial_organism_count = 4500;
-    const size_t simulation_years = 100;
+    const size_t initial_organism_count = 500;
+    const size_t simulation_years = 10;
 
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);

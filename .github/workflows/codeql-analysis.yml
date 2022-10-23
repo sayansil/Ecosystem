@@ -32,14 +32,14 @@ jobs:
 
     - name: configure-build
       run: |
-        cd Cpp
+        cd simulation
         mkdir build
         cd build
         cmake ..
 
     - name: build
       run: |
-        cd Cpp/build
+        cd simulation/build
         make
 
     - name: Perform CodeQL Analysis
