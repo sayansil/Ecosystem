@@ -14,11 +14,14 @@ on:
         default: ''
         type: string
 
+env:
+  valid_manual_trigger: ${{ (inputs.relVersion != '') && contains(['sayansil', 'DarkStar1997'], github.event.sender.login) }}
+
 jobs:
 
   build-linux:
     name: Build on Linux
-    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
+    if: ${{ valid_manual_trigger || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -59,7 +62,7 @@ jobs:
 
   build-macos:
     name: Build on MacOS
-    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
+    if: ${{ valid_manual_trigger || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: macos-12
     strategy:
       matrix:
@@ -100,7 +103,7 @@ jobs:
 
   build-windows:
     name: Build on Windows
-    if: ${{ (inputs.relVersion != '') || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
+    if: ${{ valid_manual_trigger || (github.head_ref == 'release' && github.event.pull_request.merged == true) }}
     runs-on: windows-2022
     strategy:
       matrix:
@@ -149,7 +152,7 @@ jobs:
 
     - name: "Build Changelog"
       id: build_changelog
-      uses: mikepenz/release-changelog-builder-action@v2.9.0
+      uses: mikepenz/release-changelog-builder-action@v3.4.0
       with:
         ignorePreReleases: "false"
       env:
@@ -165,6 +168,10 @@ jobs:
         body: |
           ## Changelog
             ${{ steps.build_changelog.outputs.changelog }}
+
+
+            **${{ steps.build_changelog.outputs.changed_files }} files** changed.
+            **${{ steps.build_changelog.outputs.commits }} commits (+${{ steps.build_changelog.outputs.additions }}, -${{ steps.build_changelog.outputs.deletions }})
           ### Documentation
           - Read project wiki [here](https://github.com/sayansil/Ecosystem/wiki).
           - Read installation/usage steps [here](https://github.com/sayansil/Ecosystem/wiki/Usage).
