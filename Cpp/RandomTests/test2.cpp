@@ -15,11 +15,11 @@
 int main()
 {
     std::vector<FBuffer> rows;
-    const size_t simulation_years = 500;
+    const size_t simulation_years = 100;
 
     setup::setup();
 
-    const size_t initial_organism_count = 50000;
+    const size_t initial_organism_count = 5000;
 
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
