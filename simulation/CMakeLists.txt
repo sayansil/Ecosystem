@@ -38,7 +38,7 @@ set(FETCHCONTENT_BASE_DIR ${fc_cache})
 FetchContent_Declare(
     nlohmann
     GIT_REPOSITORY "https://github.com/nlohmann/json"
-    GIT_TAG 0972f7ff0e651f09a306dba791cc42024b8642c1
+    GIT_TAG v3.11.2
     GIT_PROGRESS TRUE
 )
 FetchContent_Populate(nlohmann)
@@ -48,7 +48,7 @@ set(FLATBUFFERS_BUILD_TESTS OFF CACHE INTERNAL "")
 FetchContent_Declare(
     flatbuffer
     GIT_REPOSITORY "https://github.com/google/flatbuffers"
-    GIT_TAG e08da4dea29449c235096a688a361fa914868b76
+    GIT_TAG v22.9.29
     GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(flatbuffer)
@@ -59,7 +59,7 @@ include_directories(${FlatBuffers_SOURCE_DIR}/include)
 FetchContent_Declare(
     fmtlib
     GIT_REPOSITORY "https://github.com/fmtlib/fmt"
-    GIT_TAG 1557ab764422d5087619fea3994012066644a11e
+    GIT_TAG 9.1.0
     GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(fmtlib)
@@ -67,7 +67,7 @@ FetchContent_MakeAvailable(fmtlib)
 FetchContent_Declare(
     customrng
     GIT_REPOSITORY "https://github.com/Reputeless/Xoshiro-cpp"
-    GIT_TAG 078bf3396c31c3fa6d6f6c785b4612fb547f7132
+    GIT_TAG 19bcbb2ce0ed158233187f524fd0964c105a65b3
     GIT_PROGRESS TRUE
 )
 FetchContent_Populate(customrng)
