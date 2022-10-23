@@ -190,7 +190,9 @@ jobs:
           - os: macos
             compiler: msvc
           - os: windows
-            compiler: [gcc, clang]
+            compiler: gcc
+          - os: windows
+            compiler: clang
 
     steps:
     - uses: actions/checkout@v3
