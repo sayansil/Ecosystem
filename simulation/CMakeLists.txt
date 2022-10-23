@@ -31,6 +31,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE 1)
 
 set(FETCHCONTENT_QUIET FALSE)
+get_filename_component(fc_cache "../.fetchcontent_cache"
+                       REALPATH BASE_DIR "${CMAKE_BINARY_DIR}")
+set(FETCHCONTENT_BASE_DIR ${fc_cache})
 
 FetchContent_Declare(
     nlohmann
