@@ -1,12 +1,6 @@
 name: test
 
 on:
-  push:
-      branches:
-      - master
-      paths:
-      - 'simulation/**'
-      - '.github/workflows/test.yml'
   pull_request:
       branches:
       - master
