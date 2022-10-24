@@ -9,13 +9,14 @@ from datetime import datetime
 from helper.enums import Kingdom as KingdomE
 
 root_dir = Path(__file__).absolute().parent.parent
-ECOSYSTEM_SCHEMA_PATH = root_dir / 'simulation' / 'schema' / 'python'
-DB_PATH = root_dir / 'data' / 'ecosystem_master.db'
-SAVE_PATH = root_dir / 'outputs'
+ECOSYSTEM_SCHEMA_PATH = root_dir / "simulation" / "schema" / "python"
+DB_PATH = root_dir / "data" / "ecosystem_master.db"
+SAVE_PATH = root_dir / "outputs"
 
 sys.path.insert(0, str(ECOSYSTEM_SCHEMA_PATH))
 
 from Ecosystem import World, WorldPopulation
+
 
 def split_data_by_species(df: pd.DataFrame) -> dict:
     species_data = {}
@@ -30,7 +31,7 @@ def split_data_by_species(df: pd.DataFrame) -> dict:
         species_population_list = population_obj.speciesPopulation
 
         for species in species_list:
-            kind = species.kind.decode("utf-8") 
+            kind = species.kind.decode("utf-8")
             kingdom = KingdomE(species.kingdom)
             avg_organism = species.organism[0]
 
@@ -49,8 +50,9 @@ def split_data_by_species(df: pd.DataFrame) -> dict:
             }
     return species_data
 
+
 def get_table() -> pd.DataFrame:
-    table_name = 'ECOSYSTEM_MASTER'
+    table_name = "ECOSYSTEM_MASTER"
     conn = sqlite3.connect(str(DB_PATH))
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM {}".format(table_name.replace('"', '""')))
@@ -59,19 +61,23 @@ def get_table() -> pd.DataFrame:
     df = pd.DataFrame(rows, columns=cols).dropna()
     return df
 
+
 def generate_report(savepath: str) -> NoReturn:
     df = get_table()
     data = split_data_by_species(df)
     report.generate_and_save_report(data, savepath)
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Visualise reports for last simulation")
-    parser.add_argument('-o', '--output', help='Output filename', default='')
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Visualise reports for last simulation"
+    )
+    parser.add_argument("-o", "--output", help="Output filename", default="")
     args = parser.parse_args()
     savepath = args.output
 
     if not savepath:
         timestamp = datetime.now().strftime("%d-%m-%Y %H_%M_%S")
-        savepath = str(SAVE_PATH / 'report {}.pdf'.format(timestamp))
+        savepath = str(SAVE_PATH / "report {}.pdf".format(timestamp))
 
     generate_report(savepath)
