@@ -1,26 +1,34 @@
 #include <god.hpp>
-#include <iostream>
-#include <helper.hpp>
+#include <setup.hpp>
+#include <vector>
+#include <fmt/core.h>
+#include <unordered_map>
 
 int main()
 {
-    unsigned int initial_organism_count = 200;
-    unsigned int years_to_simulate = 100;
-    std::string kingdom = "animal";
-    std::string kind = "deer";
+    std::vector<std::vector<FBuffer>> rows;
+    const size_t simulation_years = 250;
+
+    setup::setup();
+
+    const size_t initial_organism_count = 500;
+
+    std::vector<std::unordered_map<std::string, std::string>> organisms;
+    organisms.reserve(initial_organism_count);
+
+    for (size_t i = 0; i < initial_organism_count; i++)
+    {
+        organisms.push_back({{"kind", "deer"},
+                            {"kingdom", "0"},
+                            {"age", "20"}});
+    }
 
     God allah(true);
-    allah.reset_species(helper::generate_full_species_name(kingdom, kind));
-    while (initial_organism_count--)
-    {
-        allah.spawn_organism(std::make_shared<Animal>(kind, 10, false, "OG-" + std::to_string(initial_organism_count)));
+    allah.cleanSlate();
+    allah.createWorld(organisms);
+    for (size_t i = 0; i < simulation_years; i++) {
+        allah.happy_new_year();
     }
 
-    while (years_to_simulate--)
-    {
-        allah.happy_new_year(true);
-        allah.remember_species(helper::generate_full_species_name(kingdom, kind));
-    }
-
-    std::cout << "Simulation complete. Ready to generate report for " << helper::generate_full_species_name(kingdom, kind) << "\n";
+    fmt::print("Simulation ended.\n");
 }

@@ -1,228 +1,135 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
-from matplotlib.backends.backend_pdf import PdfPages
-from datetime import datetime
-import os
 
 
-def generate_pdf(df, kind, savepath):
+def get_figs(year_map: dict) -> list:
     figs = []
-    fig = get_start_page(kind)
-    figs.append(fig)
-    fig = get_mortality_graphs(df)
-    figs.append(fig)
-    fig = get_demographic_graphs(df)
-    figs.append(fig)
-    fig = get_copulation_graphs(df)
-    figs.append(fig)
-    fig = get_dependency_graphs(df)
-    figs.append(fig)
-    fig1, fig2 = get_average_graphs(df)
-    figs.append(fig1)
-    figs.append(fig2)
-    fig1, fig2 = get_theoretical_graphs(df)
-    figs.append(fig1)
-    figs.append(fig2)
 
-    if not savepath:
-        timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S%p")
-        savepath = '../outputs/report_' + kind + ' ' + timestamp + '.pdf'
+    figs.extend(get_demographic_graphs(year_map))
+    figs.extend(get_copulation_graphs(year_map))
+    figs.extend(get_dependency_graphs(year_map))
+    figs.extend(get_average_graphs(year_map))
+    figs.extend(get_theoretical_graphs(year_map))
 
-    with PdfPages(savepath) as pdf:
-        for fig in figs:
-            plt.figure(fig.number)
-            pdf.savefig()
-    print("Report generated at", savepath)
+    return figs
 
-def get_start_page(kind):
-    fig = plt.figure()
-    fig.set_size_inches(8, 10)
-    gs = GridSpec(1, 1, figure=fig)
 
-    ax = fig.add_subplot(gs[0, 0])
-    ax.text(0.2, 0.5, 'Simulation Report', dict(size=30))
-    ax.text(0.025, 0.025, "Species: " + kind, dict(size=10))
-    ax.get_yaxis().set_visible(False)
-    ax.get_xaxis().set_visible(False)
+def get_XY(year_map: dict, key: str):
+    X, Y = [], []
 
-    return fig
+    for year, species_data in year_map.items():
+        X.append(int(year))
+        Y.append(float(getattr(species_data.get("stats"), key)))
 
-def get_mortality_graphs(df):
-    """
-        age_death_factor
-        fitness_death_factor
-        age_fitness_on_death_ratio
-        death_factor
-        max_age
-    """
+    return X, Y
+
+
+def get_demographic_graphs(year_map: dict) -> list:
     fig = plt.figure()
     fig.set_size_inches(8, 10)
     fig.subplots_adjust(hspace=0.3)
     fig.subplots_adjust(wspace=0.3)
-    fig.suptitle('Mortality Graphs')
-    gs = GridSpec(3, 2, figure=fig)
-
-    ax = fig.add_subplot(gs[0, 0])
-    ax.set_title('Death factor (by age)')
-    x = df.index
-    y = df['average_age_death_factor']
-    ax.plot(x, y, '-r')
-    ax.set_ylabel("Factor")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig.add_subplot(gs[0, 1])
-    ax.set_title('Death factor (by fitness)')
-    x = df.index
-    y = df['average_fitness_death_factor']
-    ax.plot(x, y, '-b')
-    ax.set_ylabel("Factor")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig.add_subplot(gs[1, 0])
-    ax.set_title('Age vs. Fitness')
-    x = df.index
-    y = df['age_fitness_on_death_ratio']
-    ax.plot(x, y, '-b')
-    ax.set_ylabel("Ratio")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig.add_subplot(gs[1, 1])
-    ax.set_title('Final Death Factor')
-    x = df.index
-    y = df['average_death_factor']
-    ax.plot(x, y, '-m')
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig.add_subplot(gs[2, :])
-    ax.set_title('Max age with time')
-    x = df.index
-    y = df['max_age']
-    ax.plot(x, y, '-b')
-    ax.set_ylabel("Max age")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    return fig
-
-def get_demographic_graphs(df):
-    """
-        population
-    """
-    fig = plt.figure()
-    fig.set_size_inches(8, 10)
-    fig.subplots_adjust(hspace=0.3)
-    fig.subplots_adjust(wspace=0.3)
-    fig.suptitle('Demographic Graphs')
+    fig.suptitle("Demographic Graphs")
     gs = GridSpec(1, 1, figure=fig)
 
     ax = fig.add_subplot(gs[:, :])
-    ax.set_title('Population')
-    x = df.index
-    y = df['population']
-    ax.plot(x, y, '-b')
+    ax.set_title("Population")
+    x, y = [], []
+    for year, species_data in year_map.items():
+        x.append(int(year))
+        y.append(
+            int(species_data.get("population").matablePopulation.malePopulation)
+            + int(species_data.get("population").nonMatablePopulation.malePopulation)
+            + int(species_data.get("population").matablePopulation.femalePopulation)
+            + int(species_data.get("population").nonMatablePopulation.femalePopulation)
+        )
+    ax.plot(x, y, "-b")
     ax.set_ylabel("Population")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    return fig
+    return [fig]
 
-def get_copulation_graphs(df):
-    """
-        matable_population
-        mating_age_start
-        mating_age_end
-        conceiving_probability
-        mutation_probability
-        offsprings_factor
-    """
+
+def get_copulation_graphs(year_map: dict) -> list:
     fig = plt.figure()
     fig.set_size_inches(8, 10)
     fig.subplots_adjust(hspace=0.3)
     fig.subplots_adjust(wspace=0.3)
-    fig.suptitle('Copulation Graphs')
+    fig.suptitle("Copulation Graphs")
     gs = GridSpec(4, 2, figure=fig)
 
     ax = fig.add_subplot(gs[0, :])
-    ax.set_title('Matable population')
-    x = df.index
-    y = df['matable_population']
-    ax.plot(x, y, '-r')
+    ax.set_title("Matable population")
+    x, y = [], []
+    for year, species_data in year_map.items():
+        x.append(int(year))
+        y.append(
+            int(species_data.get("population").matablePopulation.malePopulation)
+            + int(species_data.get("population").matablePopulation.femalePopulation)
+        )
+    ax.plot(x, y, "-r")
     ax.set_ylabel("Matable Population")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig.add_subplot(gs[1, 0])
-    ax.set_title('Mating Start')
-    x = df.index
-    y = df['mating_age_start']
-    ax.plot(x, y, '-b')
+    ax.set_title("Mating Start")
+    x, y = get_XY(year_map, "matingAgeStart")
+    ax.plot(x, y, "-b")
     ax.set_ylabel("Age")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig.add_subplot(gs[1, -1])
-    ax.set_title('Mating End')
-    x = df.index
-    y = df['mating_age_end']
-    ax.plot(x, y, '-r')
+    ax.set_title("Mating End")
+    x, y = get_XY(year_map, "matingAgeEnd")
+    ax.plot(x, y, "-r")
     ax.set_ylabel("Age")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig.add_subplot(gs[2, 0])
-    ax.set_title('Mutation')
-    x = df.index
-    y = df['mutation_probability']
-    ax.plot(x, y, '-r')
+    ax.set_title("Mutation")
+    x, y = get_XY(year_map, "mutationProbability")
+    ax.plot(x, y, "-r")
     ax.set_ylabel("Probability")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig.add_subplot(gs[2, -1])
-    ax.set_title('Conceive')
-    x = df.index
-    y = df['conceiving_probability']
-    ax.plot(x, y, '-b')
+    ax.set_title("Conceive")
+    x, y = get_XY(year_map, "conceivingProbability")
+    ax.plot(x, y, "-b")
     ax.set_ylabel("Probability")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig.add_subplot(gs[3, :])
-    ax.set_title('Multiple offprings')
-    x = df.index
-    y = df['offsprings_factor']
-    ax.plot(x, y, '-b')
+    ax.set_title("Multiple offprings")
+    x, y = get_XY(year_map, "offspringsFactor")
+    ax.plot(x, y, "-b")
     ax.set_ylabel("Factor")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    return fig
+    return [fig]
 
-def get_dependency_graphs(df):
-    """
-        height_on_vitality
-        weight_on_vitality
-    """
+
+def get_dependency_graphs(year_map: dict) -> list:
     fig = plt.figure()
     fig.set_size_inches(8, 10)
     fig.subplots_adjust(hspace=0.3)
     fig.subplots_adjust(wspace=0.3)
-    fig.suptitle('Dependency Graphs')
+    fig.suptitle("Dependency Graphs")
     gs = GridSpec(1, 1, figure=fig)
 
     ax = fig.add_subplot(gs[0, 0])
-    ax.set_title('Factors affecting Vitality')
-    x = df.index
-    y = df['height_on_vitality']
-    ax.plot(x, y, '-r', label='Height')
-    x = df.index
-    y = df['weight_on_vitality']
-    ax.plot(x, y, '-b', label='Weight')
+    ax.set_title("Factors affecting Vitality")
+    x, y = get_XY(year_map, "heightOnVitality")
+    ax.plot(x, y, "-r", label="Height")
+    x, y = get_XY(year_map, "weightOnVitality")
+    ax.plot(x, y, "-b", label="Weight")
     ax.set_ylabel("Factor")
     ax.legend(loc="upper right")
     for tick in ax.get_yticklabels():
@@ -230,52 +137,40 @@ def get_dependency_graphs(df):
 
     return fig
 
-def get_average_graphs(df):
-    """
-        average_generation
-        average_age
-        average_height
-        average_weight
-        average_static_fitness
-        average_immunity
-        average_max_vitality_at_age
-    """
+
+def get_average_graphs(year_map: dict) -> list:
     fig1 = plt.figure()
     fig1.set_size_inches(8, 10)
     fig1.subplots_adjust(hspace=0.3)
     fig1.subplots_adjust(wspace=0.3)
-    fig1.suptitle('Average Graphs 1')
+    fig1.suptitle("Average Graphs 1")
     gs = GridSpec(2, 2, figure=fig1)
 
     ax = fig1.add_subplot(gs[0, 0])
-    ax.set_title('Generation')
-    x = df.index
-    y = df['average_generation']
-    ax.plot(x, y, '-g')
+    ax.set_title("Generation")
+    x, y = get_XY(year_map, "generation")
+    ax.plot(x, y, "-g")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig1.add_subplot(gs[0, 1])
-    ax.set_title('Age')
-    x = df.index
-    y = df['average_age']
-    ax.plot(x, y, '-m')
+    ax.set_title("Age")
+    x, y = get_XY(year_map, "age")
+    ax.plot(x, y, "-m")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig1.add_subplot(gs[1, 0])
-    ax.set_title('Height')
-    x = df.index
-    y = df['average_height']
-    ax.plot(x, y, '-b')
+    ax.set_title("Height")
+    x, y = get_XY(year_map, "height")
+    ax.plot(x, y, "-b")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig1.add_subplot(gs[1, 1])
-    ax.set_title('Weight')
-    x = df.index
-    y = df['average_weight']
-    ax.plot(x, y, '-r')
+    ax.set_title("Weight")
+    x, y = get_XY(year_map, "weight")
+    ax.plot(x, y, "-r")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
@@ -283,94 +178,84 @@ def get_average_graphs(df):
     fig2.set_size_inches(8, 10)
     fig2.subplots_adjust(hspace=0.3)
     fig2.subplots_adjust(wspace=0.3)
-    fig2.suptitle('Average Graphs 2')
+    fig2.suptitle("Average Graphs 2")
     gs = GridSpec(2, 2, figure=fig2)
 
     ax = fig2.add_subplot(gs[0, 0])
-    ax.set_title('Static Fitness')
-    x = df.index
-    y = df['average_static_fitness']
-    ax.plot(x, y, '-b')
+    ax.set_title("Max vitality at age")
+    x, y = get_XY(year_map, "maxVitalityAtAge")
+    ax.plot(x, y, "-c")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    ax = fig2.add_subplot(gs[0, 1])
-    ax.set_title('Immunity')
-    x = df.index
-    y = df['average_immunity']
-    ax.plot(x, y, '-r')
+    ax = fig2.add_subplot(gs[0, -1])
+    ax.set_title("Max age with time")
+    x, y = get_XY(year_map, "maxAge")
+    ax.plot(x, y, "-m")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    ax = fig2.add_subplot(gs[1, :])
-    ax.set_title('Max vitality at age')
-    x = df.index
-    y = df['average_max_vitality_at_age']
-    ax.plot(x, y, '-c')
+    ax = fig2.add_subplot(gs[1, 0])
+    ax.set_title("Static Fitness")
+    x, y = get_XY(year_map, "staticFitness")
+    ax.plot(x, y, "-b")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
-    return fig1, fig2
+    ax = fig2.add_subplot(gs[1, -1])
+    ax.set_title("Immunity")
+    x, y = get_XY(year_map, "immunity")
+    ax.plot(x, y, "-r")
+    for tick in ax.get_yticklabels():
+        tick.set_rotation(45)
 
-def get_theoretical_graphs(df):
-    """
-        theoretical_maximum_base_height
-        theoretical_maximum_base_weight
-        theoretical_maximum_height
-        theoretical_maximum_weight
-        theoretical_maximum_base_vitality
-        theoretical_maximum_vitality_multiplier
-        theoretical_maximum_height_multiplier
-        theoretical_maximum_weight_multiplier
-    """
+    return [fig1, fig2]
+
+
+def get_theoretical_graphs(year_map: dict) -> list:
     fig1 = plt.figure()
     fig1.set_size_inches(8, 10)
     fig1.subplots_adjust(hspace=0.3)
     fig1.subplots_adjust(wspace=0.3)
-    fig1.suptitle('Theoretical Graphs 1')
+    fig1.suptitle("Theoretical Graphs 1")
     gs = GridSpec(3, 2, figure=fig1)
 
     ax = fig1.add_subplot(gs[0, 0])
-    ax.set_title('Max base height')
-    x = df.index
-    y = df['theoretical_maximum_base_height']
-    ax.plot(x, y, '-b')
+    ax.set_title("Max base height")
+    x, y = get_XY(year_map, "theoreticalMaximumBaseHeight")
+    ax.plot(x, y, "-b")
     ax.set_ylabel("meters")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig1.add_subplot(gs[0, -1])
-    ax.set_title('Max height')
-    x = df.index
-    y = df['theoretical_maximum_height']
-    ax.plot(x, y, '-b')
+    ax.set_title("Max height")
+    x, y = get_XY(year_map, "theoreticalMaximumHeight")
+    ax.plot(x, y, "-b")
     ax.set_ylabel("meters")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig1.add_subplot(gs[1, 0])
-    ax.set_title('Max base weight')
-    x = df.index
-    y = df['theoretical_maximum_base_weight']
-    ax.plot(x, y, '-r')
+    ax.set_title("Max base weight")
+    x, y = get_XY(year_map, "theoreticalMaximumBaseWeight")
+    ax.plot(x, y, "-r")
     ax.set_ylabel("kg")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig1.add_subplot(gs[1, -1])
-    ax.set_title('Max weight')
-    x = df.index
-    y = df['theoretical_maximum_weight']
-    ax.plot(x, y, '-r')
+    ax.set_title("Max weight")
+    x, y = get_XY(year_map, "theoreticalMaximumWeight")
+    ax.plot(x, y, "-r")
     ax.set_ylabel("kg")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig1.add_subplot(gs[2, 0:2])
-    ax.set_title('Max base vitality')
-    x = df.index
-    y = df['theoretical_maximum_base_vitality']
-    ax.plot(x, y, '-g')
+    ax.set_title("Max base vitality")
+    x, y = get_XY(year_map, "theoreticalMaximumBaseVitality")
+    ax.plot(x, y, "-g")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
@@ -378,30 +263,27 @@ def get_theoretical_graphs(df):
     fig2.set_size_inches(8, 10)
     fig2.subplots_adjust(hspace=0.3)
     fig2.subplots_adjust(wspace=0.3)
-    fig2.suptitle('Theoretical Graphs 2')
+    fig2.suptitle("Theoretical Graphs 2")
     gs = GridSpec(2, 2, figure=fig2)
 
     ax = fig2.add_subplot(gs[0, 0:2])
-    ax.set_title('Max vitality multiplier')
-    x = df.index
-    y = df['theoretical_maximum_vitality_multiplier']
-    ax.plot(x, y, '-m')
+    ax.set_title("Max vitality multiplier")
+    x, y = get_XY(year_map, "theoreticalMaximumVitalityMultiplier")
+    ax.plot(x, y, "-m")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig2.add_subplot(gs[1, 0])
-    ax.set_title('Max height multiplier')
-    x = df.index
-    y = df['theoretical_maximum_height_multiplier']
-    ax.plot(x, y, '-r')
+    ax.set_title("Max height multiplier")
+    x, y = get_XY(year_map, "theoreticalMaximumHeightMultiplier")
+    ax.plot(x, y, "-r")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 
     ax = fig2.add_subplot(gs[1, -1])
-    ax.set_title('Max weight multiplier')
-    x = df.index
-    y = df['theoretical_maximum_weight_multiplier']
-    ax.plot(x, y, '-b')
+    ax.set_title("Max weight multiplier")
+    x, y = get_XY(year_map, "theoreticalMaximumWeightMultiplier")
+    ax.plot(x, y, "-b")
     for tick in ax.get_yticklabels():
         tick.set_rotation(45)
 

@@ -27,7 +27,7 @@ endfunction()
 #                                     #
 #######################################
 
-# add_code(reportgen_test)
+add_code(reportgen_test)
 add_code(sanity_test)
 #    add_code(unit_tests)
 # add_code(test1)
