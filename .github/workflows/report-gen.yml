@@ -1,0 +1,52 @@
+name: report-gen
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  generate-report:
+    name: Generate Report
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        sudo apt install ninja-build
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd simulation
+        cmake --preset lin-gcc-rel
+
+    - name: Build
+      id: build
+      run: |
+        cd simulation
+        cmake --build --preset lin-gcc-rel
+
+    - name: Run Simulation
+      id: run
+      run: |
+        export ECOSYSTEM_ROOT=`pwd`
+        cd simulation
+        ./build/lin-gcc-rel/RandomTests/rt_reportgen_test
+
+    - name: Create PDF report
+      id: create-report
+      run: |
+        cd visualization
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        python simulation_analysis.py -o ../outputs/new_report.pdf
+
+    - name: Upload Report
+      id: upload-report
+      uses: actions/upload-artifact@v3
+      with:
+        name: Simulation Report
+        path: outputs/new_report.pdf
