@@ -1,3 +1,5 @@
+from .enums import Kingdom as KingdomE
+
 def title_case(s):
     res = ''
     for word in s.split(' '):
@@ -15,3 +17,9 @@ def sentence_case(s):
         if len(s) > 1:
             res += s[1:]
     return res.strip()
+
+def get_kingdom(kingdom: KingdomE) -> str:
+    if kingdom == KingdomE.ANIMAL:
+        return 'Animal'
+    if kingdom == KingdomE.PLANT:
+        return 'Plant'
