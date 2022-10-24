@@ -50,7 +50,7 @@ TEST_CASE("Create world without db", "[test_cworld_nodb]")
 TEST_CASE("Create world with db", "[test_cworld_db]")
 {
 
-    std::vector<FBuffer> rows;
+    std::vector<std::vector<FBuffer>> rows;
     const size_t simulation_years = 100;
 
     REQUIRE_NOTHROW([&]() {

@@ -11,15 +11,16 @@
 #include <stat_fetcher.hpp>
 #include <database_manager.hpp>
 #include <ecosystem_types.hpp>
+#include <population_generated.h>
 
 int main()
 {
-    std::vector<FBuffer> rows;
+    std::vector<std::vector<FBuffer>> rows;
     const size_t simulation_years = 100;
 
     setup::setup();
 
-    const size_t initial_organism_count = 5000;
+    const size_t initial_organism_count = 500;
 
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
@@ -45,5 +46,8 @@ int main()
         rows = db_manager.read_all_rows(); 
     }
 
-    fmt::print("Years: {}, Rows: {}\n", simulation_years, rows.size());
+    flatbuffers::ToStringVisitor visitor("", true, "", true);
+    flatbuffers::IterateFlatBuffer(rows[0][1].data(), Ecosystem::WorldPopulationTypeTable(), &visitor);
+    nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+    fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 }

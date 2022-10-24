@@ -1,4 +1,6 @@
 #include <ctime>
+#include <world_generated.h>
+#include <population_generated.h>
 #include <database_manager.hpp>
 #include <stat_fetcher.hpp>
 #include <unordered_map>
@@ -45,6 +47,83 @@ namespace stat_fetcher
         }
 
         return age_map;
+    }
+
+    FBuffer get_population_stats(const flatbuffers::DetachedBuffer &world_buffer) {
+        const Ecosystem::World *world_pointer = Ecosystem::GetWorld(world_buffer.data());
+        
+        flatbuffers::FlatBufferBuilder new_builder;
+
+        std::vector<flatbuffers::Offset<Ecosystem::SpeciesPopulation>> new_stdvecSpeciesPopulation;
+
+        for (const Ecosystem::Species *species : *(world_pointer->species()))
+        {
+            if (species->organism()->size() == 0) {
+                continue;
+            }
+
+            uint32_t male_matable_population = 0;
+            uint32_t female_matable_population = 0;
+            uint32_t male_non_matable_population = 0;
+            uint32_t female_non_matable_population = 0;
+
+            for (const Ecosystem::Organism *organism : *(species->organism()))
+            {
+                if (organism->age() >= organism->mating_age_start() && organism->age() <= organism->mating_age_end())
+                {
+                    if (organism->gender() == Ecosystem::Gender::Male)
+                    {
+                        male_matable_population++;
+                    }
+                    else if (organism->gender() == Ecosystem::Gender::Female)
+                    {
+                        female_matable_population++;
+                    }
+                }
+                else
+                {
+                    if (organism->gender() == Ecosystem::Gender::Male)
+                    {
+                        male_non_matable_population++;
+                    }
+                    else if (organism->gender() == Ecosystem::Gender::Female)
+                    {
+                        female_non_matable_population++;
+                    }
+                }
+            }
+
+            auto matablePopulation = Ecosystem::RawPopulation(
+                male_matable_population,
+                female_matable_population
+            );
+            auto nonMatablePopulation = Ecosystem::RawPopulation(
+                male_matable_population,
+                female_matable_population
+            );
+
+            new_stdvecSpeciesPopulation.push_back(Ecosystem::CreateSpeciesPopulation(
+                new_builder,
+                new_builder.CreateString(species->kind()),
+                &matablePopulation,
+                &nonMatablePopulation
+            ));   
+        }
+
+        new_builder.Finish(Ecosystem::CreateWorldPopulation(
+            new_builder,
+            world_pointer->year(),
+            new_builder.CreateVector(new_stdvecSpeciesPopulation.data(), new_stdvecSpeciesPopulation.size())
+        ));
+        
+        FBuffer new_buffer(new_builder.GetSize());
+        uint8_t *new_buffer_ptr = new_builder.GetBufferPointer();
+
+        for (int i = 0; i < new_buffer.size(); i++)
+            new_buffer[i] = new_buffer_ptr[i];
+
+        new_builder.Clear();
+        return new_buffer;
     }
 
     FBuffer create_avg_world(const flatbuffers::DetachedBuffer &world_buffer)
