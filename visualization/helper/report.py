@@ -6,6 +6,9 @@ from datetime import datetime
 from .enums import Kingdom as KingdomE
 from .language import get_kingdom, title_case
 from matplotlib.gridspec import GridSpec
+from pathlib import Path
+import matplotlib.image as mimage
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 def create_pdf(figs: list, savepath: str) -> NoReturn:
     with PdfPages(savepath) as pdf:
@@ -15,11 +18,18 @@ def create_pdf(figs: list, savepath: str) -> NoReturn:
     print("Report generated at", savepath)
 
 def get_firstpage(kind_count: int, year_count: int) -> Figure:
+    root_path = Path(__file__).absolute().parent.parent.parent
+
     fig = plt.figure()
     fig.set_size_inches(8, 10)
     gs = GridSpec(1, 1, figure=fig)
 
+    logo_path = root_path / 'docs' / 'assets' / 'img' / 'eco_black.png'
+    logo = mimage.imread(str(logo_path))
+    imagebox = OffsetImage(logo, zoom = 0.06)
+
     ax = fig.add_subplot(gs[0, 0])
+    ax.add_artist(AnnotationBbox(imagebox, (0.221, 0.76), frameon=False))
     ax.text(0.2, 0.7, 'Simulation Report', dict(size=30))
     ax.text(0.2, 0.66, 'for {} species over {} years'.format(kind_count, year_count), dict(size=10))
     timestamp = datetime.now().strftime("%d/%m/%Y")
