@@ -52,10 +52,9 @@ def split_data_by_species(df: pd.DataFrame) -> dict:
 
 
 def get_table() -> pd.DataFrame:
-    table_name = "ECOSYSTEM_MASTER"
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM {}".format(table_name.replace('"', '""')))
+    cursor.execute("SELECT * FROM ECOSYSTEM_MASTER")
     rows = cursor.fetchall()
     cols = list(map(lambda x: x[0], cursor.description))
     df = pd.DataFrame(rows, columns=cols).dropna()
