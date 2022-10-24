@@ -1,0 +1,19 @@
+namespace Ecosystem;
+
+struct RawPopulation {
+    male_population: uint;
+    female_population: uint;
+}
+
+table SpeciesPopulation {
+    kind:string (key, required);
+    matable_population: RawPopulation;
+    non_matable_population: RawPopulation;
+}
+
+table WorldPopulation {
+    year:uint (key);
+    species_population:[SpeciesPopulation];
+}
+
+root_type WorldPopulation;
