@@ -72,8 +72,8 @@ def generate_figs(data: dict) -> list:
             if kingdom == KingdomE.ANIMAL:
                 data_pages = get_animal_figs(year_map)
                 
-            if kingdom == KingdomE.PLANT:
-                data_pages = get_plant_figs(year_map)
+            # if kingdom == KingdomE.PLANT:
+            #     data_pages = get_plant_figs(year_map)
             figs.extend(data_pages)
 
     front_page = get_firstpage(kind_count, year_count)
