@@ -98,8 +98,8 @@ namespace stat_fetcher
                 female_matable_population
             );
             auto nonMatablePopulation = Ecosystem::RawPopulation(
-                male_matable_population,
-                female_matable_population
+                male_non_matable_population,
+                female_non_matable_population
             );
 
             new_stdvecSpeciesPopulation.push_back(Ecosystem::CreateSpeciesPopulation(
@@ -116,11 +116,12 @@ namespace stat_fetcher
             new_builder.CreateVector(new_stdvecSpeciesPopulation.data(), new_stdvecSpeciesPopulation.size())
         ));
         
-        FBuffer new_buffer(new_builder.GetSize());
-        uint8_t *new_buffer_ptr = new_builder.GetBufferPointer();
-
-        for (int i = 0; i < new_buffer.size(); i++)
-            new_buffer[i] = new_buffer_ptr[i];
+        FBuffer new_buffer; new_buffer.reserve(new_builder.GetSize());
+        std::copy(
+            new_builder.GetBufferPointer(), 
+            new_builder.GetBufferPointer() + new_builder.GetSize(), 
+            std::back_inserter(new_buffer)
+        );
 
         new_builder.Clear();
         return new_buffer;
@@ -540,11 +541,12 @@ namespace stat_fetcher
         new_world_builder.add_year(world_pointer->year());
         new_builder.Finish(new_world_builder.Finish());
 
-        FBuffer new_buffer(new_builder.GetSize());
-        uint8_t *new_buffer_ptr = new_builder.GetBufferPointer();
-
-        for (int i = 0; i < new_buffer.size(); i++)
-            new_buffer[i] = new_buffer_ptr[i];
+        FBuffer new_buffer; new_buffer.reserve(new_builder.GetSize());
+        std::copy(
+            new_builder.GetBufferPointer(), 
+            new_builder.GetBufferPointer() + new_builder.GetSize(), 
+            std::back_inserter(new_buffer)
+        );
 
         new_builder.Clear();
         return new_buffer;
