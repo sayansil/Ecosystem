@@ -686,9 +686,10 @@ void God::happy_new_year(const bool &log)
 
     if (gods_eye)
     {
-        // Save average stats for every species in DB
+        // Save average stats and population for every species in DB
         FBuffer avg_instance = stat_fetcher::create_avg_world(buffer);
-        db.insert_rows({avg_instance});
+        FBuffer world_population = stat_fetcher::get_population_stats(buffer);
+        db.insert_rows({{avg_instance, world_population}});
     }
 
     year++;
