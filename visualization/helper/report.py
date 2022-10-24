@@ -5,6 +5,8 @@ from typing import NoReturn
 from datetime import datetime
 from .enums import Kingdom as KingdomE
 from .language import get_kingdom, title_case
+from .report_animal import get_figs as get_animal_figs
+from .report_plant import get_figs as get_plant_figs
 from matplotlib.gridspec import GridSpec
 from pathlib import Path
 import matplotlib.image as mimage
@@ -59,8 +61,6 @@ def generate_figs(data: dict) -> list:
     kind_count = 0
     year_count = 0
 
-    # TODO
-
     for kingdom, kind_map in data.items():
         kind_count += len(kind_map)
         for kind, year_map in kind_map.items():
@@ -69,11 +69,11 @@ def generate_figs(data: dict) -> list:
 
             year_count = max(year_count, len(year_map))
             data_pages = []
-            # if kingdom == KingdomE.ANIMAL:
-            #     data_pages = get_animal_figs(kind, year_map)
+            if kingdom == KingdomE.ANIMAL:
+                data_pages = get_animal_figs(year_map)
                 
-            # if kingdom == KingdomE.PLANT:
-            #     data_pages = get_plant_figs(kind, year_map)
+            if kingdom == KingdomE.PLANT:
+                data_pages = get_plant_figs(year_map)
             figs.extend(data_pages)
 
     front_page = get_firstpage(kind_count, year_count)

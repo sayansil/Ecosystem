@@ -1,54 +1,59 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
-from matplotlib.backends.backend_pdf import PdfPages
 from datetime import datetime
 import os
 
 
-def generate_pdf(df, kind, savepath):
+# def generate_pdf(df, kind, savepath):
+
+
+#     if not savepath:
+#         timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S%p")
+#         savepath = '../outputs/report_' + kind + ' ' + timestamp + '.pdf'
+
+#     with PdfPages(savepath) as pdf:
+#         for fig in figs:
+#             plt.figure(fig.number)
+#             pdf.savefig()
+#     print("Report generated at", savepath)
+
+# def get_start_page(kind):
+#     fig = plt.figure()
+#     fig.set_size_inches(8, 10)
+#     gs = GridSpec(1, 1, figure=fig)
+
+#     ax = fig.add_subplot(gs[0, 0])
+#     ax.text(0.2, 0.5, 'Simulation Report', dict(size=30))
+#     ax.text(0.025, 0.025, "Species: " + kind, dict(size=10))
+#     ax.get_yaxis().set_visible(False)
+#     ax.get_xaxis().set_visible(False)
+
+#     return fig
+
+def get_figs(year_map: dict) -> list:
     figs = []
-    fig = get_start_page(kind)
-    figs.append(fig)
-    fig = get_mortality_graphs(df)
-    figs.append(fig)
-    fig = get_demographic_graphs(df)
-    figs.append(fig)
-    fig = get_copulation_graphs(df)
-    figs.append(fig)
-    fig = get_dependency_graphs(df)
-    figs.append(fig)
-    fig1, fig2 = get_average_graphs(df)
-    figs.append(fig1)
-    figs.append(fig2)
-    fig1, fig2 = get_theoretical_graphs(df)
-    figs.append(fig1)
-    figs.append(fig2)
+    figs.extend(get_mortality_graphs(year_map))
+    figs.extend(get_demographic_graphs(year_map))
+    figs.extend(get_copulation_graphs(year_map))
+    figs.extend(get_dependency_graphs(year_map))
+    figs.extend(get_average_graphs(year_map))
+    figs.extend(get_theoretical_graphs(year_map))
 
-    if not savepath:
-        timestamp = datetime.now().strftime("%d-%m-%Y %H-%M-%S%p")
-        savepath = '../outputs/report_' + kind + ' ' + timestamp + '.pdf'
+    return figs
 
-    with PdfPages(savepath) as pdf:
-        for fig in figs:
-            plt.figure(fig.number)
-            pdf.savefig()
-    print("Report generated at", savepath)
 
-def get_start_page(kind):
-    fig = plt.figure()
-    fig.set_size_inches(8, 10)
-    gs = GridSpec(1, 1, figure=fig)
+def get_XY(year_map: dict, key: str):
+    X, Y = [], []
 
-    ax = fig.add_subplot(gs[0, 0])
-    ax.text(0.2, 0.5, 'Simulation Report', dict(size=30))
-    ax.text(0.025, 0.025, "Species: " + kind, dict(size=10))
-    ax.get_yaxis().set_visible(False)
-    ax.get_xaxis().set_visible(False)
+    for year, organism in year_map.items():
+        X.append(int(year))
+        Y.append(float(getattr(organism, key)))
+    
+    return X, Y
 
-    return fig
 
-def get_mortality_graphs(df):
+def get_mortality_graphs(year_map: dict) -> list:
     """
         age_death_factor
         fitness_death_factor
@@ -63,45 +68,9 @@ def get_mortality_graphs(df):
     fig.suptitle('Mortality Graphs')
     gs = GridSpec(3, 2, figure=fig)
 
-    ax = fig.add_subplot(gs[0, 0])
-    ax.set_title('Death factor (by age)')
-    x = df.index
-    y = df['average_age_death_factor']
-    ax.plot(x, y, '-r')
-    ax.set_ylabel("Factor")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig.add_subplot(gs[0, 1])
-    ax.set_title('Death factor (by fitness)')
-    x = df.index
-    y = df['average_fitness_death_factor']
-    ax.plot(x, y, '-b')
-    ax.set_ylabel("Factor")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig.add_subplot(gs[1, 0])
-    ax.set_title('Age vs. Fitness')
-    x = df.index
-    y = df['age_fitness_on_death_ratio']
-    ax.plot(x, y, '-b')
-    ax.set_ylabel("Ratio")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    ax = fig.add_subplot(gs[1, 1])
-    ax.set_title('Final Death Factor')
-    x = df.index
-    y = df['average_death_factor']
-    ax.plot(x, y, '-m')
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
     ax = fig.add_subplot(gs[2, :])
     ax.set_title('Max age with time')
-    x = df.index
-    y = df['max_age']
+    x, y = get_XY(year_map, "maxAge")
     ax.plot(x, y, '-b')
     ax.set_ylabel("Max age")
     for tick in ax.get_yticklabels():
@@ -109,34 +78,7 @@ def get_mortality_graphs(df):
 
     return fig
 
-def get_demographic_graphs(df):
-    """
-        male_population
-        female_population
-    """
-    fig = plt.figure()
-    fig.set_size_inches(8, 10)
-    fig.subplots_adjust(hspace=0.3)
-    fig.subplots_adjust(wspace=0.3)
-    fig.suptitle('Demographic Graphs')
-    gs = GridSpec(1, 1, figure=fig)
-
-    ax = fig.add_subplot(gs[:, :])
-    ax.set_title('Population')
-    x = df.index
-    y = df['male_population']
-    ax.plot(x, y, '-b', label='Male')
-    x = df.index
-    y = df['female_population']
-    ax.plot(x, y, '-r', label='Female')
-    ax.set_ylabel("Population")
-    ax.legend(loc="upper right")
-    for tick in ax.get_yticklabels():
-        tick.set_rotation(45)
-
-    return fig
-
-def get_copulation_graphs(df):
+def get_copulation_graphs(year_map: dict) -> list:
     """
         matable_male_population
         matable_female_population
@@ -213,7 +155,7 @@ def get_copulation_graphs(df):
 
     return fig
 
-def get_dependency_graphs(df):
+def get_dependency_graphs(year_map: dict) -> list:
     """
         height_on_stamina
         weight_on_stamina
@@ -293,7 +235,7 @@ def get_dependency_graphs(df):
 
     return fig
 
-def get_average_graphs(df):
+def get_average_graphs(year_map: dict) -> list:
     """
         average_generation
         average_age
@@ -411,7 +353,7 @@ def get_average_graphs(df):
 
     return fig1, fig2
 
-def get_theoretical_graphs(df):
+def get_theoretical_graphs(year_map: dict) -> list:
     """
         theoretical_maximum_base_height
         theoretical_maximum_base_weight

@@ -5,6 +5,9 @@ from matplotlib.backends.backend_pdf import PdfPages
 from datetime import datetime
 import os
 
+def get_figs(year_map: dict) -> list:
+    pass
+
 
 def generate_pdf(df, kind, savepath):
     figs = []
