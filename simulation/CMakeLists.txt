@@ -9,9 +9,6 @@ project(Ecosystem
 include(FetchContent)
 include(cmake/download_file.cmake)
 
-find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,readability-*,performance-*,modernize-*")
-
 if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     set(BUILD_SHARED_LIBS TRUE)
@@ -21,6 +18,13 @@ set(ECOSYSTEM_LIB "ecosystem")
 set(ECOSYSTEM_EXE "run")
 set(ECOSYSTEM_PYTHON_MODULE "pyecosystem")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
+option(ENABLE_CLANG_TIDY "Enable clang-tidy checks during compilation" OFF)
+
+if(${ENABLE_CLANG_TIDY})
+    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+    set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,readability-*,performance-*,modernize-*")
+endif()
 
 find_program(CCACHE_PROGRAM ccache)
 

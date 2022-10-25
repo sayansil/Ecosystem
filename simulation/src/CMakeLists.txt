@@ -24,4 +24,6 @@ else()
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt dl pthread)
 endif()
 
-set_target_properties(${ECOSYSTEM_LIB} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
+if(${ENABLE_CLANG_TIDY})
+    set_target_properties(${ECOSYSTEM_LIB} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
+endif()
