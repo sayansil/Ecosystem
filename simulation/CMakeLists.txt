@@ -9,6 +9,9 @@ project(Ecosystem
 include(FetchContent)
 include(cmake/download_file.cmake)
 
+find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,readability-*,performance-*,modernize-*")
+
 if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
     set(BUILD_SHARED_LIBS TRUE)
