@@ -46,12 +46,12 @@ TEST_CASE("Create world without db", "[test_cworld_nodb]")
 TEST_CASE("Create world with db", "[test_cworld_db]")
 {
 
-    std::vector<std::vector<FBuffer>> rows;
+    std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 20;
 
     REQUIRE_NOTHROW([&]() {
         setup::setup();
-        
+
         const size_t initial_organism_count = 100;
 
         std::vector<std::unordered_map<std::string, std::string>> organisms;
@@ -75,7 +75,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]")
 
         {
             DatabaseManager db_manager;
-            rows = db_manager.read_all_rows(); 
+            rows = db_manager.read_all_rows();
         }
     }());
 
