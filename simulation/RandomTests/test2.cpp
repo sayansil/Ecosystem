@@ -15,7 +15,7 @@
 
 int main()
 {
-    std::vector<std::vector<FBuffer>> rows;
+    std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 100;
 
     setup::setup();
@@ -43,7 +43,7 @@ int main()
 
     {
         DatabaseManager db_manager;
-        rows = db_manager.read_all_rows(); 
+        rows = db_manager.read_all_rows();
     }
 
     flatbuffers::ToStringVisitor visitor("", true, "", true);

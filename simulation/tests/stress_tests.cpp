@@ -50,7 +50,7 @@ TEST_CASE("Create world without db", "[test_cworld_nodb]")
 TEST_CASE("Create world with db", "[test_cworld_db]")
 {
 
-    std::vector<std::vector<FBuffer>> rows;
+    std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 100;
 
     REQUIRE_NOTHROW([&]() {
@@ -79,7 +79,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]")
 
         {
             DatabaseManager db_manager;
-            rows = db_manager.read_all_rows(); 
+            rows = db_manager.read_all_rows();
         }
     }());
 
