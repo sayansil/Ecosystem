@@ -28,8 +28,8 @@ struct DatabaseManager
      *  Standard DBMS operations  *
      ******************************/
 
-    std::vector<std::vector<FBuffer>> read_all_rows();
-    void insert_rows(const std::vector<std::vector<FBuffer>> &);
+    std::vector<std::vector<ByteArray>> read_all_rows();
+    void insert_rows(const std::vector<std::vector<FBufferView>> &);
 
     /******************************
      *  Miscellaneous operations  *

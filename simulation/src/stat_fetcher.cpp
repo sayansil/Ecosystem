@@ -51,7 +51,7 @@ namespace stat_fetcher
 
     FBuffer get_population_stats(const flatbuffers::DetachedBuffer &world_buffer) {
         const Ecosystem::World *world_pointer = Ecosystem::GetWorld(world_buffer.data());
-        
+
         flatbuffers::FlatBufferBuilder new_builder;
 
         std::vector<flatbuffers::Offset<Ecosystem::SpeciesPopulation>> new_stdvecSpeciesPopulation;
@@ -107,7 +107,7 @@ namespace stat_fetcher
                 new_builder.CreateString(species->kind()),
                 &matablePopulation,
                 &nonMatablePopulation
-            ));   
+            ));
         }
 
         new_builder.Finish(Ecosystem::CreateWorldPopulation(
@@ -115,13 +115,8 @@ namespace stat_fetcher
             world_pointer->year(),
             new_builder.CreateVector(new_stdvecSpeciesPopulation.data(), new_stdvecSpeciesPopulation.size())
         ));
-        
-        FBuffer new_buffer; new_buffer.reserve(new_builder.GetSize());
-        std::copy(
-            new_builder.GetBufferPointer(), 
-            new_builder.GetBufferPointer() + new_builder.GetSize(), 
-            std::back_inserter(new_buffer)
-        );
+
+        FBuffer new_buffer = new_builder.Release();
 
         new_builder.Clear();
         return new_buffer;
@@ -541,12 +536,7 @@ namespace stat_fetcher
         new_world_builder.add_year(world_pointer->year());
         new_builder.Finish(new_world_builder.Finish());
 
-        FBuffer new_buffer; new_buffer.reserve(new_builder.GetSize());
-        std::copy(
-            new_builder.GetBufferPointer(), 
-            new_builder.GetBufferPointer() + new_builder.GetSize(), 
-            std::back_inserter(new_buffer)
-        );
+        FBuffer new_buffer = new_builder.Release();
 
         new_builder.Clear();
         return new_buffer;

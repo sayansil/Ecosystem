@@ -37,17 +37,17 @@ void DatabaseManager::end_transaction()
     sqlite3_exec(db, "END TRANSACTION", nullptr, nullptr, nullptr);
 }
 
-void DatabaseManager::insert_rows(const std::vector<std::vector<FBuffer>> &rows)
+void DatabaseManager::insert_rows(const std::vector<std::vector<FBufferView>> &rows)
 {
     for (const auto &row : rows)
     {
-        auto avg_world = row[0];
-        auto population = row[1];
+        auto& avg_world = row[0];
+        auto& population = row[1];
         std::string sql_command = fmt::format(
             "INSERT INTO ECOSYSTEM_MASTER VALUES ({}, ZEROBLOB({}), ZEROBLOB({}))",
-            Ecosystem::GetWorld(avg_world.data())->year(),
-            avg_world.size(),
-            population.size());
+            Ecosystem::GetWorld(avg_world.data)->year(),
+            avg_world.size,
+            population.size);
         sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
 
 
@@ -55,47 +55,47 @@ void DatabaseManager::insert_rows(const std::vector<std::vector<FBuffer>> &rows)
 
         sqlite3_blob *avgBlob = 0;
         sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "AVG_WORLD", last_insert_row, 1, &avgBlob);
-        sqlite3_blob_write(avgBlob, avg_world.data(), avg_world.size(), 0);
+        sqlite3_blob_write(avgBlob, avg_world.data, avg_world.size, 0);
         sqlite3_blob_close(avgBlob);
 
         sqlite3_blob *populationBlob = 0;
         sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "POPULATION_WORLD", last_insert_row, 1, &populationBlob);
-        sqlite3_blob_write(populationBlob, population.data(), population.size(), 0);
+        sqlite3_blob_write(populationBlob, population.data, population.size, 0);
         sqlite3_blob_close(populationBlob);
     }
 }
 
-std::vector<std::vector<FBuffer>> DatabaseManager::read_all_rows()
+std::vector<std::vector<ByteArray>> DatabaseManager::read_all_rows()
 {
     int count = 0;
     sqlite3_exec(db, "SELECT COUNT(YEAR) FROM ECOSYSTEM_MASTER", callback_numrows, &count, nullptr);
 
-    std::vector<std::vector<FBuffer>> rows;
+    std::vector<std::vector<ByteArray>> rows;
     rows.reserve(count);
 
     for (int i = 0; i < count; i++)
     {
-        std::vector<FBuffer> row;
+        std::vector<ByteArray> row(2);
 
         sqlite3_blob *avgBlob = 0;
         sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "AVG_WORLD", i + 1, 0, &avgBlob);
         int size = sqlite3_blob_bytes(avgBlob);
 
-        FBuffer avg_data(size);
+        auto& avg_data = row[0];
+        avg_data = ByteArray(size);
         sqlite3_blob_read(avgBlob, avg_data.data(), avg_data.size(), 0);
         sqlite3_blob_close(avgBlob);
-        row.push_back(avg_data);
 
         sqlite3_blob *populationBlob = 0;
         sqlite3_blob_open(db, "main", "ECOSYSTEM_MASTER", "POPULATION_WORLD", i + 1, 0, &populationBlob);
         size = sqlite3_blob_bytes(populationBlob);
 
-        FBuffer population_data(size);
+        auto& population_data = row[1];
+        population_data = ByteArray(size);
         sqlite3_blob_read(populationBlob, population_data.data(), population_data.size(), 0);
         sqlite3_blob_close(populationBlob);
-        row.push_back(population_data);
 
-        rows.push_back(row);
+        rows.emplace_back(row);
     }
     return rows;
 }
