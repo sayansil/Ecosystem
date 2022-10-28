@@ -20,6 +20,7 @@ simulation/WebApp/extern/uWebSockets
 simulation/python/pybind11
 simulation/Testing/*
 compile_commands.json
+**/__pycache__
 release/
 .firebase/*
 .firebaserc
