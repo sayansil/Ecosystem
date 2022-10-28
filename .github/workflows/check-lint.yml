@@ -1,0 +1,33 @@
+name: check-lint
+
+on:
+  pull_request:
+      branches:
+      - master
+
+jobs:
+
+  cpp-lint:
+    name: Check lint
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Install linter dependencies
+      id: install-deps
+      run: |
+        sudo apt -y install clang-format
+        sudo apt -y install black
+
+    - name: Cpp Lint
+      id: cpp-lint
+      run: |
+        cd simulation
+        clang-format --Werror=1 --dry-run -style=file src/*.cpp
+        clang-format --Werror=1 --dry-run -style=file run/*.cpp
+        clang-format --Werror=1 --dry-run -style=file tests/*.cpp
+
+    - name: Python Lint
+      id: python-lint
+      run: |
+        cd visualization
+        black --check .
