@@ -12,27 +12,20 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Setup upterm session
-      uses: lhotari/action-upterm@v1
-      
     - name: Install linter dependencies
       id: install-deps
       run: |
         sudo apt -y install clang-format
         sudo apt -y install black
+      
+    - name: Python Lint
+      id: python-lint
+      run: |
+        black --check visualization/
 
     - name: Cpp Lint
       id: cpp-lint
       run: |
-        pwd;ls
-        cd simulation
-        clang-format --Werror=1 --dry-run -style=file src/*.cpp
-        clang-format --Werror=1 --dry-run -style=file run/*.cpp
-        clang-format --Werror=1 --dry-run -style=file tests/*.cpp
-
-    - name: Python Lint
-      id: python-lint
-      run: |
-        pwd;ls
-        cd visualization
-        black --check .
+        clang-format --Werror=1 --dry-run -style=file simulation/src/*.cpp
+        clang-format --Werror=1 --dry-run -style=file simulation/run/*.cpp
+        clang-format --Werror=1 --dry-run -style=file simulation/tests/*.cpp
