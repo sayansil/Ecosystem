@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+    - name: Setup upterm session
+      uses: lhotari/action-upterm@v1
+      
     - name: Install linter dependencies
       id: install-deps
       run: |
