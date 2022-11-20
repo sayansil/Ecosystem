@@ -7,7 +7,6 @@ set(ECOSYSTEM_SOURCES
     database_manager.cpp
     schema.cpp
     setup.cpp
-    # StopWatch.cpp
     species_constants.cpp
     # logger.cpp
     ${sqlite3_SOURCE_DIR}/src/sqlite3.c
