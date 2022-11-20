@@ -21,6 +21,7 @@ jobs:
     - name: Cpp Lint
       id: cpp-lint
       run: |
+        pwd
         cd simulation
         clang-format --Werror=1 --dry-run -style=file src/*.cpp
         clang-format --Werror=1 --dry-run -style=file run/*.cpp
@@ -29,5 +30,6 @@ jobs:
     - name: Python Lint
       id: python-lint
       run: |
+        pwd
         cd visualization
         black --check .
