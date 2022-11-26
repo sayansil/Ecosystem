@@ -19,6 +19,15 @@ set(ECOSYSTEM_EXE "run")
 set(ECOSYSTEM_PYTHON_MODULE "pyecosystem")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
+option(ENABLE_CLANG_TIDY "Enable clang-tidy checks during compilation" OFF)
+set(CLANG_TIDY_CHECKS "readability" CACHE STRING "Clang tidy check to be chosen by the user at configure time")
+set_property(CACHE CLANG_TIDY_CHECKS PROPERTY STRINGS readability performance modernize)
+
+if(${ENABLE_CLANG_TIDY})
+    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+    set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,${CLANG_TIDY_CHECKS}-*")
+endif()
+
 find_program(CCACHE_PROGRAM ccache)
 
 if(CCACHE_PROGRAM)
