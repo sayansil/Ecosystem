@@ -30,7 +30,7 @@ jobs:
       id: configure
       run: |
         cd simulation
-        cmake --preset lin-clang-rel -DENABLE_CLANG_TIDY=1 -DCLANG_TIDY_CHECKS="${{ .github.event.inputs.check_type }}"
+        cmake --preset lin-clang-rel -DENABLE_CLANG_TIDY=1 -DCLANG_TIDY_CHECKS="${{ github.event.inputs.check_type }}"
 
     - name: Build & Analyze
       id: build
