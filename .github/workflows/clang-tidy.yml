@@ -1,9 +1,6 @@
 name: clang-tidy
 
 on:
-  pull_request:
-      branches:
-      - master
   workflow_dispatch:
     inputs:
       check_type:
