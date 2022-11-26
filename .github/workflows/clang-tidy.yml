@@ -16,9 +16,8 @@ on:
 
 jobs:
 
-  build-linux:
-    name: Build on Linux
-    if: ${{ always() }}
+  build-analyze:
+    name: Build and Analyze
     runs-on: ubuntu-22.04
 
     steps:
@@ -35,8 +34,15 @@ jobs:
         cd simulation
         cmake --preset lin-clang-rel
 
-    - name: Build
+    - name: Build & Analyze
       id: build
       run: |
         cd simulation
-        cmake --build --preset lin-clang-rel
+        cmake --build --preset lin-clang-rel | tee output.txt
+
+    - name: Save analysis
+      id: save
+      uses: actions/upload-artifact@v1
+      with:
+        name: analysis_output
+        path: simulation/output.txt
