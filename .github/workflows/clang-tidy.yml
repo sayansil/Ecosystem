@@ -9,6 +9,7 @@ on:
       check_type:
         type: choice
         description: "Choose the type of check you want to run"
+        required: true
         options:
           - "readability"
           - "performance"
@@ -32,7 +33,7 @@ jobs:
       id: configure
       run: |
         cd simulation
-        cmake --preset lin-clang-rel
+        cmake --preset lin-clang-rel -DENABLE_CLANG_TIDY=1 -DCLANG_TIDY_CHECKS="{{ .github.event.inputs.check_type }}"
 
     - name: Build & Analyze
       id: build
