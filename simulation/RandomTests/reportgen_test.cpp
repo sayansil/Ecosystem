@@ -9,7 +9,7 @@ int main()
     std::vector<std::vector<FBuffer>> rows;
     const size_t simulation_years = 250;
 
-    setup::setup();
+    auto root_path = setup::setup();
 
     const size_t initial_organism_count = 500;
 
@@ -23,7 +23,7 @@ int main()
                             {"age", "20"}});
     }
 
-    God allah(true);
+    God allah(root_path, true);
     allah.cleanSlate();
     allah.createWorld(organisms);
     for (size_t i = 0; i < simulation_years; i++) {

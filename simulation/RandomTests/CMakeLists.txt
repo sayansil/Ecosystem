@@ -15,9 +15,16 @@ function(add_code name)
 	endif()
 	copy_dll(rt_${name} fmt)
 	copy_dll(rt_${name} ${ECOSYSTEM_LIB})
-	
+
 endfunction()
 
+function(add_c_code name)
+    add_executable(rtc_${name} ${name}.c)
+    target_include_directories(rtc_${name} PRIVATE
+                               ${Ecosystem_SOURCE_DIR}/include
+							   )
+    target_link_libraries(rtc_${name} PRIVATE ${ECOSYSTEM_WRAPPER_LIB})
+endfunction()
 
 #######################################
 # Do not comment the following tests: #
@@ -35,3 +42,5 @@ add_code(test2)
 # add_code(test3)
 #    add_code(client)
 #    add_code(server)
+
+add_c_code(test1)

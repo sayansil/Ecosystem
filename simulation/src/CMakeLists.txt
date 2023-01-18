@@ -5,7 +5,6 @@ set(ECOSYSTEM_SOURCES
     organism.cpp
     helper.cpp
     database_manager.cpp
-    schema.cpp
     setup.cpp
     species_constants.cpp
     # logger.cpp
@@ -13,14 +12,30 @@ set(ECOSYSTEM_SOURCES
     ${whereami_SOURCE_DIR}/src/whereami.c
     )
 
+set(ECOSYSTEM_WRAPPER_SOURCES
+    ecosystem_wrapper.c
+    ecosystem_wrapper_impl.cpp
+    )
+
 add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES})
+add_library(${ECOSYSTEM_WRAPPER_LIB} SHARED ${ECOSYSTEM_WRAPPER_SOURCES} ${ECOSYSTEM_SOURCES})
+
 target_include_directories(${ECOSYSTEM_LIB} PRIVATE
+                           ${Ecosystem_SOURCE_DIR}/include
+                           ${Ecosystem_SOURCE_DIR}/schema/cpp)
+
+target_include_directories(${ECOSYSTEM_WRAPPER_LIB} PRIVATE
                            ${Ecosystem_SOURCE_DIR}/include
                            ${Ecosystem_SOURCE_DIR}/schema/cpp)
 if(WIN32 OR APPLE)
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt)
 else()
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt dl pthread)
+endif()
+
+target_link_libraries(${ECOSYSTEM_WRAPPER_LIB} PRIVATE ${ECOSYSTEM_LIB})
+if(WIN32)
+    target_link_libraries(${ECOSYSTEM_WRAPPER_LIB} PRIVATE fmt::fmt)
 endif()
 
 if(${ENABLE_CLANG_TIDY})

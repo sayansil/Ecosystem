@@ -47,7 +47,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]") {
     const size_t simulation_years = 100;
 
     REQUIRE_NOTHROW([&]() {
-        setup::setup();
+        auto root_path = setup::setup();
 
         const size_t initial_organism_count = 10000;
 
@@ -60,7 +60,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]") {
         }
 
         {
-            God allah(true);
+            God allah(root_path, true);
             allah.cleanSlate();
             allah.createWorld(organisms);
             for (size_t i = 0; i < simulation_years; i++) {
@@ -69,7 +69,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]") {
         }
 
         {
-            DatabaseManager db_manager;
+            DatabaseManager db_manager(root_path / "data/ecosystem_master.db");
             rows = db_manager.read_all_rows();
         }
     }());

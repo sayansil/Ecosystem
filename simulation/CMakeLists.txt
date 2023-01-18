@@ -15,6 +15,7 @@ if(MSVC)
 endif()
 
 set(ECOSYSTEM_LIB "ecosystem")
+set(ECOSYSTEM_WRAPPER_LIB ${ECOSYSTEM_LIB}_wrapper)
 set(ECOSYSTEM_EXE "run")
 set(ECOSYSTEM_PYTHON_MODULE "pyecosystem")
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
@@ -72,6 +73,7 @@ FetchContent_Declare(
     GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(fmtlib)
+include_directories(${fmtlib_SOURCE_DIR}/include)
 
 FetchContent_Declare(
     customrng
