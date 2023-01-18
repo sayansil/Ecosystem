@@ -35,7 +35,7 @@ endif()
 
 target_link_libraries(${ECOSYSTEM_WRAPPER_LIB} PRIVATE ${ECOSYSTEM_LIB})
 if(WIN32)
-    target_link_libraries(${ECOSYSTEM_WRAPPER_LIB PRIVATE fmt::fmt})
+    target_link_libraries(${ECOSYSTEM_WRAPPER_LIB} PRIVATE fmt::fmt)
 endif()
 
 if(${ENABLE_CLANG_TIDY})
