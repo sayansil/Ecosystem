@@ -4,47 +4,11 @@
 #include <helper.hpp>
 #include <string>
 
-static std::string get_ecosystem_root() {
-    const char *root_path = std::getenv("ECOSYSTEM_ROOT");
-    if (root_path == nullptr) {
-        fmt::print("ECOSYSTEM_ROOT environment variable not set\n");
-        fmt::print("Attempting to extract ECOSYSTEM_ROOT from exe path\n");
-        uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
-        std::string exe_path;
-        {
-            char *path = (char *)malloc(length + 1);
-            wai_getExecutablePath(path, length, nullptr);
-            exe_path = path;
-            free(path);
-        }
-        auto pos = exe_path.find("Ecosystem");
-        if (pos == std::string::npos) {
-            fmt::print(
-                "ERROR: ECOSYSTEM_ROOT could not be extracted from exe path "
-                "{}\n",
-                exe_path);
-            exit(0);
-        }
-        std::string tmp = exe_path.substr(0, pos);
-        std::filesystem::path tmp_fs = std::filesystem::path(tmp) / "Ecosystem";
-        std::string tmp_fs_str = tmp_fs.string();
-#ifdef WIN32
-        // replace \ with \\ for windows
-        for (int i = 0; i < tmp_fs_str.length(); i++)
-            if (tmp_fs_str[i] == '\\') tmp_fs_str.insert(i++, 1, '\\');
-#endif
-        fmt::print("Extracted ECOSYSTEM_ROOT - {} from exe path\n", tmp_fs_str);
-        return tmp_fs_str;
-    }
-    return std::string(root_path);
-}
+static XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
+static unsigned int map_height = 1000;
+static unsigned int map_width = 1000;
 
 namespace helper {
-unsigned int map_height = 1000;
-unsigned int map_width = 1000;
-XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
-DLLEXPORT std::filesystem::path ecosystem_root =
-    std::filesystem::canonical(get_ecosystem_root());
 
 std::string to_binary(const unsigned int &x) {
     auto num = x;
@@ -177,5 +141,37 @@ const Ecosystem::Organism *get_pointer_from_offset(
     const flatbuffers::Offset<Ecosystem::Organism> &object) {
     return (reinterpret_cast<const Ecosystem::Organism *>(
         builder.GetCurrentBufferPointer() + builder.GetSize() - object.o));
+}
+std::string get_ecosystem_root() {
+    const char *root_path = std::getenv("ECOSYSTEM_ROOT");
+    if (root_path == nullptr) {
+        fmt::print("ECOSYSTEM_ROOT environment variable not set\n");
+        fmt::print("Attempting to extract ECOSYSTEM_ROOT from exe path\n");
+        uint32_t length = wai_getExecutablePath(nullptr, 0, nullptr);
+        char *path = (char *)malloc(length + 1);
+        wai_getExecutablePath(path, length, nullptr);
+        std::string exe_path = path;
+        free(path);
+
+        auto pos = exe_path.find("Ecosystem");
+        if (pos == std::string::npos) {
+            fmt::print(
+                "ERROR: ECOSYSTEM_ROOT could not be extracted from exe path "
+                "{}\n",
+                exe_path);
+            exit(0);
+        }
+        std::string tmp = exe_path.substr(0, pos);
+        std::filesystem::path tmp_fs = std::filesystem::path(tmp) / "Ecosystem";
+        std::string tmp_fs_str = tmp_fs.string();
+#ifdef WIN32
+        // replace \ with \\ for windows
+        for (int i = 0; i < tmp_fs_str.length(); i++)
+            if (tmp_fs_str[i] == '\\') tmp_fs_str.insert(i++, 1, '\\');
+#endif
+        fmt::print("Extracted ECOSYSTEM_ROOT - {} from exe path\n", tmp_fs_str);
+        return tmp_fs_str;
+    }
+    return std::string(root_path);
 }
 };  // namespace helper

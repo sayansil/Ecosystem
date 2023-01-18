@@ -4,8 +4,13 @@
 #include <helper.hpp>
 #include <species_constants.hpp>
 
+static nlohmann::json species_constants_map;
+
 namespace constants {
-nlohmann::json species_constants_map;
+
+nlohmann::json& get_species_constants_map() {
+    return species_constants_map;
+}
 
 static void parse_species_directories(const std::filesystem::path dirpath) {
     if (std::filesystem::exists(dirpath)) {
@@ -26,10 +31,10 @@ static void parse_species_directories(const std::filesystem::path dirpath) {
     }
 }
 
-void init() {
-    parse_species_directories(helper::ecosystem_root / "data" / "json" /
+void init(const std::filesystem::path & ecosystem_root) {
+    parse_species_directories(ecosystem_root / "data" / "json" /
                               "animal");
-    parse_species_directories(helper::ecosystem_root / "data" / "json" /
+    parse_species_directories(ecosystem_root / "data" / "json" /
                               "plant");
 }
 };  // namespace constants

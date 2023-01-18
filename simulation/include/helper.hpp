@@ -19,11 +19,6 @@ namespace helper
      *  Helper attributes *
      **********************/
 
-    extern unsigned int map_height;
-    extern unsigned int map_width;
-    extern XoshiroCpp::Xoshiro128PlusPlus rng;
-    extern DLLIMPORT std::filesystem::path ecosystem_root;
-
     /*******************
      *  Helper methods *
      *******************/
@@ -43,6 +38,7 @@ namespace helper
     extern std::string bytevector_to_string(const uint8_t *arr, const size_t &len, const size_t &expected_len);
     extern Ecosystem::Organism *get_mutable_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object);
     extern const Ecosystem::Organism *get_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object);
+    extern std::string get_ecosystem_root();
 };
 
 #endif // HELPER_HPP

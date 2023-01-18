@@ -1,15 +1,10 @@
 #include <fmt/core.h>
-
 #include <setup.hpp>
 
-static const std::filesystem::path master_db_path =
-    helper::ecosystem_root / "data/ecosystem_master.db";
-static const std::filesystem::path json_data_path =
-    helper::ecosystem_root / "data/json";
-static const std::filesystem::path json_template_path =
-    helper::ecosystem_root / "data/templates/json";
-
-static sqlite3 *db;
+static const std::vector<std::pair<std::string, std::string>>
+    schemaMaster{{"YEAR", "NUMBER"},
+                 {"AVG_WORLD", "LONGBLOB"},
+                 {"POPULATION_WORLD", "LONGBLOB"}};
 
 static std::string sql_command_creator(
     const std::string &tableName,
@@ -34,11 +29,11 @@ static std::string sql_command_creator(
     return sql_command;
 }
 
-static void create_master_table() {
+static void create_master_table(sqlite3 * db) {
     int rc;
 
     std::string sql_command =
-        sql_command_creator("ECOSYSTEM_MASTER", schema::schemaMaster);
+        sql_command_creator("ECOSYSTEM_MASTER", schemaMaster);
 
     rc = sqlite3_exec(db, sql_command.c_str(), nullptr, 0, nullptr);
     if (rc != SQLITE_OK) {
@@ -48,7 +43,9 @@ static void create_master_table() {
     }
 }
 
-static void parse_species_directories(std::string subdirectory) {
+static void parse_species_directories(std::string subdirectory,
+        const std::filesystem::path& json_data_path,
+        const std::filesystem::path& json_template_path) {
     std::filesystem::path filepath;
 
     auto copy_contents = [](const std::filesystem::path &source,
@@ -77,20 +74,33 @@ static void parse_species_directories(std::string subdirectory) {
 }
 
 namespace setup {
-void setup() {
+    std::filesystem::path setup() {
+
+    std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
+    sqlite3 *db;
+
+    const std::filesystem::path master_db_path =
+        ecosystem_root / "data/ecosystem_master.db";
+    const std::filesystem::path json_data_path =
+        ecosystem_root / "data/json";
+    const std::filesystem::path json_template_path =
+        ecosystem_root / "data/templates/json";
+
     if (!std::filesystem::exists(master_db_path)) {
         sqlite3_open(master_db_path.string().c_str(), &db);
-        create_master_table();
+        create_master_table(db);
     } else {
         sqlite3_open(master_db_path.string().c_str(), &db);
         fmt::print("Using existing db at {}\n\n", master_db_path.string());
     }
 
     if (std::filesystem::exists(json_data_path / "animal")) {
-        parse_species_directories("animal");
+        parse_species_directories("animal", json_data_path, json_template_path);
     }
     if (std::filesystem::exists(json_data_path / "plant")) {
-        parse_species_directories("plant");
+        parse_species_directories("plant", json_data_path, json_template_path);
     }
+    sqlite3_close(db);
+    return ecosystem_root;
 }
 };  // namespace setup

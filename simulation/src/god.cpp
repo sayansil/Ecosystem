@@ -10,6 +10,8 @@
 #include <species_constants.hpp>
 #include <stat_fetcher.hpp>
 
+static XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
+
 static double get_value_from_chromosome(
     const std::vector<uint8_t> &chromosome,
     const std::map<std::string, std::map<std::string, int>> &c_structure,
@@ -77,15 +79,17 @@ static double get_value_from_chromosome(
 
 static double updateStat(double base, double p_range) {
     std::uniform_real_distribution<double> dis(0.0, p_range * 2);
-    const double x = p_range - dis(helper::rng);
+    const double x = p_range - dis(rng);
 
     return base * (1 + x);
 }
 
-God::God(const bool gods_eye) {
-    constants::init();
-    builder.ForceDefaults(true);
+God::God(const std::filesystem::path& ecosystem_root, const bool gods_eye) {
     this->gods_eye = gods_eye;
+    this->ecosystem_root = ecosystem_root;
+    constants::init(this->ecosystem_root);
+    builder.ForceDefaults(true);
+    db = std::make_unique<DatabaseManager>(this->ecosystem_root / "data/ecosystem_master.db");
 
     fmt::print("God created!\n");
 }
@@ -169,7 +173,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     // Assign base stats of species
     std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> stdvecCStrand;
     std::map<std::string, std::map<std::string, int>> c_structure =
-        constants::species_constants_map[kind]["chromosome_structure"];
+        constants::get_species_constants_map()[kind]["chromosome_structure"];
     for (auto &cStrand : c_structure) {
         stdvecCStrand.push_back(Ecosystem::CreateChromosomeStrand(
             builder, builder.CreateString(cStrand.first.c_str()),
@@ -188,7 +192,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     tmp_str = tmp_str.length() != 0
                   ? chromosome
                   : helper::random_binary((int)getValueAsUlong(
-                        constants::species_constants_map[kind],
+                        constants::get_species_constants_map()[kind],
                         "species_chromosome_number"));
     std::vector<uint8_t> chromosome_vec = helper::string_to_bytevector(tmp_str);
     tmp_str.clear();
@@ -198,232 +202,232 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
     auto organism_offset = Ecosystem::CreateOrganism(
         builder, builder.CreateString(kind.c_str()),
         (Ecosystem::KingdomE)std::stoi(kingdom),
-        getValueAsUshort(constants::species_constants_map[kind],
+        getValueAsUshort(constants::get_species_constants_map()[kind],
                          "species_chromosome_number"),
         builder.CreateVectorOfSortedTables(stdvecCStrand.data(),
                                            stdvecCStrand.size()),
-        getValueAsUlong(constants::species_constants_map[kind],
+        getValueAsUlong(constants::get_species_constants_map()[kind],
                         "food_chain_rank"),
         (Ecosystem::Reproduction)getValueAsByte(
-            constants::species_constants_map[kind], "sexuality"),
-        getValueAsFloat(constants::species_constants_map[kind],
+            constants::get_species_constants_map()[kind], "sexuality"),
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_age_fitness_on_death_ratio"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "conceiving_probability"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "mating_probability"),
-        getValueAsUint(constants::species_constants_map[kind],
+        getValueAsUint(constants::get_species_constants_map()[kind],
                        "mating_age_start"),
-        getValueAsUint(constants::species_constants_map[kind],
+        getValueAsUint(constants::get_species_constants_map()[kind],
                        "mating_age_end"),
-        getValueAsUint(constants::species_constants_map[kind],
+        getValueAsUint(constants::get_species_constants_map()[kind],
                        "species_max_age"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "mutation_probability"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "offsprings_factor"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_height_on_speed"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_height_on_stamina"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_height_on_vitality"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_weight_on_speed"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_weight_on_stamina"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_weight_on_vitality"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_vitality_on_appetite"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_vitality_on_speed"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_stamina_on_appetite"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_stamina_on_speed"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_base_appetite"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_base_height"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_base_speed"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_base_stamina"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_base_vitality"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_base_weight"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_height"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_speed"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_weight"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_height_multiplier"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_speed_multiplier"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_stamina_multiplier"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_vitality_multiplier"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_theoretical_maximum_weight_multiplier"),
         organism_name, organism_chromosome,
         (Ecosystem::Gender)get_value_from_chromosome(
             chromosome_vec, c_structure, "gn", 2.0,
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         generation,
         get_value_from_chromosome(
             chromosome_vec, c_structure, "im", 1.0,
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "ba",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_appetite"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bh",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_height"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bp",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_speed"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bs",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_stamina"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bv",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_vitality"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bw",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_weight"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "hm",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_height_multiplier"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "pm",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_speed_multiplier"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "sm",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_stamina_multiplier"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "vm",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_vitality_multiplier"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "wm",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_weight_multiplier"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "mh",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_height"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "mw",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_weight"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         age - 1,
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bh",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_height"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bw",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_weight"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         0.0, /* static_fitness */
         get_value_from_chromosome(
             chromosome_vec, c_structure, "ba",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_appetite"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bp",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_speed"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bs",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_stamina"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bv",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_vitality"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "ba",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_appetite"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bp",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_speed"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bs",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_stamina"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         get_value_from_chromosome(
             chromosome_vec, c_structure, "bv",
-            getValueAsFloat(constants::species_constants_map[kind],
+            getValueAsFloat(constants::get_species_constants_map()[kind],
                             "species_theoretical_maximum_base_vitality"),
-            (int)getValueAsUlong(constants::species_constants_map[kind],
+            (int)getValueAsUlong(constants::get_species_constants_map()[kind],
                                  "species_chromosome_number")),
         XY.first, XY.second, 1.0, /* dynamic_fitness */
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "vision_radius"),
-        getValueAsFloat(constants::species_constants_map[kind],
+        getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_sleep_restore_factor"),
         Ecosystem::Sleep::Awake, static_cast<Ecosystem::Monitor>(monitor));
 
@@ -445,7 +449,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 
 void God::cleanSlate() {
     for (const auto &entry : std::filesystem::directory_iterator(
-             helper::ecosystem_root / std::filesystem::path("data") /
+             ecosystem_root / std::filesystem::path("data") /
              std::filesystem::path("json"))) {
         for (const auto &inner_entry :
              std::filesystem::directory_iterator(entry.path())) {
@@ -454,13 +458,13 @@ void God::cleanSlate() {
             in >> tmp;
             in.close();
 
-            constants::species_constants_map
+            constants::get_species_constants_map()
                 [inner_entry.path().filename().string()] = tmp;
         }
     }
 
     if (gods_eye) {
-        db.clear_database();
+        db->clear_database();
     }
 }
 
@@ -472,7 +476,7 @@ void God::update_species(const std::string &full_species_name) {
         full_species_name.substr(0, full_species_name.find('/'));
 
     const std::filesystem::path modify_filepath =
-        helper::ecosystem_root / std::filesystem::path("data") /
+        ecosystem_root / std::filesystem::path("data") /
         std::filesystem::path("json") / kingdom / kind /
         std::filesystem::path("modify.json");
 
@@ -482,8 +486,8 @@ void God::update_species(const std::string &full_species_name) {
     modify_in >> modify;
 
     for (const auto [key, value] : modify.items()) {
-        constants::species_constants_map[kind][key] = updateStat(
-            (double)constants::species_constants_map[kind][key], (double)value);
+        constants::get_species_constants_map()[kind][key] = updateStat(
+            (double)constants::get_species_constants_map()[kind][key], (double)value);
     }
 
     modify_in.close();
@@ -500,7 +504,7 @@ double God::killer_function(const double &index, const double &size) const {
 
 int God::creator_function(const double &o_factor) const {
     std::gamma_distribution<double> dis(1.5, o_factor);
-    return std::round(dis(helper::rng));
+    return std::round(dis(rng));
 }
 
 std::string God::get_child_chromosome(const Ecosystem::OrganismT &parent1,
@@ -678,7 +682,7 @@ void God::happy_new_year(const bool &log) {
         if (stdvecOrganisms.size() > 0) {
             update_species(full_species_name);
             const auto &species_constants =
-                constants::species_constants_map[kind->str()];
+                constants::get_species_constants_map()[kind->str()];
 
             std::vector<uint32_t> mating_list1, mating_list2;
 
@@ -891,7 +895,7 @@ void God::happy_new_year(const bool &log) {
             FBufferView(avg_instance.data(), avg_instance.size()));
         rows[0].emplace_back(
             FBufferView(world_population.data(), world_population.size()));
-        db.insert_rows(rows);
+        db->insert_rows(rows);
     }
 
     year++;
