@@ -73,6 +73,7 @@ FetchContent_Declare(
     GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(fmtlib)
+include_directories(${fmtlib_SOURCE_DIR}/include)
 
 FetchContent_Declare(
     customrng
