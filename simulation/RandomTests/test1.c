@@ -1,5 +1,6 @@
-#include <ecosystem_wrapper.hpp>
 #include <stdio.h>
+
+#include <ecosystem_wrapper.hpp>
 
 int main() {
     create_god(0);

@@ -1,9 +1,9 @@
 #include <ecosystem_wrapper.hpp>
+#include <filesystem>
 #include <god.hpp>
 #include <memory>
 #include <setup.hpp>
 #include <vector>
-#include <filesystem>
 
 uint32_t initial_organism_count;
 uint32_t simulation_years;
