@@ -1,10 +1,11 @@
 #include <fmt/core.h>
+
 #include <setup.hpp>
 
-static const std::vector<std::pair<std::string, std::string>>
-    schemaMaster{{"YEAR", "NUMBER"},
-                 {"AVG_WORLD", "LONGBLOB"},
-                 {"POPULATION_WORLD", "LONGBLOB"}};
+static const std::vector<std::pair<std::string, std::string>> schemaMaster{
+    {"YEAR", "NUMBER"},
+    {"AVG_WORLD", "LONGBLOB"},
+    {"POPULATION_WORLD", "LONGBLOB"}};
 
 static std::string sql_command_creator(
     const std::string &tableName,
@@ -29,7 +30,7 @@ static std::string sql_command_creator(
     return sql_command;
 }
 
-static void create_master_table(sqlite3 * db) {
+static void create_master_table(sqlite3 *db) {
     int rc;
 
     std::string sql_command =
@@ -43,9 +44,9 @@ static void create_master_table(sqlite3 * db) {
     }
 }
 
-static void parse_species_directories(std::string subdirectory,
-        const std::filesystem::path& json_data_path,
-        const std::filesystem::path& json_template_path) {
+static void parse_species_directories(
+    std::string subdirectory, const std::filesystem::path &json_data_path,
+    const std::filesystem::path &json_template_path) {
     std::filesystem::path filepath;
 
     auto copy_contents = [](const std::filesystem::path &source,
@@ -74,15 +75,13 @@ static void parse_species_directories(std::string subdirectory,
 }
 
 namespace setup {
-    std::filesystem::path setup() {
-
+std::filesystem::path setup() {
     std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
     sqlite3 *db;
 
     const std::filesystem::path master_db_path =
         ecosystem_root / "data/ecosystem_master.db";
-    const std::filesystem::path json_data_path =
-        ecosystem_root / "data/json";
+    const std::filesystem::path json_data_path = ecosystem_root / "data/json";
     const std::filesystem::path json_template_path =
         ecosystem_root / "data/templates/json";
 

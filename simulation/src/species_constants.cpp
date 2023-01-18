@@ -8,13 +8,11 @@ static nlohmann::json species_constants_map;
 
 namespace constants {
 
-nlohmann::json& get_species_constants_map() {
-    return species_constants_map;
-}
+nlohmann::json& get_species_constants_map() { return species_constants_map; }
 
 static void parse_species_directories(const std::filesystem::path dirpath) {
     if (std::filesystem::exists(dirpath)) {
-        for (const auto &entry : std::filesystem::directory_iterator(dirpath)) {
+        for (const auto& entry : std::filesystem::directory_iterator(dirpath)) {
             // entry.path() / "base.json" copy to map
             std::string species_name = entry.path().filename().string();
 
@@ -31,10 +29,8 @@ static void parse_species_directories(const std::filesystem::path dirpath) {
     }
 }
 
-void init(const std::filesystem::path & ecosystem_root) {
-    parse_species_directories(ecosystem_root / "data" / "json" /
-                              "animal");
-    parse_species_directories(ecosystem_root / "data" / "json" /
-                              "plant");
+void init(const std::filesystem::path& ecosystem_root) {
+    parse_species_directories(ecosystem_root / "data" / "json" / "animal");
+    parse_species_directories(ecosystem_root / "data" / "json" / "plant");
 }
 };  // namespace constants

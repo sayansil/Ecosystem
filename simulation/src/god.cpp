@@ -84,12 +84,13 @@ static double updateStat(double base, double p_range) {
     return base * (1 + x);
 }
 
-God::God(const std::filesystem::path& ecosystem_root, const bool gods_eye) {
+God::God(const std::filesystem::path &ecosystem_root, const bool gods_eye) {
     this->gods_eye = gods_eye;
     this->ecosystem_root = ecosystem_root;
     constants::init(this->ecosystem_root);
     builder.ForceDefaults(true);
-    db = std::make_unique<DatabaseManager>(this->ecosystem_root / "data/ecosystem_master.db");
+    db = std::make_unique<DatabaseManager>(this->ecosystem_root /
+                                           "data/ecosystem_master.db");
 
     fmt::print("God created!\n");
 }
@@ -487,7 +488,8 @@ void God::update_species(const std::string &full_species_name) {
 
     for (const auto [key, value] : modify.items()) {
         constants::get_species_constants_map()[kind][key] = updateStat(
-            (double)constants::get_species_constants_map()[kind][key], (double)value);
+            (double)constants::get_species_constants_map()[kind][key],
+            (double)value);
     }
 
     modify_in.close();
