@@ -8,6 +8,7 @@ project(Ecosystem
 
 include(FetchContent)
 include(cmake/download_file.cmake)
+include(cmake/dll_utils.cmake)
 
 if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)

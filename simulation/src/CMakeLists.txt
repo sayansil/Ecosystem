@@ -13,12 +13,12 @@ set(ECOSYSTEM_SOURCES
     )
 
 set(ECOSYSTEM_WRAPPER_SOURCES
-    ecosystem_wrapper.c
-    ecosystem_wrapper_impl.cpp
+    ecosystem_wrapper.cpp
     )
 
 add_library(${ECOSYSTEM_LIB} SHARED ${ECOSYSTEM_SOURCES})
-add_library(${ECOSYSTEM_WRAPPER_LIB} SHARED ${ECOSYSTEM_WRAPPER_SOURCES} ${ECOSYSTEM_SOURCES})
+add_library(${ECOSYSTEM_WRAPPER_LIB} SHARED ${ECOSYSTEM_WRAPPER_SOURCES})
+target_link_libraries(${ECOSYSTEM_WRAPPER_LIB} PRIVATE ${ECOSYSTEM_LIB})
 
 target_include_directories(${ECOSYSTEM_LIB} PRIVATE
                            ${Ecosystem_SOURCE_DIR}/include
@@ -27,16 +27,14 @@ target_include_directories(${ECOSYSTEM_LIB} PRIVATE
 target_include_directories(${ECOSYSTEM_WRAPPER_LIB} PRIVATE
                            ${Ecosystem_SOURCE_DIR}/include
                            ${Ecosystem_SOURCE_DIR}/schema/cpp)
+
 if(WIN32 OR APPLE)
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt)
 else()
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt dl pthread)
 endif()
 
-target_link_libraries(${ECOSYSTEM_WRAPPER_LIB} PRIVATE ${ECOSYSTEM_LIB})
-if(WIN32)
-    target_link_libraries(${ECOSYSTEM_WRAPPER_LIB} PRIVATE fmt::fmt)
-endif()
+copy_dll(${ECOSYSTEM_WRAPPER_LIB} fmt)
 
 if(${ENABLE_CLANG_TIDY})
     set_target_properties(${ECOSYSTEM_LIB} PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")

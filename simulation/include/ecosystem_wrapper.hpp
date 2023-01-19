@@ -15,10 +15,9 @@
 
 #endif //-- End of __cplusplus definition //
 
-EXPORT_C void create_god_impl(uint8_t gods_eye);
-EXPORT_C void set_initial_parms_impl(uint32_t count, uint32_t years);
-EXPORT_C void create_world_impl();
-EXPORT_C void run_simulation_impl();
-EXPORT_C void free_god_impl();
+EXPORT_C void create_god(uint8_t gods_eye);
+EXPORT_C void set_initial_parms(uint32_t count, uint32_t years);
+EXPORT_C void create_world();
+EXPORT_C void run_simulation();
 
 #endif

@@ -1,20 +1,22 @@
-#include <ecosystem_wrapper_impl.hpp>
+#include <ecosystem_wrapper.hpp>
+#include <filesystem>
 #include <god.hpp>
 #include <memory>
 #include <setup.hpp>
+#include <vector>
 
 uint32_t initial_organism_count;
 uint32_t simulation_years;
 std::vector<std::unordered_map<std::string, std::string>> organisms;
-God* god;
+std::unique_ptr<God> god;
 std::filesystem::path root_path;
 
-void create_god_impl(uint8_t gods_eye) {
+void create_god(uint8_t gods_eye) {
     root_path = setup::setup();
-    god = new God(root_path, 0);
+    god = std::make_unique<God>(root_path, 0);
 }
 
-void set_initial_parms_impl(uint32_t count, uint32_t years) {
+void set_initial_parms(uint32_t count, uint32_t years) {
     initial_organism_count = count;
     simulation_years = years;
     organisms.reserve(initial_organism_count);
@@ -24,14 +26,12 @@ void set_initial_parms_impl(uint32_t count, uint32_t years) {
     }
 }
 
-void create_world_impl() { god->createWorld(organisms); }
+void create_world() { god->createWorld(organisms); }
 
-void run_simulation_impl() {
+void run_simulation() {
     god->cleanSlate();
     god->createWorld(organisms);
     for (size_t i = 0; i < simulation_years; i++) {
         god->happy_new_year(true);
     }
 }
-
-void free_god_impl() { delete god; }
