@@ -24,6 +24,15 @@ jobs:
             dependencies: 'ninja-build clang-12'
     steps:
     - uses: actions/checkout@v3
+
+    - uses: fountainhead/action-wait-for-check@v1.1.0
+      id: wait_for_build
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        checkName: build-linux
+        ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+
     - uses: actions/cache/restore@v3
       id: cache_load_content
       with:
@@ -89,6 +98,14 @@ jobs:
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v3
+
+    - uses: fountainhead/action-wait-for-check@v1.1.0
+      id: wait_for_build
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        checkName: build-macos
+        ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
     - uses: actions/cache/restore@v3
       id: cache_load_content
       with:
@@ -152,6 +169,14 @@ jobs:
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v3
+
+    - uses: fountainhead/action-wait-for-check@v1.1.0
+      id: wait_for_build
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        checkName: build-windows
+        ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
     - uses: ilammy/msvc-dev-cmd@v1.10.0
     - uses: actions/cache/restore@v3
       id: cache_load_content
