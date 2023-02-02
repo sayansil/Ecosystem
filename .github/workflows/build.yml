@@ -29,6 +29,11 @@ jobs:
             dependencies: 'ninja-build clang-14'
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/cache/restore@v3
+      id: cache-load
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -40,6 +45,12 @@ jobs:
       run: |
         cd simulation
         cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - uses: actions/cache/save@v3
+      id: cache-save
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-${{ github.event.pull_request.head.sha }}
 
     - name: Build
       id: build
@@ -71,6 +82,11 @@ jobs:
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/cache/restore@v3
+      id: cache-load
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -82,6 +98,12 @@ jobs:
       run: |
         cd simulation
         cmake --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - uses: actions/cache/save@v3
+      id: cache-save
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-${{ github.event.pull_request.head.sha }}
 
     - name: Build
       id: build
@@ -112,6 +134,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ilammy/msvc-dev-cmd@v1.10.0
+    - uses: actions/cache/restore@v3
+      id: cache-load
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -123,6 +150,12 @@ jobs:
       run: |
         cd simulation
         cmake --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - uses: actions/cache/save@v3
+      id: cache-save
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-${{ github.event.pull_request.head.sha }}
 
     - name: Build
       id: build
