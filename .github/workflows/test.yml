@@ -28,7 +28,7 @@ jobs:
       id: cache-load
       with:
         path: simulation/build/.fetchcontent_cache
-        key: fetchcontent-${{ github.event.pull_request.head.sha }}
+        key: fetchcontent-lin-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -45,7 +45,7 @@ jobs:
       id: cache-save
       with:
         path: simulation/build/.fetchcontent_cache
-        key: fetchcontent-${{ github.event.pull_request.head.sha }}
+        key: fetchcontent-lin-${{ github.event.pull_request.head.sha }}
 
     - name: Build
       id: build
@@ -78,7 +78,7 @@ jobs:
       id: cache-load
       with:
         path: simulation/build/.fetchcontent_cache
-        key: fetchcontent-${{ github.event.pull_request.head.sha }}
+        key: fetchcontent-osx-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -95,7 +95,7 @@ jobs:
       id: cache-save
       with:
         path: simulation/build/.fetchcontent_cache
-        key: fetchcontent-${{ github.event.pull_request.head.sha }}
+        key: fetchcontent-osx-${{ github.event.pull_request.head.sha }}
 
     - name: Build
       id: build
@@ -127,7 +127,7 @@ jobs:
       id: cache-load
       with:
         path: simulation/build/.fetchcontent_cache
-        key: fetchcontent-${{ github.event.pull_request.head.sha }}
+        key: fetchcontent-win-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -144,7 +144,7 @@ jobs:
       id: cache-save
       with:
         path: simulation/build/.fetchcontent_cache
-        key: fetchcontent-${{ github.event.pull_request.head.sha }}
+        key: fetchcontent-win-${{ github.event.pull_request.head.sha }}
 
     - name: Build
       id: build
