@@ -1,8 +1,3 @@
-function(copy_dll TARGET_NAME DLL_NAME)
-	add_custom_command(TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different
-	$<TARGET_FILE:${DLL_NAME}> $<TARGET_FILE_DIR:${TARGET_NAME}>)
-endfunction()
-
 function(add_code name)
     add_executable(rt_${name} ${name}.cpp)
     target_include_directories(rt_${name} PRIVATE
@@ -15,9 +10,16 @@ function(add_code name)
 	endif()
 	copy_dll(rt_${name} fmt)
 	copy_dll(rt_${name} ${ECOSYSTEM_LIB})
-	
+
 endfunction()
 
+function(add_c_code name)
+    add_executable(rtc_${name} ${name}.c)
+    target_include_directories(rtc_${name} PRIVATE
+                               ${Ecosystem_SOURCE_DIR}/include
+							   )
+    target_link_libraries(rtc_${name} PRIVATE ${ECOSYSTEM_WRAPPER_LIB})
+endfunction()
 
 #######################################
 # Do not comment the following tests: #
@@ -35,3 +37,5 @@ add_code(test2)
 # add_code(test3)
 #    add_code(client)
 #    add_code(server)
+
+add_c_code(test1)

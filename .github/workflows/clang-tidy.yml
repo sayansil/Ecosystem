@@ -1,0 +1,46 @@
+name: clang-tidy
+
+on:
+  workflow_dispatch:
+    inputs:
+      check_type:
+        type: choice
+        description: "Choose the type of check you want to run"
+        required: true
+        options:
+          - "readability"
+          - "performance"
+          - "modernize"
+
+jobs:
+
+  build-analyze:
+    name: Build and Analyze
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Prepare for Build
+      id: prepare
+      run: |
+        sudo apt install ninja-build clang-14
+
+    - name: Configure for Build
+      id: configure
+      run: |
+        cd simulation
+        cmake --preset lin-clang-rel -DENABLE_CLANG_TIDY=1 -DCLANG_TIDY_CHECKS="${{ github.event.inputs.check_type }}"
+
+    - name: Build & Analyze
+      id: build
+      run: |
+        cd simulation
+        cmake --build --preset lin-clang-rel | tee output.txt
+
+    - name: Save analysis
+      id: save
+      uses: actions/upload-artifact@v1
+      with:
+        name: analysis_output
+        path: simulation/output.txt

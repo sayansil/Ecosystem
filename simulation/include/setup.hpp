@@ -7,11 +7,10 @@
 #include <sqlite3.h>
 #include <string>
 #include <helper.hpp>
-#include <schema.hpp>
 
 namespace setup
 {
-    extern void setup();
+    extern std::filesystem::path setup();
 };
 
 #endif /* SETUP_HPP */
