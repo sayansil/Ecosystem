@@ -29,7 +29,7 @@ jobs:
       id: wait_for_build
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        checkName: Build on Linux
+        checkName: Build on Linux (${{ matrix.compiler }}, ${{ matrix.build_type }})
         ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
 
@@ -103,7 +103,7 @@ jobs:
       id: wait_for_build
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        checkName: Build on MacOS
+        checkName: Build on MacOS (${{ matrix.compiler }}, ${{ matrix.build_type }})
         ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
     - uses: actions/cache/restore@v3
@@ -174,7 +174,7 @@ jobs:
       id: wait_for_build
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        checkName: Build on Windows
+        checkName: Build on Windows (${{ matrix.compiler }}, ${{ matrix.build_type }})
         ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
     - uses: ilammy/msvc-dev-cmd@v1.10.0
