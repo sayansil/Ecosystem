@@ -4,7 +4,11 @@
 
 int main() {
     create_god(0);
-    set_initial_parms(500, 10);
+
+    set_initial_organisms(0, "deer", 10, 10);
+    set_initial_organisms(0, "deer", 20, 100);
+    set_initial_organisms(0, "deer", 30, 50);
+
     create_world();
-    run_simulation();
+    run_simulation(100);
 }
