@@ -2,7 +2,7 @@ import ctypes
 import sys
 import os
 
-ECOSYSTEM_ROOT = os.environ['ECOSYSTEM_ROOT']
+ECOSYSTEM_ROOT = os.environ["ECOSYSTEM_ROOT"]
 
 lib_path = os.path.join(ECOSYSTEM_ROOT, "simulation", "build", "osx-clang-rel", "src")
 wrapper_path = os.path.join(lib_path, "libecosystem_wrapper.dylib")
