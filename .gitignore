@@ -14,11 +14,10 @@ data/csv/*
 data/*.db
 data/*.db-*
 simulation/build/*
-simulation/.vscode
 simulation/WebApp/keys.json
 simulation/WebApp/extern/uWebSockets
 simulation/python/pybind11
-simulation/Testing/*
+simulation/imgui.ini
 compile_commands.json
 release/
 .firebase/*
@@ -26,3 +25,4 @@ release/
 ecosystem-*
 tags
 **/output/**
+**/.DS_Store

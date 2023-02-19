@@ -20,12 +20,13 @@ public:
 
     bool monitor_offsprings = false;
     bool disable_deaths = false;
+    std::filesystem::path ecosystem_root;
 
     /******************************
      *  Constructor / Destructor  *
      ******************************/
 
-    God(const bool gods_eye = false);
+    God(const std::filesystem::path& ecosystem_root = helper::get_ecosystem_root(), const bool gods_eye = false);
     ~God();
 
     /**************************************
@@ -63,7 +64,7 @@ protected:
 private:
     flatbuffers::FlatBufferBuilder builder;
 
-    DatabaseManager db;
+    std::unique_ptr<DatabaseManager> db;
     bool gods_eye = false;
 
     /****************************************

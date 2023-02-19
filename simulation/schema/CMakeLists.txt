@@ -1,5 +1,6 @@
 set(SCHEMAS
     world
+    population
     )
 
 set(VIS_SCHEMAS

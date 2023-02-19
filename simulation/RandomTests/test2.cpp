@@ -1,49 +1,66 @@
-#include <god.hpp>
-#include <setup.hpp>
-#include <iostream>
-#include <vector>
-#include <nlohmann/json.hpp>
 #include <flatbuffers/idl.h>
+#include <flatbuffers/minireflect.h>
 #include <fmt/core.h>
 #include <fmt/ranges.h>
-#include <flatbuffers/minireflect.h>
-#include <unordered_map>
-#include <stat_fetcher.hpp>
+#include <population_generated.h>
+
 #include <database_manager.hpp>
 #include <ecosystem_types.hpp>
+#include <god.hpp>
+#include <iostream>
+#include <nlohmann/json.hpp>
+#include <setup.hpp>
+#include <stat_fetcher.hpp>
+#include <unordered_map>
+#include <vector>
 
-int main()
-{
-    std::vector<FBuffer> rows;
+int main() {
+    std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 100;
 
-    setup::setup();
+    auto root_path = setup::setup();
 
-    const size_t initial_organism_count = 5000;
+    const size_t initial_organism_count = 500;
 
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
 
-    for (size_t i = 0; i < initial_organism_count; i++)
-    {
-        organisms.push_back({{"kind", "deer"},
-                            {"kingdom", "0"},
-                            {"age", "20"}});
+    for (size_t i = 0; i < initial_organism_count; i++) {
+        organisms.push_back(
+            {{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
     }
 
     {
-        God allah(true);
+        God allah(root_path, true);
         allah.cleanSlate();
         allah.createWorld(organisms);
         for (size_t i = 0; i < simulation_years; i++) {
             allah.happy_new_year(true);
         }
+
+        FBuffer avg_world = stat_fetcher::create_avg_world(allah.buffer);
+
+        flatbuffers::ToStringVisitor visitor("", true, "", true);
+        flatbuffers::IterateFlatBuffer(avg_world.data(), Ecosystem::WorldTypeTable(), &visitor);
+        nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+        fmt::print("Parsed JSON:\n{}\n", json_data["species"][0]["organism"][0].dump(4));
+
+        fmt::print("stat-name\tis_number\tis_object\tis_array\n");
+
+        for(const auto& [key, value] : json_data["species"][0]["organism"][0].items()) {
+            fmt::print("{}\t{}\t{}\t{}\n", key, value.is_number(), value.is_object(), value.is_array());
+        }
+
     }
 
     {
-        DatabaseManager db_manager;
-        rows = db_manager.read_all_rows(); 
+        DatabaseManager db_manager(root_path / "data/ecosystem_master.db");
+        rows = db_manager.read_all_rows();
     }
 
-    fmt::print("Years: {}, Rows: {}\n", simulation_years, rows.size());
+    flatbuffers::ToStringVisitor visitor("", true, "", true);
+    flatbuffers::IterateFlatBuffer(
+        rows[0][1].data(), Ecosystem::WorldPopulationTypeTable(), &visitor);
+    nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+    fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
 }

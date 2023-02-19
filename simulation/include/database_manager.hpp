@@ -21,15 +21,15 @@ struct DatabaseManager
      *  Constructor / Destructor  *
      ******************************/
 
-    DatabaseManager(const std::filesystem::path &filename = helper::ecosystem_root / "data/ecosystem_master.db");
+    DatabaseManager(const std::filesystem::path &filename = std::filesystem::path(helper::get_ecosystem_root()) / "data/ecosystem_master.db");
     ~DatabaseManager();
 
     /******************************
      *  Standard DBMS operations  *
      ******************************/
 
-    std::vector<FBuffer> read_all_rows();
-    void insert_rows(const std::vector<FBuffer> &);
+    std::vector<std::vector<ByteArray>> read_all_rows();
+    void insert_rows(const std::vector<std::vector<FBufferView>> &);
 
     /******************************
      *  Miscellaneous operations  *
