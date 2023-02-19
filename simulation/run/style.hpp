@@ -2,7 +2,7 @@
 #define STYLE_HPP
 
 #include <imgui.h>
-#include <math.h>
+#include <cmath>
 
 #pragma once
 
