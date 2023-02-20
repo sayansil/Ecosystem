@@ -24,9 +24,9 @@ jobs:
         build_type: [dbg, rel]
         include:
           - compiler: gcc
-            dependencies: 'ninja-build'
+            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev'
           - compiler: clang
-            dependencies: 'ninja-build clang-14'
+            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev clang-14'
     steps:
     - uses: actions/checkout@v3
     - uses: actions/cache/restore@v3
@@ -138,7 +138,6 @@ jobs:
       run: |
         cd simulation
         cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
-    
     - name: Create release asset
       id: create_release_asset
       run: |
@@ -210,7 +209,6 @@ jobs:
       run: |
         cd simulation
         cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
-    
     - name: Create release asset
       id: create_release_asset
       run: |
