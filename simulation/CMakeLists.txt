@@ -108,11 +108,11 @@ add_subdirectory(src)
 add_subdirectory(schema)
 
 include_directories(schema/cpp)
-add_subdirectory(RandomTests)
-# add_subdirectory(setup)
-add_subdirectory(run)
-#add_subdirectory(python)
-#add_subdirectory(WebApp)
+
+if(NOT ANDROID)
+    add_subdirectory(RandomTests)
+    add_subdirectory(run)
+endif()
 
 include(CTest)
 add_subdirectory(tests)

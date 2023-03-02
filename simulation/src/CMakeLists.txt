@@ -28,7 +28,7 @@ target_include_directories(${ECOSYSTEM_WRAPPER_LIB} PRIVATE
                            ${Ecosystem_SOURCE_DIR}/include
                            ${Ecosystem_SOURCE_DIR}/schema/cpp)
 
-if(WIN32 OR APPLE)
+if(WIN32 OR APPLE OR ANDROID)
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt)
 else()
     target_link_libraries(${ECOSYSTEM_LIB} PRIVATE fmt::fmt dl pthread)
