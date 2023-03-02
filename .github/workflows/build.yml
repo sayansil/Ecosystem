@@ -24,11 +24,21 @@ jobs:
         build_type: [dbg, rel]
         include:
           - compiler: gcc
-            dependencies: 'ninja-build'
+            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev'
           - compiler: clang
-            dependencies: 'ninja-build clang-14'
+            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev clang-14'
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/cache/restore@v3
+      id: cache_load_content
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-lin-${{ github.event.pull_request.head.sha }}
+    - uses: actions/cache/restore@v3
+      id: cache_load_build
+      with:
+        path: simulation/build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+        key: build-lin-${{ matrix.compiler }}-${{ matrix.build_type }}-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -37,16 +47,37 @@ jobs:
 
     - name: Configure for Build
       id: configure
+      if: steps.cache_load_build.outputs.cache-hit != 'true'
       run: |
         cd simulation
         cmake --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
 
+    - uses: actions/cache/save@v3
+      id: cache_save_content
+      if: always()
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-lin-${{ github.event.pull_request.head.sha }}
+
     - name: Build
       id: build
+      if: steps.cache_load_build.outputs.cache-hit != 'true'
       run: |
         cd simulation
         cmake --build --preset lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - name: Create release asset
+      id: create_release_asset
+      run: |
+        cd simulation
         zip -r output_linux_${{ matrix.compiler }}.zip build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - uses: actions/cache/save@v3
+      id: cache_save_build
+      if: always()
+      with:
+        path: simulation/build/lin-${{ matrix.compiler }}-${{ matrix.build_type }}
+        key: build-lin-${{ matrix.compiler }}-${{ matrix.build_type }}-${{ github.event.pull_request.head.sha }}
 
     - name: Save release asset
       id: save_release_asset
@@ -71,6 +102,16 @@ jobs:
             dependencies: 'ninja'
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/cache/restore@v3
+      id: cache_load_content
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-osx-${{ github.event.pull_request.head.sha }}
+    - uses: actions/cache/restore@v3
+      id: cache_load_build
+      with:
+        path: simulation/build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+        key: build-osx-${{ matrix.compiler }}-${{ matrix.build_type }}-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -79,16 +120,36 @@ jobs:
 
     - name: Configure for Build
       id: configure
+      if: steps.cache_load_build.outputs.cache-hit != 'true'
       run: |
         cd simulation
         cmake --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
 
+    - uses: actions/cache/save@v3
+      id: cache_save_content
+      if: always()
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-osx-${{ github.event.pull_request.head.sha }}
+
     - name: Build
       id: build
+      if: steps.cache_load_build.outputs.cache-hit != 'true'
       run: |
         cd simulation
         cmake --build --preset osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+    - name: Create release asset
+      id: create_release_asset
+      run: |
+        cd simulation
         zip -r output_macos_${{ matrix.compiler }}.zip build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+
+    - uses: actions/cache/save@v3
+      id: cache_save_build
+      if: always()
+      with:
+        path: simulation/build/osx-${{ matrix.compiler }}-${{ matrix.build_type }}
+        key: build-osx-${{ matrix.compiler }}-${{ matrix.build_type }}-${{ github.event.pull_request.head.sha }}
 
     - name: Save release asset
       id: save_release_asset
@@ -112,6 +173,16 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ilammy/msvc-dev-cmd@v1.10.0
+    - uses: actions/cache/restore@v3
+      id: cache_load_content
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-win-${{ github.event.pull_request.head.sha }}
+    - uses: actions/cache/restore@v3
+      id: cache_load_build
+      with:
+        path: simulation/build/win-${{ matrix.compiler }}-${{ matrix.build_type }}
+        key: build-win-${{ matrix.compiler }}-${{ matrix.build_type }}-${{ github.event.pull_request.head.sha }}
 
     - name: Prepare for Build
       id: prepare
@@ -120,16 +191,36 @@ jobs:
 
     - name: Configure for Build
       id: configure
+      if: steps.cache_load_build.outputs.cache-hit != 'true'
       run: |
         cd simulation
         cmake --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
 
+    - uses: actions/cache/save@v3
+      id: cache_save_content
+      if: always()
+      with:
+        path: simulation/build/.fetchcontent_cache
+        key: fetchcontent-win-${{ github.event.pull_request.head.sha }}
+
     - name: Build
       id: build
+      if: steps.cache_load_build.outputs.cache-hit != 'true'
       run: |
         cd simulation
         cmake --build --preset win-${{ matrix.compiler }}-${{ matrix.build_type }}
+    - name: Create release asset
+      id: create_release_asset
+      run: |
+        cd simulation
         Compress-Archive -Path build\win-${{ matrix.compiler }}-${{ matrix.build_type }} -DestinationPath output_windows_${{ matrix.compiler }}
+
+    - uses: actions/cache/save@v3
+      id: cache_save_build
+      if: always()
+      with:
+        path: simulation/build/win-${{ matrix.compiler }}-${{ matrix.build_type }}
+        key: build-win-${{ matrix.compiler }}-${{ matrix.build_type }}-${{ github.event.pull_request.head.sha }}
 
     - name: Save release asset
       id: save_release_asset
