@@ -18,7 +18,7 @@ int main() {
     std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 100;
 
-    auto root_path = setup::setup();
+    auto root_path = setup::setup(helper::get_ecosystem_root());
 
     const size_t initial_organism_count = 500;
 

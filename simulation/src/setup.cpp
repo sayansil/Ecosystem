@@ -75,8 +75,7 @@ static void parse_species_directories(
 }
 
 namespace setup {
-std::filesystem::path setup() {
-    std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
+std::filesystem::path setup(std::filesystem::path ecosystem_root) {
     sqlite3 *db;
 
     const std::filesystem::path master_db_path =

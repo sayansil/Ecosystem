@@ -8,16 +8,14 @@
 std::vector<std::unordered_map<std::string, std::string>> organisms;
 std::unique_ptr<God> god;
 
-void create_god(uint8_t gods_eye) {
-    std::filesystem::path root_path = setup::setup();
+void create_god(uint8_t gods_eye, const char *ecosystem_root) {
+    std::filesystem::path root_path = setup::setup(ecosystem_root);
     god = std::make_unique<God>(root_path, gods_eye);
 }
 
 void set_initial_organisms(uint32_t kingdom, const char *kind, uint32_t age,
                            uint32_t count) {
     organisms.reserve(organisms.capacity() + count);
-
-    std::cout << std::string(kind) << "," << std::to_string(kingdom) << "\n";
 
     for (size_t i = 0; i < count; i++) {
         organisms.push_back({{"kind", std::string(kind)},

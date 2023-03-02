@@ -15,11 +15,13 @@
 #include <unordered_map>
 #include <vector>
 
-TEST_CASE("Setup", "[test_setup]") { REQUIRE_NOTHROW(setup::setup()); }
+TEST_CASE("Setup", "[test_setup]") {
+    REQUIRE_NOTHROW(setup::setup(helper::get_ecosystem_root()));
+}
 
 TEST_CASE("Create world without db", "[test_cworld_nodb]") {
     REQUIRE_NOTHROW([&]() {
-        setup::setup();
+        setup::setup(helper::get_ecosystem_root());
 
         const size_t initial_organism_count = 100;
 
@@ -43,7 +45,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]") {
     const size_t simulation_years = 20;
 
     REQUIRE_NOTHROW([&]() {
-        auto root_path = setup::setup();
+        auto root_path = setup::setup(helper::get_ecosystem_root());
 
         const size_t initial_organism_count = 100;
 
@@ -65,7 +67,8 @@ TEST_CASE("Create world with db", "[test_cworld_db]") {
         }
 
         {
-            DatabaseManager db_manager(root_path / "data/ecosystem_master.db");
+            DatabaseManager db_manager(root_path / "data" /
+                                       "ecosystem_master.db");
             rows = db_manager.read_all_rows();
         }
     }());

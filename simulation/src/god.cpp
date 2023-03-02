@@ -89,8 +89,8 @@ God::God(const std::filesystem::path &ecosystem_root, const bool gods_eye) {
     this->ecosystem_root = ecosystem_root;
     constants::init(this->ecosystem_root);
     builder.ForceDefaults(true);
-    db = std::make_unique<DatabaseManager>(this->ecosystem_root /
-                                           "data/ecosystem_master.db");
+    db = std::make_unique<DatabaseManager>(this->ecosystem_root / "data" /
+                                           "ecosystem_master.db");
 
     fmt::print("God created!\n");
 }
