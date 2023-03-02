@@ -27,3 +27,4 @@ tags
 **/output/**
 **/.DS_Store
 checks.json
+**/.fetchcontent_cache/
