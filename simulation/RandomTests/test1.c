@@ -17,4 +17,6 @@ int main() {
     for (int i = 0; i < 100; i++) {
         happy_new_year();
     }
+
+    free_god();
 }

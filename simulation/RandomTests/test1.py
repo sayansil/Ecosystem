@@ -16,5 +16,10 @@ ecosystem_lib.set_initial_organisms(0, ctypes.c_char_p(b"deer"), 10, 10)
 ecosystem_lib.set_initial_organisms(0, ctypes.c_char_p(b"deer"), 20, 100)
 ecosystem_lib.set_initial_organisms(0, ctypes.c_char_p(b"deer"), 30, 50)
 
+ecosystem_lib.clean_slate()
 ecosystem_lib.create_world()
-ecosystem_lib.run_simulation(100)
+
+for i in range(100):
+    ecosystem_lib.happy_new_year()
+
+ecosystem_lib.free_god()

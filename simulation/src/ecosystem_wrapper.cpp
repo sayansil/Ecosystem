@@ -6,11 +6,11 @@
 #include <vector>
 
 std::vector<std::unordered_map<std::string, std::string>> organisms;
-std::unique_ptr<God> god;
+God *god;
 
 void create_god(uint8_t gods_eye, const char *ecosystem_root) {
     std::filesystem::path root_path = setup::setup(ecosystem_root);
-    god = std::make_unique<God>(root_path, gods_eye);
+    god = new God(root_path, gods_eye);
 }
 
 void set_initial_organisms(uint32_t kingdom, const char *kind, uint32_t age,
@@ -24,15 +24,9 @@ void set_initial_organisms(uint32_t kingdom, const char *kind, uint32_t age,
     }
 }
 
-void create_world() { god->createWorld(organisms); }
+void clean_slate() { god->cleanSlate(); }
 
-void run_simulation(uint32_t years) {
-    god->cleanSlate();
-    god->createWorld(organisms);
-    for (size_t i = 0; i < years; i++) {
-        god->happy_new_year(true);
-    }
-}
+void create_world() { god->createWorld(organisms); }
 
 struct BufferData happy_new_year() {
     god->happy_new_year(true);
@@ -44,4 +38,12 @@ struct BufferData happy_new_year() {
     return obj;
 }
 
-void clean_slate() { god->cleanSlate(); }
+void run_simulation(uint32_t years) {
+    god->cleanSlate();
+    god->createWorld(organisms);
+    for (size_t i = 0; i < years; i++) {
+        god->happy_new_year(true);
+    }
+}
+
+void free_god() { delete god; }
