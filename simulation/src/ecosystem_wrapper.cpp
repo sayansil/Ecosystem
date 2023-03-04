@@ -33,3 +33,5 @@ void run_simulation(uint32_t years) {
         god->happy_new_year(true);
     }
 }
+
+void clean_slate() { god->cleanSlate(); }

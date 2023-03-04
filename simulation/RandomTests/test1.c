@@ -9,6 +9,7 @@ int main() {
     set_initial_organisms(0, "deer", 20, 100);
     set_initial_organisms(0, "deer", 30, 50);
 
+    clean_slate();
     create_world();
     run_simulation(100);
 }
