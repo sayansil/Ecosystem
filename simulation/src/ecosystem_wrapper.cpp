@@ -34,4 +34,14 @@ void run_simulation(uint32_t years) {
     }
 }
 
+struct BufferData happy_new_year() {
+    god->happy_new_year(true);
+
+    BufferData obj;
+    obj.data = god->buffer.data();
+    obj.length = god->buffer.size();
+
+    return obj;
+}
+
 void clean_slate() { god->cleanSlate(); }

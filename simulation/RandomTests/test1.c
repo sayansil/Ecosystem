@@ -9,7 +9,12 @@ int main() {
     set_initial_organisms(0, "deer", 20, 100);
     set_initial_organisms(0, "deer", 30, 50);
 
+    // run_simulation(100);
+
     clean_slate();
     create_world();
-    run_simulation(100);
+
+    for (int i = 0; i < 100; i++) {
+        happy_new_year();
+    }
 }
