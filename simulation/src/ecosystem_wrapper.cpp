@@ -12,7 +12,7 @@ God *god;
 GodState godState = GodState::unborn;
 
 void create_god(uint8_t gods_eye, const char *ecosystem_root) {
-  if (godState == GodState::unborn) {
+  if (godState == GodState::unborn || godState == GodState::dead) {
     setup::setup(ecosystem_root);
     god = new God(ecosystem_root, gods_eye);
     godState = GodState::born;
