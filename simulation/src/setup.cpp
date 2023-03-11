@@ -45,7 +45,7 @@ static void create_master_table(sqlite3 *db) {
 }
 
 namespace setup {
-std::filesystem::path setup(std::filesystem::path ecosystem_root) {
+void setup(std::filesystem::path ecosystem_root) {
     sqlite3 *db;
 
     const std::filesystem::path master_db_path =
@@ -60,6 +60,5 @@ std::filesystem::path setup(std::filesystem::path ecosystem_root) {
     }
 
     sqlite3_close(db);
-    return ecosystem_root;
 }
 };  // namespace setup

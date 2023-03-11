@@ -18,7 +18,7 @@ int main() {
     std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 100;
 
-    auto root_path = setup::setup(helper::get_ecosystem_root());
+    setup::setup(helper::get_ecosystem_root());
 
     const size_t initial_organism_count = 500;
 
@@ -31,7 +31,7 @@ int main() {
     }
 
     {
-        God allah(root_path, true);
+        God allah(helper::get_ecosystem_root(), true);
         allah.cleanSlate();
         allah.createWorld(organisms);
         for (size_t i = 0; i < simulation_years; i++) {
@@ -54,7 +54,9 @@ int main() {
     }
 
     {
-        DatabaseManager db_manager(root_path / "data/ecosystem_master.db");
+        DatabaseManager db_manager(
+            std::filesystem::path(helper::get_ecosystem_root()) /
+            "data/ecosystem_master.db");
         rows = db_manager.read_all_rows();
     }
 

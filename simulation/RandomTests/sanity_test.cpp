@@ -15,7 +15,7 @@
 
 int main() {
   std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
-  auto root_path = setup::setup(ecosystem_root);
+  setup::setup(ecosystem_root);
 
   const size_t initial_organism_count = 500;
   const size_t simulation_years = 10;

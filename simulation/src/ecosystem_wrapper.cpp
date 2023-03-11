@@ -9,8 +9,8 @@ std::vector<std::unordered_map<std::string, std::string>> organisms;
 God *god;
 
 void create_god(uint8_t gods_eye, const char *ecosystem_root) {
-    std::filesystem::path root_path = setup::setup(ecosystem_root);
-    god = new God(root_path, gods_eye);
+  setup::setup(ecosystem_root);
+  god = new God(ecosystem_root, gods_eye);
 }
 
 void set_initial_organisms(uint32_t kingdom, const char *kind, uint32_t age,
