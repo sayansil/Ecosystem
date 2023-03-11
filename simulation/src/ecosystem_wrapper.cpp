@@ -46,4 +46,7 @@ void run_simulation(uint32_t years) {
     }
 }
 
-void free_god() { delete god; }
+void free_god() {
+    organisms.clear();
+    delete god;
+}
