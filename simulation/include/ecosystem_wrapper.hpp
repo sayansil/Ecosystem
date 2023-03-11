@@ -26,7 +26,6 @@ EXPORT_C void set_initial_organisms(uint32_t kingdom, const char *kind,
 EXPORT_C void clean_slate();
 EXPORT_C void create_world();
 EXPORT_C struct BufferData happy_new_year();
-EXPORT_C void run_simulation(uint32_t years);
 EXPORT_C void free_god();
 
 #endif

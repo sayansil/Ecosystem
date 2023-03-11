@@ -5,12 +5,18 @@
 #include <setup.hpp>
 #include <vector>
 
+enum GodState { unborn, born, dead };
+
 std::vector<std::unordered_map<std::string, std::string>> organisms;
 God *god;
+GodState godState = GodState::unborn;
 
 void create_god(uint8_t gods_eye, const char *ecosystem_root) {
-  setup::setup(ecosystem_root);
-  god = new God(ecosystem_root, gods_eye);
+  if (godState == GodState::unborn) {
+    setup::setup(ecosystem_root);
+    god = new God(ecosystem_root, gods_eye);
+    godState = GodState::born;
+  }
 }
 
 void set_initial_organisms(uint32_t kingdom, const char *kind, uint32_t age,
@@ -38,15 +44,10 @@ struct BufferData happy_new_year() {
     return obj;
 }
 
-void run_simulation(uint32_t years) {
-    god->cleanSlate();
-    god->createWorld(organisms);
-    for (size_t i = 0; i < years; i++) {
-        god->happy_new_year(true);
-    }
-}
-
 void free_god() {
-    organisms.clear();
-    delete god;
+    if (godState == GodState::born) {
+        organisms.clear();
+        delete god;
+        godState = GodState::dead;
+    }
 }
