@@ -49,7 +49,7 @@ std::filesystem::path setup(std::filesystem::path ecosystem_root) {
     sqlite3 *db;
 
     const std::filesystem::path master_db_path =
-        ecosystem_root / "data/ecosystem_master.db";
+        ecosystem_root / "data" / "ecosystem_master.db";
 
     if (!std::filesystem::exists(master_db_path)) {
         sqlite3_open(master_db_path.string().c_str(), &db);
