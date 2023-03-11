@@ -4,14 +4,12 @@
 
 int main() {
     create_god(0, "/Users/sayansil/src/canvas/Ecosystem");
+    clean_slate();
 
     set_initial_organisms(0, "deer", 10, 10);
     set_initial_organisms(0, "deer", 20, 100);
     set_initial_organisms(0, "deer", 30, 50);
 
-    // run_simulation(100);
-
-    clean_slate();
     create_world();
 
     happy_new_year();

@@ -21,27 +21,41 @@ void create_god(uint8_t gods_eye, const char *ecosystem_root) {
 
 void set_initial_organisms(uint32_t kingdom, const char *kind, uint32_t age,
                            uint32_t count) {
+  if (godState == GodState::born) {
     organisms.reserve(organisms.capacity() + count);
 
     for (size_t i = 0; i < count; i++) {
-        organisms.push_back({{"kind", std::string(kind)},
-                             {"kingdom", std::to_string(kingdom)},
-                             {"age", std::to_string(age)}});
+      organisms.push_back({{"kind", std::string(kind)},
+                           {"kingdom", std::to_string(kingdom)},
+                           {"age", std::to_string(age)}});
+    }
+  }
+}
+
+void clean_slate() {
+    if (godState == GodState::born) {
+        god->cleanSlate();
     }
 }
 
-void clean_slate() { god->cleanSlate(); }
-
-void create_world() { god->createWorld(organisms); }
+void create_world() {
+    if (godState == GodState::born) {
+        god->createWorld(organisms);
+    }
+}
 
 struct BufferData happy_new_year() {
-    god->happy_new_year(true);
+    if (godState == GodState::born) {
+        god->happy_new_year(true);
 
-    BufferData obj;
-    obj.data = god->buffer.data();
-    obj.length = god->buffer.size();
+        BufferData obj;
+        obj.data = god->buffer.data();
+        obj.length = god->buffer.size();
 
-    return obj;
+        return obj;
+    }
+
+    return BufferData();
 }
 
 void free_god() {

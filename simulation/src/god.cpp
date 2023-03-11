@@ -454,6 +454,11 @@ void God::cleanSlate() {
              std::filesystem::path("json"))) {
         for (const auto &inner_entry :
              std::filesystem::directory_iterator(entry.path())) {
+            if (inner_entry.path().filename().string()[0] == '.') {
+                // Ignore hidden files
+                continue;
+            }
+
             std::ifstream in(inner_entry.path() / "base.json");
             nlohmann::json tmp;
             in >> tmp;
