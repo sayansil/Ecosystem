@@ -44,36 +44,35 @@ TEST_CASE("Create world with db", "[test_cworld_db]") {
     std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 20;
 
-    REQUIRE_NOTHROW(
-        [&]() {
-          setup::setup(helper::get_ecosystem_root());
+    REQUIRE_NOTHROW([&]() {
+        setup::setup(helper::get_ecosystem_root());
 
-          const size_t initial_organism_count = 100;
+        const size_t initial_organism_count = 100;
 
-          std::vector<std::unordered_map<std::string, std::string>> organisms;
-          organisms.reserve(initial_organism_count);
+        std::vector<std::unordered_map<std::string, std::string>> organisms;
+        organisms.reserve(initial_organism_count);
 
-          for (size_t i = 0; i < initial_organism_count; i++) {
+        for (size_t i = 0; i < initial_organism_count; i++) {
             organisms.push_back(
                 {{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
-          }
+        }
 
-          {
+        {
             God allah(helper::get_ecosystem_root(), true);
             allah.cleanSlate();
             allah.createWorld(organisms);
             for (size_t i = 0; i < simulation_years; i++) {
-              allah.happy_new_year(false);
+                allah.happy_new_year(false);
             }
-          }
+        }
 
-          {
+        {
             DatabaseManager db_manager(
                 std::filesystem::path(helper::get_ecosystem_root()) / "data" /
                 "ecosystem_master.db");
             rows = db_manager.read_all_rows();
-          }
-        }());
+        }
+    }());
 
     REQUIRE(rows.size() == simulation_years);
 }
