@@ -5,7 +5,7 @@
 #include <setup.hpp>
 #include <vector>
 
-enum GodState { unborn, born, dead };
+enum class GodState { unborn, born, dead };
 
 std::vector<std::unordered_map<std::string, std::string>> organisms;
 God *god;
