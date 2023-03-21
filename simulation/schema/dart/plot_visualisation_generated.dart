@@ -313,3 +313,105 @@ class PlotGroupObjectBuilder extends fb.ObjectBuilder {
     return fbBuilder.buffer;
   }
 }
+class PlotBundle {
+  PlotBundle._(this._bc, this._bcOffset);
+  factory PlotBundle(List<int> bytes) {
+    final rootRef = fb.BufferContext.fromBytes(bytes);
+    return reader.read(rootRef, 0);
+  }
+
+  static const fb.Reader<PlotBundle> reader = _PlotBundleReader();
+
+  final fb.BufferContext _bc;
+  final int _bcOffset;
+
+  List<PlotGroup>? get plotGroups => const fb.ListReader<PlotGroup>(PlotGroup.reader).vTableGetNullable(_bc, _bcOffset, 4);
+
+  @override
+  String toString() {
+    return 'PlotBundle{plotGroups: ${plotGroups}}';
+  }
+
+  PlotBundleT unpack() => PlotBundleT(
+      plotGroups: plotGroups?.map((e) => e.unpack()).toList());
+
+  static int pack(fb.Builder fbBuilder, PlotBundleT? object) {
+    if (object == null) return 0;
+    return object.pack(fbBuilder);
+  }
+}
+
+class PlotBundleT implements fb.Packable {
+  List<PlotGroupT>? plotGroups;
+
+  PlotBundleT({
+      this.plotGroups});
+
+  @override
+  int pack(fb.Builder fbBuilder) {
+    final int? plotGroupsOffset = plotGroups == null ? null
+        : fbBuilder.writeList(plotGroups!.map((b) => b.pack(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, plotGroupsOffset);
+    return fbBuilder.endTable();
+  }
+
+  @override
+  String toString() {
+    return 'PlotBundleT{plotGroups: ${plotGroups}}';
+  }
+}
+
+class _PlotBundleReader extends fb.TableReader<PlotBundle> {
+  const _PlotBundleReader();
+
+  @override
+  PlotBundle createObject(fb.BufferContext bc, int offset) => 
+    PlotBundle._(bc, offset);
+}
+
+class PlotBundleBuilder {
+  PlotBundleBuilder(this.fbBuilder);
+
+  final fb.Builder fbBuilder;
+
+  void begin() {
+    fbBuilder.startTable(1);
+  }
+
+  int addPlotGroupsOffset(int? offset) {
+    fbBuilder.addOffset(0, offset);
+    return fbBuilder.offset;
+  }
+
+  int finish() {
+    return fbBuilder.endTable();
+  }
+}
+
+class PlotBundleObjectBuilder extends fb.ObjectBuilder {
+  final List<PlotGroupObjectBuilder>? _plotGroups;
+
+  PlotBundleObjectBuilder({
+    List<PlotGroupObjectBuilder>? plotGroups,
+  })
+      : _plotGroups = plotGroups;
+
+  /// Finish building, and store into the [fbBuilder].
+  @override
+  int finish(fb.Builder fbBuilder) {
+    final int? plotGroupsOffset = _plotGroups == null ? null
+        : fbBuilder.writeList(_plotGroups!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
+    fbBuilder.startTable(1);
+    fbBuilder.addOffset(0, plotGroupsOffset);
+    return fbBuilder.endTable();
+  }
+
+  /// Convenience method to serialize to byte list.
+  @override
+  Uint8List toBytes([String? fileIdentifier]) {
+    final fbBuilder = fb.Builder(deduplicateTables: false);
+    fbBuilder.finish(finish(fbBuilder), fileIdentifier);
+    return fbBuilder.buffer;
+  }
+}

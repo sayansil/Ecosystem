@@ -9,10 +9,13 @@ table Plot {
     y:[float] (required);
 }
 
-
 table PlotGroup {
     title:string (key, required);
     plots:[Plot];
 }
 
-root_type PlotGroup;
+table PlotBundle {
+    plot_groups: [PlotGroup];
+}
+
+root_type PlotBundle;
