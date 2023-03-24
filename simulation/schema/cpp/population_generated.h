@@ -13,6 +13,8 @@ static_assert(FLATBUFFERS_VERSION_MAJOR == 22 &&
               FLATBUFFERS_VERSION_REVISION == 29,
              "Non-compatible flatbuffers version included");
 
+#include "world_generated.h"
+
 namespace Ecosystem {
 
 struct RawPopulation;
@@ -71,6 +73,7 @@ struct RawPopulation::Traits {
 struct SpeciesPopulationT : public flatbuffers::NativeTable {
   typedef SpeciesPopulation TableType;
   std::string kind{};
+  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
   std::unique_ptr<Ecosystem::RawPopulation> matable_population{};
   std::unique_ptr<Ecosystem::RawPopulation> non_matable_population{};
   SpeciesPopulationT() = default;
@@ -88,8 +91,9 @@ struct SpeciesPopulation FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_KIND = 4,
-    VT_MATABLE_POPULATION = 6,
-    VT_NON_MATABLE_POPULATION = 8
+    VT_KINGDOM = 6,
+    VT_MATABLE_POPULATION = 8,
+    VT_NON_MATABLE_POPULATION = 10
   };
   const flatbuffers::String *kind() const {
     return GetPointer<const flatbuffers::String *>(VT_KIND);
@@ -102,6 +106,12 @@ struct SpeciesPopulation FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   int KeyCompareWithValue(const char *_kind) const {
     return strcmp(kind()->c_str(), _kind);
+  }
+  Ecosystem::KingdomE kingdom() const {
+    return static_cast<Ecosystem::KingdomE>(GetField<uint8_t>(VT_KINGDOM, 0));
+  }
+  bool mutate_kingdom(Ecosystem::KingdomE _kingdom = static_cast<Ecosystem::KingdomE>(0)) {
+    return SetField<uint8_t>(VT_KINGDOM, static_cast<uint8_t>(_kingdom), 0);
   }
   const Ecosystem::RawPopulation *matable_population() const {
     return GetStruct<const Ecosystem::RawPopulation *>(VT_MATABLE_POPULATION);
@@ -119,6 +129,7 @@ struct SpeciesPopulation FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_KIND) &&
            verifier.VerifyString(kind()) &&
+           VerifyField<uint8_t>(verifier, VT_KINGDOM, 1) &&
            VerifyField<Ecosystem::RawPopulation>(verifier, VT_MATABLE_POPULATION, 4) &&
            VerifyField<Ecosystem::RawPopulation>(verifier, VT_NON_MATABLE_POPULATION, 4) &&
            verifier.EndTable();
@@ -134,6 +145,9 @@ struct SpeciesPopulationBuilder {
   flatbuffers::uoffset_t start_;
   void add_kind(flatbuffers::Offset<flatbuffers::String> kind) {
     fbb_.AddOffset(SpeciesPopulation::VT_KIND, kind);
+  }
+  void add_kingdom(Ecosystem::KingdomE kingdom) {
+    fbb_.AddElement<uint8_t>(SpeciesPopulation::VT_KINGDOM, static_cast<uint8_t>(kingdom), 0);
   }
   void add_matable_population(const Ecosystem::RawPopulation *matable_population) {
     fbb_.AddStruct(SpeciesPopulation::VT_MATABLE_POPULATION, matable_population);
@@ -156,12 +170,14 @@ struct SpeciesPopulationBuilder {
 inline flatbuffers::Offset<SpeciesPopulation> CreateSpeciesPopulation(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> kind = 0,
+    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
     const Ecosystem::RawPopulation *matable_population = nullptr,
     const Ecosystem::RawPopulation *non_matable_population = nullptr) {
   SpeciesPopulationBuilder builder_(_fbb);
   builder_.add_non_matable_population(non_matable_population);
   builder_.add_matable_population(matable_population);
   builder_.add_kind(kind);
+  builder_.add_kingdom(kingdom);
   return builder_.Finish();
 }
 
@@ -173,12 +189,14 @@ struct SpeciesPopulation::Traits {
 inline flatbuffers::Offset<SpeciesPopulation> CreateSpeciesPopulationDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *kind = nullptr,
+    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
     const Ecosystem::RawPopulation *matable_population = nullptr,
     const Ecosystem::RawPopulation *non_matable_population = nullptr) {
   auto kind__ = kind ? _fbb.CreateString(kind) : 0;
   return Ecosystem::CreateSpeciesPopulation(
       _fbb,
       kind__,
+      kingdom,
       matable_population,
       non_matable_population);
 }
@@ -288,12 +306,14 @@ flatbuffers::Offset<WorldPopulation> CreateWorldPopulation(flatbuffers::FlatBuff
 
 inline SpeciesPopulationT::SpeciesPopulationT(const SpeciesPopulationT &o)
       : kind(o.kind),
+        kingdom(o.kingdom),
         matable_population((o.matable_population) ? new Ecosystem::RawPopulation(*o.matable_population) : nullptr),
         non_matable_population((o.non_matable_population) ? new Ecosystem::RawPopulation(*o.non_matable_population) : nullptr) {
 }
 
 inline SpeciesPopulationT &SpeciesPopulationT::operator=(SpeciesPopulationT o) FLATBUFFERS_NOEXCEPT {
   std::swap(kind, o.kind);
+  std::swap(kingdom, o.kingdom);
   std::swap(matable_population, o.matable_population);
   std::swap(non_matable_population, o.non_matable_population);
   return *this;
@@ -309,6 +329,7 @@ inline void SpeciesPopulation::UnPackTo(SpeciesPopulationT *_o, const flatbuffer
   (void)_o;
   (void)_resolver;
   { auto _e = kind(); if (_e) _o->kind = _e->str(); }
+  { auto _e = kingdom(); _o->kingdom = _e; }
   { auto _e = matable_population(); if (_e) _o->matable_population = std::unique_ptr<Ecosystem::RawPopulation>(new Ecosystem::RawPopulation(*_e)); }
   { auto _e = non_matable_population(); if (_e) _o->non_matable_population = std::unique_ptr<Ecosystem::RawPopulation>(new Ecosystem::RawPopulation(*_e)); }
 }
@@ -322,11 +343,13 @@ inline flatbuffers::Offset<SpeciesPopulation> CreateSpeciesPopulation(flatbuffer
   (void)_o;
   struct _VectorArgs { flatbuffers::FlatBufferBuilder *__fbb; const SpeciesPopulationT* __o; const flatbuffers::rehasher_function_t *__rehasher; } _va = { &_fbb, _o, _rehasher}; (void)_va;
   auto _kind = _fbb.CreateString(_o->kind);
+  auto _kingdom = _o->kingdom;
   auto _matable_population = _o->matable_population ? _o->matable_population.get() : nullptr;
   auto _non_matable_population = _o->non_matable_population ? _o->non_matable_population.get() : nullptr;
   return Ecosystem::CreateSpeciesPopulation(
       _fbb,
       _kind,
+      _kingdom,
       _matable_population,
       _non_matable_population);
 }
@@ -391,19 +414,22 @@ inline const flatbuffers::TypeTable *RawPopulationTypeTable() {
 inline const flatbuffers::TypeTable *SpeciesPopulationTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_STRING, 0, -1 },
-    { flatbuffers::ET_SEQUENCE, 0, 0 },
-    { flatbuffers::ET_SEQUENCE, 0, 0 }
+    { flatbuffers::ET_UCHAR, 0, 0 },
+    { flatbuffers::ET_SEQUENCE, 0, 1 },
+    { flatbuffers::ET_SEQUENCE, 0, 1 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
+    Ecosystem::KingdomETypeTable,
     Ecosystem::RawPopulationTypeTable
   };
   static const char * const names[] = {
     "kind",
+    "kingdom",
     "matable_population",
     "non_matable_population"
   };
   static const flatbuffers::TypeTable tt = {
-    flatbuffers::ST_TABLE, 3, type_codes, type_refs, nullptr, nullptr, names
+    flatbuffers::ST_TABLE, 4, type_codes, type_refs, nullptr, nullptr, names
   };
   return &tt;
 }

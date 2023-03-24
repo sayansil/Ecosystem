@@ -118,16 +118,18 @@ class SpeciesPopulation {
   final int _bcOffset;
 
   String? get kind => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
-  RawPopulation? get matablePopulation => RawPopulation.reader.vTableGetNullable(_bc, _bcOffset, 6);
-  RawPopulation? get nonMatablePopulation => RawPopulation.reader.vTableGetNullable(_bc, _bcOffset, 8);
+  KingdomE get kingdom => KingdomE.fromValue(const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 6, 0));
+  RawPopulation? get matablePopulation => RawPopulation.reader.vTableGetNullable(_bc, _bcOffset, 8);
+  RawPopulation? get nonMatablePopulation => RawPopulation.reader.vTableGetNullable(_bc, _bcOffset, 10);
 
   @override
   String toString() {
-    return 'SpeciesPopulation{kind: ${kind}, matablePopulation: ${matablePopulation}, nonMatablePopulation: ${nonMatablePopulation}}';
+    return 'SpeciesPopulation{kind: ${kind}, kingdom: ${kingdom}, matablePopulation: ${matablePopulation}, nonMatablePopulation: ${nonMatablePopulation}}';
   }
 
   SpeciesPopulationT unpack() => SpeciesPopulationT(
       kind: kind,
+      kingdom: kingdom,
       matablePopulation: matablePopulation?.unpack(),
       nonMatablePopulation: nonMatablePopulation?.unpack());
 
@@ -139,11 +141,13 @@ class SpeciesPopulation {
 
 class SpeciesPopulationT implements fb.Packable {
   String? kind;
+  KingdomE kingdom;
   RawPopulationT? matablePopulation;
   RawPopulationT? nonMatablePopulation;
 
   SpeciesPopulationT({
       this.kind,
+      this.kingdom = KingdomE.Animal,
       this.matablePopulation,
       this.nonMatablePopulation});
 
@@ -151,20 +155,21 @@ class SpeciesPopulationT implements fb.Packable {
   int pack(fb.Builder fbBuilder) {
     final int? kindOffset = kind == null ? null
         : fbBuilder.writeString(kind!);
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
     fbBuilder.addOffset(0, kindOffset);
+    fbBuilder.addUint8(1, kingdom.value);
     if (matablePopulation != null) {
-      fbBuilder.addStruct(1, matablePopulation!.pack(fbBuilder));
+      fbBuilder.addStruct(2, matablePopulation!.pack(fbBuilder));
     }
     if (nonMatablePopulation != null) {
-      fbBuilder.addStruct(2, nonMatablePopulation!.pack(fbBuilder));
+      fbBuilder.addStruct(3, nonMatablePopulation!.pack(fbBuilder));
     }
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'SpeciesPopulationT{kind: ${kind}, matablePopulation: ${matablePopulation}, nonMatablePopulation: ${nonMatablePopulation}}';
+    return 'SpeciesPopulationT{kind: ${kind}, kingdom: ${kingdom}, matablePopulation: ${matablePopulation}, nonMatablePopulation: ${nonMatablePopulation}}';
   }
 }
 
@@ -182,19 +187,23 @@ class SpeciesPopulationBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
   }
 
   int addKindOffset(int? offset) {
     fbBuilder.addOffset(0, offset);
     return fbBuilder.offset;
   }
+  int addKingdom(KingdomE? kingdom) {
+    fbBuilder.addUint8(1, kingdom?.value);
+    return fbBuilder.offset;
+  }
   int addMatablePopulation(int offset) {
-    fbBuilder.addStruct(1, offset);
+    fbBuilder.addStruct(2, offset);
     return fbBuilder.offset;
   }
   int addNonMatablePopulation(int offset) {
-    fbBuilder.addStruct(2, offset);
+    fbBuilder.addStruct(3, offset);
     return fbBuilder.offset;
   }
 
@@ -205,15 +214,18 @@ class SpeciesPopulationBuilder {
 
 class SpeciesPopulationObjectBuilder extends fb.ObjectBuilder {
   final String? _kind;
+  final KingdomE? _kingdom;
   final RawPopulationObjectBuilder? _matablePopulation;
   final RawPopulationObjectBuilder? _nonMatablePopulation;
 
   SpeciesPopulationObjectBuilder({
     String? kind,
+    KingdomE? kingdom,
     RawPopulationObjectBuilder? matablePopulation,
     RawPopulationObjectBuilder? nonMatablePopulation,
   })
       : _kind = kind,
+        _kingdom = kingdom,
         _matablePopulation = matablePopulation,
         _nonMatablePopulation = nonMatablePopulation;
 
@@ -222,13 +234,14 @@ class SpeciesPopulationObjectBuilder extends fb.ObjectBuilder {
   int finish(fb.Builder fbBuilder) {
     final int? kindOffset = _kind == null ? null
         : fbBuilder.writeString(_kind!);
-    fbBuilder.startTable(3);
+    fbBuilder.startTable(4);
     fbBuilder.addOffset(0, kindOffset);
+    fbBuilder.addUint8(1, _kingdom?.value);
     if (_matablePopulation != null) {
-      fbBuilder.addStruct(1, _matablePopulation!.finish(fbBuilder));
+      fbBuilder.addStruct(2, _matablePopulation!.finish(fbBuilder));
     }
     if (_nonMatablePopulation != null) {
-      fbBuilder.addStruct(2, _nonMatablePopulation!.finish(fbBuilder));
+      fbBuilder.addStruct(3, _nonMatablePopulation!.finish(fbBuilder));
     }
     return fbBuilder.endTable();
   }

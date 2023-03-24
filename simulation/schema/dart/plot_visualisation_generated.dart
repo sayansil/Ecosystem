@@ -206,16 +206,18 @@ class PlotGroup {
   final fb.BufferContext _bc;
   final int _bcOffset;
 
-  String? get title => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
-  List<Plot>? get plots => const fb.ListReader<Plot>(Plot.reader).vTableGetNullable(_bc, _bcOffset, 6);
+  String? get name => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
+  String? get type => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 6);
+  List<Plot>? get plots => const fb.ListReader<Plot>(Plot.reader).vTableGetNullable(_bc, _bcOffset, 8);
 
   @override
   String toString() {
-    return 'PlotGroup{title: ${title}, plots: ${plots}}';
+    return 'PlotGroup{name: ${name}, type: ${type}, plots: ${plots}}';
   }
 
   PlotGroupT unpack() => PlotGroupT(
-      title: title,
+      name: name,
+      type: type,
       plots: plots?.map((e) => e.unpack()).toList());
 
   static int pack(fb.Builder fbBuilder, PlotGroupT? object) {
@@ -225,28 +227,33 @@ class PlotGroup {
 }
 
 class PlotGroupT implements fb.Packable {
-  String? title;
+  String? name;
+  String? type;
   List<PlotT>? plots;
 
   PlotGroupT({
-      this.title,
+      this.name,
+      this.type,
       this.plots});
 
   @override
   int pack(fb.Builder fbBuilder) {
-    final int? titleOffset = title == null ? null
-        : fbBuilder.writeString(title!);
+    final int? nameOffset = name == null ? null
+        : fbBuilder.writeString(name!);
+    final int? typeOffset = type == null ? null
+        : fbBuilder.writeString(type!);
     final int? plotsOffset = plots == null ? null
         : fbBuilder.writeList(plots!.map((b) => b.pack(fbBuilder)).toList());
-    fbBuilder.startTable(2);
-    fbBuilder.addOffset(0, titleOffset);
-    fbBuilder.addOffset(1, plotsOffset);
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, nameOffset);
+    fbBuilder.addOffset(1, typeOffset);
+    fbBuilder.addOffset(2, plotsOffset);
     return fbBuilder.endTable();
   }
 
   @override
   String toString() {
-    return 'PlotGroupT{title: ${title}, plots: ${plots}}';
+    return 'PlotGroupT{name: ${name}, type: ${type}, plots: ${plots}}';
   }
 }
 
@@ -264,15 +271,19 @@ class PlotGroupBuilder {
   final fb.Builder fbBuilder;
 
   void begin() {
-    fbBuilder.startTable(2);
+    fbBuilder.startTable(3);
   }
 
-  int addTitleOffset(int? offset) {
+  int addNameOffset(int? offset) {
     fbBuilder.addOffset(0, offset);
     return fbBuilder.offset;
   }
-  int addPlotsOffset(int? offset) {
+  int addTypeOffset(int? offset) {
     fbBuilder.addOffset(1, offset);
+    return fbBuilder.offset;
+  }
+  int addPlotsOffset(int? offset) {
+    fbBuilder.addOffset(2, offset);
     return fbBuilder.offset;
   }
 
@@ -282,26 +293,32 @@ class PlotGroupBuilder {
 }
 
 class PlotGroupObjectBuilder extends fb.ObjectBuilder {
-  final String? _title;
+  final String? _name;
+  final String? _type;
   final List<PlotObjectBuilder>? _plots;
 
   PlotGroupObjectBuilder({
-    String? title,
+    String? name,
+    String? type,
     List<PlotObjectBuilder>? plots,
   })
-      : _title = title,
+      : _name = name,
+        _type = type,
         _plots = plots;
 
   /// Finish building, and store into the [fbBuilder].
   @override
   int finish(fb.Builder fbBuilder) {
-    final int? titleOffset = _title == null ? null
-        : fbBuilder.writeString(_title!);
+    final int? nameOffset = _name == null ? null
+        : fbBuilder.writeString(_name!);
+    final int? typeOffset = _type == null ? null
+        : fbBuilder.writeString(_type!);
     final int? plotsOffset = _plots == null ? null
         : fbBuilder.writeList(_plots!.map((b) => b.getOrCreateOffset(fbBuilder)).toList());
-    fbBuilder.startTable(2);
-    fbBuilder.addOffset(0, titleOffset);
-    fbBuilder.addOffset(1, plotsOffset);
+    fbBuilder.startTable(3);
+    fbBuilder.addOffset(0, nameOffset);
+    fbBuilder.addOffset(1, typeOffset);
+    fbBuilder.addOffset(2, plotsOffset);
     return fbBuilder.endTable();
   }
 

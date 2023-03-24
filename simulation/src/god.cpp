@@ -452,6 +452,11 @@ void God::cleanSlate() {
     for (const auto &entry : std::filesystem::directory_iterator(
              ecosystem_root / std::filesystem::path("data") /
              std::filesystem::path("json"))) {
+        if (entry.path().filename().string()[0] == '.') {
+            // Ignore hidden files
+            continue;
+        }
+
         for (const auto &inner_entry :
              std::filesystem::directory_iterator(entry.path())) {
             if (inner_entry.path().filename().string()[0] == '.') {

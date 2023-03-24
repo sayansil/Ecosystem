@@ -91,7 +91,7 @@ FBuffer get_population_stats(const flatbuffers::DetachedBuffer &world_buffer) {
         new_stdvecSpeciesPopulation.push_back(
             Ecosystem::CreateSpeciesPopulation(
                 new_builder, new_builder.CreateString(species->kind()),
-                &matablePopulation, &nonMatablePopulation));
+                species->kingdom(), &matablePopulation, &nonMatablePopulation));
     }
 
     new_builder.Finish(Ecosystem::CreateWorldPopulation(

@@ -10,7 +10,8 @@ table Plot {
 }
 
 table PlotGroup {
-    title:string (key, required);
+    name:string (key, required);
+    type:string;
     plots:[Plot];
 }
 

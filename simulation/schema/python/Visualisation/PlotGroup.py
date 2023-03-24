@@ -25,15 +25,22 @@ class PlotGroup(object):
         self._tab = flatbuffers.table.Table(buf, pos)
 
     # PlotGroup
-    def Title(self):
+    def Name(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(4))
         if o != 0:
             return self._tab.String(o + self._tab.Pos)
         return None
 
     # PlotGroup
-    def Plots(self, j):
+    def Type(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
+        if o != 0:
+            return self._tab.String(o + self._tab.Pos)
+        return None
+
+    # PlotGroup
+    def Plots(self, j):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
             x = self._tab.Vector(o)
             x += flatbuffers.number_types.UOffsetTFlags.py_type(j) * 4
@@ -46,23 +53,26 @@ class PlotGroup(object):
 
     # PlotGroup
     def PlotsLength(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
             return self._tab.VectorLen(o)
         return 0
 
     # PlotGroup
     def PlotsIsNone(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         return o == 0
 
-def PlotGroupStart(builder): builder.StartObject(2)
+def PlotGroupStart(builder): builder.StartObject(3)
 def Start(builder):
     return PlotGroupStart(builder)
-def PlotGroupAddTitle(builder, title): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(title), 0)
-def AddTitle(builder, title):
-    return PlotGroupAddTitle(builder, title)
-def PlotGroupAddPlots(builder, plots): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(plots), 0)
+def PlotGroupAddName(builder, name): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(name), 0)
+def AddName(builder, name):
+    return PlotGroupAddName(builder, name)
+def PlotGroupAddType(builder, type): builder.PrependUOffsetTRelativeSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(type), 0)
+def AddType(builder, type):
+    return PlotGroupAddType(builder, type)
+def PlotGroupAddPlots(builder, plots): builder.PrependUOffsetTRelativeSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(plots), 0)
 def AddPlots(builder, plots):
     return PlotGroupAddPlots(builder, plots)
 def PlotGroupStartPlotsVector(builder, numElems): return builder.StartVector(4, numElems, 4)
@@ -81,7 +91,8 @@ class PlotGroupT(object):
 
     # PlotGroupT
     def __init__(self):
-        self.title = None  # type: str
+        self.name = None  # type: str
+        self.type = None  # type: str
         self.plots = None  # type: List[Visualisation.Plot.PlotT]
 
     @classmethod
@@ -101,7 +112,8 @@ class PlotGroupT(object):
     def _UnPack(self, plotGroup):
         if plotGroup is None:
             return
-        self.title = plotGroup.Title()
+        self.name = plotGroup.Name()
+        self.type = plotGroup.Type()
         if not plotGroup.PlotsIsNone():
             self.plots = []
             for i in range(plotGroup.PlotsLength()):
@@ -113,8 +125,10 @@ class PlotGroupT(object):
 
     # PlotGroupT
     def Pack(self, builder):
-        if self.title is not None:
-            title = builder.CreateString(self.title)
+        if self.name is not None:
+            name = builder.CreateString(self.name)
+        if self.type is not None:
+            type = builder.CreateString(self.type)
         if self.plots is not None:
             plotslist = []
             for i in range(len(self.plots)):
@@ -124,8 +138,10 @@ class PlotGroupT(object):
                 builder.PrependUOffsetTRelative(plotslist[i])
             plots = builder.EndVector()
         PlotGroupStart(builder)
-        if self.title is not None:
-            PlotGroupAddTitle(builder, title)
+        if self.name is not None:
+            PlotGroupAddName(builder, name)
+        if self.type is not None:
+            PlotGroupAddType(builder, type)
         if self.plots is not None:
             PlotGroupAddPlots(builder, plots)
         plotGroup = PlotGroupEnd(builder)
