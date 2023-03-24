@@ -118,7 +118,7 @@ class SpeciesPopulation {
   final int _bcOffset;
 
   String? get kind => const fb.StringReader().vTableGetNullable(_bc, _bcOffset, 4);
-  KingdomE get kingdom => KingdomE.fromValue(const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 6, 0));
+  int get kingdom => const fb.Uint8Reader().vTableGet(_bc, _bcOffset, 6, 0);
   RawPopulation? get matablePopulation => RawPopulation.reader.vTableGetNullable(_bc, _bcOffset, 8);
   RawPopulation? get nonMatablePopulation => RawPopulation.reader.vTableGetNullable(_bc, _bcOffset, 10);
 
@@ -141,13 +141,13 @@ class SpeciesPopulation {
 
 class SpeciesPopulationT implements fb.Packable {
   String? kind;
-  KingdomE kingdom;
+  int kingdom;
   RawPopulationT? matablePopulation;
   RawPopulationT? nonMatablePopulation;
 
   SpeciesPopulationT({
       this.kind,
-      this.kingdom = KingdomE.Animal,
+      this.kingdom = 0,
       this.matablePopulation,
       this.nonMatablePopulation});
 
@@ -157,7 +157,7 @@ class SpeciesPopulationT implements fb.Packable {
         : fbBuilder.writeString(kind!);
     fbBuilder.startTable(4);
     fbBuilder.addOffset(0, kindOffset);
-    fbBuilder.addUint8(1, kingdom.value);
+    fbBuilder.addUint8(1, kingdom);
     if (matablePopulation != null) {
       fbBuilder.addStruct(2, matablePopulation!.pack(fbBuilder));
     }
@@ -194,8 +194,8 @@ class SpeciesPopulationBuilder {
     fbBuilder.addOffset(0, offset);
     return fbBuilder.offset;
   }
-  int addKingdom(KingdomE? kingdom) {
-    fbBuilder.addUint8(1, kingdom?.value);
+  int addKingdom(int? kingdom) {
+    fbBuilder.addUint8(1, kingdom);
     return fbBuilder.offset;
   }
   int addMatablePopulation(int offset) {
@@ -214,13 +214,13 @@ class SpeciesPopulationBuilder {
 
 class SpeciesPopulationObjectBuilder extends fb.ObjectBuilder {
   final String? _kind;
-  final KingdomE? _kingdom;
+  final int? _kingdom;
   final RawPopulationObjectBuilder? _matablePopulation;
   final RawPopulationObjectBuilder? _nonMatablePopulation;
 
   SpeciesPopulationObjectBuilder({
     String? kind,
-    KingdomE? kingdom,
+    int? kingdom,
     RawPopulationObjectBuilder? matablePopulation,
     RawPopulationObjectBuilder? nonMatablePopulation,
   })
@@ -236,7 +236,7 @@ class SpeciesPopulationObjectBuilder extends fb.ObjectBuilder {
         : fbBuilder.writeString(_kind!);
     fbBuilder.startTable(4);
     fbBuilder.addOffset(0, kindOffset);
-    fbBuilder.addUint8(1, _kingdom?.value);
+    fbBuilder.addUint8(1, _kingdom);
     if (_matablePopulation != null) {
       fbBuilder.addStruct(2, _matablePopulation!.finish(fbBuilder));
     }

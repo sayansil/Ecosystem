@@ -73,7 +73,7 @@ struct RawPopulation::Traits {
 struct SpeciesPopulationT : public flatbuffers::NativeTable {
   typedef SpeciesPopulation TableType;
   std::string kind{};
-  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
+  uint8_t kingdom = 0;
   std::unique_ptr<Ecosystem::RawPopulation> matable_population{};
   std::unique_ptr<Ecosystem::RawPopulation> non_matable_population{};
   SpeciesPopulationT() = default;
@@ -107,11 +107,11 @@ struct SpeciesPopulation FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   int KeyCompareWithValue(const char *_kind) const {
     return strcmp(kind()->c_str(), _kind);
   }
-  Ecosystem::KingdomE kingdom() const {
-    return static_cast<Ecosystem::KingdomE>(GetField<uint8_t>(VT_KINGDOM, 0));
+  uint8_t kingdom() const {
+    return GetField<uint8_t>(VT_KINGDOM, 0);
   }
-  bool mutate_kingdom(Ecosystem::KingdomE _kingdom = static_cast<Ecosystem::KingdomE>(0)) {
-    return SetField<uint8_t>(VT_KINGDOM, static_cast<uint8_t>(_kingdom), 0);
+  bool mutate_kingdom(uint8_t _kingdom = 0) {
+    return SetField<uint8_t>(VT_KINGDOM, _kingdom, 0);
   }
   const Ecosystem::RawPopulation *matable_population() const {
     return GetStruct<const Ecosystem::RawPopulation *>(VT_MATABLE_POPULATION);
@@ -146,8 +146,8 @@ struct SpeciesPopulationBuilder {
   void add_kind(flatbuffers::Offset<flatbuffers::String> kind) {
     fbb_.AddOffset(SpeciesPopulation::VT_KIND, kind);
   }
-  void add_kingdom(Ecosystem::KingdomE kingdom) {
-    fbb_.AddElement<uint8_t>(SpeciesPopulation::VT_KINGDOM, static_cast<uint8_t>(kingdom), 0);
+  void add_kingdom(uint8_t kingdom) {
+    fbb_.AddElement<uint8_t>(SpeciesPopulation::VT_KINGDOM, kingdom, 0);
   }
   void add_matable_population(const Ecosystem::RawPopulation *matable_population) {
     fbb_.AddStruct(SpeciesPopulation::VT_MATABLE_POPULATION, matable_population);
@@ -170,7 +170,7 @@ struct SpeciesPopulationBuilder {
 inline flatbuffers::Offset<SpeciesPopulation> CreateSpeciesPopulation(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> kind = 0,
-    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
+    uint8_t kingdom = 0,
     const Ecosystem::RawPopulation *matable_population = nullptr,
     const Ecosystem::RawPopulation *non_matable_population = nullptr) {
   SpeciesPopulationBuilder builder_(_fbb);
@@ -189,7 +189,7 @@ struct SpeciesPopulation::Traits {
 inline flatbuffers::Offset<SpeciesPopulation> CreateSpeciesPopulationDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *kind = nullptr,
-    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
+    uint8_t kingdom = 0,
     const Ecosystem::RawPopulation *matable_population = nullptr,
     const Ecosystem::RawPopulation *non_matable_population = nullptr) {
   auto kind__ = kind ? _fbb.CreateString(kind) : 0;
@@ -414,12 +414,11 @@ inline const flatbuffers::TypeTable *RawPopulationTypeTable() {
 inline const flatbuffers::TypeTable *SpeciesPopulationTypeTable() {
   static const flatbuffers::TypeCode type_codes[] = {
     { flatbuffers::ET_STRING, 0, -1 },
-    { flatbuffers::ET_UCHAR, 0, 0 },
-    { flatbuffers::ET_SEQUENCE, 0, 1 },
-    { flatbuffers::ET_SEQUENCE, 0, 1 }
+    { flatbuffers::ET_UCHAR, 0, -1 },
+    { flatbuffers::ET_SEQUENCE, 0, 0 },
+    { flatbuffers::ET_SEQUENCE, 0, 0 }
   };
   static const flatbuffers::TypeFunction type_refs[] = {
-    Ecosystem::KingdomETypeTable,
     Ecosystem::RawPopulationTypeTable
   };
   static const char * const names[] = {
