@@ -14,6 +14,9 @@ data/csv/*
 data/*.db
 data/*.db-*
 simulation/build/*
+simulation/schema/cpp/*
+simulation/schema/dart/*
+simulation/schema/python/*
 simulation/WebApp/keys.json
 simulation/WebApp/extern/uWebSockets
 simulation/python/pybind11
