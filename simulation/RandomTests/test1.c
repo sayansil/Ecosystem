@@ -16,6 +16,7 @@ int main() {
 
     struct BufferData fbList = happy_new_year();
     printf("Length: %d\n", (int)fbList.length);
+    printf("JSON: %s\n", get_world_instance());
 
     free_god();
 }
