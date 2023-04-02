@@ -88,8 +88,8 @@ const char *get_world_instance() {
     return stringData.c_str();
 }
 
-const char* get_organism_attribute_list_as_string() {
-    const flatbuffers::TypeTable* type_table = Ecosystem::OrganismTypeTable();
+const char *get_organism_attribute_list_as_string() {
+    const flatbuffers::TypeTable *type_table = Ecosystem::OrganismTypeTable();
     stringData = "";
     for (size_t i = 0; i < type_table->num_elems; i++) {
         stringData += type_table->names[i];

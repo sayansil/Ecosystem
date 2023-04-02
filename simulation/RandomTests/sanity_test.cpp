@@ -14,17 +14,18 @@
 #include <vector>
 
 int main() {
-  std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
-  setup::setup(ecosystem_root);
+    std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
+    setup::setup(ecosystem_root);
 
-  const size_t initial_organism_count = 500;
-  const size_t simulation_years = 10;
+    const size_t initial_organism_count = 500;
+    const size_t simulation_years = 10;
 
-  std::vector<std::unordered_map<std::string, std::string>> organisms;
-  organisms.reserve(initial_organism_count);
+    std::vector<std::unordered_map<std::string, std::string>> organisms;
+    organisms.reserve(initial_organism_count);
 
-  for (size_t i = 0; i < initial_organism_count; i++) {
-    organisms.push_back({{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
+    for (size_t i = 0; i < initial_organism_count; i++) {
+        organisms.push_back(
+            {{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
     }
 
     God allah;

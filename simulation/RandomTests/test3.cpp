@@ -13,14 +13,15 @@
 #include <vector>
 
 int main() {
-  setup::setup(helper::get_ecosystem_root());
+    setup::setup(helper::get_ecosystem_root());
 
-  unsigned int initial_organism_count = 4500;
-  std::vector<std::unordered_map<std::string, std::string>> organisms;
-  organisms.reserve(initial_organism_count);
+    unsigned int initial_organism_count = 4500;
+    std::vector<std::unordered_map<std::string, std::string>> organisms;
+    organisms.reserve(initial_organism_count);
 
-  for (size_t i = 0; i < initial_organism_count; i++) {
-    organisms.push_back({{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
+    for (size_t i = 0; i < initial_organism_count; i++) {
+        organisms.push_back(
+            {{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
     }
 
     God allah;
