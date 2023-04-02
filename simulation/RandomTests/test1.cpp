@@ -130,10 +130,195 @@ void print_species(const uint8_t *buffer) {
     fmt::print("{}\n", json_data.dump());
     // fmt::print("{}\n", visitor.s);
 }
+inline void IterateSpecies(flatbuffers::ElementaryType type, const uint8_t *val,
+                           const flatbuffers::TypeTable *type_table,
+                           const uint8_t *prev_val,
+                           flatbuffers::soffset_t vector_index,
+                           flatbuffers::ToStringVisitor visitor) {
+    using namespace flatbuffers;
+    switch (type) {
+        case ET_UTYPE: {
+            auto tval = ReadScalar<uint8_t>(val);
+            visitor.UType(tval, EnumName(tval, type_table));
+            break;
+        }
+        case ET_BOOL: {
+            visitor.Bool(ReadScalar<uint8_t>(val) != 0);
+            break;
+        }
+        case ET_CHAR: {
+            auto tval = ReadScalar<int8_t>(val);
+            visitor.Char(tval, EnumName(tval, type_table));
+            break;
+        }
+        case ET_UCHAR: {
+            auto tval = ReadScalar<uint8_t>(val);
+            visitor.UChar(tval, EnumName(tval, type_table));
+            break;
+        }
+        case ET_SHORT: {
+            auto tval = ReadScalar<int16_t>(val);
+            visitor.Short(tval, EnumName(tval, type_table));
+            break;
+        }
+        case ET_USHORT: {
+            auto tval = ReadScalar<uint16_t>(val);
+            visitor.UShort(tval, EnumName(tval, type_table));
+            break;
+        }
+        case ET_INT: {
+            auto tval = ReadScalar<int32_t>(val);
+            visitor.Int(tval, EnumName(tval, type_table));
+            break;
+        }
+        case ET_UINT: {
+            auto tval = ReadScalar<uint32_t>(val);
+            visitor.UInt(tval, EnumName(tval, type_table));
+            break;
+        }
+        case ET_LONG: {
+            visitor.Long(ReadScalar<int64_t>(val));
+            break;
+        }
+        case ET_ULONG: {
+            visitor.ULong(ReadScalar<uint64_t>(val));
+            break;
+        }
+        case ET_FLOAT: {
+            visitor.Float(ReadScalar<float>(val));
+            break;
+        }
+        case ET_DOUBLE: {
+            visitor.Double(ReadScalar<double>(val));
+            break;
+        }
+        case ET_STRING: {
+            val += ReadScalar<uoffset_t>(val);
+            visitor.String(reinterpret_cast<const String *>(val));
+            break;
+        }
+        case ET_SEQUENCE: {
+            switch (type_table->st) {
+                case ST_TABLE:
+                    val += ReadScalar<uoffset_t>(val);
+                    IterateObject(val, type_table, &visitor);
+                    break;
+                case ST_STRUCT:
+                    IterateObject(val, type_table, &visitor);
+                    break;
+                case ST_UNION: {
+                    val += ReadScalar<uoffset_t>(val);
+                    FLATBUFFERS_ASSERT(prev_val);
+                    auto union_type = *prev_val;  // Always a uint8_t.
+                    if (vector_index >= 0) {
+                        auto type_vec =
+                            reinterpret_cast<const Vector<uint8_t> *>(prev_val);
+                        union_type =
+                            type_vec->Get(static_cast<uoffset_t>(vector_index));
+                    }
+                    auto type_code_idx = LookupEnum(
+                        union_type, type_table->values, type_table->num_elems);
+                    if (type_code_idx >= 0 &&
+                        type_code_idx <
+                            static_cast<int32_t>(type_table->num_elems)) {
+                        auto type_code = type_table->type_codes[type_code_idx];
+                        switch (type_code.base_type) {
+                            case ET_SEQUENCE: {
+                                auto ref =
+                                    type_table
+                                        ->type_refs[type_code.sequence_ref]();
+                                IterateObject(val, ref, &visitor);
+                                break;
+                            }
+                            case ET_STRING:
+                                visitor.String(
+                                    reinterpret_cast<const String *>(val));
+                                break;
+                            default:
+                                visitor.Unknown(val);
+                        }
+                    } else {
+                        visitor.Unknown(val);
+                    }
+                    break;
+                }
+                case ST_ENUM:
+                    FLATBUFFERS_ASSERT(false);
+                    break;
+            }
+            break;
+        }
+        default: {
+            visitor.Unknown(val);
+            break;
+        }
+    }
+    fmt::print("*****\n{}\n*****", nlohmann::json::parse(visitor.s).dump(4));
+}
+
+inline void IterateWorld(const uint8_t *obj,
+                         const flatbuffers::TypeTable *type_table,
+                         flatbuffers::ToStringVisitor *visitor) {
+    using namespace flatbuffers;
+    visitor->StartSequence();
+    const uint8_t *prev_val = nullptr;
+    size_t set_idx = 0;
+    size_t array_idx = 0;
+    for (size_t i = 0; i < type_table->num_elems; i++) {
+        auto type_code = type_table->type_codes[i];
+        auto type = static_cast<ElementaryType>(type_code.base_type);
+        auto is_repeating = type_code.is_repeating != 0;
+        auto ref_idx = type_code.sequence_ref;
+        const TypeTable *ref = nullptr;
+        if (ref_idx >= 0) {
+            ref = type_table->type_refs[ref_idx]();
+        }
+        auto name = type_table->names ? type_table->names[i] : nullptr;
+        const uint8_t *val = nullptr;
+        if (type_table->st == ST_TABLE) {
+            val = reinterpret_cast<const Table *>(obj)->GetAddressOf(
+                FieldIndexToOffset(static_cast<voffset_t>(i)));
+        } else {
+            val = obj + type_table->values[i];
+        }
+        visitor->Field(i, set_idx, type, is_repeating, ref, name, val);
+        if (val) {
+            set_idx++;
+            if (is_repeating) {
+                auto elem_ptr = val;
+                size_t size = 0;
+                if (type_table->st == ST_TABLE) {
+                    // variable length vector
+                    val += ReadScalar<uoffset_t>(val);
+                    auto vec = reinterpret_cast<const Vector<uint8_t> *>(val);
+                    elem_ptr = vec->Data();
+                    size = vec->size();
+                } else {
+                    // otherwise fixed size array
+                    size = type_table->array_sizes[array_idx];
+                    ++array_idx;
+                }
+                visitor->StartVector();
+                for (size_t j = 0; j < size; j++) {
+                    visitor->Element(j, type, ref, elem_ptr);
+                    IterateSpecies(type, elem_ptr, ref, prev_val,
+                                   static_cast<soffset_t>(j),
+                                   ToStringVisitor("", true, "", true));
+                    elem_ptr += InlineSize(type, ref);
+                }
+                visitor->EndVector();
+            } else {
+                IterateValue(type, val, ref, prev_val, -1, visitor);
+            }
+        }
+        prev_val = val;
+    }
+    visitor->EndSequence();
+}
 
 int main() {
     std::vector<std::vector<ByteArray>> rows;
-    const size_t simulation_years = 5;
+    const size_t simulation_years = 1;
 
     setup::setup(helper::get_ecosystem_root());
 
@@ -161,7 +346,13 @@ int main() {
         }
 
         FBuffer avg_world = stat_fetcher::create_avg_world(allah.buffer);
-        // print_attribute_list(Ecosystem::OrganismTypeTable());
-        print_species(allah.buffer.data());
+        flatbuffers::ToStringVisitor visitor("", true, "", true);
+        // flatbuffers::IterateFlatBuffer(
+        //         avg_world.data(), Ecosystem::WorldTypeTable(), &visitor);
+        IterateWorld(flatbuffers::GetRoot<uint8_t>(avg_world.data()),
+                     Ecosystem::WorldTypeTable(), &visitor);
+        // nlohmann::json json_data = nlohmann::json::parse(visitor.s);
+        // fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
+        // print_species(allah.buffer.data());
     }
 }
