@@ -17,7 +17,7 @@ enum class GodState { unborn, born, dead };
 std::vector<std::unordered_map<std::string, std::string>> organisms;
 God *god;
 GodState godState = GodState::unborn;
-std::string jsonString;
+std::string stringData;
 
 void create_god(uint8_t gods_eye, const char *ecosystem_root) {
     if (godState == GodState::unborn || godState == GodState::dead) {
@@ -84,8 +84,18 @@ const char *get_world_instance() {
                                        &visitor);
         jsonObject["world_population"] = nlohmann::json::parse(visitor.s);
     }
-    jsonString = jsonObject.dump();
-    return jsonString.c_str();
+    stringData = jsonObject.dump();
+    return stringData.c_str();
+}
+
+const char* get_organism_attribute_list_as_string() {
+    const flatbuffers::TypeTable* type_table = Ecosystem::OrganismTypeTable();
+    stringData = "";
+    for (size_t i = 0; i < type_table->num_elems; i++) {
+        stringData += type_table->names[i];
+        stringData += ' ';
+    }
+    return stringData.c_str();
 }
 
 void free_god() {
