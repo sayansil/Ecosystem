@@ -6,6 +6,7 @@ set(ECOSYSTEM_SOURCES
     database_manager.cpp
     setup.cpp
     species_constants.cpp
+    inspector.cpp
 
     ${sqlite3_SOURCE_DIR}/src/sqlite3.c
     ${whereami_SOURCE_DIR}/src/whereami.c

@@ -33,5 +33,6 @@ add_code(reportgen_test)
 add_code(sanity_test)
 add_code(test1)
 add_code(test2)
+add_code(test3)
 
 add_c_code(test1)

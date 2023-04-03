@@ -10,6 +10,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <setup.hpp>
+#include <inspector.hpp>
 #include <stat_fetcher.hpp>
 #include <unordered_map>
 #include <vector>
@@ -349,10 +350,13 @@ int main() {
         flatbuffers::ToStringVisitor visitor("", true, "", true);
         // flatbuffers::IterateFlatBuffer(
         //         avg_world.data(), Ecosystem::WorldTypeTable(), &visitor);
-        IterateWorld(flatbuffers::GetRoot<uint8_t>(avg_world.data()),
-                     Ecosystem::WorldTypeTable(), &visitor);
+        EcosystemInspector inspector(allah.buffer.data());
+        inspector.IterateWorld(&visitor);
+        fmt::print("{}\n", inspector.output.dump(4));
+        //IterateWorld(flatbuffers::GetRoot<uint8_t>(avg_world.data()),
+        //             Ecosystem::WorldTypeTable(), &visitor);
         // nlohmann::json json_data = nlohmann::json::parse(visitor.s);
-        // fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
+        //fmt::print("Parsed JSON:\n{}\n", helper::get_json_from_buffer(allah.buffer.data(), Ecosystem::WorldTypeTable()).dump(4));
         // print_species(allah.buffer.data());
     }
 }
