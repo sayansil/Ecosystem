@@ -44,11 +44,20 @@ int main() {
             allah.happy_new_year(true);
         }
 
-        FBuffer avg_world = stat_fetcher::create_avg_world(allah.buffer);
-        flatbuffers::ToStringVisitor visitor("", true, "", false);
+        nlohmann::ordered_json query;
 
-        EcosystemInspector inspector(allah.buffer.data());
-        inspector.IterateWorld(&visitor);
+        nlohmann::json species_query1;
+        species_query1["kind"] = "deer";
+        species_query1["kingdom"] = "Animal";
+        query["species"].emplace_back(species_query1);
+
+        //nlohmann::json species_query2;
+        //species_query2["kind"] = "bamboo";
+        //species_query2["kingdom"] = "Plant";
+        //query["species"].emplace_back(species_query2);
+
+        EcosystemInspector inspector(allah.buffer.data(), query);
+        inspector.IterateWorld();
         fmt::print("{}\n", inspector.output.dump(4));
     }
 }

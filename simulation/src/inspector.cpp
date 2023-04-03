@@ -1,20 +1,23 @@
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 #include <world_generated.h>
 
 #include <inspector.hpp>
 
-EcosystemInspector::EcosystemInspector(const uint8_t *input_buffer) {
+EcosystemInspector::EcosystemInspector(const uint8_t *input_buffer, const nlohmann::ordered_json &input_query) {
     buffer = input_buffer;  // intentional shallow copy
     world_type_table = Ecosystem::WorldTypeTable();
     species_type_table = Ecosystem::SpeciesTypeTable();
     organism_type_table = Ecosystem::OrganismTypeTable();
+    query = input_query;
 }
 
-void EcosystemInspector::IterateWorld(flatbuffers::ToStringVisitor *visitor) {
+void EcosystemInspector::IterateWorld() {
     using namespace flatbuffers;
+    ToStringVisitor visitor("", true, "", false);
     std::vector<nlohmann::json> species_json_list;
     const uint8_t *obj = flatbuffers::GetRoot<uint8_t>(buffer);
-    visitor->StartSequence();
+    visitor.StartSequence();
     const uint8_t *prev_val = nullptr;
     size_t set_idx = 0;
     size_t array_idx = 0;
@@ -37,7 +40,7 @@ void EcosystemInspector::IterateWorld(flatbuffers::ToStringVisitor *visitor) {
             val = obj + world_type_table->values[i];
         }
         if (std::string(name) != "species") {
-            visitor->Field(i, set_idx, type, is_repeating, ref, name, val);
+            visitor.Field(i, set_idx, type, is_repeating, ref, name, val);
         }
         if (val) {
             set_idx++;
@@ -56,11 +59,11 @@ void EcosystemInspector::IterateWorld(flatbuffers::ToStringVisitor *visitor) {
                     ++array_idx;
                 }
                 if (std::string(name) != "species") {
-                    visitor->StartVector();
+                    visitor.StartVector();
                 }
                 for (size_t j = 0; j < size; j++) {
                     if (std::string(name) != "species") {
-                        visitor->Element(j, type, ref, elem_ptr);
+                        visitor.Element(j, type, ref, elem_ptr);
                     }
                     if (std::string(name) == "species") {
                         species_json_list.emplace_back(IterateSpecies(
@@ -68,24 +71,37 @@ void EcosystemInspector::IterateWorld(flatbuffers::ToStringVisitor *visitor) {
                             ToStringVisitor("", true, "", false)));
                     } else {
                         IterateValue(type, elem_ptr, ref, prev_val,
-                                     static_cast<soffset_t>(j), visitor);
+                                     static_cast<soffset_t>(j), &visitor);
                     }
                     elem_ptr += InlineSize(type, ref);
                 }
                 if (std::string(name) != "species") {
-                    visitor->EndVector();
+                    visitor.EndVector();
                 }
             } else {
-                IterateValue(type, val, ref, prev_val, -1, visitor);
+                IterateValue(type, val, ref, prev_val, -1, &visitor);
             }
         }
         prev_val = val;
     }
-    visitor->EndSequence();
-    output = nlohmann::json::parse(visitor->s);
+    visitor.EndSequence();
+    output = nlohmann::json::parse(visitor.s);
     for (const auto &species_json : species_json_list) {
         output["species"].emplace_back(species_json);
     }
+}
+
+bool EcosystemInspector::processSpeciesQuery(const nlohmann::ordered_json &species_queries, flatbuffers::ToStringVisitor visitor) {
+    visitor.EndSequence();
+    nlohmann::ordered_json species_json = nlohmann::json::parse(std::move(visitor.s));
+    bool matchFound = false;
+    for (const auto& species_query_item : species_queries) {
+        if (species_json == species_query_item) {
+            matchFound = true;
+            break;
+        }
+    }
+    return matchFound;
 }
 
 nlohmann::json EcosystemInspector::IterateSpecies(
@@ -140,9 +156,11 @@ nlohmann::json EcosystemInspector::IterateSpecies(
                         visitor.Element(j, type, ref, elem_ptr);
                     }
                     if (std::string(name) == "organism") {
-                        organism_json_list.emplace_back(IterateOrganism(
-                            elem_ptr, ref,
-                            ToStringVisitor("", true, "", false)));
+                        if (processSpeciesQuery(query["species"], visitor)) {
+                            organism_json_list.emplace_back(IterateOrganism(
+                                        elem_ptr, ref,
+                                        ToStringVisitor("", true, "", false)));
+                        }
                     } else {
                         IterateValue(type, elem_ptr, ref, prev_val,
                                      static_cast<soffset_t>(j), &visitor);
