@@ -51,10 +51,10 @@ int main() {
         species_query1["kingdom"] = "Animal";
         query["species"].emplace_back(species_query1);
 
-        //nlohmann::json species_query2;
-        //species_query2["kind"] = "bamboo";
-        //species_query2["kingdom"] = "Plant";
-        //query["species"].emplace_back(species_query2);
+        // nlohmann::json species_query2;
+        // species_query2["kind"] = "bamboo";
+        // species_query2["kingdom"] = "Plant";
+        // query["species"].emplace_back(species_query2);
 
         EcosystemInspector inspector(allah.buffer.data(), query);
         inspector.IterateWorld();

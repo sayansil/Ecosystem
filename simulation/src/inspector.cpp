@@ -4,7 +4,8 @@
 
 #include <inspector.hpp>
 
-EcosystemInspector::EcosystemInspector(const uint8_t *input_buffer, const nlohmann::ordered_json &input_query) {
+EcosystemInspector::EcosystemInspector(
+    const uint8_t *input_buffer, const nlohmann::ordered_json &input_query) {
     buffer = input_buffer;  // intentional shallow copy
     world_type_table = Ecosystem::WorldTypeTable();
     species_type_table = Ecosystem::SpeciesTypeTable();
@@ -91,11 +92,14 @@ void EcosystemInspector::IterateWorld() {
     }
 }
 
-bool EcosystemInspector::processSpeciesQuery(const nlohmann::ordered_json &species_queries, flatbuffers::ToStringVisitor visitor) {
+bool EcosystemInspector::processSpeciesQuery(
+    const nlohmann::ordered_json &species_queries,
+    flatbuffers::ToStringVisitor visitor) {
     visitor.EndSequence();
-    nlohmann::ordered_json species_json = nlohmann::json::parse(std::move(visitor.s));
+    nlohmann::ordered_json species_json =
+        nlohmann::json::parse(std::move(visitor.s));
     bool matchFound = false;
-    for (const auto& species_query_item : species_queries) {
+    for (const auto &species_query_item : species_queries) {
         if (species_json == species_query_item) {
             matchFound = true;
             break;
@@ -158,8 +162,8 @@ nlohmann::json EcosystemInspector::IterateSpecies(
                     if (std::string(name) == "organism") {
                         if (processSpeciesQuery(query["species"], visitor)) {
                             organism_json_list.emplace_back(IterateOrganism(
-                                        elem_ptr, ref,
-                                        ToStringVisitor("", true, "", false)));
+                                elem_ptr, ref,
+                                ToStringVisitor("", true, "", false)));
                         }
                     } else {
                         IterateValue(type, elem_ptr, ref, prev_val,
