@@ -11,7 +11,10 @@
 #include <cassert>
 #include <XoshiroCpp.hpp>
 #include <world_generated.h>
+#include <population_generated.h>
 #include <ecosystem_export.h>
+#include <nlohmann/json.hpp>
+#include <flatbuffers/minireflect.h>
 
 namespace helper
 {
@@ -39,6 +42,9 @@ namespace helper
     extern Ecosystem::Organism *get_mutable_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object);
     extern const Ecosystem::Organism *get_pointer_from_offset(flatbuffers::FlatBufferBuilder &builder, const flatbuffers::Offset<Ecosystem::Organism> &object);
     extern std::string get_ecosystem_root();
+    extern nlohmann::json get_json_from_buffer(const uint8_t *buffer,
+            const flatbuffers::TypeTable *root_table,
+            flatbuffers::ToStringVisitor visitor = flatbuffers::ToStringVisitor("", true, "", true));
 };
 
 #endif // HELPER_HPP
