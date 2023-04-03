@@ -11,9 +11,11 @@ public:
 
     void IterateWorld(flatbuffers::ToStringVisitor *visitor);
 private:
-    nlohmann::json IterateSpecies(flatbuffers::ElementaryType type, const uint8_t *val,
+    nlohmann::json IterateSpecies(const uint8_t *val,
             const flatbuffers::TypeTable *type_table,
             flatbuffers::ToStringVisitor visitor);
+    nlohmann::json IterateOrganism(const uint8_t *obj, const flatbuffers::TypeTable *type_table,
+                          flatbuffers::ToStringVisitor visitor);
 public:
     const uint8_t *buffer;
     nlohmann::json output;
