@@ -1,6 +1,7 @@
+#include <fmt/core.h>
+
 #include <nlohmann/json.hpp>
 #include <vector>
-#include <fmt/core.h>
 
 int main() {
     nlohmann::json j;
