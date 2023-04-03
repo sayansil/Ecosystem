@@ -176,10 +176,9 @@ std::string get_ecosystem_root() {
 }
 
 nlohmann::json get_json_from_buffer(const uint8_t *buffer,
-        const flatbuffers::TypeTable *root_table,
-        flatbuffers::ToStringVisitor visitor) {
-    flatbuffers::IterateFlatBuffer(
-        buffer, root_table, &visitor);
+                                    const flatbuffers::TypeTable *root_table,
+                                    flatbuffers::ToStringVisitor visitor) {
+    flatbuffers::IterateFlatBuffer(buffer, root_table, &visitor);
     return nlohmann::json::parse(visitor.s);
 }
 };  // namespace helper
