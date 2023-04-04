@@ -45,16 +45,21 @@ int main() {
         }
 
         nlohmann::ordered_json query;
+        query["type"] = "extract";
 
         nlohmann::json species_query1;
         species_query1["kind"] = "deer";
         species_query1["kingdom"] = "Animal";
+        species_query1["organism"].push_back("age");
+        species_query1["organism"].push_back("height");
+        species_query1["organism"].push_back("weight");
         query["species"].emplace_back(species_query1);
 
-        // nlohmann::json species_query2;
-        // species_query2["kind"] = "bamboo";
-        // species_query2["kingdom"] = "Plant";
-        // query["species"].emplace_back(species_query2);
+        nlohmann::json species_query2;
+        species_query2["kind"] = "bamboo";
+        species_query2["kingdom"] = "Plant";
+        species_query2["organism"].push_back("age");
+        query["species"].emplace_back(species_query2);
 
         EcosystemInspector inspector(allah.buffer.data(), query);
         inspector.IterateWorld();

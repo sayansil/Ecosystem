@@ -5,16 +5,11 @@
 
 int main() {
     nlohmann::ordered_json query;
+    query.push_back("lol1");
+    query.push_back("lol2");
+    query.push_back("lol3");
 
-    nlohmann::json species_query1;
-    species_query1["kind"] = "deer";
-    species_query1["kingdom"] = "Animal";
-    query["species"].emplace_back(species_query1);
-
-    nlohmann::json species_query2;
-    species_query2["kind"] = "bamboo";
-    species_query2["kingdom"] = "Plant";
-    query["species"].emplace_back(species_query2);
-
-    fmt::print("{}\n", query.dump(4));
+    for (const auto& item : query.items()) {
+        fmt::print("{}\n", item.value());
+    }
 }

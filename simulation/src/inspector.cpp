@@ -92,20 +92,23 @@ void EcosystemInspector::IterateWorld() {
     }
 }
 
-bool EcosystemInspector::processSpeciesQuery(
+int EcosystemInspector::processSpeciesQuery(
     const nlohmann::ordered_json &species_queries,
     flatbuffers::ToStringVisitor visitor) {
     visitor.EndSequence();
     nlohmann::ordered_json species_json =
         nlohmann::json::parse(std::move(visitor.s));
-    bool matchFound = false;
-    for (const auto &species_query_item : species_queries) {
-        if (species_json == species_query_item) {
-            matchFound = true;
-            break;
+    size_t index = 0;
+    for (auto species_query_item : species_queries) {
+        if (species_query_item["organism"] != nullptr) {
+            species_query_item.erase("organism");
         }
+        if (species_json == species_query_item) {
+            return index;
+        }
+        index++;
     }
-    return matchFound;
+    return -1;
 }
 
 nlohmann::json EcosystemInspector::IterateSpecies(
@@ -113,6 +116,7 @@ nlohmann::json EcosystemInspector::IterateSpecies(
     flatbuffers::ToStringVisitor visitor) {
     using namespace flatbuffers;
     std::vector<nlohmann::json> organism_json_list;
+    nlohmann::json extracted_organism_stats;
     obj += ReadScalar<uoffset_t>(obj);
     visitor.StartSequence();
     const uint8_t *prev_val = nullptr;
@@ -160,11 +164,28 @@ nlohmann::json EcosystemInspector::IterateSpecies(
                         visitor.Element(j, type, ref, elem_ptr);
                     }
                     if (std::string(name) == "organism") {
-                        if (processSpeciesQuery(query["species"], visitor)) {
-                            organism_json_list.emplace_back(IterateOrganism(
+                        if (int matchIndex =
+                                processSpeciesQuery(query["species"], visitor);
+                            matchIndex != -1) {
+                            auto organism_json = IterateOrganism(
                                 elem_ptr, ref,
-                                ToStringVisitor("", true, "", false)));
+                                ToStringVisitor("", true, "", false));
+                            if (query["type"] == "extract") {
+                                for (const auto &query_organism_stat :
+                                     query["species"][matchIndex]["organism"]
+                                         .items()) {
+                                    extracted_organism_stats[query_organism_stat
+                                                                 .value()]
+                                        .push_back(
+                                            organism_json[query_organism_stat
+                                                              .value()]);
+                                }
+                            } else if (query["type"] == "filter") {
+                                organism_json_list.emplace_back(
+                                    std::move(organism_json));
+                            }
                         }
+
                     } else {
                         IterateValue(type, elem_ptr, ref, prev_val,
                                      static_cast<soffset_t>(j), &visitor);
@@ -182,8 +203,12 @@ nlohmann::json EcosystemInspector::IterateSpecies(
     }
     visitor.EndSequence();
     auto species_json = nlohmann::json::parse(visitor.s);
-    for (const auto &organism_json : organism_json_list) {
-        species_json["organism"].emplace_back(organism_json);
+    if (query["type"] == "filter") {
+        for (const auto &organism_json : organism_json_list) {
+            species_json["organism"].emplace_back(organism_json);
+        }
+    } else if (query["type"] == "extract") {
+        species_json["organism"] = std::move(extracted_organism_stats);
     }
     return species_json;
 }
