@@ -111,6 +111,33 @@ int EcosystemInspector::processSpeciesQuery(
     return -1;
 }
 
+bool EcosystemInspector::processOrganismQuery(
+    const nlohmann::json &organism_queries,
+    const nlohmann::json &organism_json) {
+    for (const auto &index : organism_queries.items()) {
+        for (const auto &value : index.value().items()) {
+            if (value.value().is_structured()) {
+                float lower_bound = std::numeric_limits<float>::min();
+                float upper_bound = std::numeric_limits<float>::max();
+                std::string organism_stat = value.key();
+                for (const auto &stat_bounds : value.value().items()) {
+                    if (stat_bounds.key() == "low") {
+                        lower_bound = stat_bounds.value().get<float>();
+                    }
+                    if (stat_bounds.key() == "high") {
+                        upper_bound = stat_bounds.value().get<float>();
+                    }
+                }
+                if (organism_json[value.key()] < lower_bound ||
+                    organism_json[value.key()] > upper_bound) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
 nlohmann::json EcosystemInspector::IterateSpecies(
     const uint8_t *obj, const flatbuffers::TypeTable *type_table,
     flatbuffers::ToStringVisitor visitor) {
@@ -181,8 +208,13 @@ nlohmann::json EcosystemInspector::IterateSpecies(
                                                               .value()]);
                                 }
                             } else if (query["type"] == "filter") {
-                                organism_json_list.emplace_back(
-                                    std::move(organism_json));
+                                if (processOrganismQuery(
+                                        query["species"][matchIndex]
+                                             ["organism"],
+                                        organism_json)) {
+                                    organism_json_list.emplace_back(
+                                        std::move(organism_json));
+                                }
                             }
                         }
 

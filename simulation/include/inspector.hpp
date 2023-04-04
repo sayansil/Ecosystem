@@ -17,6 +17,7 @@ private:
     nlohmann::json IterateOrganism(const uint8_t *obj, const flatbuffers::TypeTable *type_table,
                           flatbuffers::ToStringVisitor visitor);
     int processSpeciesQuery(const nlohmann::ordered_json &species_queries, flatbuffers::ToStringVisitor visitor);
+    bool processOrganismQuery(const nlohmann::json &organism_queries, const nlohmann::json &organism_json);
 public:
     const uint8_t *buffer;
     nlohmann::json output;
