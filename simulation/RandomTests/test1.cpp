@@ -44,24 +44,29 @@ int main() {
             allah.happy_new_year(true);
         }
 
-        nlohmann::ordered_json query;
-        query["type"] = "extract";
-
-        nlohmann::json species_query1;
-        species_query1["kind"] = "deer";
-        species_query1["kingdom"] = "Animal";
-        // species_query1["organism"].push_back(nlohmann::json::parse(R"({"base_weight":{"low":1,"high":5}})"));
-        species_query1["organism"].push_back("base_weight");
-        species_query1["organism"].push_back("age");
-        species_query1["organism"].push_back("height");
-        species_query1["organism"].push_back("weight");
-        query["species"].emplace_back(species_query1);
-
-        // nlohmann::json species_query2;
-        // species_query2["kind"] = "bamboo";
-        // species_query2["kingdom"] = "Plant";
-        // species_query2["organism"].push_back("age");
-        // query["species"].emplace_back(species_query2);
+        nlohmann::ordered_json query = {
+            {"type", "extract"},
+            {"species", {
+                {
+                    {"kind", "deer"},
+                    {"kingdom", "Animal"},
+                    {"organism", {
+                        "base_weight",
+                        //"base_weight", {{"low", 1}, {"high", 5}},
+                        "age",
+                        "height",
+                        "weight"
+                    }}
+                },
+                {
+                    {"kind", "bamboo"},
+                    {"kingdom", "Plant"},
+                    {"organism", {
+                        "age"
+                    }}
+                }
+            }}
+        };
 
         EcosystemInspector inspector(allah.buffer.data(), query);
         inspector.IterateWorld();
