@@ -20,14 +20,17 @@ struct BufferData {
   uint32_t length;
 };
 
-EXPORT_C void create_god(uint8_t gods_eye, const char *ecosystem_root);
-EXPORT_C void set_initial_organisms(uint32_t kingdom, const char *kind,
+EXPORT_C void* session_init();
+EXPORT_C const char* get_ecosystem_root(void *session_ptr);
+EXPORT_C void create_god(void *session_ptr, uint8_t gods_eye, const char *ecosystem_root);
+EXPORT_C void set_initial_organisms(void *session_ptr, uint32_t kingdom, const char *kind,
                                     uint32_t age, uint32_t count);
-EXPORT_C void clean_slate();
-EXPORT_C void create_world();
-EXPORT_C struct BufferData happy_new_year();
-EXPORT_C const char* get_world_instance();
-EXPORT_C const char* get_organism_attribute_list_as_string();
-EXPORT_C void free_god();
+EXPORT_C void clean_slate(void *session_ptr);
+EXPORT_C void create_world(void *session_ptr);
+EXPORT_C struct BufferData happy_new_year(void *session_ptr);
+EXPORT_C const char* get_world_instance(void *session_ptr);
+EXPORT_C const char* get_organism_attribute_list_as_string(void *session_ptr);
+EXPORT_C void free_god(void *session_ptr);
+EXPORT_C void session_free(void *session_ptr);
 
 #endif

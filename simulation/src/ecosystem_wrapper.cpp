@@ -14,94 +14,142 @@
 
 enum class GodState { unborn, born, dead };
 
-std::vector<std::unordered_map<std::string, std::string>> organisms;
-God *god;
-GodState godState = GodState::unborn;
-std::string stringData;
+struct SessionHandler {
+    SessionHandler() = default;
+    std::unique_ptr<God> god;
+    std::vector<std::unordered_map<std::string, std::string>> organisms;
+    GodState godState = GodState::unborn;
+    std::string stringData;
+};
 
-void create_god(uint8_t gods_eye, const char *ecosystem_root) {
-    if (godState == GodState::unborn || godState == GodState::dead) {
-        setup::setup(ecosystem_root);
-        god = new God(ecosystem_root, gods_eye);
-        godState = GodState::born;
-    }
+void* session_init() {
+    SessionHandler *session = new SessionHandler();
+    return session;
 }
 
-void set_initial_organisms(uint32_t kingdom, const char *kind, uint32_t age,
-                           uint32_t count) {
-    if (godState == GodState::born) {
-        organisms.reserve(organisms.capacity() + count);
+const char* get_ecosystem_root(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        session->stringData = helper::get_ecosystem_root();
+        return session->stringData.c_str();
+    }
+    return nullptr;
+}
 
-        for (size_t i = 0; i < count; i++) {
-            organisms.push_back({{"kind", std::string(kind)},
-                                 {"kingdom", std::to_string(kingdom)},
-                                 {"age", std::to_string(age)}});
+void create_god(void *session_ptr, uint8_t gods_eye, const char *ecosystem_root) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        if (session->godState == GodState::unborn || session->godState == GodState::dead) {
+            setup::setup(ecosystem_root);
+            session->god = std::make_unique<God>(ecosystem_root, gods_eye);
+            session->godState = GodState::born;
         }
     }
 }
 
-void clean_slate() {
-    if (godState == GodState::born) {
-        god->cleanSlate();
+void set_initial_organisms(void *session_ptr, uint32_t kingdom, const char *kind, uint32_t age,
+                           uint32_t count) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        if (session->godState == GodState::born) {
+            session->organisms.reserve(session->organisms.capacity() + count);
+
+            for (size_t i = 0; i < count; i++) {
+                session->organisms.push_back({{"kind", std::string(kind)},
+                        {"kingdom", std::to_string(kingdom)},
+                        {"age", std::to_string(age)}});
+            }
+        }
     }
 }
 
-void create_world() {
-    if (godState == GodState::born) {
-        god->createWorld(organisms);
+void clean_slate(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        if (session->godState == GodState::born) {
+            session->god->cleanSlate();
+        }
     }
 }
 
-struct BufferData happy_new_year() {
-    if (godState == GodState::born) {
-        god->happy_new_year(true);
+void create_world(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        if (session->godState == GodState::born) {
+            session->god->createWorld(session->organisms);
+        }
+    }
+}
 
-        BufferData obj;
-        obj.data = god->buffer.data();
-        obj.length = god->buffer.size();
+struct BufferData happy_new_year(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        if (session->godState == GodState::born) {
+            session->god->happy_new_year(true);
 
-        return obj;
+            BufferData obj;
+            obj.data = session->god->buffer.data();
+            obj.length = session->god->buffer.size();
+
+            return obj;
+        }
     }
 
     return BufferData();
 }
 
-const char *get_world_instance() {
-    nlohmann::json jsonObject;
-    {
-        FBuffer avg_world_buffer = stat_fetcher::create_avg_world(god->buffer);
-        flatbuffers::ToStringVisitor visitor("", true, "", false);
-        flatbuffers::IterateFlatBuffer(avg_world_buffer.data(),
-                                       Ecosystem::WorldTypeTable(), &visitor);
-        jsonObject["avg_world"] = nlohmann::json::parse(visitor.s);
+const char *get_world_instance(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        nlohmann::json jsonObject;
+        {
+            FBuffer avg_world_buffer = stat_fetcher::create_avg_world(session->god->buffer);
+            flatbuffers::ToStringVisitor visitor("", true, "", false);
+            flatbuffers::IterateFlatBuffer(avg_world_buffer.data(),
+                    Ecosystem::WorldTypeTable(), &visitor);
+            jsonObject["avg_world"] = nlohmann::json::parse(visitor.s);
+        }
+        {
+            FBuffer population_buffer =
+                stat_fetcher::get_population_stats(session->god->buffer);
+            flatbuffers::ToStringVisitor visitor("", true, "", false);
+            flatbuffers::IterateFlatBuffer(population_buffer.data(),
+                    Ecosystem::WorldPopulationTypeTable(),
+                    &visitor);
+            jsonObject["world_population"] = nlohmann::json::parse(visitor.s);
+        }
+        session->stringData = jsonObject.dump();
+        return session->stringData.c_str();
     }
-    {
-        FBuffer population_buffer =
-            stat_fetcher::get_population_stats(god->buffer);
-        flatbuffers::ToStringVisitor visitor("", true, "", false);
-        flatbuffers::IterateFlatBuffer(population_buffer.data(),
-                                       Ecosystem::WorldPopulationTypeTable(),
-                                       &visitor);
-        jsonObject["world_population"] = nlohmann::json::parse(visitor.s);
-    }
-    stringData = jsonObject.dump();
-    return stringData.c_str();
+    return nullptr;
 }
 
-const char *get_organism_attribute_list_as_string() {
-    const flatbuffers::TypeTable *type_table = Ecosystem::OrganismTypeTable();
-    stringData = "";
-    for (size_t i = 0; i < type_table->num_elems; i++) {
-        stringData += type_table->names[i];
-        stringData += ' ';
+const char *get_organism_attribute_list_as_string(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        const flatbuffers::TypeTable *type_table = Ecosystem::OrganismTypeTable();
+        session->stringData = "";
+        for (size_t i = 0; i < type_table->num_elems; i++) {
+            session->stringData += type_table->names[i];
+            session->stringData += ' ';
+        }
+        return session->stringData.c_str();
     }
-    return stringData.c_str();
+    return nullptr;
 }
 
-void free_god() {
-    if (godState == GodState::born) {
-        organisms.clear();
-        delete god;
-        godState = GodState::dead;
+void free_god(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        if (session->godState == GodState::born) {
+            session->organisms.clear();
+            session->god.reset();
+            session->godState = GodState::dead;
+        }
     }
+}
+
+void session_free(void *session_ptr) {
+    SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+    delete session;
 }

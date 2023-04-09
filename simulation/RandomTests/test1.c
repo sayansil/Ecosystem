@@ -3,20 +3,22 @@
 #include <ecosystem_wrapper.hpp>
 
 int main() {
-    create_god(0, "/Users/sayansil/src/canvas/Ecosystem");
-    clean_slate();
+    void *session = session_init();
+    create_god(session, 0, get_ecosystem_root(session));
+    clean_slate(session);
 
-    set_initial_organisms(0, "deer", 10, 10);
-    set_initial_organisms(0, "deer", 20, 100);
-    set_initial_organisms(0, "deer", 30, 50);
+    set_initial_organisms(session, 0, "deer", 10, 10);
+    set_initial_organisms(session, 0, "deer", 20, 100);
+    set_initial_organisms(session, 0, "deer", 30, 50);
 
-    create_world();
+    create_world(session);
 
-    happy_new_year();
+    happy_new_year(session);
 
-    struct BufferData fbList = happy_new_year();
+    struct BufferData fbList = happy_new_year(session);
     printf("Length: %d\n", (int)fbList.length);
-    printf("JSON: %s\n", get_world_instance());
+    printf("JSON: %s\n", get_world_instance(session));
 
-    free_god();
+    free_god(session);
+    session_free(session);
 }
