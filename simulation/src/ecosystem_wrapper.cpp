@@ -22,24 +22,28 @@ struct SessionHandler {
     std::string stringData;
 };
 
-void* session_init() {
+void *session_init() {
     SessionHandler *session = new SessionHandler();
     return session;
 }
 
-const char* get_ecosystem_root(void *session_ptr) {
+const char *get_ecosystem_root(void *session_ptr) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
         session->stringData = helper::get_ecosystem_root();
         return session->stringData.c_str();
     }
     return nullptr;
 }
 
-void create_god(void *session_ptr, uint8_t gods_eye, const char *ecosystem_root) {
+void create_god(void *session_ptr, uint8_t gods_eye,
+                const char *ecosystem_root) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
-        if (session->godState == GodState::unborn || session->godState == GodState::dead) {
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
+        if (session->godState == GodState::unborn ||
+            session->godState == GodState::dead) {
             setup::setup(ecosystem_root);
             session->god = std::make_unique<God>(ecosystem_root, gods_eye);
             session->godState = GodState::born;
@@ -47,17 +51,19 @@ void create_god(void *session_ptr, uint8_t gods_eye, const char *ecosystem_root)
     }
 }
 
-void set_initial_organisms(void *session_ptr, uint32_t kingdom, const char *kind, uint32_t age,
-                           uint32_t count) {
+void set_initial_organisms(void *session_ptr, uint32_t kingdom,
+                           const char *kind, uint32_t age, uint32_t count) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
         if (session->godState == GodState::born) {
             session->organisms.reserve(session->organisms.capacity() + count);
 
             for (size_t i = 0; i < count; i++) {
-                session->organisms.push_back({{"kind", std::string(kind)},
-                        {"kingdom", std::to_string(kingdom)},
-                        {"age", std::to_string(age)}});
+                session->organisms.push_back(
+                    {{"kind", std::string(kind)},
+                     {"kingdom", std::to_string(kingdom)},
+                     {"age", std::to_string(age)}});
             }
         }
     }
@@ -65,7 +71,8 @@ void set_initial_organisms(void *session_ptr, uint32_t kingdom, const char *kind
 
 void clean_slate(void *session_ptr) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
         if (session->godState == GodState::born) {
             session->god->cleanSlate();
         }
@@ -74,7 +81,8 @@ void clean_slate(void *session_ptr) {
 
 void create_world(void *session_ptr) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
         if (session->godState == GodState::born) {
             session->god->createWorld(session->organisms);
         }
@@ -83,7 +91,8 @@ void create_world(void *session_ptr) {
 
 struct BufferData happy_new_year(void *session_ptr) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
         if (session->godState == GodState::born) {
             session->god->happy_new_year(true);
 
@@ -100,22 +109,24 @@ struct BufferData happy_new_year(void *session_ptr) {
 
 const char *get_world_instance(void *session_ptr) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
         nlohmann::json jsonObject;
         {
-            FBuffer avg_world_buffer = stat_fetcher::create_avg_world(session->god->buffer);
+            FBuffer avg_world_buffer =
+                stat_fetcher::create_avg_world(session->god->buffer);
             flatbuffers::ToStringVisitor visitor("", true, "", false);
-            flatbuffers::IterateFlatBuffer(avg_world_buffer.data(),
-                    Ecosystem::WorldTypeTable(), &visitor);
+            flatbuffers::IterateFlatBuffer(
+                avg_world_buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
             jsonObject["avg_world"] = nlohmann::json::parse(visitor.s);
         }
         {
             FBuffer population_buffer =
                 stat_fetcher::get_population_stats(session->god->buffer);
             flatbuffers::ToStringVisitor visitor("", true, "", false);
-            flatbuffers::IterateFlatBuffer(population_buffer.data(),
-                    Ecosystem::WorldPopulationTypeTable(),
-                    &visitor);
+            flatbuffers::IterateFlatBuffer(
+                population_buffer.data(), Ecosystem::WorldPopulationTypeTable(),
+                &visitor);
             jsonObject["world_population"] = nlohmann::json::parse(visitor.s);
         }
         session->stringData = jsonObject.dump();
@@ -126,8 +137,10 @@ const char *get_world_instance(void *session_ptr) {
 
 const char *get_organism_attribute_list_as_string(void *session_ptr) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
-        const flatbuffers::TypeTable *type_table = Ecosystem::OrganismTypeTable();
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
+        const flatbuffers::TypeTable *type_table =
+            Ecosystem::OrganismTypeTable();
         session->stringData = "";
         for (size_t i = 0; i < type_table->num_elems; i++) {
             session->stringData += type_table->names[i];
@@ -140,7 +153,8 @@ const char *get_organism_attribute_list_as_string(void *session_ptr) {
 
 void free_god(void *session_ptr) {
     if (session_ptr != nullptr) {
-        SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
         if (session->godState == GodState::born) {
             session->organisms.clear();
             session->god.reset();
@@ -150,6 +164,6 @@ void free_god(void *session_ptr) {
 }
 
 void session_free(void *session_ptr) {
-    SessionHandler *session = reinterpret_cast<SessionHandler*>(session_ptr);
+    SessionHandler *session = reinterpret_cast<SessionHandler *>(session_ptr);
     delete session;
 }

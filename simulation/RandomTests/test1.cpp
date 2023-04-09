@@ -46,27 +46,16 @@ int main() {
 
         nlohmann::ordered_json query = {
             {"type", "extract"},
-            {"species", {
-                {
-                    {"kind", "deer"},
-                    {"kingdom", "Animal"},
-                    {"organism", {
-                        "base_weight",
-                        //"base_weight", {{"low", 1}, {"high", 5}},
-                        "age",
-                        "height",
-                        "weight"
-                    }}
-                },
-                {
-                    {"kind", "bamboo"},
-                    {"kingdom", "Plant"},
-                    {"organism", {
-                        "age"
-                    }}
-                }
-            }}
-        };
+            {"species",
+             {{{"kind", "deer"},
+               {"kingdom", "Animal"},
+               {"organism",
+                {"base_weight",
+                 //"base_weight", {{"low", 1}, {"high", 5}},
+                 "age", "height", "weight"}}},
+              {{"kind", "bamboo"},
+               {"kingdom", "Plant"},
+               {"organism", {"age"}}}}}};
 
         EcosystemInspector inspector(allah.buffer.data(), query);
         inspector.IterateWorld();
