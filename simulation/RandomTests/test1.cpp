@@ -10,12 +10,14 @@
 #include <inspector.hpp>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <range/v3/view.hpp>
 #include <setup.hpp>
 #include <stat_fetcher.hpp>
 #include <unordered_map>
 #include <vector>
 
 int main() {
+    namespace rv = ranges::views;
     std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 1;
 
@@ -26,12 +28,9 @@ int main() {
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     organisms.reserve(initial_organism_count);
 
-    for (size_t i = 0; i < initial_organism_count / 2; i++) {
+    for (auto i : rv::iota(0u, initial_organism_count / 2)) {
         organisms.push_back(
             {{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
-    }
-
-    for (size_t i = 0; i < initial_organism_count / 2; i++) {
         organisms.push_back(
             {{"kind", "bamboo"}, {"kingdom", "1"}, {"age", "20"}});
     }
@@ -40,7 +39,7 @@ int main() {
         God allah(helper::get_ecosystem_root(), true);
         allah.cleanSlate();
         allah.createWorld(organisms);
-        for (size_t i = 0; i < simulation_years; i++) {
+        for (auto i : rv::iota(0u, simulation_years)) {
             allah.happy_new_year(true);
         }
 

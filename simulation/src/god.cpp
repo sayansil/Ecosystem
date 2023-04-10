@@ -6,9 +6,12 @@
 #include <nlohmann/json.hpp>
 #include <organism.hpp>
 #include <profiler.hpp>
+#include <range/v3/view.hpp>
 #include <set>
 #include <species_constants.hpp>
 #include <stat_fetcher.hpp>
+
+namespace rv = ranges::views;
 
 static XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
 
@@ -631,7 +634,7 @@ void God::happy_new_year(const bool &log) {
 
     std::mt19937_64 rng{std::random_device()()};
 
-    for (uint32_t n = 0; n < num_species; n++) {
+    for (uint32_t n : rv::iota(0u, num_species)) {
         Ecosystem::Species *species =
             previous_world->mutable_species()->GetMutableObject(n);
         auto kingdom = species->kingdom();
@@ -652,7 +655,7 @@ void God::happy_new_year(const bool &log) {
         std::vector<std::pair<float, uint32_t>> organisms_vec;
         organisms_vec.reserve(species->organism()->size());
 
-        for (uint32_t i = 0; i < species->organism()->size(); i++) {
+        for (uint32_t i : rv::iota(0u, species->organism()->size())) {
             const Ecosystem::Organism *organism = species->organism()->Get(i);
             const float death_factor =
                 organism_opts::generate_death_factor(organism);
@@ -667,7 +670,7 @@ void God::happy_new_year(const bool &log) {
         std::uniform_real_distribution<double> par_dis(0.0, 1.0);
         std::mt19937_64 par_rng{std::random_device()()};
 
-        for (uint32_t index = 0; index < organisms_vec.size(); index++) {
+        for (uint32_t index : rv::iota(0u, organisms_vec.size())) {
             const double x = par_dis(par_rng);
 
             // Spare this organism
@@ -698,7 +701,7 @@ void God::happy_new_year(const bool &log) {
 
             std::vector<uint32_t> mating_list1, mating_list2;
 
-            for (int index = 0; index < stdvecOrganisms.size(); index++) {
+            for (size_t index : rv::iota(0u, stdvecOrganisms.size())) {
                 auto desparate_organism = helper::get_pointer_from_offset(
                     builder, stdvecOrganisms[index]);
                 auto sexuality = desparate_organism->sexuality();
