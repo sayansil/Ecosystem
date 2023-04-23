@@ -4,6 +4,7 @@
 #include <fmt/ranges.h>
 #include <population_generated.h>
 
+#include <avg_plot_handler.hpp>
 #include <database_manager.hpp>
 #include <ecosystem_types.hpp>
 #include <god.hpp>
@@ -19,7 +20,7 @@
 int main() {
     namespace rv = ranges::views;
     std::vector<std::vector<ByteArray>> rows;
-    const size_t simulation_years = 1;
+    const size_t simulation_years = 10;
 
     setup::setup(helper::get_ecosystem_root());
 
@@ -39,9 +40,13 @@ int main() {
         God allah(helper::get_ecosystem_root(), true);
         allah.cleanSlate();
         allah.createWorld(organisms);
+        AveragePlotHandler plots;
         for (auto i : rv::iota(0u, simulation_years)) {
             allah.happy_new_year(true);
+            plots.add_record(allah.avg_buffer);
+            fmt::print("{}\n", plots.plot_history.dump(4));
         }
+        /*
         const Ecosystem::World* const world =
             Ecosystem::GetWorld(allah.buffer.data());
         const auto& species = world->species()->Get(0);
@@ -53,5 +58,6 @@ int main() {
                                    &visitor);
         nlohmann::json organism_json = nlohmann::json::parse(visitor.s);
         fmt::print("{}\n", organism_json.dump(4));
+        */
     }
 }

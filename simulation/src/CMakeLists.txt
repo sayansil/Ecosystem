@@ -7,6 +7,7 @@ set(ECOSYSTEM_SOURCES
     setup.cpp
     species_constants.cpp
     inspector.cpp
+    avg_plot_handler.cpp
 
     ${sqlite3_SOURCE_DIR}/src/sqlite3.c
     ${whereami_SOURCE_DIR}/src/whereami.c

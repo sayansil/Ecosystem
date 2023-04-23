@@ -1,6 +1,8 @@
 #ifndef ECOSYSTEMTYPES_HPP
 #define ECOSYSTEMTYPES_HPP
 
+#include <flatbuffers/flatbuffers.h>
+
 using FBuffer = flatbuffers::DetachedBuffer;
 using ByteArray = std::vector<uint8_t>;
 
