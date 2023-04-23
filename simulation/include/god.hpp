@@ -16,6 +16,7 @@ class God
 {
 public:
     flatbuffers::DetachedBuffer buffer;
+    flatbuffers::DetachedBuffer avg_buffer;
     uint32_t year = 1;
 
     bool monitor_offsprings = false;

@@ -888,8 +888,6 @@ void God::happy_new_year(const bool &log) {
     buffer = builder.Release();
     builder.Clear();
 
-    // TODO push new buffer to db
-
     /*********************
      *       Logging     *
      *********************/
@@ -901,13 +899,16 @@ void God::happy_new_year(const bool &log) {
             year, recent_births, recent_deaths, recent_population);
     }
 
+    /* Create the avg buffer everytime. This would be used anyway for plotting
+       from Flutter. This avoids repeated redundant calls to create_avg_world */
+
+    avg_buffer = stat_fetcher::create_avg_world(buffer);
+
     if (gods_eye) {
         // Save average stats and population for every species in DB
-        FBuffer avg_instance = stat_fetcher::create_avg_world(buffer);
         FBuffer world_population = stat_fetcher::get_population_stats(buffer);
         std::vector<std::vector<FBufferView>> rows(1);
-        rows[0].emplace_back(
-            FBufferView(avg_instance.data(), avg_instance.size()));
+        rows[0].emplace_back(FBufferView(avg_buffer.data(), avg_buffer.size()));
         rows[0].emplace_back(
             FBufferView(world_population.data(), world_population.size()));
         db->insert_rows(rows);
