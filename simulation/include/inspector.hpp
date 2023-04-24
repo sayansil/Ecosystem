@@ -8,16 +8,10 @@
 class EcosystemInspector {
 public:
     EcosystemInspector(const uint8_t *input_buffer, const nlohmann::ordered_json &input_query);
-
-    void IterateWorld();
+    void Inspect();
 private:
-    nlohmann::json IterateSpecies(const uint8_t *val,
-            const flatbuffers::TypeTable *type_table,
-            flatbuffers::ToStringVisitor visitor);
-    nlohmann::json IterateOrganism(const uint8_t *obj, const flatbuffers::TypeTable *type_table,
-                          flatbuffers::ToStringVisitor visitor);
-    int processSpeciesQuery(const nlohmann::ordered_json &species_queries, flatbuffers::ToStringVisitor visitor);
     bool processOrganismQuery(const nlohmann::json &organism_queries, const nlohmann::json &organism_json);
+    std::optional<nlohmann::json> GetMatchingSpeciesQuery(const nlohmann::json& query, const nlohmann::json& species_item);
 public:
     const uint8_t *buffer;
     nlohmann::json output;
