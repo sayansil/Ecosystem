@@ -30,7 +30,6 @@ std::optional<nlohmann::json> EcosystemInspector::GetMatchingSpeciesQuery(
 
 void EcosystemInspector::Inspect() {
     const Ecosystem::World* world = Ecosystem::GetWorld(buffer);
-    fmt::print("query: {}\n", query.dump(4));
     for (const Ecosystem::Species* species : *world->species()) {
         nlohmann::json species_json;
         species_json["kind"] = species->kind()->str();

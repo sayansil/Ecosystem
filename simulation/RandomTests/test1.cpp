@@ -91,6 +91,7 @@ int main() {
             query["species"].emplace_back(std::move(species2));
         }
 
+        fmt::print("query: {}\n", query.dump(4));
         EcosystemInspector inspector(allah.buffer.data(), query);
         inspector.Inspect();
         fmt::print("{}\n", inspector.output.dump(4));
