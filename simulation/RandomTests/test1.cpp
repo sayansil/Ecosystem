@@ -49,7 +49,7 @@ int main() {
         //    query["type"] = "extract";
         //    nlohmann::json species1;
         //    species1["kind"] = "deer";
-        //    species1["kingdom"] = "Animal";
+        //    species1["kingdom"] = "animal";
         //    nlohmann::json organism1;
         //    organism1.emplace_back("base_weight");
         //    organism1.emplace_back("base_height");
@@ -59,7 +59,7 @@ int main() {
 
         //    nlohmann::json species2;
         //    species2["kind"] = "bamboo";
-        //    species2["kingdom"] = "Plant";
+        //    species2["kingdom"] = "plant";
         //    nlohmann::json organism2;
         //    organism2.emplace_back("age");
         //    organism2.emplace_back("height");
@@ -72,7 +72,7 @@ int main() {
             query["type"] = "filter";
             nlohmann::json species1;
             species1["kind"] = "deer";
-            species1["kingdom"] = "Animal";
+            species1["kingdom"] = "animal";
             nlohmann::json organism1;
             organism1["base_weight"]["low"] = 1;
             organism1["base_weight"]["high"] = 5;
@@ -83,7 +83,7 @@ int main() {
 
             nlohmann::json species2;
             species2["kind"] = "bamboo";
-            species2["kingdom"] = "Plant";
+            species2["kingdom"] = "plant";
             nlohmann::json organism2;
             organism2["age"]["low"] = 1;
             organism2["age"]["high"] = 25;

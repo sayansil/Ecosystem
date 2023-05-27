@@ -40,154 +40,154 @@ inline const flatbuffers::TypeTable *SpeciesTypeTable();
 inline const flatbuffers::TypeTable *WorldTypeTable();
 
 enum class Gender : uint8_t {
-  Male = 0,
-  Female = 1,
-  MIN = Male,
-  MAX = Female
+  male = 0,
+  female = 1,
+  MIN = male,
+  MAX = female
 };
 
 inline const Gender (&EnumValuesGender())[2] {
   static const Gender values[] = {
-    Gender::Male,
-    Gender::Female
+    Gender::male,
+    Gender::female
   };
   return values;
 }
 
 inline const char * const *EnumNamesGender() {
   static const char * const names[3] = {
-    "Male",
-    "Female",
+    "male",
+    "female",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameGender(Gender e) {
-  if (flatbuffers::IsOutRange(e, Gender::Male, Gender::Female)) return "";
+  if (flatbuffers::IsOutRange(e, Gender::male, Gender::female)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesGender()[index];
 }
 
 enum class Reproduction : uint8_t {
-  Sexual = 0,
-  Asexual = 1,
-  MIN = Sexual,
-  MAX = Asexual
+  sexual = 0,
+  asexual = 1,
+  MIN = sexual,
+  MAX = asexual
 };
 
 inline const Reproduction (&EnumValuesReproduction())[2] {
   static const Reproduction values[] = {
-    Reproduction::Sexual,
-    Reproduction::Asexual
+    Reproduction::sexual,
+    Reproduction::asexual
   };
   return values;
 }
 
 inline const char * const *EnumNamesReproduction() {
   static const char * const names[3] = {
-    "Sexual",
-    "Asexual",
+    "sexual",
+    "asexual",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameReproduction(Reproduction e) {
-  if (flatbuffers::IsOutRange(e, Reproduction::Sexual, Reproduction::Asexual)) return "";
+  if (flatbuffers::IsOutRange(e, Reproduction::sexual, Reproduction::asexual)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesReproduction()[index];
 }
 
 enum class Monitor : uint8_t {
-  None = 0,
-  Simulation = 1,
-  MIN = None,
-  MAX = Simulation
+  none = 0,
+  simulation = 1,
+  MIN = none,
+  MAX = simulation
 };
 
 inline const Monitor (&EnumValuesMonitor())[2] {
   static const Monitor values[] = {
-    Monitor::None,
-    Monitor::Simulation
+    Monitor::none,
+    Monitor::simulation
   };
   return values;
 }
 
 inline const char * const *EnumNamesMonitor() {
   static const char * const names[3] = {
-    "None",
-    "Simulation",
+    "none",
+    "simulation",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameMonitor(Monitor e) {
-  if (flatbuffers::IsOutRange(e, Monitor::None, Monitor::Simulation)) return "";
+  if (flatbuffers::IsOutRange(e, Monitor::none, Monitor::simulation)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesMonitor()[index];
 }
 
 enum class Sleep : uint8_t {
-  Awake = 0,
-  Drowsy = 1,
-  Asleep = 2,
-  MIN = Awake,
-  MAX = Asleep
+  awake = 0,
+  drowsy = 1,
+  asleep = 2,
+  MIN = awake,
+  MAX = asleep
 };
 
 inline const Sleep (&EnumValuesSleep())[3] {
   static const Sleep values[] = {
-    Sleep::Awake,
-    Sleep::Drowsy,
-    Sleep::Asleep
+    Sleep::awake,
+    Sleep::drowsy,
+    Sleep::asleep
   };
   return values;
 }
 
 inline const char * const *EnumNamesSleep() {
   static const char * const names[4] = {
-    "Awake",
-    "Drowsy",
-    "Asleep",
+    "awake",
+    "drowsy",
+    "asleep",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameSleep(Sleep e) {
-  if (flatbuffers::IsOutRange(e, Sleep::Awake, Sleep::Asleep)) return "";
+  if (flatbuffers::IsOutRange(e, Sleep::awake, Sleep::asleep)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesSleep()[index];
 }
 
 enum class KingdomE : uint8_t {
-  Animal = 0,
-  Plant = 1,
-  MIN = Animal,
-  MAX = Plant
+  animal = 0,
+  plant = 1,
+  MIN = animal,
+  MAX = plant
 };
 
 inline const KingdomE (&EnumValuesKingdomE())[2] {
   static const KingdomE values[] = {
-    KingdomE::Animal,
-    KingdomE::Plant
+    KingdomE::animal,
+    KingdomE::plant
   };
   return values;
 }
 
 inline const char * const *EnumNamesKingdomE() {
   static const char * const names[3] = {
-    "Animal",
-    "Plant",
+    "animal",
+    "plant",
     nullptr
   };
   return names;
 }
 
 inline const char *EnumNameKingdomE(KingdomE e) {
-  if (flatbuffers::IsOutRange(e, KingdomE::Animal, KingdomE::Plant)) return "";
+  if (flatbuffers::IsOutRange(e, KingdomE::animal, KingdomE::plant)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesKingdomE()[index];
 }
@@ -308,11 +308,11 @@ flatbuffers::Offset<ChromosomeStrand> CreateChromosomeStrand(flatbuffers::FlatBu
 struct OrganismT : public flatbuffers::NativeTable {
   typedef Organism TableType;
   std::string kind{};
-  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
+  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::animal;
   uint16_t chromosome_number = 0;
   std::vector<std::unique_ptr<Ecosystem::ChromosomeStrandT>> chromosome_structure{};
   uint8_t food_chain_rank = 0;
-  Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::Sexual;
+  Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::sexual;
   float age_fitness_on_death_ratio = 0.0f;
   float conceiving_probability = 0.0f;
   float mating_probability = 0.0f;
@@ -347,7 +347,7 @@ struct OrganismT : public flatbuffers::NativeTable {
   float theoretical_maximum_weight_multiplier = 0.0f;
   std::string name{};
   std::vector<uint8_t> chromosome{};
-  Ecosystem::Gender gender = Ecosystem::Gender::Male;
+  Ecosystem::Gender gender = Ecosystem::Gender::male;
   uint32_t generation = 0;
   float immunity = 0.0f;
   float base_appetite = 0.0f;
@@ -380,8 +380,8 @@ struct OrganismT : public flatbuffers::NativeTable {
   float dynamic_fitness = 1.0f;
   float vision_radius = 0.0f;
   float sleep_restore_factor = 0.0f;
-  Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake;
-  Ecosystem::Monitor monitor = Ecosystem::Monitor::None;
+  Ecosystem::Sleep asleep = Ecosystem::Sleep::awake;
+  Ecosystem::Monitor monitor = Ecosystem::Monitor::none;
   OrganismT() = default;
   OrganismT(const OrganismT &o);
   OrganismT(OrganismT&&) FLATBUFFERS_NOEXCEPT = default;
@@ -1267,11 +1267,11 @@ struct OrganismBuilder {
 inline flatbuffers::Offset<Organism> CreateOrganism(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> kind = 0,
-    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
+    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::animal,
     uint16_t chromosome_number = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chromosome_structure = 0,
     uint8_t food_chain_rank = 0,
-    Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::Sexual,
+    Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::sexual,
     float age_fitness_on_death_ratio = 0.0f,
     float conceiving_probability = 0.0f,
     float mating_probability = 0.0f,
@@ -1306,7 +1306,7 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     float theoretical_maximum_weight_multiplier = 0.0f,
     flatbuffers::Offset<flatbuffers::String> name = 0,
     flatbuffers::Offset<flatbuffers::Vector<uint8_t>> chromosome = 0,
-    Ecosystem::Gender gender = Ecosystem::Gender::Male,
+    Ecosystem::Gender gender = Ecosystem::Gender::male,
     uint32_t generation = 0,
     float immunity = 0.0f,
     float base_appetite = 0.0f,
@@ -1339,8 +1339,8 @@ inline flatbuffers::Offset<Organism> CreateOrganism(
     float dynamic_fitness = 1.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
-    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake,
-    Ecosystem::Monitor monitor = Ecosystem::Monitor::None) {
+    Ecosystem::Sleep asleep = Ecosystem::Sleep::awake,
+    Ecosystem::Monitor monitor = Ecosystem::Monitor::none) {
   OrganismBuilder builder_(_fbb);
   builder_.add_Y(Y);
   builder_.add_X(X);
@@ -1428,11 +1428,11 @@ struct Organism::Traits {
 inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *kind = nullptr,
-    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
+    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::animal,
     uint16_t chromosome_number = 0,
     std::vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>> *chromosome_structure = nullptr,
     uint8_t food_chain_rank = 0,
-    Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::Sexual,
+    Ecosystem::Reproduction sexuality = Ecosystem::Reproduction::sexual,
     float age_fitness_on_death_ratio = 0.0f,
     float conceiving_probability = 0.0f,
     float mating_probability = 0.0f,
@@ -1467,7 +1467,7 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     float theoretical_maximum_weight_multiplier = 0.0f,
     const char *name = nullptr,
     const std::vector<uint8_t> *chromosome = nullptr,
-    Ecosystem::Gender gender = Ecosystem::Gender::Male,
+    Ecosystem::Gender gender = Ecosystem::Gender::male,
     uint32_t generation = 0,
     float immunity = 0.0f,
     float base_appetite = 0.0f,
@@ -1500,8 +1500,8 @@ inline flatbuffers::Offset<Organism> CreateOrganismDirect(
     float dynamic_fitness = 1.0f,
     float vision_radius = 0.0f,
     float sleep_restore_factor = 0.0f,
-    Ecosystem::Sleep asleep = Ecosystem::Sleep::Awake,
-    Ecosystem::Monitor monitor = Ecosystem::Monitor::None) {
+    Ecosystem::Sleep asleep = Ecosystem::Sleep::awake,
+    Ecosystem::Monitor monitor = Ecosystem::Monitor::none) {
   auto kind__ = kind ? _fbb.CreateString(kind) : 0;
   auto chromosome_structure__ = chromosome_structure ? _fbb.CreateVectorOfSortedTables<Ecosystem::ChromosomeStrand>(chromosome_structure) : 0;
   auto name__ = name ? _fbb.CreateString(name) : 0;
@@ -1590,7 +1590,7 @@ flatbuffers::Offset<Organism> CreateOrganism(flatbuffers::FlatBufferBuilder &_fb
 struct SpeciesT : public flatbuffers::NativeTable {
   typedef Species TableType;
   std::string kind{};
-  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
+  Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::animal;
   std::vector<std::unique_ptr<Ecosystem::OrganismT>> organism{};
   SpeciesT() = default;
   SpeciesT(const SpeciesT &o);
@@ -1677,7 +1677,7 @@ struct SpeciesBuilder {
 inline flatbuffers::Offset<Species> CreateSpecies(
     flatbuffers::FlatBufferBuilder &_fbb,
     flatbuffers::Offset<flatbuffers::String> kind = 0,
-    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
+    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::animal,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::Organism>>> organism = 0) {
   SpeciesBuilder builder_(_fbb);
   builder_.add_organism(organism);
@@ -1694,7 +1694,7 @@ struct Species::Traits {
 inline flatbuffers::Offset<Species> CreateSpeciesDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *kind = nullptr,
-    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal,
+    Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::animal,
     std::vector<flatbuffers::Offset<Ecosystem::Organism>> *organism = nullptr) {
   auto kind__ = kind ? _fbb.CreateString(kind) : 0;
   auto organism__ = organism ? _fbb.CreateVectorOfSortedTables<Ecosystem::Organism>(organism) : 0;
@@ -2342,8 +2342,8 @@ inline const flatbuffers::TypeTable *GenderTypeTable() {
     Ecosystem::GenderTypeTable
   };
   static const char * const names[] = {
-    "Male",
-    "Female"
+    "male",
+    "female"
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_ENUM, 2, type_codes, type_refs, nullptr, nullptr, names
@@ -2360,8 +2360,8 @@ inline const flatbuffers::TypeTable *ReproductionTypeTable() {
     Ecosystem::ReproductionTypeTable
   };
   static const char * const names[] = {
-    "Sexual",
-    "Asexual"
+    "sexual",
+    "asexual"
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_ENUM, 2, type_codes, type_refs, nullptr, nullptr, names
@@ -2378,8 +2378,8 @@ inline const flatbuffers::TypeTable *MonitorTypeTable() {
     Ecosystem::MonitorTypeTable
   };
   static const char * const names[] = {
-    "None",
-    "Simulation"
+    "none",
+    "simulation"
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_ENUM, 2, type_codes, type_refs, nullptr, nullptr, names
@@ -2397,9 +2397,9 @@ inline const flatbuffers::TypeTable *SleepTypeTable() {
     Ecosystem::SleepTypeTable
   };
   static const char * const names[] = {
-    "Awake",
-    "Drowsy",
-    "Asleep"
+    "awake",
+    "drowsy",
+    "asleep"
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_ENUM, 3, type_codes, type_refs, nullptr, nullptr, names
@@ -2416,8 +2416,8 @@ inline const flatbuffers::TypeTable *KingdomETypeTable() {
     Ecosystem::KingdomETypeTable
   };
   static const char * const names[] = {
-    "Animal",
-    "Plant"
+    "animal",
+    "plant"
   };
   static const flatbuffers::TypeTable tt = {
     flatbuffers::ST_ENUM, 2, type_codes, type_refs, nullptr, nullptr, names

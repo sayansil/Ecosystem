@@ -47,7 +47,7 @@ int main() {
 
     nlohmann::json species_query1;
     species_query1["kind"] = "deer";
-    species_query1["kingdom"] = "Animal";
+    species_query1["kingdom"] = "animal";
     species_query1["organism"].push_back(
         nlohmann::json::parse(R"({"age":{"low":1,"high":5}})"));
     species_query1["organism"].push_back("height");
@@ -57,7 +57,7 @@ int main() {
 
     nlohmann::json species_query2;
     species_query2["kind"] = "bamboo";
-    species_query2["kingdom"] = "Plant";
+    species_query2["kingdom"] = "plant";
     species_query2["organism"].push_back("age");
     query["species"].emplace_back(species_query2);
 

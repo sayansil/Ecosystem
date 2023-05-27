@@ -433,7 +433,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
                         "vision_radius"),
         getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_sleep_restore_factor"),
-        Ecosystem::Sleep::Awake, static_cast<Ecosystem::Monitor>(monitor));
+        Ecosystem::Sleep::awake, static_cast<Ecosystem::Monitor>(monitor));
 
     // TODO: Remove this
     Ecosystem::Organism *organism_ptr =
@@ -641,8 +641,8 @@ void God::happy_new_year(const bool &log) {
         auto kind = species->kind();
 
         std::string full_species_name =
-            EcosystemTypes::get_kingdom_name[static_cast<uint8_t>(kingdom)] +
-            "/" + kind->str();
+            std::string(Ecosystem::EnumNameKingdomE(kingdom)) + "/" +
+            kind->str();
 
         std::vector<flatbuffers::Offset<Ecosystem::Organism>> stdvecOrganisms;
 
@@ -706,23 +706,23 @@ void God::happy_new_year(const bool &log) {
                     builder, stdvecOrganisms[index]);
                 auto sexuality = desparate_organism->sexuality();
 
-                if (sexuality == Ecosystem::Reproduction::Asexual) {
+                if (sexuality == Ecosystem::Reproduction::asexual) {
                     if (desparate_organism->age() >=
                             desparate_organism->mating_age_start() &&
                         desparate_organism->age() <=
                             desparate_organism->mating_age_end()) {
                         mating_list1.push_back(index);
                     }
-                } else if (sexuality == Ecosystem::Reproduction::Sexual) {
+                } else if (sexuality == Ecosystem::Reproduction::sexual) {
                     if (desparate_organism->age() >=
                             desparate_organism->mating_age_start() &&
                         desparate_organism->age() <=
                             desparate_organism->mating_age_end()) {
                         if (desparate_organism->gender() ==
-                            Ecosystem::Gender::Male) {
-                            mating_list1.push_back(index);
+                            Ecosystem::Gender::male) {
+                          mating_list1.push_back(index);
                         } else {
-                            mating_list2.push_back(index);
+                          mating_list2.push_back(index);
                         }
                     }
                 }
@@ -740,9 +740,9 @@ void God::happy_new_year(const bool &log) {
 
                 while ((mating_list1.size() > index_parent &&
                         mating_list2.size() > index_parent &&
-                        sexuality == Ecosystem::Reproduction::Sexual) ||
+                        sexuality == Ecosystem::Reproduction::sexual) ||
                        (mating_list1.size() > index_parent &&
-                        sexuality == Ecosystem::Reproduction::Asexual)) {
+                        sexuality == Ecosystem::Reproduction::asexual)) {
                     /*
                        BIG CAUTION HERE!!! Please use flatbuffer object API for
                        holding intermediate data only. Don't use for
@@ -758,7 +758,7 @@ void God::happy_new_year(const bool &log) {
                                 builder,
                                 stdvecOrganisms[mating_list1[index_parent]]);
                         const Ecosystem::Organism *parent2_ptr =
-                            sexuality == Ecosystem::Reproduction::Sexual
+                            sexuality == Ecosystem::Reproduction::sexual
                                 ? helper::get_pointer_from_offset(
                                       builder, stdvecOrganisms
                                                    [mating_list2[index_parent]])

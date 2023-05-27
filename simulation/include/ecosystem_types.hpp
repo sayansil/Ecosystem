@@ -14,15 +14,4 @@ struct FBufferView {
     FBufferView(uint8_t * data, size_t size) : data(data), size(size) {}
 };
 
-namespace EcosystemTypes
-{
-    static const std::vector<std::string> get_kingdom_name = {
-        "animal",
-        "plant"};
-
-    static const std::vector<std::string> get_sexuality = {
-        "sexual",
-        "asexual"};
-};
-
 #endif // ECOSYSTEMTYPES_HPP

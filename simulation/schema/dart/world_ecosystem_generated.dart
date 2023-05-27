@@ -26,11 +26,11 @@ class Gender {
   static const int maxValue = 1;
   static bool containsValue(int value) => values.containsKey(value);
 
-  static const Gender Male = Gender._(0);
-  static const Gender Female = Gender._(1);
+  static const Gender male = Gender._(0);
+  static const Gender female = Gender._(1);
   static const Map<int, Gender> values = {
-    0: Male,
-    1: Female};
+    0: male,
+    1: female};
 
   static const fb.Reader<Gender> reader = _GenderReader();
 
@@ -70,11 +70,11 @@ class Reproduction {
   static const int maxValue = 1;
   static bool containsValue(int value) => values.containsKey(value);
 
-  static const Reproduction Sexual = Reproduction._(0);
-  static const Reproduction Asexual = Reproduction._(1);
+  static const Reproduction sexual = Reproduction._(0);
+  static const Reproduction asexual = Reproduction._(1);
   static const Map<int, Reproduction> values = {
-    0: Sexual,
-    1: Asexual};
+    0: sexual,
+    1: asexual};
 
   static const fb.Reader<Reproduction> reader = _ReproductionReader();
 
@@ -114,11 +114,11 @@ class Monitor {
   static const int maxValue = 1;
   static bool containsValue(int value) => values.containsKey(value);
 
-  static const Monitor None = Monitor._(0);
-  static const Monitor Simulation = Monitor._(1);
+  static const Monitor none = Monitor._(0);
+  static const Monitor simulation = Monitor._(1);
   static const Map<int, Monitor> values = {
-    0: None,
-    1: Simulation};
+    0: none,
+    1: simulation};
 
   static const fb.Reader<Monitor> reader = _MonitorReader();
 
@@ -158,13 +158,13 @@ class Sleep {
   static const int maxValue = 2;
   static bool containsValue(int value) => values.containsKey(value);
 
-  static const Sleep Awake = Sleep._(0);
-  static const Sleep Drowsy = Sleep._(1);
-  static const Sleep Asleep = Sleep._(2);
+  static const Sleep awake = Sleep._(0);
+  static const Sleep drowsy = Sleep._(1);
+  static const Sleep asleep = Sleep._(2);
   static const Map<int, Sleep> values = {
-    0: Awake,
-    1: Drowsy,
-    2: Asleep};
+    0: awake,
+    1: drowsy,
+    2: asleep};
 
   static const fb.Reader<Sleep> reader = _SleepReader();
 
@@ -204,11 +204,11 @@ class KingdomE {
   static const int maxValue = 1;
   static bool containsValue(int value) => values.containsKey(value);
 
-  static const KingdomE Animal = KingdomE._(0);
-  static const KingdomE Plant = KingdomE._(1);
+  static const KingdomE animal = KingdomE._(0);
+  static const KingdomE plant = KingdomE._(1);
   static const Map<int, KingdomE> values = {
-    0: Animal,
-    1: Plant};
+    0: animal,
+    1: plant};
 
   static const fb.Reader<KingdomE> reader = _KingdomEReader();
 
@@ -620,11 +620,11 @@ class OrganismT implements fb.Packable {
 
   OrganismT({
       this.kind,
-      this.kingdom = KingdomE.Animal,
+      this.kingdom = KingdomE.animal,
       this.chromosomeNumber = 0,
       this.chromosomeStructure,
       this.foodChainRank = 0,
-      this.sexuality = Reproduction.Sexual,
+      this.sexuality = Reproduction.sexual,
       this.ageFitnessOnDeathRatio = 0.0,
       this.conceivingProbability = 0.0,
       this.matingProbability = 0.0,
@@ -659,7 +659,7 @@ class OrganismT implements fb.Packable {
       this.theoreticalMaximumWeightMultiplier = 0.0,
       this.name,
       this.chromosome,
-      this.gender = Gender.Male,
+      this.gender = Gender.male,
       this.generation = 0,
       this.immunity = 0.0,
       this.baseAppetite = 0.0,
@@ -692,8 +692,8 @@ class OrganismT implements fb.Packable {
       this.dynamicFitness = 1.0,
       this.visionRadius = 0.0,
       this.sleepRestoreFactor = 0.0,
-      this.asleep = Sleep.Awake,
-      this.monitor = Monitor.None});
+      this.asleep = Sleep.awake,
+      this.monitor = Monitor.none});
 
   @override
   int pack(fb.Builder fbBuilder) {
@@ -1480,7 +1480,7 @@ class SpeciesT implements fb.Packable {
 
   SpeciesT({
       this.kind,
-      this.kingdom = KingdomE.Animal,
+      this.kingdom = KingdomE.animal,
       this.organism});
 
   @override

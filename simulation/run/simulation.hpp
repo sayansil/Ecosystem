@@ -37,7 +37,7 @@ struct Simulation {
     SimulationState state = SimulationState::TAKING_INPUT;
     uint32_t initial_organism_count = 4000;
     uint32_t years_to_simulate = 200;
-    const Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::Animal;
+    const Ecosystem::KingdomE kingdom = Ecosystem::KingdomE::animal;
     const std::string species = "deer";
     const uint32_t initial_age = 20;
     std::mutex mu;

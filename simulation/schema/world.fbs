@@ -1,10 +1,10 @@
 namespace Ecosystem;
 
-enum Gender : ubyte { Male = 0, Female}
-enum Reproduction : ubyte { Sexual = 0, Asexual}
-enum Monitor : ubyte {None = 0, Simulation}
-enum Sleep : ubyte {Awake = 0, Drowsy, Asleep}
-enum KingdomE : ubyte {Animal = 0, Plant}
+enum Gender : ubyte { male = 0, female}
+enum Reproduction : ubyte { sexual = 0, asexual}
+enum Monitor : ubyte {none = 0, simulation}
+enum Sleep : ubyte {awake = 0, drowsy, asleep}
+enum KingdomE : ubyte {animal = 0, plant}
 
 table ChromosomeStrand {
     code:string (key, required);
@@ -16,11 +16,11 @@ table Organism {
 
     /// Fixed for a species
     kind:string (required);
-    kingdom:KingdomE = Animal;
+    kingdom:KingdomE = animal;
     chromosome_number:ushort = 0;
     chromosome_structure:[ChromosomeStrand];
     food_chain_rank:ubyte = 0;
-    sexuality:Reproduction = Sexual;
+    sexuality:Reproduction = sexual;
     age_fitness_on_death_ratio:float = 0.0;
     conceiving_probability:float = 0.0;
     mating_probability:float = 0.0;
@@ -57,7 +57,7 @@ table Organism {
     ///  Fixed for an organism
     name:string (key, required);
     chromosome:[ubyte] (required);
-    gender:Gender = Male;
+    gender:Gender = male;
     generation:uint = 0;
     immunity:float = 0.0;
     base_appetite:float;
@@ -97,12 +97,12 @@ table Organism {
     vision_radius:float;
     sleep_restore_factor:float;
     asleep:Sleep;
-    monitor:Monitor = None;
+    monitor:Monitor = none;
 }
 
 table Species {
     kind:string (key, required);
-    kingdom:KingdomE = Animal;
+    kingdom:KingdomE = animal;
     organism:[Organism];
 }
 

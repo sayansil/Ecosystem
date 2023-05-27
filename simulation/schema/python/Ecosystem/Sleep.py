@@ -3,6 +3,6 @@
 # namespace: Ecosystem
 
 class Sleep(object):
-    Awake = 0
-    Drowsy = 1
-    Asleep = 2
+    awake = 0
+    drowsy = 1
+    asleep = 2

@@ -25,21 +25,21 @@ float generate_death_factor(const Ecosystem::Organism *organism) {
 }
 
 bool is_normal_child(const Ecosystem::Organism *organism) {
-    if (organism->kingdom() == Ecosystem::KingdomE::Animal) {
-        return is_normal_child_animal(organism);
-    } else if (organism->kingdom() == Ecosystem::KingdomE::Plant) {
-        return is_normal_child_plant(organism);
+    if (organism->kingdom() == Ecosystem::KingdomE::animal) {
+      return is_normal_child_animal(organism);
+    } else if (organism->kingdom() == Ecosystem::KingdomE::plant) {
+      return is_normal_child_plant(organism);
     } else {
-        throw std::runtime_error("Unknown kingdom");
+      throw std::runtime_error("Unknown kingdom");
     }
 
     return false;
 }
 
 void increment_age(Ecosystem::Organism *organism) {
-    if (organism->kingdom() == Ecosystem::KingdomE::Animal) {
+    if (organism->kingdom() == Ecosystem::KingdomE::animal) {
         increment_age_animal(organism);
-    } else if (organism->kingdom() == Ecosystem::KingdomE::Plant) {
+    } else if (organism->kingdom() == Ecosystem::KingdomE::plant) {
         increment_age_plant(organism);
     } else {
         throw std::runtime_error("Unknown kingdom");
@@ -47,9 +47,9 @@ void increment_age(Ecosystem::Organism *organism) {
 }
 
 void evaluate_static_fitness(Ecosystem::Organism *organism) {
-    if (organism->kingdom() == Ecosystem::KingdomE::Animal) {
+    if (organism->kingdom() == Ecosystem::KingdomE::animal) {
         evaluate_static_fitness_animal(organism);
-    } else if (organism->kingdom() == Ecosystem::KingdomE::Plant) {
+    } else if (organism->kingdom() == Ecosystem::KingdomE::plant) {
         evaluate_static_fitness_plant(organism);
     } else {
         throw std::runtime_error("Unknown kingdom");
