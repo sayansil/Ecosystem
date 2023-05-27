@@ -135,7 +135,7 @@ const char *get_world_instance(void *session_ptr) {
     return nullptr;
 }
 
-const char *get_organism_attribute_list_as_string(void *session_ptr) {
+const char *get_organism_attribute_list(void *session_ptr) {
     if (session_ptr != nullptr) {
         SessionHandler *session =
             reinterpret_cast<SessionHandler *>(session_ptr);
@@ -163,7 +163,7 @@ void free_god(void *session_ptr) {
     }
 }
 
-void session_free(void *session_ptr) {
+void free_session(void *session_ptr) {
     SessionHandler *session = reinterpret_cast<SessionHandler *>(session_ptr);
     delete session;
 }

@@ -20,5 +20,5 @@ int main() {
     printf("JSON: %s\n", get_world_instance(session));
 
     free_god(session);
-    session_free(session);
+    free_session(session);
 }
