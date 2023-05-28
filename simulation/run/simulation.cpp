@@ -142,21 +142,18 @@ void Simulation::run_ecosystem_simulation() {
         allah.happy_new_year(false);
 
         {
-            FBuffer avg_buffer = stat_fetcher::create_avg_world(allah.buffer);
             flatbuffers::ToStringVisitor visitor("", true, "", true);
             flatbuffers::IterateFlatBuffer(
-                avg_buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
+                allah.avg_buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
             nlohmann::json json_data = nlohmann::json::parse(visitor.s);
             state = SimulationState::SIMULATION_RUNNING;
             update_plots(json_data["species"][0]["organism"][0]);
         }
 
         {
-            FBuffer avg_buffer =
-                stat_fetcher::get_population_stats(allah.buffer);
             flatbuffers::ToStringVisitor visitor("", true, "", true);
             flatbuffers::IterateFlatBuffer(
-                avg_buffer.data(), Ecosystem::WorldPopulationTypeTable(),
+                allah.population_stats.data(), Ecosystem::WorldPopulationTypeTable(),
                 &visitor);
             nlohmann::json json_data = nlohmann::json::parse(visitor.s);
 

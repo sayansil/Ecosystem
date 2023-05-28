@@ -906,11 +906,11 @@ void God::happy_new_year(const bool &log) {
 
     if (gods_eye) {
         // Save average stats and population for every species in DB
-        FBuffer world_population = stat_fetcher::get_population_stats(buffer);
+        population_stats = stat_fetcher::get_population_stats(buffer);
         std::vector<std::vector<FBufferView>> rows(1);
         rows[0].emplace_back(FBufferView(avg_buffer.data(), avg_buffer.size()));
         rows[0].emplace_back(
-            FBufferView(world_population.data(), world_population.size()));
+            FBufferView(population_stats.data(), population_stats.size()));
         db->insert_rows(rows);
     }
 

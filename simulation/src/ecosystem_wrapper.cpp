@@ -115,22 +115,11 @@ const char *get_world_instance(void *session_ptr) {
         SessionHandler *session =
             reinterpret_cast<SessionHandler *>(session_ptr);
         nlohmann::json jsonObject;
-        {
-            flatbuffers::ToStringVisitor visitor("", true, "", false);
-            flatbuffers::IterateFlatBuffer(session->god->avg_buffer.data(),
-                                           Ecosystem::WorldTypeTable(),
-                                           &visitor);
-            jsonObject["avg_world"] = nlohmann::json::parse(visitor.s);
-        }
-        {
-            FBuffer population_buffer =
-                stat_fetcher::get_population_stats(session->god->buffer);
-            flatbuffers::ToStringVisitor visitor("", true, "", false);
-            flatbuffers::IterateFlatBuffer(
-                population_buffer.data(), Ecosystem::WorldPopulationTypeTable(),
-                &visitor);
-            jsonObject["world_population"] = nlohmann::json::parse(visitor.s);
-        }
+        jsonObject["avg_world"] = helper::get_json_from_buffer(
+            session->god->avg_buffer.data(), Ecosystem::WorldTypeTable());
+        jsonObject["world_population"] =
+            helper::get_json_from_buffer(session->god->population_stats.data(),
+                                         Ecosystem::WorldPopulationTypeTable());
         session->stringData = jsonObject.dump();
         return session->stringData.c_str();
     }
@@ -142,11 +131,27 @@ const char *get_plot_attributes(void *session_ptr) {
         SessionHandler *session =
             reinterpret_cast<SessionHandler *>(session_ptr);
         session->stringData = "";
+
+        /* Extract species population attributes */
+
         const flatbuffers::TypeTable *type_table =
-            Ecosystem::OrganismTypeTable();
+            Ecosystem::SpeciesPopulationTypeTable();
+        for (size_t i = 0; i < type_table->num_elems; i++) {
+            session->stringData += type_table->names[i];
+            session->stringData += ",";
+        }
+
+        /* Extract raw population attributes */
+
+        type_table = Ecosystem::RawPopulationTypeTable();
+        for (size_t i = 0; i < type_table->num_elems; i++) {
+            session->stringData += type_table->names[i];
+            session->stringData += ",";
+        }
 
         /* Extract float organism attributes */
 
+        type_table = Ecosystem::OrganismTypeTable();
         for (size_t i = 0; i < type_table->num_elems; i++) {
             if (type_table->type_codes[i].base_type == flatbuffers::ET_FLOAT ||
                 type_table->type_codes[i].base_type == flatbuffers::ET_UINT) {
@@ -155,21 +160,6 @@ const char *get_plot_attributes(void *session_ptr) {
             }
         }
 
-        /* Extract species population attributes */
-
-        // type_table = Ecosystem::SpeciesPopulationTypeTable();
-        // for (size_t i = 0; i < type_table->num_elems; i++) {
-        //     session->stringData += type_table->names[i];
-        //     session->stringData += ",";
-        // }
-
-        /* Extract raw population attributes */
-
-        // type_table = Ecosystem::RawPopulationTypeTable();
-        // for (size_t i = 0; i < type_table->num_elems; i++) {
-        //     session->stringData += type_table->names[i];
-        //     session->stringData += ",";
-        // }
         session->stringData.erase(session->stringData.length() - 1);
         return session->stringData.c_str();
     }
@@ -188,17 +178,17 @@ struct FloatData get_plot_attribute(void *session_ptr, const char *species_name,
         FloatData obj;
         obj.data = session->floatBufferData.data();
         obj.length = session->floatBufferData.size();
-        fmt::print("{}\n", session->avg_plot_handler.plot_history.dump(4));
         return obj;
     }
     return FloatData();
 }
 
-void add_current_avg_world_record(void *session_ptr) {
+void add_current_world_record(void *session_ptr) {
     if (session_ptr != nullptr) {
         SessionHandler *session =
             reinterpret_cast<SessionHandler *>(session_ptr);
-        session->avg_plot_handler.add_record(session->god->avg_buffer);
+        session->avg_plot_handler.add_record(session->god->avg_buffer,
+                                             session->god->population_stats);
     }
 }
 

@@ -43,7 +43,7 @@ int main() {
         AveragePlotHandler plots;
         for (auto i : rv::iota(0u, simulation_years)) {
             allah.happy_new_year(true);
-            plots.add_record(allah.avg_buffer);
+            plots.add_record(allah.avg_buffer, allah.population_stats);
             fmt::print("{}\n", plots.plot_history.dump(4));
         }
         /*

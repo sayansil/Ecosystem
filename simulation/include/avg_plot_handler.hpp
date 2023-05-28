@@ -5,7 +5,7 @@
 
 struct AveragePlotHandler {
     AveragePlotHandler() = default;
-    void add_record(const FBuffer& avg_world_instance);
+    void add_record(const FBuffer& avg_world_instance, const FBuffer& world_population_stats);
 
     nlohmann::json plot_history;
 };

@@ -38,10 +38,8 @@ int main() {
             allah.happy_new_year(true);
         }
 
-        FBuffer avg_world = stat_fetcher::create_avg_world(allah.buffer);
-
         flatbuffers::ToStringVisitor visitor("", true, "", true);
-        flatbuffers::IterateFlatBuffer(avg_world.data(),
+        flatbuffers::IterateFlatBuffer(allah.avg_buffer.data(),
                                        Ecosystem::WorldTypeTable(), &visitor);
         nlohmann::json json_data = nlohmann::json::parse(visitor.s);
         fmt::print("Parsed JSON:\n{}\n",
