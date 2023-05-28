@@ -130,7 +130,7 @@ const char *get_plot_attributes(void *session_ptr) {
     if (session_ptr != nullptr) {
         SessionHandler *session =
             reinterpret_cast<SessionHandler *>(session_ptr);
-        session->stringData = "";
+        session->stringData = "population,";
 
         /* Extract species population attributes */
 

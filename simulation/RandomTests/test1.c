@@ -19,7 +19,8 @@ int main() {
         add_current_world_record(session);
     }
 
-    struct FloatData fData = get_plot_values(session, "deer", "height");
+    struct FloatData fData =
+        get_plot_values(session, "deer", "weight_on_speed");
     for (size_t i = 0; i < fData.length; i++) {
         printf("%f\n", fData.data[i]);
     }
