@@ -144,7 +144,7 @@ FBuffer create_avg_world(const flatbuffers::DetachedBuffer &world_buffer) {
         auto asleep = species->organism()->Get(0)->asleep();    // dummy
         auto monitor = species->organism()->Get(0)->monitor();  // dummy
 
-        std::vector<uint8_t> chromosome_vec;  // dummy
+        std::vector<uint8_t> chromosome_vec;                    // dummy
         auto chromosome = new_builder.CreateVector(chromosome_vec.data(),
                                                    chromosome_vec.size());
 

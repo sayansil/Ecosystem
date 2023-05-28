@@ -153,8 +153,8 @@ void Simulation::run_ecosystem_simulation() {
         {
             flatbuffers::ToStringVisitor visitor("", true, "", true);
             flatbuffers::IterateFlatBuffer(
-                allah.population_stats.data(), Ecosystem::WorldPopulationTypeTable(),
-                &visitor);
+                allah.population_stats.data(),
+                Ecosystem::WorldPopulationTypeTable(), &visitor);
             nlohmann::json json_data = nlohmann::json::parse(visitor.s);
 
             nlohmann::json formatted_json;
