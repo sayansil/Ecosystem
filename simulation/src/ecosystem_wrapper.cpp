@@ -136,7 +136,9 @@ const char *get_plot_attributes(void *session_ptr) {
 
         const flatbuffers::TypeTable *type_table =
             Ecosystem::SpeciesPopulationTypeTable();
-        for (size_t i = 0; i < type_table->num_elems; i++) {
+        // Starts from index 2 to avoid kind and kingdom attributes to be
+        // included in the plot attribute list.
+        for (size_t i = 2; i < type_table->num_elems; i++) {
             session->stringData += type_table->names[i];
             session->stringData += ",";
         }
@@ -166,8 +168,8 @@ const char *get_plot_attributes(void *session_ptr) {
     return "";
 }
 
-struct FloatData get_plot_attribute(void *session_ptr, const char *species_name,
-                                    const char *attribute_name) {
+struct FloatData get_plot_values(void *session_ptr, const char *species_name,
+                                 const char *attribute_name) {
     if (session_ptr != nullptr) {
         SessionHandler *session =
             reinterpret_cast<SessionHandler *>(session_ptr);

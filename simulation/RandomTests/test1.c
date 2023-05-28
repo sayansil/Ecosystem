@@ -19,12 +19,12 @@ int main() {
         add_current_world_record(session);
     }
 
-    struct FloatData fData = get_plot_attribute(session, "deer", "population");
+    struct FloatData fData = get_plot_values(session, "deer", "height");
     for (size_t i = 0; i < fData.length; i++) {
         printf("%f\n", fData.data[i]);
     }
 
-    fData = get_plot_attribute(session, "bamboo", "population");
+    fData = get_plot_values(session, "bamboo", "population");
     for (size_t i = 0; i < fData.length; i++) {
         printf("%f\n", fData.data[i]);
     }
