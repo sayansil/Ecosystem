@@ -135,20 +135,42 @@ const char *get_world_instance(void *session_ptr) {
     return nullptr;
 }
 
-const char *get_organism_attribute_list(void *session_ptr) {
+const char *get_plot_attributes(void *session_ptr) {
     if (session_ptr != nullptr) {
         SessionHandler *session =
             reinterpret_cast<SessionHandler *>(session_ptr);
+        session->stringData = "";
         const flatbuffers::TypeTable *type_table =
             Ecosystem::OrganismTypeTable();
-        session->stringData = "";
+
+        /* Extract float organism attributes */
+
+        for (size_t i = 0; i < type_table->num_elems; i++) {
+            if (type_table->type_codes[i].base_type == flatbuffers::ET_FLOAT) {
+                session->stringData += type_table->names[i];
+                session->stringData += ",";
+            }
+        }
+
+        /* Extract species population attributes */
+
+        type_table = Ecosystem::SpeciesPopulationTypeTable();
         for (size_t i = 0; i < type_table->num_elems; i++) {
             session->stringData += type_table->names[i];
-            session->stringData += ' ';
+            session->stringData += ",";
         }
+
+        /* Extract raw population attributes */
+
+        type_table = Ecosystem::RawPopulationTypeTable();
+        for (size_t i = 0; i < type_table->num_elems; i++) {
+            session->stringData += type_table->names[i];
+            session->stringData += ",";
+        }
+        session->stringData.erase(session->stringData.length() - 1);
         return session->stringData.c_str();
     }
-    return nullptr;
+    return "";
 }
 
 void free_god(void *session_ptr) {

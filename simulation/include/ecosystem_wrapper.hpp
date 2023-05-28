@@ -29,7 +29,7 @@ EXPORT_C void clean_slate(void *session_ptr);
 EXPORT_C void create_world(void *session_ptr);
 EXPORT_C struct BufferData happy_new_year(void *session_ptr);
 EXPORT_C const char *get_world_instance(void *session_ptr);
-EXPORT_C const char *get_organism_attribute_list(void *session_ptr);
+EXPORT_C const char* get_plot_attributes(void *session_ptr);
 EXPORT_C void free_god(void *session_ptr);
 EXPORT_C void free_session(void *session_ptr);
 

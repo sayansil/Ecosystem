@@ -720,9 +720,9 @@ void God::happy_new_year(const bool &log) {
                             desparate_organism->mating_age_end()) {
                         if (desparate_organism->gender() ==
                             Ecosystem::Gender::male) {
-                          mating_list1.push_back(index);
+                            mating_list1.push_back(index);
                         } else {
-                          mating_list2.push_back(index);
+                            mating_list2.push_back(index);
                         }
                     }
                 }

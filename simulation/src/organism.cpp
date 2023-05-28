@@ -26,11 +26,11 @@ float generate_death_factor(const Ecosystem::Organism *organism) {
 
 bool is_normal_child(const Ecosystem::Organism *organism) {
     if (organism->kingdom() == Ecosystem::KingdomE::animal) {
-      return is_normal_child_animal(organism);
+        return is_normal_child_animal(organism);
     } else if (organism->kingdom() == Ecosystem::KingdomE::plant) {
-      return is_normal_child_plant(organism);
+        return is_normal_child_plant(organism);
     } else {
-      throw std::runtime_error("Unknown kingdom");
+        throw std::runtime_error("Unknown kingdom");
     }
 
     return false;
