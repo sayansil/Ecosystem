@@ -20,6 +20,11 @@ struct BufferData {
   uint32_t length;
 };
 
+struct FloatData {
+    float *data;
+    uint32_t length;
+};
+
 EXPORT_C void* session_init();
 EXPORT_C const char* get_ecosystem_root(void *session_ptr);
 EXPORT_C void create_god(void *session_ptr, uint8_t gods_eye, const char *ecosystem_root);
@@ -30,6 +35,8 @@ EXPORT_C void create_world(void *session_ptr);
 EXPORT_C struct BufferData happy_new_year(void *session_ptr);
 EXPORT_C const char *get_world_instance(void *session_ptr);
 EXPORT_C const char* get_plot_attributes(void *session_ptr);
+EXPORT_C void add_current_avg_world_record(void *session_ptr);
+EXPORT_C struct FloatData get_plot_attribute(void *session_ptr, const char* species_name, const char* attribute_name);
 EXPORT_C void free_god(void *session_ptr);
 EXPORT_C void free_session(void *session_ptr);
 

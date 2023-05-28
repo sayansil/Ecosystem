@@ -13,11 +13,15 @@ int main() {
 
     create_world(session);
 
-    happy_new_year(session);
+    for (size_t i = 0; i < 5; i++) {
+        happy_new_year(session);
+        add_current_avg_world_record(session);
+    }
 
-    struct BufferData fbList = happy_new_year(session);
-    printf("Length: %d\n", (int)fbList.length);
-    printf("JSON: %s\n", get_world_instance(session));
+    struct FloatData fData = get_plot_attribute(session, "deer", "age");
+    for (size_t i = 0; i < fData.length; i++) {
+        printf("%f\n", fData.data[i]);
+    }
 
     free_god(session);
     free_session(session);

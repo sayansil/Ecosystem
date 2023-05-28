@@ -3,6 +3,7 @@
 #include <fmt/core.h>
 #include <population_generated.h>
 
+#include <avg_plot_handler.hpp>
 #include <ecosystem_wrapper.hpp>
 #include <filesystem>
 #include <god.hpp>
@@ -20,6 +21,8 @@ struct SessionHandler {
     std::vector<std::unordered_map<std::string, std::string>> organisms;
     GodState godState = GodState::unborn;
     std::string stringData;
+    std::vector<float> floatBufferData;
+    AveragePlotHandler avg_plot_handler;
 };
 
 void *session_init() {
@@ -113,11 +116,10 @@ const char *get_world_instance(void *session_ptr) {
             reinterpret_cast<SessionHandler *>(session_ptr);
         nlohmann::json jsonObject;
         {
-            FBuffer avg_world_buffer =
-                stat_fetcher::create_avg_world(session->god->buffer);
             flatbuffers::ToStringVisitor visitor("", true, "", false);
-            flatbuffers::IterateFlatBuffer(
-                avg_world_buffer.data(), Ecosystem::WorldTypeTable(), &visitor);
+            flatbuffers::IterateFlatBuffer(session->god->avg_buffer.data(),
+                                           Ecosystem::WorldTypeTable(),
+                                           &visitor);
             jsonObject["avg_world"] = nlohmann::json::parse(visitor.s);
         }
         {
@@ -146,7 +148,8 @@ const char *get_plot_attributes(void *session_ptr) {
         /* Extract float organism attributes */
 
         for (size_t i = 0; i < type_table->num_elems; i++) {
-            if (type_table->type_codes[i].base_type == flatbuffers::ET_FLOAT) {
+            if (type_table->type_codes[i].base_type == flatbuffers::ET_FLOAT ||
+                type_table->type_codes[i].base_type == flatbuffers::ET_UINT) {
                 session->stringData += type_table->names[i];
                 session->stringData += ",";
             }
@@ -154,23 +157,49 @@ const char *get_plot_attributes(void *session_ptr) {
 
         /* Extract species population attributes */
 
-        type_table = Ecosystem::SpeciesPopulationTypeTable();
-        for (size_t i = 0; i < type_table->num_elems; i++) {
-            session->stringData += type_table->names[i];
-            session->stringData += ",";
-        }
+        // type_table = Ecosystem::SpeciesPopulationTypeTable();
+        // for (size_t i = 0; i < type_table->num_elems; i++) {
+        //     session->stringData += type_table->names[i];
+        //     session->stringData += ",";
+        // }
 
         /* Extract raw population attributes */
 
-        type_table = Ecosystem::RawPopulationTypeTable();
-        for (size_t i = 0; i < type_table->num_elems; i++) {
-            session->stringData += type_table->names[i];
-            session->stringData += ",";
-        }
+        // type_table = Ecosystem::RawPopulationTypeTable();
+        // for (size_t i = 0; i < type_table->num_elems; i++) {
+        //     session->stringData += type_table->names[i];
+        //     session->stringData += ",";
+        // }
         session->stringData.erase(session->stringData.length() - 1);
         return session->stringData.c_str();
     }
     return "";
+}
+
+struct FloatData get_plot_attribute(void *session_ptr, const char *species_name,
+                                    const char *attribute_name) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
+        session->floatBufferData = session->avg_plot_handler
+                                       .plot_history["species"][species_name]
+                                                    ["organism"][attribute_name]
+                                       .get<std::vector<float>>();
+        FloatData obj;
+        obj.data = session->floatBufferData.data();
+        obj.length = session->floatBufferData.size();
+        fmt::print("{}\n", session->avg_plot_handler.plot_history.dump(4));
+        return obj;
+    }
+    return FloatData();
+}
+
+void add_current_avg_world_record(void *session_ptr) {
+    if (session_ptr != nullptr) {
+        SessionHandler *session =
+            reinterpret_cast<SessionHandler *>(session_ptr);
+        session->avg_plot_handler.add_record(session->god->avg_buffer);
+    }
 }
 
 void free_god(void *session_ptr) {
