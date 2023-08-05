@@ -131,7 +131,8 @@ include_directories(schema/cpp)
 
 if(NOT ANDROID)
     add_subdirectory(RandomTests)
-    add_subdirectory(run)
+    # TODO: xorg and mesa dependency is currently broken on Ubuntu servers. Fix dependencies in workflows and then enable this
+    #add_subdirectory(run)
 endif()
 
 include(CTest)
