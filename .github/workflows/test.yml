@@ -19,9 +19,9 @@ jobs:
         build_type: [dbg, rel]
         include:
           - compiler: gcc
-            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev'
+            dependencies: 'ninja-build'
           - compiler: clang
-            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev clang-12'
+            dependencies: 'ninja-build clang-12'
     steps:
     - uses: actions/checkout@v3
 
