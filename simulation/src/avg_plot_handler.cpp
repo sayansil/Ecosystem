@@ -66,6 +66,21 @@ void AveragePlotHandler::add_record(const FBuffer& avg_world_instance,
             for (const auto& [key, value] : current_organism_json.items()) {
                 organism_json[key].emplace_back(value);
             }
+
+            // add 0s to empty entries
+            const flatbuffers::TypeTable* type_table =
+                Ecosystem::OrganismTypeTable();
+            for (size_t i = 0; i < type_table->num_elems; i++) {
+                if (type_table->type_codes[i].base_type ==
+                        flatbuffers::ET_FLOAT ||
+                    type_table->type_codes[i].base_type ==
+                        flatbuffers::ET_UINT) {
+                    if (current_organism_json.find(type_table->names[i]) ==
+                        current_organism_json.end()) {
+                        organism_json[type_table->names[i]].emplace_back(0);
+                    }
+                }
+            }
         }
         auto& population_json = species_json["organism"];
         for (const auto& [key, value] :
