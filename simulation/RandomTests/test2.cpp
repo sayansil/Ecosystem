@@ -18,7 +18,7 @@ int main() {
     std::vector<std::vector<ByteArray>> rows;
     const size_t simulation_years = 100;
 
-    auto root_path = setup::setup();
+    setup::setup(helper::get_ecosystem_root());
 
     const size_t initial_organism_count = 500;
 
@@ -31,30 +31,33 @@ int main() {
     }
 
     {
-        God allah(root_path, true);
+        God allah(helper::get_ecosystem_root(), true);
         allah.cleanSlate();
         allah.createWorld(organisms);
         for (size_t i = 0; i < simulation_years; i++) {
             allah.happy_new_year(true);
         }
 
-        FBuffer avg_world = stat_fetcher::create_avg_world(allah.buffer);
-
         flatbuffers::ToStringVisitor visitor("", true, "", true);
-        flatbuffers::IterateFlatBuffer(avg_world.data(), Ecosystem::WorldTypeTable(), &visitor);
+        flatbuffers::IterateFlatBuffer(allah.avg_buffer.data(),
+                                       Ecosystem::WorldTypeTable(), &visitor);
         nlohmann::json json_data = nlohmann::json::parse(visitor.s);
-        fmt::print("Parsed JSON:\n{}\n", json_data["species"][0]["organism"][0].dump(4));
+        fmt::print("Parsed JSON:\n{}\n",
+                   json_data["species"][0]["organism"][0].dump(4));
 
         fmt::print("stat-name\tis_number\tis_object\tis_array\n");
 
-        for(const auto& [key, value] : json_data["species"][0]["organism"][0].items()) {
-            fmt::print("{}\t{}\t{}\t{}\n", key, value.is_number(), value.is_object(), value.is_array());
+        for (const auto& [key, value] :
+             json_data["species"][0]["organism"][0].items()) {
+            fmt::print("{}\t{}\t{}\t{}\n", key, value.is_number(),
+                       value.is_object(), value.is_array());
         }
-
     }
 
     {
-        DatabaseManager db_manager(root_path / "data/ecosystem_master.db");
+        DatabaseManager db_manager(
+            std::filesystem::path(helper::get_ecosystem_root()) /
+            "data/ecosystem_master.db");
         rows = db_manager.read_all_rows();
     }
 

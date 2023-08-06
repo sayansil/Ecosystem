@@ -3,5 +3,5 @@
 # namespace: Ecosystem
 
 class Gender(object):
-    Male = 0
-    Female = 1
+    male = 0
+    female = 1

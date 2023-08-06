@@ -6,9 +6,12 @@
 #include <nlohmann/json.hpp>
 #include <organism.hpp>
 #include <profiler.hpp>
+#include <range/v3/view.hpp>
 #include <set>
 #include <species_constants.hpp>
 #include <stat_fetcher.hpp>
+
+namespace rv = ranges::views;
 
 static XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
 
@@ -89,8 +92,8 @@ God::God(const std::filesystem::path &ecosystem_root, const bool gods_eye) {
     this->ecosystem_root = ecosystem_root;
     constants::init(this->ecosystem_root);
     builder.ForceDefaults(true);
-    db = std::make_unique<DatabaseManager>(this->ecosystem_root /
-                                           "data/ecosystem_master.db");
+    db = std::make_unique<DatabaseManager>(this->ecosystem_root / "data" /
+                                           "ecosystem_master.db");
 
     fmt::print("God created!\n");
 }
@@ -430,7 +433,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
                         "vision_radius"),
         getValueAsFloat(constants::get_species_constants_map()[kind],
                         "species_sleep_restore_factor"),
-        Ecosystem::Sleep::Awake, static_cast<Ecosystem::Monitor>(monitor));
+        Ecosystem::Sleep::awake, static_cast<Ecosystem::Monitor>(monitor));
 
     // TODO: Remove this
     Ecosystem::Organism *organism_ptr =
@@ -452,8 +455,18 @@ void God::cleanSlate() {
     for (const auto &entry : std::filesystem::directory_iterator(
              ecosystem_root / std::filesystem::path("data") /
              std::filesystem::path("json"))) {
+        if (entry.path().filename().string()[0] == '.') {
+            // Ignore hidden files
+            continue;
+        }
+
         for (const auto &inner_entry :
              std::filesystem::directory_iterator(entry.path())) {
+            if (inner_entry.path().filename().string()[0] == '.') {
+                // Ignore hidden files
+                continue;
+            }
+
             std::ifstream in(inner_entry.path() / "base.json");
             nlohmann::json tmp;
             in >> tmp;
@@ -621,15 +634,15 @@ void God::happy_new_year(const bool &log) {
 
     std::mt19937_64 rng{std::random_device()()};
 
-    for (uint32_t n = 0; n < num_species; n++) {
+    for (uint32_t n : rv::iota(0u, num_species)) {
         Ecosystem::Species *species =
             previous_world->mutable_species()->GetMutableObject(n);
         auto kingdom = species->kingdom();
         auto kind = species->kind();
 
         std::string full_species_name =
-            EcosystemTypes::get_kingdom_name[static_cast<uint8_t>(kingdom)] +
-            "/" + kind->str();
+            std::string(Ecosystem::EnumNameKingdomE(kingdom)) + "/" +
+            kind->str();
 
         std::vector<flatbuffers::Offset<Ecosystem::Organism>> stdvecOrganisms;
 
@@ -642,7 +655,7 @@ void God::happy_new_year(const bool &log) {
         std::vector<std::pair<float, uint32_t>> organisms_vec;
         organisms_vec.reserve(species->organism()->size());
 
-        for (uint32_t i = 0; i < species->organism()->size(); i++) {
+        for (uint32_t i : rv::iota(0u, species->organism()->size())) {
             const Ecosystem::Organism *organism = species->organism()->Get(i);
             const float death_factor =
                 organism_opts::generate_death_factor(organism);
@@ -657,7 +670,7 @@ void God::happy_new_year(const bool &log) {
         std::uniform_real_distribution<double> par_dis(0.0, 1.0);
         std::mt19937_64 par_rng{std::random_device()()};
 
-        for (uint32_t index = 0; index < organisms_vec.size(); index++) {
+        for (uint32_t index : rv::iota(0u, organisms_vec.size())) {
             const double x = par_dis(par_rng);
 
             // Spare this organism
@@ -688,25 +701,25 @@ void God::happy_new_year(const bool &log) {
 
             std::vector<uint32_t> mating_list1, mating_list2;
 
-            for (int index = 0; index < stdvecOrganisms.size(); index++) {
+            for (size_t index : rv::iota(0u, stdvecOrganisms.size())) {
                 auto desparate_organism = helper::get_pointer_from_offset(
                     builder, stdvecOrganisms[index]);
                 auto sexuality = desparate_organism->sexuality();
 
-                if (sexuality == Ecosystem::Reproduction::Asexual) {
+                if (sexuality == Ecosystem::Reproduction::asexual) {
                     if (desparate_organism->age() >=
                             desparate_organism->mating_age_start() &&
                         desparate_organism->age() <=
                             desparate_organism->mating_age_end()) {
                         mating_list1.push_back(index);
                     }
-                } else if (sexuality == Ecosystem::Reproduction::Sexual) {
+                } else if (sexuality == Ecosystem::Reproduction::sexual) {
                     if (desparate_organism->age() >=
                             desparate_organism->mating_age_start() &&
                         desparate_organism->age() <=
                             desparate_organism->mating_age_end()) {
                         if (desparate_organism->gender() ==
-                            Ecosystem::Gender::Male) {
+                            Ecosystem::Gender::male) {
                             mating_list1.push_back(index);
                         } else {
                             mating_list2.push_back(index);
@@ -727,9 +740,9 @@ void God::happy_new_year(const bool &log) {
 
                 while ((mating_list1.size() > index_parent &&
                         mating_list2.size() > index_parent &&
-                        sexuality == Ecosystem::Reproduction::Sexual) ||
+                        sexuality == Ecosystem::Reproduction::sexual) ||
                        (mating_list1.size() > index_parent &&
-                        sexuality == Ecosystem::Reproduction::Asexual)) {
+                        sexuality == Ecosystem::Reproduction::asexual)) {
                     /*
                        BIG CAUTION HERE!!! Please use flatbuffer object API for
                        holding intermediate data only. Don't use for
@@ -745,7 +758,7 @@ void God::happy_new_year(const bool &log) {
                                 builder,
                                 stdvecOrganisms[mating_list1[index_parent]]);
                         const Ecosystem::Organism *parent2_ptr =
-                            sexuality == Ecosystem::Reproduction::Sexual
+                            sexuality == Ecosystem::Reproduction::sexual
                                 ? helper::get_pointer_from_offset(
                                       builder, stdvecOrganisms
                                                    [mating_list2[index_parent]])
@@ -875,8 +888,6 @@ void God::happy_new_year(const bool &log) {
     buffer = builder.Release();
     builder.Clear();
 
-    // TODO push new buffer to db
-
     /*********************
      *       Logging     *
      *********************/
@@ -888,15 +899,18 @@ void God::happy_new_year(const bool &log) {
             year, recent_births, recent_deaths, recent_population);
     }
 
+    /* Create the avg buffer everytime. This would be used anyway for plotting
+       from Flutter. This avoids repeated redundant calls to create_avg_world */
+
+    avg_buffer = stat_fetcher::create_avg_world(buffer);
+
     if (gods_eye) {
         // Save average stats and population for every species in DB
-        FBuffer avg_instance = stat_fetcher::create_avg_world(buffer);
-        FBuffer world_population = stat_fetcher::get_population_stats(buffer);
+        population_stats = stat_fetcher::get_population_stats(buffer);
         std::vector<std::vector<FBufferView>> rows(1);
+        rows[0].emplace_back(FBufferView(avg_buffer.data(), avg_buffer.size()));
         rows[0].emplace_back(
-            FBufferView(avg_instance.data(), avg_instance.size()));
-        rows[0].emplace_back(
-            FBufferView(world_population.data(), world_population.size()));
+            FBufferView(population_stats.data(), population_stats.size()));
         db->insert_rows(rows);
     }
 

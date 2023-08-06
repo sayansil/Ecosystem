@@ -10,7 +10,7 @@
 
 namespace setup
 {
-    extern std::filesystem::path setup();
+extern void setup(std::filesystem::path ecosystem_root);
 };
 
 #endif /* SETUP_HPP */

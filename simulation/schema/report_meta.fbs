@@ -1,0 +1,15 @@
+namespace Visualisation;
+
+table Meta {
+    title:string (required);
+    subtiles:[string];
+    created_ts:uint64 (key);
+}
+
+
+table MetaData {
+    title:string (key, required);
+    data:[Meta];
+}
+
+root_type MetaData;

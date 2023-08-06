@@ -9,7 +9,8 @@ int main() {
     std::vector<std::vector<FBuffer>> rows;
     const size_t simulation_years = 250;
 
-    auto root_path = setup::setup();
+    std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
+    setup::setup(ecosystem_root);
 
     const size_t initial_organism_count = 500;
 
@@ -21,7 +22,7 @@ int main() {
             {{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
     }
 
-    God allah(root_path, true);
+    God allah(ecosystem_root, true);
     allah.cleanSlate();
     allah.createWorld(organisms);
     for (size_t i = 0; i < simulation_years; i++) {

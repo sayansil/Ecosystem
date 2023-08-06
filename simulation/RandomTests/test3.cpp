@@ -1,49 +1,65 @@
-#include <flatbuffers/idl.h>
-#include <flatbuffers/minireflect.h>
 #include <fmt/core.h>
 
-#include <database_manager.hpp>
-#include <ecosystem_types.hpp>
-#include <god.hpp>
-#include <iostream>
 #include <nlohmann/json.hpp>
-#include <setup.hpp>
-#include <stat_fetcher.hpp>
-#include <unordered_map>
 #include <vector>
 
+// void processQuery(const nlohmann::json& organism_queries) {
+//     for (const auto& organism_query : organism_queries.items()) {
+//         if (organism_query.value().is_structured()) {
+//             //fmt::print("{} -- {}\n", organism_query.key(),
+//             organism_query.value().dump());
+//             //auto organism_stat = organism_query.value().begin();
+//             //fmt::print("{}\n", organism_stat.key());
+//             //fmt::print("{}\n",
+//             organism_query.value()[organism_stat.key()]);
+//             //for (const auto& i : organism_query.value().items()) {
+//             //    fmt::print("{} - {}\n", i.key(), i.value().dump());
+//             //}
+//             nlohmann::json current_query = organism_query.value();
+//             fmt::print("{}\n", current_query.dump());
+//             fmt::print("{}\n", current_query.items().begin().key());
+//             fmt::print("{}\n",
+//             current_query.items().begin().value()["high"].get<float>());
+//             fmt::print("{}\n",
+//             current_query.items().begin().value()["low"].get<float>());
+//         }
+//     }
+// }
+
+void processQuery(const nlohmann::json& organism_queries) {
+    for (const auto& index : organism_queries.items()) {
+        for (const auto& value : index.value().items()) {
+            if (value.value().is_structured()) {
+                std::string organism_stat = value.key();
+                fmt::print("stat - {}\n", organism_stat);
+                for (const auto& stat_bounds : value.value().items()) {
+                    fmt::print("{} - {}\n", stat_bounds.key(),
+                               stat_bounds.value().get<float>());
+                }
+            }
+        }
+    }
+}
+
 int main() {
-    setup::setup();
+    nlohmann::ordered_json query;
+    query["type"] = "filter";
 
-    unsigned int initial_organism_count = 4500;
-    std::vector<std::unordered_map<std::string, std::string>> organisms;
-    organisms.reserve(initial_organism_count);
+    nlohmann::json species_query1;
+    species_query1["kind"] = "deer";
+    species_query1["kingdom"] = "animal";
+    species_query1["organism"].push_back(
+        nlohmann::json::parse(R"({"age":{"low":1,"high":5}})"));
+    species_query1["organism"].push_back("height");
+    species_query1["organism"].push_back("weight");
+    processQuery(species_query1["organism"]);
+    query["species"].emplace_back(species_query1);
 
-    for (size_t i = 0; i < initial_organism_count; i++) {
-        organisms.push_back(
-            {{"kind", "deer"}, {"kingdom", "0"}, {"age", "20"}});
-    }
+    nlohmann::json species_query2;
+    species_query2["kind"] = "bamboo";
+    species_query2["kingdom"] = "plant";
+    species_query2["organism"].push_back("age");
+    query["species"].emplace_back(species_query2);
 
-    God allah;
-    // Cannot create 2 db instances in same context
-    // allah.cleanSlate();
-    allah.createWorld(organisms);
-    fmt::print("Buffer size = {:.2f}MB\n",
-               allah.buffer.size() / (1024.0 * 1024));
-
-    FBuffer buff = stat_fetcher::create_avg_world(allah.buffer);
-
-    {
-        DatabaseManager db_manager;
-
-        db_manager.insert_rows({buff});
-
-        std::vector<FBuffer> rows = db_manager.read_all_rows();
-
-        flatbuffers::ToStringVisitor visitor("", true, "", true);
-        flatbuffers::IterateFlatBuffer(rows[0].data(),
-                                       Ecosystem::WorldTypeTable(), &visitor);
-        nlohmann::json json_data = nlohmann::json::parse(visitor.s);
-        fmt::print("Parsed JSON:\n{}\n", json_data.dump(4));
-    }
+    // fmt::print("{}\n", query.dump(4));
 }

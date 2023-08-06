@@ -3,5 +3,5 @@
 # namespace: Ecosystem
 
 class Monitor(object):
-    None_ = 0
-    Simulation = 1
+    none = 0
+    simulation = 1

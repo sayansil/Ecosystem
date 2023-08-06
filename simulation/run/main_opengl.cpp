@@ -17,7 +17,7 @@ static void glfw_error_callback(int error, const char* description) {
 }
 
 int main() {
-    setup::setup();
+    setup::setup(helper::get_ecosystem_root());
 
     Simulation sim;
 
@@ -51,8 +51,7 @@ int main() {
     (void)io;
     std::filesystem::path font_file =
         std::filesystem::path(helper::get_ecosystem_root()) / "simulation" /
-        "run" / "fonts" / "Open_Sans" / "static" / "OpenSans" /
-        "OpenSans-Regular.ttf";
+        "run" / "fonts" / "OpenSans-Regular.ttf";
     io.Fonts->AddFontFromFileTTF(font_file.string().c_str(), 18);
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;

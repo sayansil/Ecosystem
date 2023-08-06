@@ -174,4 +174,11 @@ std::string get_ecosystem_root() {
     }
     return std::string(root_path);
 }
+
+nlohmann::json get_json_from_buffer(const uint8_t *buffer,
+                                    const flatbuffers::TypeTable *root_table,
+                                    flatbuffers::ToStringVisitor visitor) {
+    flatbuffers::IterateFlatBuffer(buffer, root_table, &visitor);
+    return nlohmann::json::parse(visitor.s);
+}
 };  // namespace helper

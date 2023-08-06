@@ -1,0 +1,22 @@
+namespace Visualisation;
+
+table Plot {
+    key:string (key, required);
+    title:string;
+    xlabel:string;
+    ylabel:string;
+    x:[float] (required);
+    y:[float] (required);
+}
+
+table PlotGroup {
+    name:string (key, required);
+    type:string;
+    plots:[Plot];
+}
+
+table PlotBundle {
+    plot_groups: [PlotGroup];
+}
+
+root_type PlotBundle;

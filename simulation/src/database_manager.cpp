@@ -18,6 +18,8 @@ static int callback_numrows(void *count, int argc, char **argv,
 DatabaseManager::DatabaseManager(const std::filesystem::path &path) {
     db_path = std::filesystem::canonical(path);
     sqlite3_open(db_path.string().c_str(), &db);
+    sqlite3_exec(db, "PRAGMA synchronous = OFF", NULL, NULL, NULL);
+    sqlite3_exec(db, "PRAGMA journal_mode = MEMORY", NULL, NULL, NULL);
     begin_transaction();
 }
 

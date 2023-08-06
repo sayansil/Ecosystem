@@ -30,7 +30,7 @@ static void glfw_error_callback(int error, const char *description) {
 
 int main(int, char **) {
 
-  setup::setup();
+  setup::setup(helper::get_ecosystem_root());
 
   Simulation sim;
 

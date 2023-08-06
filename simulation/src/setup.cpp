@@ -44,46 +44,12 @@ static void create_master_table(sqlite3 *db) {
     }
 }
 
-static void parse_species_directories(
-    std::string subdirectory, const std::filesystem::path &json_data_path,
-    const std::filesystem::path &json_template_path) {
-    std::filesystem::path filepath;
-
-    auto copy_contents = [](const std::filesystem::path &source,
-                            const std::filesystem::path &sink) {
-        if (!std::filesystem::exists(sink)) {
-            std::ifstream to_read(source, std::ios::binary);
-            std::ofstream to_create(sink, std::ios::binary);
-
-            to_create << to_read.rdbuf();
-
-            to_read.close();
-            to_create.close();
-        }
-    };
-
-    for (const auto &entry :
-         std::filesystem::directory_iterator(json_data_path / subdirectory)) {
-        // Creating base.json from template
-        copy_contents(json_template_path / subdirectory / "base.json",
-                      entry.path() / "base.json");
-
-        // Creating modify.json from template
-        copy_contents(json_template_path / subdirectory / "modify.json",
-                      entry.path() / "modify.json");
-    }
-}
-
 namespace setup {
-std::filesystem::path setup() {
-    std::filesystem::path ecosystem_root = helper::get_ecosystem_root();
+void setup(std::filesystem::path ecosystem_root) {
     sqlite3 *db;
 
     const std::filesystem::path master_db_path =
-        ecosystem_root / "data/ecosystem_master.db";
-    const std::filesystem::path json_data_path = ecosystem_root / "data/json";
-    const std::filesystem::path json_template_path =
-        ecosystem_root / "data/templates/json";
+        ecosystem_root / "data" / "ecosystem_master.db";
 
     if (!std::filesystem::exists(master_db_path)) {
         sqlite3_open(master_db_path.string().c_str(), &db);
@@ -93,13 +59,6 @@ std::filesystem::path setup() {
         fmt::print("Using existing db at {}\n\n", master_db_path.string());
     }
 
-    if (std::filesystem::exists(json_data_path / "animal")) {
-        parse_species_directories("animal", json_data_path, json_template_path);
-    }
-    if (std::filesystem::exists(json_data_path / "plant")) {
-        parse_species_directories("plant", json_data_path, json_template_path);
-    }
     sqlite3_close(db);
-    return ecosystem_root;
 }
 };  // namespace setup

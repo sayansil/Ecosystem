@@ -32,8 +32,15 @@ class SpeciesPopulation(object):
         return None
 
     # SpeciesPopulation
-    def MatablePopulation(self):
+    def Kingdom(self):
         o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(6))
+        if o != 0:
+            return self._tab.Get(flatbuffers.number_types.Uint8Flags, o + self._tab.Pos)
+        return 0
+
+    # SpeciesPopulation
+    def MatablePopulation(self):
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
         if o != 0:
             x = o + self._tab.Pos
             from Ecosystem.RawPopulation import RawPopulation
@@ -44,7 +51,7 @@ class SpeciesPopulation(object):
 
     # SpeciesPopulation
     def NonMatablePopulation(self):
-        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(8))
+        o = flatbuffers.number_types.UOffsetTFlags.py_type(self._tab.Offset(10))
         if o != 0:
             x = o + self._tab.Pos
             from Ecosystem.RawPopulation import RawPopulation
@@ -53,16 +60,19 @@ class SpeciesPopulation(object):
             return obj
         return None
 
-def SpeciesPopulationStart(builder): builder.StartObject(3)
+def SpeciesPopulationStart(builder): builder.StartObject(4)
 def Start(builder):
     return SpeciesPopulationStart(builder)
 def SpeciesPopulationAddKind(builder, kind): builder.PrependUOffsetTRelativeSlot(0, flatbuffers.number_types.UOffsetTFlags.py_type(kind), 0)
 def AddKind(builder, kind):
     return SpeciesPopulationAddKind(builder, kind)
-def SpeciesPopulationAddMatablePopulation(builder, matablePopulation): builder.PrependStructSlot(1, flatbuffers.number_types.UOffsetTFlags.py_type(matablePopulation), 0)
+def SpeciesPopulationAddKingdom(builder, kingdom): builder.PrependUint8Slot(1, kingdom, 0)
+def AddKingdom(builder, kingdom):
+    return SpeciesPopulationAddKingdom(builder, kingdom)
+def SpeciesPopulationAddMatablePopulation(builder, matablePopulation): builder.PrependStructSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(matablePopulation), 0)
 def AddMatablePopulation(builder, matablePopulation):
     return SpeciesPopulationAddMatablePopulation(builder, matablePopulation)
-def SpeciesPopulationAddNonMatablePopulation(builder, nonMatablePopulation): builder.PrependStructSlot(2, flatbuffers.number_types.UOffsetTFlags.py_type(nonMatablePopulation), 0)
+def SpeciesPopulationAddNonMatablePopulation(builder, nonMatablePopulation): builder.PrependStructSlot(3, flatbuffers.number_types.UOffsetTFlags.py_type(nonMatablePopulation), 0)
 def AddNonMatablePopulation(builder, nonMatablePopulation):
     return SpeciesPopulationAddNonMatablePopulation(builder, nonMatablePopulation)
 def SpeciesPopulationEnd(builder): return builder.EndObject()
@@ -79,6 +89,7 @@ class SpeciesPopulationT(object):
     # SpeciesPopulationT
     def __init__(self):
         self.kind = None  # type: str
+        self.kingdom = 0  # type: int
         self.matablePopulation = None  # type: Optional[Ecosystem.RawPopulation.RawPopulationT]
         self.nonMatablePopulation = None  # type: Optional[Ecosystem.RawPopulation.RawPopulationT]
 
@@ -100,6 +111,7 @@ class SpeciesPopulationT(object):
         if speciesPopulation is None:
             return
         self.kind = speciesPopulation.Kind()
+        self.kingdom = speciesPopulation.Kingdom()
         if speciesPopulation.MatablePopulation() is not None:
             self.matablePopulation = Ecosystem.RawPopulation.RawPopulationT.InitFromObj(speciesPopulation.MatablePopulation())
         if speciesPopulation.NonMatablePopulation() is not None:
@@ -112,6 +124,7 @@ class SpeciesPopulationT(object):
         SpeciesPopulationStart(builder)
         if self.kind is not None:
             SpeciesPopulationAddKind(builder, kind)
+        SpeciesPopulationAddKingdom(builder, self.kingdom)
         if self.matablePopulation is not None:
             matablePopulation = self.matablePopulation.Pack(builder)
             SpeciesPopulationAddMatablePopulation(builder, matablePopulation)

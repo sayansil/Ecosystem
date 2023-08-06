@@ -69,15 +69,15 @@ FBuffer get_population_stats(const flatbuffers::DetachedBuffer &world_buffer) {
         for (const Ecosystem::Organism *organism : *(species->organism())) {
             if (organism->age() >= organism->mating_age_start() &&
                 organism->age() <= organism->mating_age_end()) {
-                if (organism->gender() == Ecosystem::Gender::Male) {
+                if (organism->gender() == Ecosystem::Gender::male) {
                     male_matable_population++;
-                } else if (organism->gender() == Ecosystem::Gender::Female) {
+                } else if (organism->gender() == Ecosystem::Gender::female) {
                     female_matable_population++;
                 }
             } else {
-                if (organism->gender() == Ecosystem::Gender::Male) {
+                if (organism->gender() == Ecosystem::Gender::male) {
                     male_non_matable_population++;
-                } else if (organism->gender() == Ecosystem::Gender::Female) {
+                } else if (organism->gender() == Ecosystem::Gender::female) {
                     female_non_matable_population++;
                 }
             }
@@ -91,7 +91,8 @@ FBuffer get_population_stats(const flatbuffers::DetachedBuffer &world_buffer) {
         new_stdvecSpeciesPopulation.push_back(
             Ecosystem::CreateSpeciesPopulation(
                 new_builder, new_builder.CreateString(species->kind()),
-                &matablePopulation, &nonMatablePopulation));
+                static_cast<uint8_t>(species->kingdom()), &matablePopulation,
+                &nonMatablePopulation));
     }
 
     new_builder.Finish(Ecosystem::CreateWorldPopulation(

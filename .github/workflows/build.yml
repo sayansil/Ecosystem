@@ -24,9 +24,9 @@ jobs:
         build_type: [dbg, rel]
         include:
           - compiler: gcc
-            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev'
+            dependencies: 'ninja-build'
           - compiler: clang
-            dependencies: 'ninja-build xorg-dev libglu1-mesa-dev clang-14'
+            dependencies: 'ninja-build clang-14'
     steps:
     - uses: actions/checkout@v3
     - uses: actions/cache/restore@v3
@@ -173,11 +173,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: ilammy/msvc-dev-cmd@v1.10.0
-    - uses: actions/cache/restore@v3
-      id: cache_load_content
-      with:
-        path: simulation/build/.fetchcontent_cache
-        key: fetchcontent-win-${{ github.event.pull_request.head.sha }}
     - uses: actions/cache/restore@v3
       id: cache_load_build
       with:

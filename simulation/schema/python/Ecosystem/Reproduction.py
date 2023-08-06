@@ -3,5 +3,5 @@
 # namespace: Ecosystem
 
 class Reproduction(object):
-    Sexual = 0
-    Asexual = 1
+    sexual = 0
+    asexual = 1

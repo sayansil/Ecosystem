@@ -65,6 +65,19 @@
             }
         },
         {
+            "name": "conf-android-common",
+            "description": "Android settings for NDK toolchain",
+            "hidden": true,
+            "inherits": "conf-common",
+            "cacheVariables": {
+                "CMAKE_ANDROID_NDK": "$env{NDK}",
+                "CMAKE_TOOLCHAIN_FILE": "$env{NDK}/build/cmake/android.toolchain.cmake",
+                "ANDROID_PLATFORM": "android-19",
+                "ANDROID_STL": "c++_shared",
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
             "name": "win-msvc-dbg",
             "displayName": "msvc Debug (Developer Mode)",
             "description": "Target Windows with the msvc compiler, debug build type",
@@ -207,6 +220,34 @@
                 "CMAKE_CXX_COMPILER": "clang++",
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "and-arm64v8a",
+            "displayName": "Android arm64-v8a",
+            "description": "Target android with architecture arm64-v8a",
+            "inherits": "conf-android-common",
+            "cacheVariables": {
+                "ANDROID_ABI": "arm64-v8a"
+            }
+        },
+        {
+            "name": "and-armeabiv7a",
+            "displayName": "Android armeabi-v7a",
+            "description": "Target android with architecture armeabi-v7a",
+            "inherits": "conf-android-common",
+            "cacheVariables": {
+                "ANDROID_ABI": "armeabi-v7a"
+            }
+        },
+        {
+            "name": "and-armeabiv7a-neon",
+            "displayName": "Android armeabi-v7a with neon",
+            "description": "Target android with architecture armeabi-v7a with Neon",
+            "inherits": "conf-android-common",
+            "cacheVariables": {
+                "ANDROID_ABI": "armeabi-v7a",
+                "ANDROID_ARM_NEON": "ON"
+            }
         }
     ],
     "buildPresets":[
@@ -257,6 +298,18 @@
         {
             "name": "osx-gcc-dbg",
             "configurePreset": "osx-gcc-dbg"
+        },
+        {
+            "name": "and-arm64v8a",
+            "configurePreset": "and-arm64v8a"
+        },
+        {
+            "name": "and-armeabiv7a",
+            "configurePreset": "and-armeabiv7a"
+        },
+        {
+            "name": "and-armeabiv7a-neon",
+            "configurePreset": "and-armeabiv7a-neon"
         }
     ],
     "testPresets": [

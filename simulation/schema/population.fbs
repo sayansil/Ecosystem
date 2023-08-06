@@ -1,3 +1,5 @@
+include "world.fbs";
+
 namespace Ecosystem;
 
 struct RawPopulation {
@@ -7,6 +9,7 @@ struct RawPopulation {
 
 table SpeciesPopulation {
     kind:string (key, required);
+    kingdom: uint8;
     matable_population: RawPopulation;
     non_matable_population: RawPopulation;
 }

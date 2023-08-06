@@ -9,7 +9,7 @@ function(add_ecosystem_tests TARGET_NAME TEST_NAME)
   add_executable(${TARGET_NAME} ${TARGET_NAME}.cpp)
   target_include_directories(${TARGET_NAME} PRIVATE ${Ecosystem_SOURCE_DIR}/include ${catch_SOURCE_DIR})
 
-  if(WIN32 OR APPLE)
+  if(WIN32 OR APPLE OR ANDROID)
     target_link_libraries(${TARGET_NAME} PRIVATE ${ECOSYSTEM_LIB} fmt::fmt Catch2::Catch2)
   else()
     target_link_libraries(${TARGET_NAME} PRIVATE ${ECOSYSTEM_LIB} fmt::fmt dl pthread Catch2::Catch2)

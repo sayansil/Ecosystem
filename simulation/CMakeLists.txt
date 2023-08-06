@@ -30,6 +30,17 @@ if(${ENABLE_CLANG_TIDY})
     set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}" "-checks=-*,${CLANG_TIDY_CHECKS}-*")
 endif()
 
+if (NOT MSVC)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT result OUTPUT output)
+    if(result)
+        message("IPO support enabled")
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
+    else()
+      message(WARNING "IPO is not supported: ${output}")
+    endif()
+endif()
+
 find_program(CCACHE_PROGRAM ccache)
 
 if(CCACHE_PROGRAM)
@@ -38,7 +49,7 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_POSITION_INDEPENDENT_CODE 1)
 
 set(FETCHCONTENT_QUIET FALSE)
@@ -104,15 +115,25 @@ FetchContent_Declare(
 FetchContent_Populate(whereami)
 include_directories(${whereami_SOURCE_DIR}/src)
 
+FetchContent_Declare(
+    rangev3
+    GIT_REPOSITORY "https://github.com/ericniebler/range-v3"
+    GIT_TAG 0.12.0
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(rangev3)
+include_directories(${rangev3_SOURCE_DIR}/include)
+
 add_subdirectory(src)
 add_subdirectory(schema)
 
 include_directories(schema/cpp)
-add_subdirectory(RandomTests)
-# add_subdirectory(setup)
-add_subdirectory(run)
-#add_subdirectory(python)
-#add_subdirectory(WebApp)
+
+if(NOT ANDROID)
+    add_subdirectory(RandomTests)
+    # TODO: xorg and mesa dependency is currently broken on Ubuntu servers. Fix dependencies in workflows and then enable this
+    #add_subdirectory(run)
+endif()
 
 include(CTest)
 add_subdirectory(tests)
