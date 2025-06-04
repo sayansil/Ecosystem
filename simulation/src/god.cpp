@@ -907,12 +907,98 @@ void God::happy_new_year(const bool &log) {
     if (gods_eye) {
         // Save average stats and population for every species in DB
         population_stats = stat_fetcher::get_population_stats(buffer);
-        std::vector<std::vector<FBufferView>> rows(1);
-        rows[0].emplace_back(FBufferView(avg_buffer.data(), avg_buffer.size()));
-        rows[0].emplace_back(
-            FBufferView(population_stats.data(), population_stats.size()));
-        db->insert_rows(rows);
+        std::vector<std::vector<FBufferView>> rows_to_insert(1);
+        rows_to_insert[0].emplace_back(FBufferView(avg_buffer.data(), avg_buffer.size()));
+        rows_to_insert[0].emplace_back(FBufferView(population_stats.data(), population_stats.size()));
+        // Add the main simulation buffer
+        rows_to_insert[0].emplace_back(FBufferView(this->buffer.data(), this->buffer.size()));
+        db->insert_rows(rows_to_insert);
     }
 
     year++;
+}
+
+bool God::load_snapshot(int year_to_load) {
+    PROFILE_FUNCTION();
+    fmt::print("Attempting to load snapshot for year: {}\n", year_to_load);
+
+    std::vector<ByteArray> snapshot_data = db->read_row_by_year(year_to_load);
+
+    if (snapshot_data.empty()) {
+        fmt::print(stderr, "Error: No snapshot data found for year {}.\n", year_to_load);
+        return false;
+    }
+
+    // Expect 3 elements: avg_world, population_stats, raw_world
+    if (snapshot_data.size() != 3) {
+        fmt::print(stderr, "Error: Snapshot data for year {} is corrupted or incomplete. Expected 3 data blobs, got {}.\n", year_to_load, snapshot_data.size());
+        return false;
+    }
+
+    const ByteArray& avg_world_blob = snapshot_data[0];
+    const ByteArray& population_blob = snapshot_data[1];
+    const ByteArray& raw_world_blob = snapshot_data[2];
+
+    if (avg_world_blob.empty()) {
+        fmt::print(stderr, "Error: AVG_WORLD data for year {} is empty.\n", year_to_load);
+        // Depending on strictness, we might still proceed if raw_world is fine,
+        // but for now, let's be strict.
+        return false;
+    }
+    if (population_blob.empty()) {
+        fmt::print(stderr, "Error: POPULATION_WORLD data for year {} is empty.\n", year_to_load);
+        return false;
+    }
+    if (raw_world_blob.empty()) {
+        // This is critical. If raw world is empty, we cannot restore the main simulation state.
+        // This could happen if loading an old snapshot saved before RAW_WORLD was implemented.
+        fmt::print(stderr, "Error: RAW_WORLD data for year {} is empty. Cannot restore simulation state.\n", year_to_load);
+        return false;
+    }
+
+    // Load avg_buffer
+    uint8_t* avg_buffer_data_ptr = new uint8_t[avg_world_blob.size()];
+    memcpy(avg_buffer_data_ptr, avg_world_blob.data(), avg_world_blob.size());
+    // The old avg_buffer's owned data will be released by its destructor upon reassignment.
+    this->avg_buffer = flatbuffers::DetachedBuffer(avg_buffer_data_ptr, avg_world_blob.size(), avg_buffer_data_ptr, avg_world_blob.size());
+
+    // Load population_stats
+    uint8_t* population_buffer_data_ptr = new uint8_t[population_blob.size()];
+    memcpy(population_buffer_data_ptr, population_blob.data(), population_blob.size());
+    // The old population_stats's owned data will be released by its destructor upon reassignment.
+    this->population_stats = flatbuffers::DetachedBuffer(population_buffer_data_ptr, population_blob.size(), population_buffer_data_ptr, population_blob.size());
+
+    // Load main simulation buffer (this->buffer)
+    uint8_t* main_buffer_data_ptr = new uint8_t[raw_world_blob.size()];
+    memcpy(main_buffer_data_ptr, raw_world_blob.data(), raw_world_blob.size());
+    // The old this->buffer's owned data will be released by its destructor upon reassignment.
+    this->buffer = flatbuffers::DetachedBuffer(main_buffer_data_ptr, raw_world_blob.size(), main_buffer_data_ptr, raw_world_blob.size());
+
+    this->year = year_to_load; // Set the simulation year to the loaded year
+
+    // Optional: Verification after loading
+    // Verify the main buffer's year
+    const Ecosystem::World* loaded_world = Ecosystem::GetWorld(this->buffer.data());
+    if (!loaded_world) {
+        fmt::print(stderr, "Error: Failed to parse loaded RAW_WORLD data as Ecosystem::World.\n");
+        // This is a critical failure, might need to clear the loaded buffers or throw.
+        // For now, return false. Consider resetting buffers to a safe state.
+        this->buffer = flatbuffers::DetachedBuffer(); // Reset to empty
+        this->avg_buffer = flatbuffers::DetachedBuffer();
+        this->population_stats = flatbuffers::DetachedBuffer();
+        return false;
+    }
+    if (loaded_world->year() != year_to_load) {
+        fmt::print(stderr, "Error: Loaded RAW_WORLD data year ({}) does not match requested year ({}).\n", loaded_world->year(), year_to_load);
+        // Also a critical failure.
+        this->buffer = flatbuffers::DetachedBuffer(); // Reset to empty
+        this->avg_buffer = flatbuffers::DetachedBuffer();
+        this->population_stats = flatbuffers::DetachedBuffer();
+        return false;
+    }
+
+    fmt::print("Successfully loaded snapshot for year {}.\n", year_to_load);
+    fmt::print("Main buffer size: {}, avg_buffer size: {}, population_stats size: {}\n", this->buffer.size(), this->avg_buffer.size(), this->population_stats.size());
+
+    return true;
 }

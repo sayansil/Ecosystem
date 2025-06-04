@@ -32,6 +32,8 @@ struct DatabaseManager
 
     std::vector<std::vector<ByteArray>> read_all_rows();
     void insert_rows(const std::vector<std::vector<FBufferView>> &);
+    std::vector<ByteArray> read_row_by_year(int year);
+    std::vector<int> get_available_years();
 
     /******************************
      *  Miscellaneous operations  *

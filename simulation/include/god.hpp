@@ -58,6 +58,7 @@ public:
 
     void cleanSlate();
     void happy_new_year(const bool &log = false);
+    bool load_snapshot(int year);
 
 protected:
     double killer_function(const double &, const double &) const;

@@ -45,6 +45,13 @@
 
 <br>
 
+### Time Travel (Snapshot Rollback)
+The simulation now supports saving snapshots of the world state each year when database recording is enabled (via the `gods_eye` option). You can list available snapshots and revert the simulation to a previously saved year to explore different evolutionary paths or recover from unexpected simulation outcomes. See the `Python/sample_timetravel.py` script for an example of how to use this feature.
+
+**Note:** This feature requires the `RAW_WORLD BLOB` column to be manually added to the `ECOSYSTEM_MASTER` table in `data/ecosystem_master.db`. Refer to project documentation or migration scripts if available for details on updating your database schema.
+
+<br>
+
 <div align="center">
 <h2>Quick Navigation</h2>
 
