@@ -74,6 +74,30 @@ struct pyecosystem
     {
         return guru_nanak->get_live_data();
     }
+
+    bool load_snapshot_from_year(int year) {
+        if (guru_nanak) {
+            return guru_nanak->load_snapshot(year);
+        }
+        // Consider logging an error if guru_nanak is null
+        return false;
+    }
+
+    std::vector<int> get_list_of_available_snapshots() {
+        if (guru_nanak && guru_nanak->db) {
+            return guru_nanak->db->get_available_years();
+        }
+        // Consider logging an error if guru_nanak or db is null
+        return {};
+    }
+
+    int get_current_year() {
+        if (guru_nanak) {
+            return guru_nanak->year; // Accessing public member 'year' of God class
+        }
+        // Consider logging an error or throwing an exception if guru_nanak is null
+        return 0;
+    }
 };
 
 PYBIND11_MODULE(pyecosystem, m)
@@ -88,5 +112,8 @@ PYBIND11_MODULE(pyecosystem, m)
         .def("happy_new_year", &pyecosystem::happy_new_year)
         .def("remember_species", &pyecosystem::remember_species)
         .def("get_annual_data", &pyecosystem::get_annual_data)
-        .def("get_live_data", &pyecosystem::get_live_data);
+        .def("get_live_data", &pyecosystem::get_live_data)
+        .def("load_snapshot_from_year", &pyecosystem::load_snapshot_from_year, "Loads a simulation snapshot from a specific year.")
+        .def("get_list_of_available_snapshots", &pyecosystem::get_list_of_available_snapshots, "Returns a list of years for which snapshots are available.")
+        .def("get_current_year", &pyecosystem::get_current_year, "Gets the current simulation year.");
 }
