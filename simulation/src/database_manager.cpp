@@ -1,6 +1,8 @@
 #include <fmt/core.h>
 
+#include <chrono>
 #include <database_manager.hpp>
+#include <helper.hpp>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -41,6 +43,9 @@ void DatabaseManager::insert_rows(
     for (const auto &row : rows) {
         auto &avg_world = row[0];
         auto &population = row[1];
+
+        auto db_start = std::chrono::steady_clock::now();
+
         std::string sql_command = fmt::format(
             "INSERT INTO ECOSYSTEM_MASTER VALUES ({}, ZEROBLOB({}), "
             "ZEROBLOB({}))",
@@ -61,6 +66,12 @@ void DatabaseManager::insert_rows(
                           last_insert_row, 1, &populationBlob);
         sqlite3_blob_write(populationBlob, population.data, population.size, 0);
         sqlite3_blob_close(populationBlob);
+
+        if (helper::active_perf) {
+            auto db_end = std::chrono::steady_clock::now();
+            helper::active_perf->db_write_us +=
+                std::chrono::duration<double, std::micro>(db_end - db_start).count();
+        }
     }
 }
 

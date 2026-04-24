@@ -10,6 +10,8 @@ static unsigned int map_width = 1000;
 
 namespace helper {
 
+PerfMetrics* active_perf = nullptr;
+
 std::string to_binary(const unsigned int &x) {
     auto num = x;
     std::string str = "";

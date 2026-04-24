@@ -15,12 +15,15 @@
 #include <ecosystem_export.h>
 #include <nlohmann/json.hpp>
 #include <flatbuffers/minireflect.h>
+#include <perf_metrics.hpp>
 
 namespace helper
 {
     /**********************
      *  Helper attributes *
      **********************/
+
+    extern PerfMetrics* active_perf;
 
     /*******************
      *  Helper methods *

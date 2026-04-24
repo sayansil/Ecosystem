@@ -28,3 +28,4 @@ tags
 **/.DS_Store
 checks.json
 **/.fetchcontent_cache/
+**/.fastembed_cache/
