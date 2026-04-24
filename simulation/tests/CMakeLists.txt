@@ -23,3 +23,4 @@ endfunction()
 
 add_ecosystem_tests(tests EcosystemTest)
 add_ecosystem_tests(stress_tests EcosystemStressTest)
+add_ecosystem_tests(correctness_tests EcosystemCorrectnessTest)
