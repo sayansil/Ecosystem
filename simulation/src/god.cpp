@@ -7,12 +7,9 @@
 #include <nlohmann/json.hpp>
 #include <organism.hpp>
 #include <profiler.hpp>
-#include <range/v3/view.hpp>
 #include <set>
 #include <species_constants.hpp>
 #include <stat_fetcher.hpp>
-
-namespace rv = ranges::views;
 
 static XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
 
@@ -62,6 +59,67 @@ static uint16_t getValueAsUshort(const nlohmann::json &attributes,
     return attributes.find(key) != attributes.end()
                ? attributes[key].get<uint16_t>()
                : 0;
+}
+
+static SpeciesConstants extract_species_constants(const nlohmann::json &sp) {
+    SpeciesConstants sc;
+    sc.chromosome_number = getValueAsUshort(sp, "species_chromosome_number");
+    sc.food_chain_rank = getValueAsUlong(sp, "food_chain_rank");
+    sc.sexuality = getValueAsByte(sp, "sexuality");
+    sc.age_fitness_on_death_ratio = getValueAsFloat(sp, "species_age_fitness_on_death_ratio");
+    sc.conceiving_probability = getValueAsFloat(sp, "conceiving_probability");
+    sc.mating_probability = getValueAsFloat(sp, "mating_probability");
+    sc.mating_age_start = getValueAsUint(sp, "mating_age_start");
+    sc.mating_age_end = getValueAsUint(sp, "mating_age_end");
+    sc.species_max_age = getValueAsUint(sp, "species_max_age");
+    sc.mutation_probability = getValueAsFloat(sp, "mutation_probability");
+    sc.offsprings_factor = getValueAsFloat(sp, "offsprings_factor");
+    sc.height_on_speed = getValueAsFloat(sp, "species_height_on_speed");
+    sc.height_on_stamina = getValueAsFloat(sp, "species_height_on_stamina");
+    sc.height_on_vitality = getValueAsFloat(sp, "species_height_on_vitality");
+    sc.weight_on_speed = getValueAsFloat(sp, "species_weight_on_speed");
+    sc.weight_on_stamina = getValueAsFloat(sp, "species_weight_on_stamina");
+    sc.weight_on_vitality = getValueAsFloat(sp, "species_weight_on_vitality");
+    sc.vitality_on_appetite = getValueAsFloat(sp, "species_vitality_on_appetite");
+    sc.vitality_on_speed = getValueAsFloat(sp, "species_vitality_on_speed");
+    sc.stamina_on_appetite = getValueAsFloat(sp, "species_stamina_on_appetite");
+    sc.stamina_on_speed = getValueAsFloat(sp, "species_stamina_on_speed");
+    sc.theoretical_maximum_base_appetite = getValueAsFloat(sp, "species_theoretical_maximum_base_appetite");
+    sc.theoretical_maximum_base_height = getValueAsFloat(sp, "species_theoretical_maximum_base_height");
+    sc.theoretical_maximum_base_speed = getValueAsFloat(sp, "species_theoretical_maximum_base_speed");
+    sc.theoretical_maximum_base_stamina = getValueAsFloat(sp, "species_theoretical_maximum_base_stamina");
+    sc.theoretical_maximum_base_vitality = getValueAsFloat(sp, "species_theoretical_maximum_base_vitality");
+    sc.theoretical_maximum_base_weight = getValueAsFloat(sp, "species_theoretical_maximum_base_weight");
+    sc.theoretical_maximum_height = getValueAsFloat(sp, "species_theoretical_maximum_height");
+    sc.theoretical_maximum_speed = getValueAsFloat(sp, "species_theoretical_maximum_speed");
+    sc.theoretical_maximum_weight = getValueAsFloat(sp, "species_theoretical_maximum_weight");
+    sc.theoretical_maximum_height_multiplier = getValueAsFloat(sp, "species_theoretical_maximum_height_multiplier");
+    sc.theoretical_maximum_speed_multiplier = getValueAsFloat(sp, "species_theoretical_maximum_speed_multiplier");
+    sc.theoretical_maximum_stamina_multiplier = getValueAsFloat(sp, "species_theoretical_maximum_stamina_multiplier");
+    sc.theoretical_maximum_vitality_multiplier = getValueAsFloat(sp, "species_theoretical_maximum_vitality_multiplier");
+    sc.theoretical_maximum_weight_multiplier = getValueAsFloat(sp, "species_theoretical_maximum_weight_multiplier");
+    sc.vision_radius = getValueAsFloat(sp, "vision_radius");
+    sc.sleep_restore_factor = getValueAsFloat(sp, "species_sleep_restore_factor");
+    sc.chromosome_structure = sp["chromosome_structure"];
+    return sc;
+}
+
+static flatbuffers::Offset<flatbuffers::Vector<uint8_t>> create_chromosome_vector(
+    flatbuffers::FlatBufferBuilder &builder, const std::string &binary_str) {
+    size_t len = binary_str.length();
+    size_t padded_len = len % 8 == 0 ? len : len + 8 - (len % 8);
+    size_t byte_count = padded_len / 8;
+    std::vector<uint8_t> bytes(byte_count, 0);
+    size_t offset = padded_len - len;
+    for (size_t i = 0; i < len; i++) {
+        if (binary_str[i] == '1') {
+            size_t bit_pos = offset + i;
+            size_t byte_idx = bit_pos / 8;
+            int bit_idx = 7 - (bit_pos % 8);
+            bytes[byte_idx] |= (1 << bit_idx);
+        }
+    }
+    return builder.CreateVector(bytes.data(), bytes.size());
 }
 
 static double get_value_from_chromosome(
@@ -345,119 +403,113 @@ flatbuffers::Offset<Ecosystem::Organism> God::createOrganism(
 
 flatbuffers::Offset<Ecosystem::Organism> God::createChildOrganism(
     flatbuffers::FlatBufferBuilder &builder,
-    const std::string &kind,
+    const SpeciesConstants &sc,
     const std::string &kingdom,
     const uint64_t &age,
-    const std::string &name,
+    flatbuffers::Offset<flatbuffers::String> name_offset,
     const std::string &chromosome_str,
-    const std::vector<uint8_t> &chromosome_bytes,
+    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> chromosome_offset,
     flatbuffers::Offset<flatbuffers::String> kind_offset,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chr_structure_offset,
     const uint64_t &generation,
     const std::pair<uint64_t, uint64_t> &XY,
     const int8_t &monitor) {
-    const auto &sp = constants::get_species_constants_map()[kind];
-    std::map<std::string, std::map<std::string, int>> c_structure =
-        sp["chromosome_structure"];
-
-    auto organism_name = builder.CreateString(name);
-    auto organism_chromosome =
-        builder.CreateVector(chromosome_bytes.data(), chromosome_bytes.size());
+    const auto &c_structure = sc.chromosome_structure;
 
     auto organism_offset = Ecosystem::CreateOrganism(
         builder, kind_offset,
         (Ecosystem::KingdomE)std::stoi(kingdom),
-        getValueAsUshort(sp, "species_chromosome_number"),
+        sc.chromosome_number,
         chr_structure_offset,
-        getValueAsUlong(sp, "food_chain_rank"),
-        (Ecosystem::Reproduction)getValueAsByte(sp, "sexuality"),
-        getValueAsFloat(sp, "species_age_fitness_on_death_ratio"),
-        getValueAsFloat(sp, "conceiving_probability"),
-        getValueAsFloat(sp, "mating_probability"),
-        getValueAsUint(sp, "mating_age_start"),
-        getValueAsUint(sp, "mating_age_end"),
-        getValueAsUint(sp, "species_max_age"),
-        getValueAsFloat(sp, "mutation_probability"),
-        getValueAsFloat(sp, "offsprings_factor"),
-        getValueAsFloat(sp, "species_height_on_speed"),
-        getValueAsFloat(sp, "species_height_on_stamina"),
-        getValueAsFloat(sp, "species_height_on_vitality"),
-        getValueAsFloat(sp, "species_weight_on_speed"),
-        getValueAsFloat(sp, "species_weight_on_stamina"),
-        getValueAsFloat(sp, "species_weight_on_vitality"),
-        getValueAsFloat(sp, "species_vitality_on_appetite"),
-        getValueAsFloat(sp, "species_vitality_on_speed"),
-        getValueAsFloat(sp, "species_stamina_on_appetite"),
-        getValueAsFloat(sp, "species_stamina_on_speed"),
-        getValueAsFloat(sp, "species_theoretical_maximum_base_appetite"),
-        getValueAsFloat(sp, "species_theoretical_maximum_base_height"),
-        getValueAsFloat(sp, "species_theoretical_maximum_base_speed"),
-        getValueAsFloat(sp, "species_theoretical_maximum_base_stamina"),
-        getValueAsFloat(sp, "species_theoretical_maximum_base_vitality"),
-        getValueAsFloat(sp, "species_theoretical_maximum_base_weight"),
-        getValueAsFloat(sp, "species_theoretical_maximum_height"),
-        getValueAsFloat(sp, "species_theoretical_maximum_speed"),
-        getValueAsFloat(sp, "species_theoretical_maximum_weight"),
-        getValueAsFloat(sp, "species_theoretical_maximum_height_multiplier"),
-        getValueAsFloat(sp, "species_theoretical_maximum_speed_multiplier"),
-        getValueAsFloat(sp, "species_theoretical_maximum_stamina_multiplier"),
-        getValueAsFloat(sp, "species_theoretical_maximum_vitality_multiplier"),
-        getValueAsFloat(sp, "species_theoretical_maximum_weight_multiplier"),
-        organism_name, organism_chromosome,
+        sc.food_chain_rank,
+        (Ecosystem::Reproduction)sc.sexuality,
+        sc.age_fitness_on_death_ratio,
+        sc.conceiving_probability,
+        sc.mating_probability,
+        sc.mating_age_start,
+        sc.mating_age_end,
+        sc.species_max_age,
+        sc.mutation_probability,
+        sc.offsprings_factor,
+        sc.height_on_speed,
+        sc.height_on_stamina,
+        sc.height_on_vitality,
+        sc.weight_on_speed,
+        sc.weight_on_stamina,
+        sc.weight_on_vitality,
+        sc.vitality_on_appetite,
+        sc.vitality_on_speed,
+        sc.stamina_on_appetite,
+        sc.stamina_on_speed,
+        sc.theoretical_maximum_base_appetite,
+        sc.theoretical_maximum_base_height,
+        sc.theoretical_maximum_base_speed,
+        sc.theoretical_maximum_base_stamina,
+        sc.theoretical_maximum_base_vitality,
+        sc.theoretical_maximum_base_weight,
+        sc.theoretical_maximum_height,
+        sc.theoretical_maximum_speed,
+        sc.theoretical_maximum_weight,
+        sc.theoretical_maximum_height_multiplier,
+        sc.theoretical_maximum_speed_multiplier,
+        sc.theoretical_maximum_stamina_multiplier,
+        sc.theoretical_maximum_vitality_multiplier,
+        sc.theoretical_maximum_weight_multiplier,
+        name_offset, chromosome_offset,
         (Ecosystem::Gender)decode_chromosome(chromosome_str, c_structure, "gn", 2.0),
         generation,
         decode_chromosome(chromosome_str, c_structure, "im", 1.0),
         decode_chromosome(chromosome_str, c_structure, "ba",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_appetite")),
+            sc.theoretical_maximum_base_appetite),
         decode_chromosome(chromosome_str, c_structure, "bh",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_height")),
+            sc.theoretical_maximum_base_height),
         decode_chromosome(chromosome_str, c_structure, "bp",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_speed")),
+            sc.theoretical_maximum_base_speed),
         decode_chromosome(chromosome_str, c_structure, "bs",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_stamina")),
+            sc.theoretical_maximum_base_stamina),
         decode_chromosome(chromosome_str, c_structure, "bv",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_vitality")),
+            sc.theoretical_maximum_base_vitality),
         decode_chromosome(chromosome_str, c_structure, "bw",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_weight")),
+            sc.theoretical_maximum_base_weight),
         decode_chromosome(chromosome_str, c_structure, "hm",
-            getValueAsFloat(sp, "species_theoretical_maximum_height_multiplier")),
+            sc.theoretical_maximum_height_multiplier),
         decode_chromosome(chromosome_str, c_structure, "pm",
-            getValueAsFloat(sp, "species_theoretical_maximum_speed_multiplier")),
+            sc.theoretical_maximum_speed_multiplier),
         decode_chromosome(chromosome_str, c_structure, "sm",
-            getValueAsFloat(sp, "species_theoretical_maximum_stamina_multiplier")),
+            sc.theoretical_maximum_stamina_multiplier),
         decode_chromosome(chromosome_str, c_structure, "vm",
-            getValueAsFloat(sp, "species_theoretical_maximum_vitality_multiplier")),
+            sc.theoretical_maximum_vitality_multiplier),
         decode_chromosome(chromosome_str, c_structure, "wm",
-            getValueAsFloat(sp, "species_theoretical_maximum_weight_multiplier")),
+            sc.theoretical_maximum_weight_multiplier),
         decode_chromosome(chromosome_str, c_structure, "mh",
-            getValueAsFloat(sp, "species_theoretical_maximum_height")),
+            sc.theoretical_maximum_height),
         decode_chromosome(chromosome_str, c_structure, "mw",
-            getValueAsFloat(sp, "species_theoretical_maximum_weight")),
+            sc.theoretical_maximum_weight),
         age - 1,
         decode_chromosome(chromosome_str, c_structure, "bh",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_height")),
+            sc.theoretical_maximum_base_height),
         decode_chromosome(chromosome_str, c_structure, "bw",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_weight")),
+            sc.theoretical_maximum_base_weight),
         0.0,
         decode_chromosome(chromosome_str, c_structure, "ba",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_appetite")),
+            sc.theoretical_maximum_base_appetite),
         decode_chromosome(chromosome_str, c_structure, "bp",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_speed")),
+            sc.theoretical_maximum_base_speed),
         decode_chromosome(chromosome_str, c_structure, "bs",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_stamina")),
+            sc.theoretical_maximum_base_stamina),
         decode_chromosome(chromosome_str, c_structure, "bv",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_vitality")),
+            sc.theoretical_maximum_base_vitality),
         decode_chromosome(chromosome_str, c_structure, "ba",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_appetite")),
+            sc.theoretical_maximum_base_appetite),
         decode_chromosome(chromosome_str, c_structure, "bp",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_speed")),
+            sc.theoretical_maximum_base_speed),
         decode_chromosome(chromosome_str, c_structure, "bs",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_stamina")),
+            sc.theoretical_maximum_base_stamina),
         decode_chromosome(chromosome_str, c_structure, "bv",
-            getValueAsFloat(sp, "species_theoretical_maximum_base_vitality")),
+            sc.theoretical_maximum_base_vitality),
         XY.first, XY.second, 1.0,
-        getValueAsFloat(sp, "vision_radius"),
-        getValueAsFloat(sp, "species_sleep_restore_factor"),
+        sc.vision_radius,
+        sc.sleep_restore_factor,
         Ecosystem::Sleep::awake, static_cast<Ecosystem::Monitor>(monitor));
 
     Ecosystem::Organism *organism_ptr =
@@ -686,13 +738,13 @@ void God::happy_new_year(const bool &log) {
 
     uint32_t num_species = previous_world->species()->size();
 
-    for (uint32_t n : rv::iota(0u, num_species)) {
+    for (uint32_t n = 0; n < num_species; n++) {
         perf.organisms_before += previous_world->species()->Get(n)->organism()->size();
     }
 
     std::mt19937_64 rng{std::random_device()()};
 
-    for (uint32_t n : rv::iota(0u, num_species)) {
+    for (uint32_t n = 0; n < num_species; n++) {
         Ecosystem::Species *species =
             previous_world->mutable_species()->GetMutableObject(n);
         auto kingdom = species->kingdom();
@@ -729,7 +781,7 @@ void God::happy_new_year(const bool &log) {
             std::vector<std::pair<float, uint32_t>> organisms_vec;
             organisms_vec.reserve(species->organism()->size());
 
-            for (uint32_t i : rv::iota(0u, species->organism()->size())) {
+            for (uint32_t i = 0; i < species->organism()->size(); i++) {
                 const Ecosystem::Organism *organism = species->organism()->Get(i);
                 const float death_factor =
                     organism_opts::generate_death_factor(organism);
@@ -742,7 +794,7 @@ void God::happy_new_year(const bool &log) {
             std::uniform_real_distribution<double> par_dis(0.0, 1.0);
             std::mt19937_64 par_rng{std::random_device()()};
 
-            for (uint32_t index : rv::iota(0u, organisms_vec.size())) {
+            for (uint32_t index = 0; index < organisms_vec.size(); index++) {
                 const double x = par_dis(par_rng);
 
                 if (disable_deaths ||
@@ -773,13 +825,14 @@ void God::happy_new_year(const bool &log) {
 
         if (stdvecOrganisms.size() > 0) {
             update_species_cached(full_species_name);
-            const auto &species_constants =
+            const auto &species_json =
                 constants::get_species_constants_map()[kind->str()];
             const std::string kind_str = kind->str();
+            SpeciesConstants sc = extract_species_constants(species_json);
 
             std::vector<uint32_t> mating_list1, mating_list2;
 
-            for (size_t index : rv::iota(0u, stdvecOrganisms.size())) {
+            for (size_t index = 0; index < stdvecOrganisms.size(); index++) {
                 auto desparate_organism = helper::get_pointer_from_offset(
                     builder, stdvecOrganisms[index]);
                 auto sexuality = desparate_organism->sexuality();
@@ -908,16 +961,15 @@ void God::happy_new_year(const bool &log) {
 
                             uint64_t child_X = (parent1.X + parent2.X) / 2,
                                      child_Y = (parent1.Y + parent2.Y) / 2;
-                            std::string child_name = fmt::format(
-                                "{}-{}-{}", kind_str, year, spawn_count++);
-
-                            auto child_chromosome_bytes = helper::string_to_bytevector(child_chromosome);
 
                             auto child_offset = createChildOrganism(
-                                builder, kind_str,
+                                builder, sc,
                                 kingdom_str,
-                                1, child_name, child_chromosome,
-                                child_chromosome_bytes,
+                                1,
+                                builder.CreateString(fmt::format(
+                                    "{}-{}-{}", kind_str, year, spawn_count++)),
+                                child_chromosome,
+                                create_chromosome_vector(builder, child_chromosome),
                                 kind_offset, chr_structure_offset,
                                 std::max(parent1.generation,
                                          parent2.generation) +

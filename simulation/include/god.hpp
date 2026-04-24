@@ -13,6 +13,47 @@
 #include <nlohmann/json.hpp>
 #include <perf_metrics.hpp>
 
+struct SpeciesConstants {
+    uint16_t chromosome_number;
+    uint64_t food_chain_rank;
+    uint8_t sexuality;
+    float age_fitness_on_death_ratio;
+    float conceiving_probability;
+    float mating_probability;
+    uint32_t mating_age_start;
+    uint32_t mating_age_end;
+    uint32_t species_max_age;
+    float mutation_probability;
+    float offsprings_factor;
+    float height_on_speed;
+    float height_on_stamina;
+    float height_on_vitality;
+    float weight_on_speed;
+    float weight_on_stamina;
+    float weight_on_vitality;
+    float vitality_on_appetite;
+    float vitality_on_speed;
+    float stamina_on_appetite;
+    float stamina_on_speed;
+    float theoretical_maximum_base_appetite;
+    float theoretical_maximum_base_height;
+    float theoretical_maximum_base_speed;
+    float theoretical_maximum_base_stamina;
+    float theoretical_maximum_base_vitality;
+    float theoretical_maximum_base_weight;
+    float theoretical_maximum_height;
+    float theoretical_maximum_speed;
+    float theoretical_maximum_weight;
+    float theoretical_maximum_height_multiplier;
+    float theoretical_maximum_speed_multiplier;
+    float theoretical_maximum_stamina_multiplier;
+    float theoretical_maximum_vitality_multiplier;
+    float theoretical_maximum_weight_multiplier;
+    float vision_radius;
+    float sleep_restore_factor;
+    std::map<std::string, std::map<std::string, int>> chromosome_structure;
+};
+
 struct ParentData {
     float mating_probability;
     float offsprings_factor;
@@ -66,12 +107,12 @@ public:
 
     flatbuffers::Offset<Ecosystem::Organism> createChildOrganism(
         flatbuffers::FlatBufferBuilder &builder,
-        const std::string &kind,
+        const SpeciesConstants &sc,
         const std::string &kingdom,
         const uint64_t &age,
-        const std::string &name,
+        flatbuffers::Offset<flatbuffers::String> name_offset,
         const std::string &chromosome_str,
-        const std::vector<uint8_t> &chromosome_bytes,
+        flatbuffers::Offset<flatbuffers::Vector<uint8_t>> chromosome_offset,
         flatbuffers::Offset<flatbuffers::String> kind_offset,
         flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Ecosystem::ChromosomeStrand>>> chr_structure_offset,
         const uint64_t &generation,
