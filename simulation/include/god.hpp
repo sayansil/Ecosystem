@@ -13,6 +13,11 @@
 #include <nlohmann/json.hpp>
 #include <perf_metrics.hpp>
 
+struct ChrDecodeInfo {
+    int start = 0;
+    int length = 0;
+};
+
 struct SpeciesConstants {
     uint16_t chromosome_number;
     uint64_t food_chain_rank;
@@ -52,6 +57,8 @@ struct SpeciesConstants {
     float vision_radius;
     float sleep_restore_factor;
     std::map<std::string, std::map<std::string, int>> chromosome_structure;
+    ChrDecodeInfo chr_gn, chr_im, chr_ba, chr_bh, chr_bp, chr_bs, chr_bv, chr_bw;
+    ChrDecodeInfo chr_hm, chr_pm, chr_sm, chr_vm, chr_wm, chr_mh, chr_mw;
 };
 
 struct ParentData {
@@ -81,6 +88,7 @@ public:
 
     PerfMetrics perf;
     uint32_t perf_log_interval = 10;
+    uint64_t benchmark_seed = 0;
 
     /******************************
      *  Constructor / Destructor  *

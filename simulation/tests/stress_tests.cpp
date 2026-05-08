@@ -37,6 +37,7 @@ TEST_CASE("Create world without db", "[test_cworld_nodb]") {
 
         God allah;
         allah.cleanSlate();
+        helper::benchmark_seed = 42;
         allah.createWorld(organisms);
         for (size_t i = 0; i < simulation_years; i++) {
             allah.happy_new_year(true);
@@ -64,6 +65,7 @@ TEST_CASE("Create world with db", "[test_cworld_db]") {
         {
             God allah(helper::get_ecosystem_root(), true);
             allah.cleanSlate();
+            helper::benchmark_seed = 42;
             allah.createWorld(organisms);
             for (size_t i = 0; i < simulation_years; i++) {
                 allah.happy_new_year(true);

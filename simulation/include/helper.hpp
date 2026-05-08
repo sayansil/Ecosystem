@@ -24,6 +24,7 @@ namespace helper
      **********************/
 
     extern PerfMetrics* active_perf;
+    extern uint64_t benchmark_seed;
 
     /*******************
      *  Helper methods *

@@ -11,7 +11,14 @@
 #include <species_constants.hpp>
 #include <stat_fetcher.hpp>
 
-static XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
+static XoshiroCpp::Xoshiro128PlusPlus& get_rng() {
+    static XoshiroCpp::Xoshiro128PlusPlus rng_instance{
+        helper::benchmark_seed != 0
+            ? helper::benchmark_seed
+            : std::random_device()()};
+    return rng_instance;
+}
+#define rng get_rng()
 
 static double get_value_from_chromosome(
     const std::vector<uint8_t> &chromosome,
@@ -61,6 +68,18 @@ static uint16_t getValueAsUshort(const nlohmann::json &attributes,
                : 0;
 }
 
+static ChrDecodeInfo extract_chr_info(
+    const std::map<std::string, std::map<std::string, int>> &cs,
+    const std::string &code) {
+    ChrDecodeInfo info;
+    auto it = cs.find(code);
+    if (it != cs.end()) {
+        info.start = it->second.find("start")->second;
+        info.length = it->second.find("length")->second;
+    }
+    return info;
+}
+
 static SpeciesConstants extract_species_constants(const nlohmann::json &sp) {
     SpeciesConstants sc;
     sc.chromosome_number = getValueAsUshort(sp, "species_chromosome_number");
@@ -101,6 +120,24 @@ static SpeciesConstants extract_species_constants(const nlohmann::json &sp) {
     sc.vision_radius = getValueAsFloat(sp, "vision_radius");
     sc.sleep_restore_factor = getValueAsFloat(sp, "species_sleep_restore_factor");
     sc.chromosome_structure = sp["chromosome_structure"];
+
+    const auto &cs_map = sc.chromosome_structure;
+    sc.chr_gn = extract_chr_info(cs_map, "gn");
+    sc.chr_im = extract_chr_info(cs_map, "im");
+    sc.chr_ba = extract_chr_info(cs_map, "ba");
+    sc.chr_bh = extract_chr_info(cs_map, "bh");
+    sc.chr_bp = extract_chr_info(cs_map, "bp");
+    sc.chr_bs = extract_chr_info(cs_map, "bs");
+    sc.chr_bv = extract_chr_info(cs_map, "bv");
+    sc.chr_bw = extract_chr_info(cs_map, "bw");
+    sc.chr_hm = extract_chr_info(cs_map, "hm");
+    sc.chr_pm = extract_chr_info(cs_map, "pm");
+    sc.chr_sm = extract_chr_info(cs_map, "sm");
+    sc.chr_vm = extract_chr_info(cs_map, "vm");
+    sc.chr_wm = extract_chr_info(cs_map, "wm");
+    sc.chr_mh = extract_chr_info(cs_map, "mh");
+    sc.chr_mw = extract_chr_info(cs_map, "mw");
+
     return sc;
 }
 
@@ -150,6 +187,15 @@ static double get_value_from_chromosome(
     return result;
 }
 
+static double decode_chr_fast(
+    const std::string &chromosome_str, const ChrDecodeInfo &info,
+    const double &multiplier) {
+    if (info.length == 0) return 0;
+    return (helper::to_decimal(chromosome_str.substr(info.start, info.length)) /
+            static_cast<double>(1 << info.length)) *
+           multiplier;
+}
+
 static double decode_chromosome(
     const std::string &chromosome_str,
     const std::map<std::string, std::map<std::string, int>> &c_structure,
@@ -178,6 +224,9 @@ God::God(const std::filesystem::path &ecosystem_root, const bool gods_eye) {
     builder.ForceDefaults(true);
     db = std::make_unique<DatabaseManager>(this->ecosystem_root / "data" /
                                            "ecosystem_master.db");
+    if (benchmark_seed != 0) {
+        helper::benchmark_seed = benchmark_seed;
+    }
 
     fmt::print("God created!\n");
 }
@@ -414,7 +463,7 @@ flatbuffers::Offset<Ecosystem::Organism> God::createChildOrganism(
     const uint64_t &generation,
     const std::pair<uint64_t, uint64_t> &XY,
     const int8_t &monitor) {
-    const auto &c_structure = sc.chromosome_structure;
+    const auto &c_str = chromosome_str;
 
     auto organism_offset = Ecosystem::CreateOrganism(
         builder, kind_offset,
@@ -456,57 +505,34 @@ flatbuffers::Offset<Ecosystem::Organism> God::createChildOrganism(
         sc.theoretical_maximum_vitality_multiplier,
         sc.theoretical_maximum_weight_multiplier,
         name_offset, chromosome_offset,
-        (Ecosystem::Gender)decode_chromosome(chromosome_str, c_structure, "gn", 2.0),
+        (Ecosystem::Gender)decode_chr_fast(c_str, sc.chr_gn, 2.0),
         generation,
-        decode_chromosome(chromosome_str, c_structure, "im", 1.0),
-        decode_chromosome(chromosome_str, c_structure, "ba",
-            sc.theoretical_maximum_base_appetite),
-        decode_chromosome(chromosome_str, c_structure, "bh",
-            sc.theoretical_maximum_base_height),
-        decode_chromosome(chromosome_str, c_structure, "bp",
-            sc.theoretical_maximum_base_speed),
-        decode_chromosome(chromosome_str, c_structure, "bs",
-            sc.theoretical_maximum_base_stamina),
-        decode_chromosome(chromosome_str, c_structure, "bv",
-            sc.theoretical_maximum_base_vitality),
-        decode_chromosome(chromosome_str, c_structure, "bw",
-            sc.theoretical_maximum_base_weight),
-        decode_chromosome(chromosome_str, c_structure, "hm",
-            sc.theoretical_maximum_height_multiplier),
-        decode_chromosome(chromosome_str, c_structure, "pm",
-            sc.theoretical_maximum_speed_multiplier),
-        decode_chromosome(chromosome_str, c_structure, "sm",
-            sc.theoretical_maximum_stamina_multiplier),
-        decode_chromosome(chromosome_str, c_structure, "vm",
-            sc.theoretical_maximum_vitality_multiplier),
-        decode_chromosome(chromosome_str, c_structure, "wm",
-            sc.theoretical_maximum_weight_multiplier),
-        decode_chromosome(chromosome_str, c_structure, "mh",
-            sc.theoretical_maximum_height),
-        decode_chromosome(chromosome_str, c_structure, "mw",
-            sc.theoretical_maximum_weight),
+        decode_chr_fast(c_str, sc.chr_im, 1.0),
+        decode_chr_fast(c_str, sc.chr_ba, sc.theoretical_maximum_base_appetite),
+        decode_chr_fast(c_str, sc.chr_bh, sc.theoretical_maximum_base_height),
+        decode_chr_fast(c_str, sc.chr_bp, sc.theoretical_maximum_base_speed),
+        decode_chr_fast(c_str, sc.chr_bs, sc.theoretical_maximum_base_stamina),
+        decode_chr_fast(c_str, sc.chr_bv, sc.theoretical_maximum_base_vitality),
+        decode_chr_fast(c_str, sc.chr_bw, sc.theoretical_maximum_base_weight),
+        decode_chr_fast(c_str, sc.chr_hm, sc.theoretical_maximum_height_multiplier),
+        decode_chr_fast(c_str, sc.chr_pm, sc.theoretical_maximum_speed_multiplier),
+        decode_chr_fast(c_str, sc.chr_sm, sc.theoretical_maximum_stamina_multiplier),
+        decode_chr_fast(c_str, sc.chr_vm, sc.theoretical_maximum_vitality_multiplier),
+        decode_chr_fast(c_str, sc.chr_wm, sc.theoretical_maximum_weight_multiplier),
+        decode_chr_fast(c_str, sc.chr_mh, sc.theoretical_maximum_height),
+        decode_chr_fast(c_str, sc.chr_mw, sc.theoretical_maximum_weight),
         age - 1,
-        decode_chromosome(chromosome_str, c_structure, "bh",
-            sc.theoretical_maximum_base_height),
-        decode_chromosome(chromosome_str, c_structure, "bw",
-            sc.theoretical_maximum_base_weight),
+        decode_chr_fast(c_str, sc.chr_bh, sc.theoretical_maximum_base_height),
+        decode_chr_fast(c_str, sc.chr_bw, sc.theoretical_maximum_base_weight),
         0.0,
-        decode_chromosome(chromosome_str, c_structure, "ba",
-            sc.theoretical_maximum_base_appetite),
-        decode_chromosome(chromosome_str, c_structure, "bp",
-            sc.theoretical_maximum_base_speed),
-        decode_chromosome(chromosome_str, c_structure, "bs",
-            sc.theoretical_maximum_base_stamina),
-        decode_chromosome(chromosome_str, c_structure, "bv",
-            sc.theoretical_maximum_base_vitality),
-        decode_chromosome(chromosome_str, c_structure, "ba",
-            sc.theoretical_maximum_base_appetite),
-        decode_chromosome(chromosome_str, c_structure, "bp",
-            sc.theoretical_maximum_base_speed),
-        decode_chromosome(chromosome_str, c_structure, "bs",
-            sc.theoretical_maximum_base_stamina),
-        decode_chromosome(chromosome_str, c_structure, "bv",
-            sc.theoretical_maximum_base_vitality),
+        decode_chr_fast(c_str, sc.chr_ba, sc.theoretical_maximum_base_appetite),
+        decode_chr_fast(c_str, sc.chr_bp, sc.theoretical_maximum_base_speed),
+        decode_chr_fast(c_str, sc.chr_bs, sc.theoretical_maximum_base_stamina),
+        decode_chr_fast(c_str, sc.chr_bv, sc.theoretical_maximum_base_vitality),
+        decode_chr_fast(c_str, sc.chr_ba, sc.theoretical_maximum_base_appetite),
+        decode_chr_fast(c_str, sc.chr_bp, sc.theoretical_maximum_base_speed),
+        decode_chr_fast(c_str, sc.chr_bs, sc.theoretical_maximum_base_stamina),
+        decode_chr_fast(c_str, sc.chr_bv, sc.theoretical_maximum_base_vitality),
         XY.first, XY.second, 1.0,
         sc.vision_radius,
         sc.sleep_restore_factor,
@@ -742,7 +768,10 @@ void God::happy_new_year(const bool &log) {
         perf.organisms_before += previous_world->species()->Get(n)->organism()->size();
     }
 
-    std::mt19937_64 rng{std::random_device()()};
+    uint64_t tick_seed = helper::benchmark_seed != 0
+                             ? helper::benchmark_seed + year
+                             : std::random_device()();
+    std::mt19937_64 tick_rng{tick_seed};
 
     for (uint32_t n = 0; n < num_species; n++) {
         Ecosystem::Species *species =
@@ -792,7 +821,7 @@ void God::happy_new_year(const bool &log) {
                       std::greater<std::pair<float, uint32_t>>());
 
             std::uniform_real_distribution<double> par_dis(0.0, 1.0);
-            std::mt19937_64 par_rng{std::random_device()()};
+            std::mt19937_64 par_rng{tick_seed + 1};
 
             for (uint32_t index = 0; index < organisms_vec.size(); index++) {
                 const double x = par_dis(par_rng);
@@ -860,8 +889,8 @@ void God::happy_new_year(const bool &log) {
             }
 
             if (mating_list1.size() > 0) {
-                std::shuffle(mating_list1.begin(), mating_list1.end(), rng);
-                std::shuffle(mating_list2.begin(), mating_list2.end(), rng);
+                std::shuffle(mating_list1.begin(), mating_list1.end(), tick_rng);
+                std::shuffle(mating_list2.begin(), mating_list2.end(), tick_rng);
 
                 uint32_t index_parent = 0;
                 Ecosystem::Reproduction sexuality =

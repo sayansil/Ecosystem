@@ -32,11 +32,16 @@ struct PerfMetrics {
 
     double db_write_us = 0;
 
+    uint32_t clone_count = 0;
+
     double cumulative_select_us = 0;
     double cumulative_clone_us = 0;
     double cumulative_mate_us = 0;
     double cumulative_stats_us = 0;
     double cumulative_total_us = 0;
+    uint32_t cumulative_survivors = 0;
+    uint32_t cumulative_births = 0;
+    uint32_t cumulative_deaths = 0;
 
     void reset() {
         select_us = 0;
@@ -59,6 +64,7 @@ struct PerfMetrics {
         chromosome_decode_calls = 0;
         chromosome_decode_us = 0;
         db_write_us = 0;
+        clone_count = 0;
     }
 
     void accumulate() {
@@ -67,6 +73,9 @@ struct PerfMetrics {
         cumulative_mate_us += mate_us;
         cumulative_stats_us += stats_us;
         cumulative_total_us += total_us;
+        cumulative_survivors += survivors;
+        cumulative_births += births;
+        cumulative_deaths += deaths;
     }
 
     void print(uint32_t year) const {
@@ -94,13 +103,28 @@ struct PerfMetrics {
     }
 
     void print_cumulative() const {
+        double sel = cumulative_select_us / 1000.0;
+        double clo = cumulative_clone_us / 1000.0;
+        double mat = cumulative_mate_us / 1000.0;
+        double sta = cumulative_stats_us / 1000.0;
+        double tot = cumulative_total_us / 1000.0;
         fmt::print("[PERF-CUMULATIVE] select_ms={:.1f} clone_ms={:.1f} "
-                   "mate_ms={:.1f} stats_ms={:.1f} total_ms={:.1f}\n",
-                   cumulative_select_us / 1000.0,
-                   cumulative_clone_us / 1000.0,
-                   cumulative_mate_us / 1000.0,
-                   cumulative_stats_us / 1000.0,
-                   cumulative_total_us / 1000.0);
+                   "mate_ms={:.1f} stats_ms={:.1f} total_ms={:.1f} "
+                   "survivors={} births={} deaths={}\n",
+                   sel, clo, mat, sta, tot,
+                   cumulative_survivors, cumulative_births, cumulative_deaths);
+        if (cumulative_survivors > 0) {
+            fmt::print("[PERF-PER-ORG] clone_us_per_survivor={:.2f} "
+                       "select_us_per_survivor={:.2f}\n",
+                       cumulative_clone_us / cumulative_survivors,
+                       cumulative_select_us / cumulative_survivors);
+        }
+        if (cumulative_births > 0) {
+            fmt::print("[PERF-PER-BIRTH] mate_us_per_birth={:.2f} "
+                       "total_us_per_birth={:.2f}\n",
+                       cumulative_mate_us / cumulative_births,
+                       cumulative_total_us / cumulative_births);
+        }
     }
 };
 

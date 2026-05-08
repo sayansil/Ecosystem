@@ -4,13 +4,25 @@
 #include <helper.hpp>
 #include <string>
 
-static XoshiroCpp::Xoshiro128PlusPlus rng{std::random_device()()};
+namespace helper {
+
+PerfMetrics* active_perf = nullptr;
+uint64_t benchmark_seed = 0;
+
+}
+
+static XoshiroCpp::Xoshiro128PlusPlus& get_rng() {
+    static XoshiroCpp::Xoshiro128PlusPlus rng_instance{
+        helper::benchmark_seed != 0
+            ? helper::benchmark_seed
+            : std::random_device()()};
+    return rng_instance;
+}
+
 static unsigned int map_height = 1000;
 static unsigned int map_width = 1000;
 
 namespace helper {
-
-PerfMetrics* active_perf = nullptr;
 
 std::string to_binary(const unsigned int &x) {
     auto num = x;
@@ -34,7 +46,7 @@ unsigned int to_decimal(const std::string &str) {
 std::string random_binary(const unsigned int &n) {
     std::string str = "";
     std::uniform_int_distribution<int> dis(0, 1);
-    for (unsigned int i = 0; i < n; i++) str += std::to_string(dis(rng));
+    for (unsigned int i = 0; i < n; i++) str += std::to_string(dis(get_rng()));
     return str;
 }
 
@@ -42,7 +54,7 @@ std::string random_name(const int &inp) {
     std::string str = "";
     std::uniform_int_distribution<int> dis(0, 35);
     for (int i = 0; i < inp; i++) {
-        int tmp = dis(rng);
+        int tmp = dis(get_rng());
         if (tmp >= 0 && tmp <= 9)
             str += std::to_string(tmp);
         else
@@ -56,7 +68,7 @@ std::pair<uint64_t, uint64_t> random_location() {
         0, static_cast<uint64_t>(map_height - 1));
     std::uniform_int_distribution<uint64_t> dis_width(
         0, static_cast<uint64_t>(map_width - 1));
-    return {dis_width(rng), dis_height(rng)};
+    return {dis_width(get_rng()), dis_height(get_rng())};
 }
 
 double weighted_average(const std::vector<double> &values,
@@ -75,7 +87,7 @@ std::string get_random_mixture(const std::string &str1,
     std::uniform_int_distribution<int> dis(0, 1);
     int i;
     for (i = 0; i < std::min(str1.length(), str2.length()); i++) {
-        const int x = dis(rng);
+        const int x = dis(get_rng());
         if (x == 0)
             str3 += str1[i];
         else if (x == 1)
@@ -92,7 +104,7 @@ std::string get_random_mixture(const std::string &str1,
 // eg. p = 1.0 always returns 1
 int weighted_prob(const double &p) {
     std::uniform_real_distribution<double> dis(0.0, 1.0);
-    const double x = dis(rng);
+    const double x = dis(get_rng());
     if (x <= p)
         return 1;
     else
